@@ -1,0 +1,7 @@
+Packet data:
+id______Description________________________________________________________________________________
+-1		Connected confirmation.
+0		Disconnecting player, <Message>
+6		World Packet
+7		Entity Packet
+20		Chat Packet
