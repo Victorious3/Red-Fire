@@ -22,12 +22,7 @@ public class Entity extends Render implements Cloneable
 	@Override
 	public Entity clone()
 	{
-		try {
-			return (Entity) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return this;
+		return (Entity) super.clone();
 	}
 
 	public Entity(int width, int height) 

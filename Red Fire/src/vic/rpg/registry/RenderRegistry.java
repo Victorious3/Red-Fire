@@ -19,6 +19,7 @@ public class RenderRegistry
 	
 	public static final String IMG_TERRAIN_WATER = "imgterrainwater";
 	public static final String IMG_TERRAIN_GRASS = "imgterraingrass";
+	public static final String IMG_TERRAIN_GRASS_2 = "imgterraingrass2";
 	public static final String IMG_ENTITY_STATIC_HOUSE = "imgterrainentitystatichouse";
 	public static final String IMG_ENTITY_STATIC_TREE = "imgterrainentitystatictree";
 	public static final String IMG_ENTITY_STATIC_APLTREE = "imgterrainentitystaticapltree";
@@ -35,6 +36,7 @@ public class RenderRegistry
 	{
 		ImageBuffer.bufferImage(IMG_TERRAIN_WATER, "/vic/rpg/resources/terrain/waterfx_1.png");
 		ImageBuffer.bufferImage(IMG_TERRAIN_GRASS, "/vic/rpg/resources/terrain/grass.png");
+		ImageBuffer.bufferImage(IMG_TERRAIN_GRASS_2, "/vic/rpg/resources/terrain/grass_2.png");
 		ImageBuffer.bufferImage(IMG_ENTITY_STATIC_HOUSE, "/vic/rpg/resources/terrain/house.png");
 		ImageBuffer.bufferImage(IMG_ENTITY_STATIC_TREE, "/vic/rpg/resources/terrain/tree.png");
 		ImageBuffer.bufferImage(IMG_ENTITY_STATIC_APLTREE, "/vic/rpg/resources/terrain/apple_tree.png");

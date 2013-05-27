@@ -1,6 +1,8 @@
 package vic.rpg.editor.listener;
 
+import java.awt.Point;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -13,10 +15,26 @@ import vic.rpg.editor.Editor;
 import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Tile;
+import vic.rpg.registry.LevelRegistry;
 import vic.rpg.utils.Utils;
 
 public class TableListener implements TableModelListener
 {
+	public static HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+	public static HashMap<Integer, Integer> tiles = new HashMap<Integer, Integer>();
+	
+	static
+	{
+		for(Integer i : LevelRegistry.entityRegistry.keySet())
+		{
+			entities.put(i, LevelRegistry.entityRegistry.get(i).clone());
+		}
+		for(Integer i : LevelRegistry.tileRegistry.keySet())
+		{
+			tiles.put(i, LevelRegistry.tileRegistry.get(i).data);
+		}
+	}
+	
 	@Override
 	public void tableChanged(TableModelEvent e) 
 	{
@@ -39,7 +57,7 @@ public class TableListener implements TableModelListener
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
 	        }
 		}		
-		if(e.getSource() == Editor.editor.tableEntities.getModel() && e.getType() == TableModelEvent.UPDATE && Mouse.selectedEntities.size() == 1)
+		if(e.getSource() == Editor.editor.tableEntities.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
 			if(Editor.editor.level == null) return;
 			
@@ -52,18 +70,37 @@ public class TableListener implements TableModelListener
 	        
 	        try
 	        {
-	        	Utils.setFiled(name, value, type, Mouse.selectedEntities.get(0));
+	        	if(Mouse.selectedEntities.size() == 1) 
+        		{
+	        		Utils.setFiled(name, value, type, Mouse.selectedEntities.get(0));
+	        		Editor.editor.labelLevel.update(false);
+        		}
+	        	else Utils.setFiled(name, value, type, entities.get(Integer.parseInt(Editor.editor.dropdownEntities.getSelectedItem().toString().split(":")[0])));
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
 	        }
-	        Editor.editor.labelLevel.update(false);
-		}		
+	        
+		}
+		if(e.getSource() == Editor.editor.tableTiles.getModel() && e.getType() == TableModelEvent.UPDATE)
+		{
+			if(Mouse.selectedTiles.size() > 0) 
+			{
+				for(Point p: Mouse.selectedTiles)
+				{
+					Editor.editor.level.worldobjects[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
+				}				
+				
+				Editor.editor.labelLevel.update(false);
+			}
+			else tiles.put(Integer.parseInt(Editor.editor.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()));
+		}
 	}
 	
-	public static void setTile(Tile t)
+	public static void setTile(Tile t, int data)
 	{
 		Editor.editor.dropdownTiles.setSelectedItem(t.id + ": " + t.getClass().getSimpleName());
+		Editor.editor.labelTiles.setText(t.getDescription());
 		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.editor.tableTiles.getModel();
 		tableModel.setRowCount(0);
@@ -72,7 +109,7 @@ public class TableListener implements TableModelListener
 		
 		v.add("data");
 		v.add("int");
-		v.add(0);
+		v.add(data);
 		
 		tableModel.addRow(v);
 	}

@@ -125,14 +125,14 @@ public class Editor
 			return column == 2;
 		}
 	};
+	public JLabel labelTiles = new JLabel();
 	
 	public Level level;
 	
 	public Editor()
 	{				
-		frame = new JFrame();
-		frame.setTitle("Red Fire Level Editor");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame = new JFrame();	
+		if(!isInternal) frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.setSize(1024, 720);
 		frame.setLocationRelativeTo(null);
@@ -259,7 +259,7 @@ public class Editor
 			dropdownTiles.addItem(t.id + ": " + t.getClass().getSimpleName());
 		}
 		
-		for(Entity e : LevelRegistry.entityRegistry.values())
+		for(Entity e : TableListener.entities.values())
 		{
 			dropdownEntities.addItem(e.id + ": " + e.getClass().getSimpleName());
 		}
@@ -271,7 +271,7 @@ public class Editor
 				@SuppressWarnings("unchecked")
 				int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
 				
-				TableListener.setTile(LevelRegistry.tileRegistry.get(id));
+				TableListener.setTile(LevelRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
 			}		
 		});
 		
@@ -282,7 +282,7 @@ public class Editor
 				@SuppressWarnings("unchecked")
 				int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
 				
-				TableListener.setEntity(LevelRegistry.entityRegistry.get(id));
+				TableListener.setEntity(TableListener.entities.get(id));
 			}		
 		});
 		
@@ -308,12 +308,17 @@ public class Editor
 		
 		panelTiles.add(dropdownTiles, panelTilesConstraints);
 		
-		panelTilesConstraints.gridy = 1;		
+		panelTilesConstraints.gridy = 1;
+		labelTiles.setFont(labelTiles.getFont().deriveFont(Font.ITALIC));
+		labelTiles.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+		panelTiles.add(labelTiles, panelTilesConstraints);
+		
+		panelTilesConstraints.gridy = 2;		
 		JLabel lb1 = new JLabel("Tile Attributes:");
-		lb1.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+		lb1.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
 		panelTiles.add(lb1, panelTilesConstraints);
 		
-		panelTilesConstraints.gridy = 2;
+		panelTilesConstraints.gridy = 3;
 		panelTilesConstraints.weighty = 1;	
 		
 		tableTiles.setRowHeight(20);
@@ -388,8 +393,15 @@ public class Editor
 		frame.setVisible(true);
 	}
 	
+	public static boolean isInternal = false;
+	
 	public static void main(String[] args)
 	{
+		if(args.length > 0)
+		{
+			if(args[0].equals("internal")) isInternal = true; 
+		}
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -401,7 +413,7 @@ public class Editor
 		
 		editor = new Editor();
 		
-		TableListener.setTile(LevelRegistry.tileRegistry.values().iterator().next());
+		TableListener.setTile(LevelRegistry.tileRegistry.values().iterator().next(), 0);
 		TableListener.setEntity(LevelRegistry.entityRegistry.values().iterator().next());
 		
 		int choose = JOptionPane.showOptionDialog(null, "Welcome to the Red Fire Level Editor!\nBelow are some options you can choose from.\nPress F1 for help.", "Hello", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]{"New", "Open", "Help", "Cancel"}, 0);
@@ -451,13 +463,11 @@ public class Editor
 	{
 		boolean quit = false;
 		
-		JTextField name = new JTextField(20);
-		JTextField width = new JTextField(4);
-		JTextField height = new JTextField(4);
-		JTextField data = new JTextField(4); 
-		
-		data.setText("0");
-		
+		JTextField name = new JTextField("New Level");
+		JTextField width = new JTextField("100");
+		JTextField height = new JTextField("100");
+		JTextField data = new JTextField("0"); 
+
 		JComboBox<String> tiles = new JComboBox<String>();
 		
 		for(Tile t : LevelRegistry.tileRegistry.values())
@@ -542,7 +552,7 @@ public class Editor
 						Level level = new Level(Integer.parseInt(width.getText()), Integer.parseInt(width.getText()), name.getText());
 						level.fill(id, Integer.parseInt(data.getText()));
 						editor.labelLevel.setLevel(level);
-		            	editor.frame.setTitle("Red Fire Level Editor (" + editor.level.name + ")");
+						editor.setLevelName(editor.level.name);
 		            	JOptionPane.showMessageDialog(null, "Level \"" + editor.level.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
 		            	quit = true;
 		            	
@@ -577,7 +587,7 @@ public class Editor
 	            System.out.println(file + " selected for loading"); 
 	            try{
 	            	editor.labelLevel.setLevel(Level.readFromFile(file));       
-	            	editor.frame.setTitle("Red Fire Level Editor (" + editor.level.name + ")");
+	            	editor.setLevelName(editor.level.name);
 	            	JOptionPane.showMessageDialog(null, "Level \"" + editor.level.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
 	        		ButtonListener.file = file;
 	            } catch (Exception e) {
@@ -624,5 +634,14 @@ public class Editor
             }                
             chooser.setVisible(false);            
         } 
+	}
+	
+	public void setLevelName(String name)
+	{
+		if(name.length() > 0)
+		{
+			frame.setTitle("Red Fire Level Editor (" + name + ")");
+		}
+		else frame.setTitle("Red Fire Level Editor");
 	}
 }

@@ -31,4 +31,10 @@ public class TileWater extends Tile
 	{
 		return render;
 	}
+	
+	@Override
+	public String getDescription() 
+	{
+		return "Nice blue ocean.";
+	}
 }

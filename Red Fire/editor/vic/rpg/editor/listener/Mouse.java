@@ -75,7 +75,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
 					int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
 					
-					if(x >= Editor.editor.level.width || y >= Editor.editor.level.height || x <= 0 || y <= 0) return;
+					if(x >= Editor.editor.level.width || y >= Editor.editor.level.height || x < 0 || y < 0) return;
 					
 					if(!arg0.isControlDown())
 					{
@@ -84,7 +84,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					selectedTiles.add(new Point(x, y));
 					
 					Editor.editor.tabpanelEditor.setSelectedComponent(Editor.editor.panelTiles);
-					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.editor.level.worldobjects[x][y][0]));					
+					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.editor.level.worldobjects[x][y][0]), Editor.editor.level.worldobjects[x][y][1]);					
 				}
 				else
 				{
@@ -122,6 +122,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					selection = null;
 					selectedEntities.clear();
+					
 					Editor.editor.labelLevel.update(true);
 				}
 			}
@@ -256,7 +257,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			if(x2 < 0 || y2 < 0 || x2 >= Editor.editor.level.width || y2 >= Editor.editor.level.height) return;
 			
-			Editor.editor.level.setTile(id, x2, y2);
+			Editor.editor.level.setTile(id, x2, y2, TableListener.tiles.get(id));
 			Editor.editor.labelLevel.update((x2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, (y2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
 		}
 		else
@@ -266,7 +267,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			if(x2 < 0 || y2 < 0 || x2 >= Editor.editor.level.getWidth() || y2 >= Editor.editor.level.getHeight()) return;
 			
-			Editor.editor.level.addEntity(id, x2, y2);			
+			Editor.editor.level.addEntity(TableListener.entities.get(id).clone(), x2, y2);			
 			Editor.editor.labelLevel.update(x2 - Level.CELL_SIZE * 5, y2 - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
 		}
 	}

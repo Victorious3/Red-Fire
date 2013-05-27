@@ -80,7 +80,7 @@ public class GuiMain extends Gui implements IGButton
 		}
 		else if(name.equalsIgnoreCase("Editor"))
 		{
-			Editor.editor = new Editor();
+			Editor.main(new String[]{"internal"});
 		}
 		else if(name.equalsIgnoreCase("Quit"))
 		{

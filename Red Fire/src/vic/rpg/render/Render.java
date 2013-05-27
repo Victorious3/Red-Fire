@@ -14,6 +14,17 @@ import vic.rpg.utils.Utils;
 
 public class Render {
 	
+	@Override
+	protected Render clone()
+	{
+		try {
+			return (Render) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public BufferedImage img;
 	public Graphics2D g2d;
 	

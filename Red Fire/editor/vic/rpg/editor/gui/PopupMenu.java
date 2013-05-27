@@ -12,6 +12,7 @@ import javax.swing.JPopupMenu;
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.listener.Mouse;
+import vic.rpg.editor.listener.TableListener;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
@@ -118,7 +119,7 @@ public class PopupMenu implements ActionListener
 						if(p.x > maxX) maxX = p.x;
 						if(p.y > maxY) maxY = p.y;
 						
-						Editor.editor.level.setTile(id, p.x, p.y);			
+						Editor.editor.level.setTile(id, p.x, p.y, TableListener.tiles.get(id));			
 					}
 					Editor.editor.labelLevel.update(minX * Level.CELL_SIZE, minY * Level.CELL_SIZE, maxX * Level.CELL_SIZE, maxY * Level.CELL_SIZE);
 				}

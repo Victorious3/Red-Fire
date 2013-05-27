@@ -94,12 +94,7 @@ public class Item extends Render implements Cloneable
 	@Override
 	public Item clone()
 	{
-		try {
-			return (Item) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return (Item) super.clone();	
 	}
 
 	public Color getBgColor() 
