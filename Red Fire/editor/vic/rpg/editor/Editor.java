@@ -136,6 +136,7 @@ public class Editor
 
 		frame.setSize(1024, 720);
 		frame.setLocationRelativeTo(null);
+		frame.setTitle("Red Fire Level Editor");
 		
 		File[] files = Utils.getOrCreateFile(Utils.getAppdata() + "/scripts/").listFiles(new FilenameFilter(){
 			@Override

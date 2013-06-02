@@ -22,7 +22,7 @@ public class TileGrass extends Tile
 	@Override
 	public String getDescription() 
 	{
-		return "Just some standard grass.\n Data = 1 creates flowers!";
+		return "Just some standard grass. Data = 1 creates flowers!";
 	}
 
 	@Override
