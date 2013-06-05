@@ -10,16 +10,32 @@ public class Slot extends GControl implements Cloneable
 {		
 	public IGuiContainer gui;
 	public Item item = null;
-
+	public int sWidth = 1;
+	public int sHeight = 1;
+	public ItemFilter filter;
+	
 	public Slot(int xCoord, int yCoord, IGuiContainer gui) 
 	{
-		super(xCoord, yCoord, 30, 30);
+		this(xCoord, yCoord, gui, 1, 1);
+	}
+	
+	public Slot(int xCoord, int yCoord, IGuiContainer gui, int sWidth, int sHeight) 
+	{
+		super(xCoord, yCoord, 30 * sWidth, 30 * sHeight);
 		this.gui = gui;
+		this.sWidth = sWidth;
+		this.sHeight = sHeight;
 	}
 	
 	public Slot setItem(Item item)
 	{
 		this.item = item;	
+		return this;
+	}
+	
+	public Slot addFilter(ItemFilter filter)
+	{
+		this.filter = filter;
 		return this;
 	}
 
@@ -41,7 +57,7 @@ public class Slot extends GControl implements Cloneable
 		g2d.setColor(Color.black);
 		g2d.drawRect(xCoord, yCoord, width, height);
 		
-		if(mouseHovered)
+		if(mouseHovered && item != null)
 		{		
 			gui.isSlotHovered = true;
 		}
@@ -64,17 +80,19 @@ public class Slot extends GControl implements Cloneable
 			setItem(null);
 		}
 		else if(item == null && gui.currentSlot != null)
-		{
-			if(gui.currentSlot.item.gridWidth == 1 && gui.currentSlot.item.gridHeight == 1)
-			{
+		{			
+			if(gui.currentSlot.item.gridWidth == this.sWidth && gui.currentSlot.item.gridHeight == this.sHeight)
+			{				
+				if(filter != null){if(!filter.isItemValid(gui.currentSlot.item)) return;}
 				setItem(gui.currentSlot.item);
 				gui.currentSlot = null;
 			}		 
 		}
 		else if(item != null && gui.currentSlot != null)
 		{
-			if(gui.currentSlot.item.gridWidth == 1 && gui.currentSlot.item.gridHeight == 1)
+			if(gui.currentSlot.item.gridWidth == this.sWidth && gui.currentSlot.item.gridHeight == this.sHeight)
 			{	
+				if(filter != null){if(!filter.isItemValid(gui.currentSlot.item)) return;}
 				Item item = this.item;
 				setItem(gui.currentSlot.item);
 				gui.currentSlot.setItem(item);

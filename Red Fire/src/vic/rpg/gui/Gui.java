@@ -1,11 +1,13 @@
 package vic.rpg.gui;
 
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import vic.rpg.Game;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.GameRegistry;
 
@@ -20,6 +22,7 @@ public class Gui
 		{
 			currentGui = GuiIngame.gui;
 		}
+		Game.frame.setCursor(Cursor.getDefaultCursor());
 		currentGui.initGui();
 	}
 	

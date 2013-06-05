@@ -97,7 +97,7 @@ public class Inventory
 		for(int id : slotGrids.keySet())
 		{
 			SlotGrid temp = new SlotGrid(slotGrids.get(id), 0, 0, null);
-			if(temp.adItemToGrid(item))
+			if(temp.addItemToGrid(item))
 			{
 				add(id, temp.items);
 				return true;

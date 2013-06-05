@@ -91,7 +91,7 @@ public class Screen extends Render
 	
 	public void postRender(Graphics2D g2d)
 	{
-        if(Game.level != null) Game.level.drawLightMap(g2d);
+        //if(Game.level != null) Game.level.drawLightMap(g2d); //TODO Not really working....
         
 		if(Gui.currentGui != null)Gui.currentGui.render(g2d);    
 	}

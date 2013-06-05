@@ -216,7 +216,7 @@ public class SlotGrid extends GControl
 		return overlapsWith(gui.currentSlot.item, x, y) == null;
 	}
 	
-	public boolean adItemToGrid(Item item)
+	public boolean addItemToGrid(Item item)
 	{
 		for(int i = 0; i < gridWidth; i++)
 		{
