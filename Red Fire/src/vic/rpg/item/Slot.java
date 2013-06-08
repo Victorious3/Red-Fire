@@ -13,18 +13,30 @@ public class Slot extends GControl implements Cloneable
 	public int sWidth = 1;
 	public int sHeight = 1;
 	public ItemFilter filter;
+	public boolean acceptOtherSizes = false;
 	
 	public Slot(int xCoord, int yCoord, IGuiContainer gui) 
 	{
-		this(xCoord, yCoord, gui, 1, 1);
+		this(xCoord, yCoord, gui, 1, 1, false);
+	}
+	
+	public Slot(int xCoord, int yCoord, IGuiContainer gui, boolean acceptOtherSizes) 
+	{
+		this(xCoord, yCoord, gui, 1, 1, acceptOtherSizes);
 	}
 	
 	public Slot(int xCoord, int yCoord, IGuiContainer gui, int sWidth, int sHeight) 
+	{
+		this(xCoord, yCoord, gui, sWidth, sHeight, false);
+	}
+	
+	public Slot(int xCoord, int yCoord, IGuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
 	{
 		super(xCoord, yCoord, 30 * sWidth, 30 * sHeight);
 		this.gui = gui;
 		this.sWidth = sWidth;
 		this.sHeight = sHeight;
+		this.acceptOtherSizes = acceptOtherSizes;
 	}
 	
 	public Slot setItem(Item item)
@@ -50,9 +62,24 @@ public class Slot extends GControl implements Cloneable
 		g2d.setColor(new Color(112, 112, 112, 180));
 		if(item != null) g2d.setColor(item.getBgColor());
 		g2d.fillRect(xCoord, yCoord, width, height);
+		g2d.setColor(new Color(0, 0, 0, 50));
+		if(this.mouseHovered)
+		{
+			if(gui.currentSlot != null)
+			{
+				if(canBePlacedIn(gui.currentSlot.item))
+				{
+					g2d.fillRect(xCoord, yCoord, width, height);
+				}
+			}
+			else if(this.item != null)
+			{
+				g2d.fillRect(xCoord, yCoord, width, height);
+			}
+		}
 		
 		g2d.setColor(Color.white);
-		if(item != null) g2d.drawImage(item.img, null, xCoord, yCoord);
+		if(item != null) g2d.drawImage(item.img, null, xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2);
 		
 		g2d.setColor(Color.black);
 		g2d.drawRect(xCoord, yCoord, width, height);
@@ -80,24 +107,32 @@ public class Slot extends GControl implements Cloneable
 			setItem(null);
 		}
 		else if(item == null && gui.currentSlot != null)
-		{			
-			if(gui.currentSlot.item.gridWidth == this.sWidth && gui.currentSlot.item.gridHeight == this.sHeight)
-			{				
-				if(filter != null){if(!filter.isItemValid(gui.currentSlot.item)) return;}
+		{									
+			if(canBePlacedIn(gui.currentSlot.item))
+			{
 				setItem(gui.currentSlot.item);
 				gui.currentSlot = null;
-			}		 
+			}				 
 		}
 		else if(item != null && gui.currentSlot != null)
 		{
-			if(gui.currentSlot.item.gridWidth == this.sWidth && gui.currentSlot.item.gridHeight == this.sHeight)
+			if(canBePlacedIn(gui.currentSlot.item))
 			{	
-				if(filter != null){if(!filter.isItemValid(gui.currentSlot.item)) return;}
 				Item item = this.item;
 				setItem(gui.currentSlot.item);
 				gui.currentSlot.setItem(item);
 			}
 		}
+	}
+	
+	public boolean canBePlacedIn(Item item)
+	{
+		if(((item.gridWidth == this.sWidth && item.gridHeight == this.sHeight) && !acceptOtherSizes) || ((item.gridWidth <= this.sWidth && item.gridHeight <= this.sHeight) && acceptOtherSizes))
+		{	
+			if(filter != null){if(!filter.isItemValid(item)) return false;}
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

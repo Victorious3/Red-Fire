@@ -63,6 +63,29 @@ public class SlotGrid extends GControl
 			}
 		}
 		
+		if(mouseHovered)
+		{
+			Item it = overlapsWith(1, 1, (x - xCoord) / 30, (y - yCoord) / 30);
+			
+			if(gui.currentSlot != null)
+			{
+				int x1 = (x - xCoord) / 30;
+				int y1 = (y - yCoord) / 30;
+				
+				if(canBePlacedAt(gui.currentSlot.item, x1, y1))
+				{
+					g2d.setColor(new Color(0, 0, 0, 50));
+					g2d.fillRect(xCoord + x1 * 30, yCoord + y1 * 30, gui.currentSlot.item.gridWidth * 30, gui.currentSlot.item.gridHeight * 30);
+				}
+			}
+			else if(it != null)
+			{
+				gui.isSlotHovered = true;
+				g2d.setColor(new Color(0, 0, 0, 50));
+				g2d.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30);
+			}
+		}			
+		
 		g2d.setColor(Color.black);
 		for(int i = 0; i <= width; i += 30)
 		{
@@ -79,12 +102,7 @@ public class SlotGrid extends GControl
 			{
 				if(items[i][j] != null) g2d.drawImage(items[i][j].img, null, xCoord + i * 30, yCoord + j * 30);
 			}
-		}
-		
-		if(overlapsWith(1, 1, (x - xCoord) / 30, (y - yCoord) / 30) != null)
-		{
-			gui.isSlotHovered = true;	
-		}
+		}		
 	}
 
 	@Override
@@ -209,7 +227,7 @@ public class SlotGrid extends GControl
 	
 	public boolean canBePlacedAt(Item item, int x, int y)
 	{
-		if(x + item.gridWidth > gridWidth || y + item.gridHeight > gridHeight)
+		if(x + item.gridWidth > gridWidth || y + item.gridHeight > gridHeight || x < 0 || y < 0)
 		{
 			return false;
 		}

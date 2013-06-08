@@ -378,7 +378,9 @@ public class Level extends Render
 		{
 			for(int y = 0; y < height; y++)
 			{
-				CompoundTag tileTag = LevelRegistry.writeTileToNBT(LevelRegistry.tileRegistry.get(worldobjects[x][y][0]));
+				Tile t = LevelRegistry.tileRegistry.get(worldobjects[x][y][0]);
+				t.data = worldobjects[x][y][1];
+				CompoundTag tileTag = LevelRegistry.writeTileToNBT(t);
 				tileList.add(tileTag);
 			}
 		}
