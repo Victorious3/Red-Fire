@@ -3,11 +3,10 @@ package vic.rpg.gui;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import vic.rpg.Game;
 import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemFilter;
 import vic.rpg.item.ItemPeer;
-import vic.rpg.item.ItemShield;
-import vic.rpg.item.ItemSword;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.RenderRegistry;
@@ -35,21 +34,23 @@ public class GuiPlayer extends IGuiContainer
 		g2d.drawString("right Hand", 530, 100);
 		g2d.drawString("Armor", 620, 100);
 		g2d.drawString("left Hand", 700, 100);
-		g2d.drawString("Boots", 620, 210);
+		g2d.drawString("Boots", 620, 210);		
 	}
 
 	@Override
 	public void initGui() 
 	{
-		controlsList.add(new Slot(620, 20, this, 2, 2));
-		controlsList.add(new Slot(700, 50, this).addFilter(new ItemFilter.SimpleItemFilter(ItemApple.class)));
-		controlsList.add(new Slot(730, 50, this).addFilter(new ItemFilter.SimpleItemFilter(ItemPeer.class)));
-		controlsList.add(new Slot(540, 100, this, 2, 4, true));
-		controlsList.add(new Slot(620, 100, this, 2, 3));
-		controlsList.add(new Slot(700, 100, this, 2, 3, true));
-		controlsList.add(new Slot(620, 210, this, 1, 2));
-		controlsList.add(new Slot(650, 210, this, 1, 2));
+		setInventory(Game.thePlayer.getInventory());
 		
-		controlsList.add(new SlotGrid(400, 300, 12, 8, this).setItem(0, 2, new ItemSword()).setItem(1, 0, new ItemShield()).setItem(4, 0, new ItemApple()).setItem(4, 1, new ItemPeer()));
+		controlsList.add(new Slot(620, 20, 1, this, 2, 2));
+		controlsList.add(new Slot(700, 50, 2, this).addFilter(new ItemFilter.SimpleItemFilter(ItemApple.class)));
+		controlsList.add(new Slot(730, 50, 3, this).addFilter(new ItemFilter.SimpleItemFilter(ItemPeer.class)));
+		controlsList.add(new Slot(540, 100, 4, this, 2, 4, true));
+		controlsList.add(new Slot(620, 100, 5, this, 2, 3));
+		controlsList.add(new Slot(700, 100, 6, this, 2, 3, true));
+		controlsList.add(new Slot(620, 210, 7, this, 1, 2));
+		controlsList.add(new Slot(650, 210, 8, this, 1, 2));
+		
+		controlsList.add(new SlotGrid(400, 300, 12, 8, 0, this));
 	}	
 }

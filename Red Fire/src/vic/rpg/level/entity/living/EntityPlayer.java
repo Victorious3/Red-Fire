@@ -8,8 +8,8 @@ import org.jnbt.CompoundTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
-import vic.rpg.item.Item;
 import vic.rpg.item.ItemApple;
+import vic.rpg.item.ItemSword;
 import vic.rpg.level.Editable;
 import vic.rpg.render.ImageBuffer;
 import vic.rpg.utils.Utils;
@@ -27,8 +27,18 @@ public class EntityPlayer extends EntityLiving
 		super(33, 32);
 		this.zLevel = -1;
 		
-		inventory.add(0, new Item[15][10]);
-		inventory.addToInventory(new ItemApple());
+		inventory.add(0, 12, 8);
+		inventory.add(1);
+		inventory.add(2);
+		inventory.add(3);
+		inventory.add(4);
+		inventory.add(5);
+		inventory.add(6);
+		inventory.add(7);
+		inventory.add(8);
+		
+		inventory.setStack(1, new ItemApple());
+		inventory.setStack(0, new ItemSword(), 0, 0);
 	}
 	
 	public static Image portrait = Utils.readImageFromJar("/vic/rpg/resources/character/portrait.png");

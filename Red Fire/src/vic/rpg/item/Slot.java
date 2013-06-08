@@ -14,34 +14,38 @@ public class Slot extends GControl implements Cloneable
 	public int sHeight = 1;
 	public ItemFilter filter;
 	public boolean acceptOtherSizes = false;
+	public int id;
 	
-	public Slot(int xCoord, int yCoord, IGuiContainer gui) 
+	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui) 
 	{
-		this(xCoord, yCoord, gui, 1, 1, false);
+		this(xCoord, yCoord, id, gui, 1, 1, false);
 	}
 	
-	public Slot(int xCoord, int yCoord, IGuiContainer gui, boolean acceptOtherSizes) 
+	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, boolean acceptOtherSizes) 
 	{
-		this(xCoord, yCoord, gui, 1, 1, acceptOtherSizes);
+		this(xCoord, yCoord, id, gui, 1, 1, acceptOtherSizes);
 	}
 	
-	public Slot(int xCoord, int yCoord, IGuiContainer gui, int sWidth, int sHeight) 
+	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, int sWidth, int sHeight) 
 	{
-		this(xCoord, yCoord, gui, sWidth, sHeight, false);
+		this(xCoord, yCoord, id, gui, sWidth, sHeight, false);
 	}
 	
-	public Slot(int xCoord, int yCoord, IGuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
+	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
 	{
 		super(xCoord, yCoord, 30 * sWidth, 30 * sHeight);
 		this.gui = gui;
 		this.sWidth = sWidth;
 		this.sHeight = sHeight;
 		this.acceptOtherSizes = acceptOtherSizes;
+		this.id = id;
+		this.item = gui.inventory.getItem(id);
 	}
 	
 	public Slot setItem(Item item)
 	{
-		this.item = item;	
+		this.item = item;
+		gui.inventory.setStack(id, item);
 		return this;
 	}
 	

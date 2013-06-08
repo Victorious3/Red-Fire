@@ -6,11 +6,13 @@ import java.awt.image.RescaleOp;
 
 import vic.rpg.Game;
 import vic.rpg.item.Slot;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
 
 public class IGuiContainer extends Gui 
 {
 	public boolean isSlotHovered = false;
+	public Inventory inventory;
 	
 	@Override
 	public void render(Graphics2D g2d) 
@@ -24,7 +26,7 @@ public class IGuiContainer extends Gui
 		
 		if(currentSlot != null) g2d.drawImage(currentSlot.item.img, new RescaleOp(new float[]{1.0f, 1.0f, 1.0f, 0.8f}, new float[]{0f, 0f, 0f, -20f}, null), GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15);
 	}
-
+	
 	public IGuiContainer(boolean pauseGame, boolean overridesEsc) 
 	{
 		super(pauseGame, overridesEsc);
@@ -33,6 +35,11 @@ public class IGuiContainer extends Gui
 	public IGuiContainer(boolean pauseGame) 
 	{
 		super(pauseGame);
+	}
+	
+	public void setInventory(Inventory inventory)
+	{
+		this.inventory = inventory;
 	}
 	
 	public Slot currentSlot;

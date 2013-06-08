@@ -8,6 +8,7 @@ import org.jnbt.CompoundTag;
 import vic.rpg.item.Item;
 import vic.rpg.item.SlotGrid;
 
+//TODO Messy code!!!
 public class Inventory 
 {
 	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();
@@ -28,45 +29,46 @@ public class Inventory
 		slots.put(id, null);
 	}
 	
-	public void add(int id, Item[][] items)
+	public void addItems(int id, Item[][] items)
 	{
 		slotGrids.put(id, items);
 	}
 	
-	public void add(int id, Item item)
+	public void addItem(int id, Item item)
 	{
 		slots.put(id, item);
 	}
 
-	public ArrayList<Item[][]> getAllGrids()
+	public ArrayList<Item[][]> getAllItemGrids()
 	{
 		return new ArrayList<Item[][]>(slotGrids.values());
 	}
 	
-	public ArrayList<Item> getAllSlots()
+	public ArrayList<Item> getAllItems()
 	{
 		return new ArrayList<Item>(slots.values());
 	}
 	
-	public Item[][] getGrid(int id)
+	public Item[][] getItemGrid(int id)
 	{
 		return slotGrids.get(id);
 	}
 	
-	public Item getSlot(int id)
+	public Item getItem(int id)
 	{
 		return slots.get(id);
 	}
 	
 	public boolean setStack(int id, Item item, int xCoord, int yCoord)
 	{
-		Item[][] grid = getGrid(id);
+		Item[][] grid = getItemGrid(id);
 		
-		SlotGrid temp = new SlotGrid(grid, 0, 0, null);
+		SlotGrid temp = new SlotGrid(grid, 0, 0, -2, null);
 		
-		if(temp.setItem2(xCoord, yCoord, item))
+		if(temp.canBePlacedAt(item, xCoord, yCoord))
 		{
-			add(id, temp.items.clone());
+			temp.items[xCoord][yCoord] = item;
+			addItems(id, temp.items.clone());
 			temp = null;
 			return true;
 		}
@@ -75,31 +77,31 @@ public class Inventory
 	}
 	
 	public boolean setStack(int id, Item item)
+	{		
+		addItem(id, item);
+		return true;
+	}
+	
+	public void setStack(int id, Item[][] items) 
 	{
-		if(item.gridWidth == 1 && item.gridHeight == 1)
-		{
-			add(id, item);
-			return true;
-		}
-		
-		return false;
+		slotGrids.put(id, items);
 	}
 	
 	public boolean addToInventory(Item item)
-	{
+	{	
+		for(int id : slotGrids.keySet())
+		{
+			SlotGrid temp = new SlotGrid(slotGrids.get(id), 0, 0, -2, null);
+			if(temp.addItemToGrid(item))
+			{
+				addItems(id, temp.items);
+				return true;
+			}
+		}
 		for(int id : slots.keySet())
 		{
 			if(setStack(id, item))
 			{
-				return true;
-			}
-		}
-		for(int id : slotGrids.keySet())
-		{
-			SlotGrid temp = new SlotGrid(slotGrids.get(id), 0, 0, null);
-			if(temp.addItemToGrid(item))
-			{
-				add(id, temp.items);
 				return true;
 			}
 		}
@@ -114,6 +116,5 @@ public class Inventory
 	public CompoundTag writeToNBT(CompoundTag tag)
 	{
 		return tag;		
-	}
-	
+	}		
 }

@@ -66,6 +66,7 @@ public class EntityLiving extends Entity
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
 		this.rotation = (int) map.get("rotation").getValue();
+		inventory.readFromNBT(tag);
 	}
 
 	@Override
@@ -77,7 +78,11 @@ public class EntityLiving extends Entity
 		Map<String, Tag> map2 = new HashMap<String, Tag>();
 		map2.putAll(map);		
 		map2.put("rotation", rotation);
-		return new CompoundTag(tag.getName(), map2);
+		
+		tag = new CompoundTag(tag.getName(), map2);
+		tag = inventory.writeToNBT(tag);
+		
+		return tag;
 	}
 
 	public void setY(int y)

@@ -13,21 +13,23 @@ public class SlotGrid extends GControl
 	
 	public int gridWidth = 1;
 	public int gridHeight = 1;
+	public int id;
 	
 	public Item[][] items;
 	
-	public SlotGrid(int xCoord, int yCoord, int width, int height, IGuiContainer gui) 
+	public SlotGrid(int xCoord, int yCoord, int width, int height, int id, IGuiContainer gui) 
 	{
 		super(xCoord, yCoord, width * 30, height * 30);
 		
 		this.gridWidth = width;
 		this.gridHeight = height;
 		this.gui = gui;
+		this.id = id;
 		
-		this.items = new Item[width][height];
+		this.items = gui.inventory.getItemGrid(id);
 	}
 	
-	public SlotGrid(Item[][] items, int xCoord, int yCoord, IGuiContainer gui)
+	public SlotGrid(Item[][] items, int xCoord, int yCoord, int id, IGuiContainer gui)
 	{
 		super(xCoord, yCoord, items.length * 30, items[0].length * 30);
 		
@@ -36,6 +38,7 @@ public class SlotGrid extends GControl
 		
 		this.items = items;
 		this.gui = gui;
+		this.id = id;
 	}
 
 	@Override
@@ -123,7 +126,7 @@ public class SlotGrid extends GControl
 		
 		if(gui.currentSlot == null && item != null)
 		{
-			gui.currentSlot = new Slot(x, y, gui);
+			gui.currentSlot = new Slot(x, y, -1, gui);
 			gui.currentSlot.item = item.clone();
 			setItem(item.xCoord, item.yCoord, null);
 		}
@@ -140,10 +143,11 @@ public class SlotGrid extends GControl
 	public SlotGrid setItem(int x, int y, Item item) 
 	{
 		items[x][y] = item;
+		gui.inventory.setStack(id, item, x, y);
 		return this;
 	}
 	
-	public boolean setItem2(int x, int y, Item item) 
+	public boolean setItemAndConfirm(int x, int y, Item item) 
 	{
 		if(overlapsWith(item, x, y) == null)
 		{
@@ -151,6 +155,13 @@ public class SlotGrid extends GControl
 			return true;
 		}
 		return false;
+	}
+	
+	public SlotGrid setItems(Item[][] items) 
+	{
+		this.items = items;
+		gui.inventory.setStack(id, items);
+		return this;
 	}
 	
 	@Override
@@ -227,11 +238,12 @@ public class SlotGrid extends GControl
 	
 	public boolean canBePlacedAt(Item item, int x, int y)
 	{
+		if(item == null) return true;
 		if(x + item.gridWidth > gridWidth || y + item.gridHeight > gridHeight || x < 0 || y < 0)
 		{
 			return false;
 		}
-		return overlapsWith(gui.currentSlot.item, x, y) == null;
+		return overlapsWith(item, x, y) == null;
 	}
 	
 	public boolean addItemToGrid(Item item)
