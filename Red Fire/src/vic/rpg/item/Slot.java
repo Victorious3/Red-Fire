@@ -45,7 +45,7 @@ public class Slot extends GControl implements Cloneable
 	public Slot setItem(Item item)
 	{
 		this.item = item;
-		gui.inventory.setStack(id, item);
+		gui.inventory.setItem(id, item);
 		return this;
 	}
 	

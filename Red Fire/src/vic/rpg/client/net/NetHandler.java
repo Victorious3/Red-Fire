@@ -41,7 +41,7 @@ public class NetHandler extends Thread
 			out.flush();		
 			this.start();
 			Game.packetHandler = new PacketHandlerSP();
-			System.out.println("Sucsessfully connected to: " + adress + ":" + port + " as player " + username);
+			System.out.println("Succsessfully connected to: " + adress + ":" + port + " as player " + username);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,8 +97,7 @@ public class NetHandler extends Thread
 			{
 				if(this.socket.isConnected())
 				{
-					Game.packetHandler.addPacketToSendingQueue(new Packet0Update(-1));
-					
+					Game.packetHandler.addPacketToSendingQueue(new Packet0Update(-1));				
 					Thread.sleep(10);
 				}
 				this.socket.close();

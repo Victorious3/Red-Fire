@@ -7,6 +7,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.PrintStream;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -28,6 +29,9 @@ public class ServerGui
 	public static JScrollPane scrollPane;
 	public static JTextField textField;
 
+	@SuppressWarnings("unused")
+	private static final LinkedBlockingQueue<Character> sb = new LinkedBlockingQueue<Character>();
+	
 	public static void setup()
 	{
 		try {
@@ -75,6 +79,39 @@ public class ServerGui
 		});
 		
 		frame.setTitle("-~/RedFire\\~- Server " + GameRegistry.VERSION);
+
+		/*textField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) 
+			{
+				sb.offer(e.getKeyChar());
+			}
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) 
+			{
+				if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					
+				}
+			}
+		  
+		});
+
+		System.setIn(new BufferedInputStream(new InputStream(){
+			@Override
+			public int read() throws IOException
+			{
+				int c = -1;
+				try {
+					c = sb.take();            
+				} catch(InterruptedException ie) {} 
+				return c;           
+			}
+		}));*/
 		
 		System.setOut(new PrintStream(System.out) 
 		{

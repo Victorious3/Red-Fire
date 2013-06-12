@@ -75,7 +75,7 @@ public class SlotGrid extends GControl
 				int x1 = (x - xCoord) / 30;
 				int y1 = (y - yCoord) / 30;
 				
-				if(canBePlacedAt(gui.currentSlot.item, x1, y1))
+				if(canBePlacedAt(x1, y1, gui.currentSlot.item))
 				{
 					g2d.setColor(new Color(0, 0, 0, 50));
 					g2d.fillRect(xCoord + x1 * 30, yCoord + y1 * 30, gui.currentSlot.item.gridWidth * 30, gui.currentSlot.item.gridHeight * 30);
@@ -132,7 +132,7 @@ public class SlotGrid extends GControl
 		}
 		else if(gui.currentSlot != null)
 		{
-			if(canBePlacedAt(gui.currentSlot.item, x, y))
+			if(canBePlacedAt(x, y, gui.currentSlot.item))
 			{
 				setItem(x, y, gui.currentSlot.item);
 				gui.currentSlot = null; 
@@ -143,13 +143,13 @@ public class SlotGrid extends GControl
 	public SlotGrid setItem(int x, int y, Item item) 
 	{
 		items[x][y] = item;
-		gui.inventory.setStack(id, item, x, y);
+		if(gui != null) gui.inventory.setItem(id, item, x, y);
 		return this;
 	}
 	
 	public boolean setItemAndConfirm(int x, int y, Item item) 
 	{
-		if(overlapsWith(item, x, y) == null)
+		if(canBePlacedAt(x, y, item))
 		{
 			setItem(x, y, item);
 			return true;
@@ -160,7 +160,7 @@ public class SlotGrid extends GControl
 	public SlotGrid setItems(Item[][] items) 
 	{
 		this.items = items;
-		gui.inventory.setStack(id, items);
+		if(gui != null) gui.inventory.setItem(id, items);
 		return this;
 	}
 	
@@ -236,7 +236,7 @@ public class SlotGrid extends GControl
 		return overlapsWith(item1.gridWidth, item1.gridHeight, x1, y1, item2.gridWidth, item2.gridHeight, x2, y2);
 	}
 	
-	public boolean canBePlacedAt(Item item, int x, int y)
+	public boolean canBePlacedAt(int x, int y, Item item)
 	{
 		if(item == null) return true;
 		if(x + item.gridWidth > gridWidth || y + item.gridHeight > gridHeight || x < 0 || y < 0)
@@ -252,9 +252,8 @@ public class SlotGrid extends GControl
 		{
 			for(int j = 0; j < gridHeight; j++)
 			{
-				if(overlapsWith(item, i, j) == null)
+				if(setItemAndConfirm(i, j, item))
 				{
-					setItem(i, j, item);
 					return true;
 				}
 			}

@@ -15,7 +15,7 @@ import vic.rpg.sound.SoundPlayer;
 
 public class GuiMain extends Gui implements IGButton 
 {
-	private static Gif bgimage = new Gif("/vic/rpg/resources/redfire.gif", 5);
+	public static Gif bgimage = new Gif("/vic/rpg/resources/redfire.gif", 5);
 	
 	public GuiMain() 
 	{
@@ -40,11 +40,11 @@ public class GuiMain extends Gui implements IGButton
 		SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/fire.wav");
 		
 		super.initGui();
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 10, 240, 40, this, "Singleplayer"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 40, 240, 40, this, "Multiplayer"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 90, 240, 40, this, "Options"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 140, 240, 40, this, "Editor"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 190, 240, 40, this, "Quit"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, "Singleplayer"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 10, 240, 40, this, "Multiplayer"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 60, 240, 40, this, "Options"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 110, 240, 40, this, "Editor"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 160, 240, 40, this, "Quit"));
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class GuiMain extends Gui implements IGButton
 	{
 		if(name.equalsIgnoreCase("Singleplayer"))
 		{
-			Server.main(new String[]{"29598", "splayer"});
+			Server.main(new String[]{"-splayer"});
 			Server.MAX_CONNECTIONS = 1;
 			
 			try {
@@ -67,6 +67,7 @@ public class GuiMain extends Gui implements IGButton
 			if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))
 			{
 				Gui.setGui(null);
+				
 				SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
 			}
 		}

@@ -81,7 +81,7 @@ public class Level extends Render
 	
 	public void onMouseClicked(int x, int y, int mouseEvent)
 	{
-		Entity ent = intersect(x - Screen.xOffset, y - Screen.yOffset); 
+		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
 		if(ent != null)
 		{
 			ent.onMouseClicked(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.thePlayer, mouseEvent);

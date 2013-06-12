@@ -26,6 +26,7 @@ public class EntityLiving extends Entity
 	public Image[] sprites;
 	
 	public boolean isWalking = false;
+	public int speed = 2;
 	
 	public int nextX;
 	public int nextY;
@@ -101,23 +102,24 @@ public class EntityLiving extends Entity
 	
 	public void setRotation(int rotation)
 	{
-		this.setSprite(sprites[rotation]);
+		if(sprites != null) this.setSprite(sprites[rotation]);
 		this.rotation = rotation;
 	}
 	
 	public void tick()
 	{
-		if(walk)
+		if(walk && Utils.getSide().equals(Utils.SIDE_SERVER))
 		{
 			isWalking = true;
 			
-			if(nextX < xCoord) setX(xCoord - 1);
-			if(nextX > xCoord) setX(xCoord + 1);
-			if(nextY < yCoord) setY(yCoord - 1);
-			if(nextY > yCoord) setY(yCoord + 1);
+			if(nextX < xCoord) setX(xCoord - speed);
+			if(nextX > xCoord) setX(xCoord + speed);
+			if(nextY < yCoord) setY(yCoord - speed);
+			if(nextY > yCoord) setY(yCoord + speed);
 			
-			if(nextX == xCoord && nextY == yCoord)
+			if(nextX > xCoord - speed && nextX < xCoord + speed && nextY > yCoord - speed && nextY < yCoord + speed)
 			{
+				xCoord = nextX; yCoord = nextY;
 				walk = false; isWalking = false;
 			}
 			

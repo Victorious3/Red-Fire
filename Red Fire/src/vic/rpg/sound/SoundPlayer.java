@@ -37,7 +37,7 @@ public class SoundPlayer
 		
 		try {
 			as1 = AudioSystem.getAudioInputStream(new BufferedInputStream(Utils.getStreamFromString(path)));		
-	        
+			
 			clip = AudioSystem.getClip();   
         	clip.open(as1);
         	clip.loop(Clip.LOOP_CONTINUOUSLY);

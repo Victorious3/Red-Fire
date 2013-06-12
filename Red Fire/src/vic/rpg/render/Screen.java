@@ -41,8 +41,7 @@ public class Screen extends Render
 				{				
 					Game.thePlayer.xCoord -= 2;
 					if(!Game.thePlayer.collides(Game.level))
-					{
-						Game.thePlayer.setRotation(1);
+					{						
 						Game.thePlayer.isWalking = true;
 						Screen.xOffset += 2;
 						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
@@ -54,7 +53,6 @@ public class Screen extends Render
 					Game.thePlayer.yCoord -= 2;
 					if(!Game.thePlayer.collides(Game.level))
 					{
-						Game.thePlayer.setRotation(3);
 						Game.thePlayer.isWalking = true;
 						Screen.yOffset += 2;
 						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
@@ -66,7 +64,6 @@ public class Screen extends Render
 					Game.thePlayer.yCoord += 2;
 					if(!Game.thePlayer.collides(Game.level))
 					{
-						Game.thePlayer.setRotation(0);
 						Game.thePlayer.isWalking = true;
 						Screen.yOffset -= 2;
 						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
@@ -77,13 +74,29 @@ public class Screen extends Render
 				{					
 					Game.thePlayer.xCoord += 2;
 					if(!Game.thePlayer.collides(Game.level))
-					{
-						Game.thePlayer.setRotation(2);
+					{				
 						Game.thePlayer.isWalking = true;
 						Screen.xOffset -= 2;
 						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
 					}
 					else Game.thePlayer.xCoord -= 2; 
+				}
+				
+				if(GameRegistry.key.APressed) 
+				{
+					Game.thePlayer.setRotation(1);
+				}
+				else if(GameRegistry.key.WPressed) 
+				{
+					Game.thePlayer.setRotation(3);
+				}
+				else if(GameRegistry.key.SPressed) 
+				{
+					Game.thePlayer.setRotation(0);
+				}
+				else if(GameRegistry.key.DPressed) 
+				{
+					Game.thePlayer.setRotation(2);
 				}
 			}
 		}

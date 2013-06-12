@@ -37,7 +37,5 @@ public class Packet0Update extends Packet
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	
+	}		
 }

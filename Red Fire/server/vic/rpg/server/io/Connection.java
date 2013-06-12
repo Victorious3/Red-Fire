@@ -21,7 +21,7 @@ public class Connection extends Thread
     public PacketHandlerMP packetHandler = new PacketHandlerMP(this);
     
     public String player;
-  
+    
     public Connection(Socket socket) 
     {
     	this.socket = socket;
@@ -46,17 +46,18 @@ public class Connection extends Thread
 		{
 			if(isTimeout())
 			{
-				exc = " Connection Timeout";
+				exc = "Connection Timeout";
 				connected = false;
 			}
 			readData();
+			
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		Server.server.delConnection(this, new RuntimeException(exc));
+		Server.server.delConnection(this, new Exception(exc));
 	}
 	
 	@Override
@@ -90,21 +91,18 @@ public class Connection extends Thread
 	{		
 		try {
 	    	if (available())
-	    	{
-	    		if ((in.available()) > 1) 
-	    		{	
-					time = new Date().getTime();
-	    			
-					int id = in.readByte();				
-					Packet p = Packet.getPacket(id);
-					p.readData(in);
-	    			packetHandler.addPacketToQueue(p);
-	    		}
+	    	{  			
+				time = new Date().getTime();
+				
+				int id = in.readByte();				
+				Packet p = Packet.getPacket(id);
+				p.readData(in);
+    			packetHandler.addPacketToQueue(p);	    		
 	    	}
 	    }
 	    catch (Exception e)
 	    {
-	    	Server.server.delConnection(this , e);
+	    	Server.server.delConnection(this, e);
 	    }
 	}
   

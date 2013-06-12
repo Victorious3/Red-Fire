@@ -2,6 +2,7 @@ package vic.rpg.server;
 
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.BindException;
@@ -9,7 +10,9 @@ import java.net.ServerSocket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
+import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.LevelRegistry;
@@ -20,6 +23,7 @@ import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet1ConnectionRefused;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
+import vic.rpg.utils.Utils;
 
 public class Server extends Thread 
 {	
@@ -38,35 +42,89 @@ public class Server extends Thread
 	
 	public static void main(final String[] args)
 	{			
-		if (!GraphicsEnvironment.isHeadless())
-		{
-			if(args.length > 1)
+		List<String> argList = Arrays.asList(args);
+		if(!GraphicsEnvironment.isHeadless())
+		{		
+			if(!argList.contains("-nogui") && !argList.contains("-splayer"))
 			{
-				if(args[1] != "nogui" && args[1] != "splayer")
-				{
-					ServerGui.setup();
-				}
-				if(args[1] == "splayer") isSinglePlayer = true; 
+				ServerGui.setup();
 			}
-			else ServerGui.setup();
-	    } 
 				
-		Thread thr = new Thread()
+			if(argList.contains("-splayer")) isSinglePlayer = true; 		
+	    }
+		if(argList.indexOf("-file") != -1)
 		{
+			String file = argList.get(argList.indexOf("-file") + 1);			
+			if(file == null)
+			{
+				System.err.println("Parameter -file <Path> not given!");
+				return;
+			}
+			File f = new File(file);
+			if(!f.exists())
+			{
+				System.err.println("File " + file + "doesn't exist!");
+				return;
+			}
+			try
+			{
+				ServerLoop.level = Level.readFromFile(f);
+				ServerLoop.file = f;
+			}
+			catch(Exception e)
+			{
+				System.err.println("File " + file + "in not valid!");
+				return;
+			}
+		}
+		
+		final int port;
+		boolean succsess = true;
+		
+		if(argList.get(0) != null)
+		{		
+			try
+			{
+				Integer.parseInt(argList.get(0));
+			} catch(NumberFormatException e) {
+				succsess = false;
+			}
+		}
+		else
+		{
+			succsess = false;
+		}
+		
+		if(succsess)
+		{
+			port = Integer.parseInt(argList.get(0));
+		}
+		else
+		{
+			port = 29598;
+		}
+		
+		Thread thr = new Thread()
+		{		
 			@Override
 			public void run() 
 			{
 				try {
 					System.setProperty("file.encoding", "UTF-8");
 					
-					System.out.println("Starting -~/RedFire\\~- Server on Port " + args[0]);
+					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
 					System.out.println("___________________________________________________");
 							
 					server = new Server();
-					server.serverSocket = new ServerSocket(Integer.parseInt(args[0]));
+					server.serverSocket = new ServerSocket(port);
 					server.listener = new Listener(new Server());
 					server.inputHandler = new InputHandler();
 					server.serverLoop = new ServerLoop();
+					if(ServerLoop.level == null)
+					{
+						ServerLoop.level = new Level(100, 100, "New Level");
+						ServerLoop.level.populate();
+					}
 					
 					System.out.println("Starting Thread: Server");
 					server.listener.start();
@@ -166,6 +224,14 @@ public class Server extends Thread
 			c.finalize();
 		}
 		this.isRunning = false;
+		if(ServerLoop.file != null)
+		{
+			ServerLoop.level.writeToFile(ServerLoop.file);
+		}
+		else
+		{
+			ServerLoop.level.writeToFile(Utils.getOrCreateFile(Utils.getAppdata() + "/saves/" + ServerLoop.level.name + ".lvl"));
+		}
 		
 		if(ServerGui.frame != null)
 		{

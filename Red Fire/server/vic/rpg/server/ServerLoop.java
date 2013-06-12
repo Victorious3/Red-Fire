@@ -1,5 +1,7 @@
 package vic.rpg.server;
 
+import java.io.File;
+
 import vic.rpg.level.Level;
 
 public class ServerLoop implements Runnable
@@ -7,14 +9,12 @@ public class ServerLoop implements Runnable
 	private Thread thread;
 	public boolean isRunning = false;
 	public static Level level;
+	public static File file;
 	
 	public ServerLoop()
 	{
 		thread = new Thread(this);		
-		thread.start();
-		
-		level = new Level(100, 100, "Test level");
-		level.populate();
+		thread.start();	
 	}
 	
 	private void tick() 

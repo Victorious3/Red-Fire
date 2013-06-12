@@ -46,4 +46,6 @@ public class Packet implements Cloneable {
 	{
 		return packetRegistry.get(id).clone();
 	}
+	
+	public void handlePacket(int side){}
 }

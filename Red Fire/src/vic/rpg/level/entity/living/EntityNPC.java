@@ -9,6 +9,7 @@ public class EntityNPC extends EntityLiving
 	public EntityNPC() 
 	{
 		super(33, 32);
+		this.zLevel = -1;
 	}
 
 	@Override
@@ -24,7 +25,7 @@ public class EntityNPC extends EntityLiving
 			EntityPlayer[] player = new EntityPlayer[ServerLoop.level.playerList.values().size()];
 			player = ServerLoop.level.playerList.values().toArray(player);
 //			
-			if(player.length > 0) walkTo(player[0].xCoord - 35, player[0].yCoord);
+			if(player.length > 0) walkTo(player[0].xCoord - 70, player[0].yCoord);
 		}
 	}
 

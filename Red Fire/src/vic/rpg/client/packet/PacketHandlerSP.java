@@ -8,6 +8,7 @@ import vic.rpg.Game;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.Screen;
 import vic.rpg.server.packet.Packet;
@@ -99,12 +100,13 @@ public class PacketHandlerSP extends Thread
 		{
 			if(Game.level != null && Game.thePlayer != null)
 			{
-				Entity e = Game.level.entities.get(((Packet9EntityMoving)p).uniqueUUID);
+				EntityLiving e = (EntityLiving) Game.level.entities.get(((Packet9EntityMoving)p).uniqueUUID);
 				
 				if(e.uniqueUUID != Game.thePlayer.uniqueUUID)
 				{
 					e.xCoord = ((Packet9EntityMoving)p).xCoord;
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
+					e.setRotation(((Packet9EntityMoving)p).rotation);
 					Game.level.entities.put(e.uniqueUUID, e);
 				}
 			}
