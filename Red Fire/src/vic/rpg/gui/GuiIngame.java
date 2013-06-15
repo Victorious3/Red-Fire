@@ -15,8 +15,8 @@ public class GuiIngame extends Gui
 {
 	public GTextField chatField = new GTextField(10, Game.HEIGHT - 60, Game.WIDTH - 35, 20, 120, false);
 	
-	public ArrayList<String> chatValues = new ArrayList<String>();
-	public int MAX_CHATLINES = 10;
+	private ArrayList<String> chatValues = new ArrayList<String>();
+	private int MAX_CHATLINES = 10;
 	
 	public static GuiIngame gui = new GuiIngame();
 	public static EntityLiving focusedEntity = null;
@@ -53,7 +53,7 @@ public class GuiIngame extends Gui
 			{
 				chatField.isVisible = true;
 				Game.thePlayer.isWalkingBlocked = true;
-				Game.thePlayer.isWalking = false;
+				Game.thePlayer.setWalking(false);
 			}
 		}
 	}

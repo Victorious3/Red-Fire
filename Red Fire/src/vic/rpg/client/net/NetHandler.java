@@ -86,7 +86,7 @@ public class NetHandler extends Thread
 		    	e.printStackTrace();
 		    	this.close();
 		    }
-		}
+		}		
 	}
 	
 	public void close()
@@ -98,7 +98,6 @@ public class NetHandler extends Thread
 				if(this.socket.isConnected())
 				{
 					Game.packetHandler.addPacketToSendingQueue(new Packet0Update(-1));				
-					Thread.sleep(10);
 				}
 				this.socket.close();
 			}

@@ -29,13 +29,12 @@ import org.jnbt.Tag;
 import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.LevelRegistry;
-import vic.rpg.render.Render;
 import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.utils.Utils;
 
-public class Level extends Render
+public class Level
 {
 	public int width;
 	public int height;
@@ -57,7 +56,6 @@ public class Level extends Render
 	
 	public Level(int width, int height, String name) 
 	{	
-		super(width * CELL_SIZE, height * CELL_SIZE);
 		this.width = width;
 		this.height = height;
 		this.name = name;
@@ -86,6 +84,16 @@ public class Level extends Render
 		{
 			ent.onMouseClicked(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.thePlayer, mouseEvent);
 		}
+	}
+	
+	public int getWidth()
+	{
+		return width * CELL_SIZE;
+	}
+	
+	public int getHeight()
+	{
+		return height * CELL_SIZE;
 	}
 	
 	public void onKeyPressed(KeyEvent key)
@@ -141,14 +149,12 @@ public class Level extends Render
 		}
 	}
 	
-	@Override
 	public void render(Graphics2D g2d) 
 	{
-		super.render(g2d);
-		render(g2d, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT);
+		render(g2d, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT, -Screen.xOffset, -Screen.yOffset);
 	}
 
-	public void render(Graphics2D g2d, int xOffset, int yOffset, int width, int height)
+	public void render(Graphics2D g2d, int xOffset, int yOffset, int width, int height, int xOffset2, int yOffset2)
 	{
 		for(int x = 0; x < this.width; x++)
 		{
@@ -156,7 +162,7 @@ public class Level extends Render
 			{
 				if(x * CELL_SIZE >= xOffset - CELL_SIZE && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE && y * CELL_SIZE <= yOffset + height)
 				{
-					draw(LevelRegistry.tileRegistry.get(worldobjects[x][y][0]).getRender(x, y, worldobjects[x][y][1]), x * CELL_SIZE, y * CELL_SIZE);
+					g2d.drawImage(LevelRegistry.tileRegistry.get(worldobjects[x][y][0]).getRender(x, y, worldobjects[x][y][1]).img, x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, null);
 				}				
 			}
 		}
@@ -166,7 +172,7 @@ public class Level extends Render
 			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
 			{
 				e.render(g2d);
-				draw(e, e.xCoord, e.yCoord);
+				g2d.drawImage(e.img, e.xCoord - xOffset2, e.yCoord - yOffset2, null);
 			}
 		}
 	}

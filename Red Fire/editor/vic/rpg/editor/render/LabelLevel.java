@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.Vector;
 
@@ -29,6 +30,8 @@ public class LabelLevel extends JLabel
 	private int width = 0;
 	private int height = 0;
 	
+	private BufferedImage img;
+	
 	@Override
 	public void paintComponent(Graphics g) 
 	{		
@@ -40,14 +43,14 @@ public class LabelLevel extends JLabel
 		
 		if(needsUpdate == 1 && Editor.editor.level != null)
 		{
-			Editor.editor.level.render(g2d, 0, 0, Editor.editor.level.getWidth(), Editor.editor.level.getHeight());
+			Editor.editor.level.render((Graphics2D)img.getGraphics(), 0, 0, Editor.editor.level.getWidth(), Editor.editor.level.getHeight(), 0, 0);
 		}
 		if(needsUpdate == 2 && Editor.editor.level != null)
 		{
-			Editor.editor.level.render(g2d, offX, offY, width, height);
+			Editor.editor.level.render((Graphics2D)img.getGraphics(), offX, offY, width, height, 0, 0);
 		}
 		
-		if(Editor.editor.level != null) g2d.drawImage(Editor.editor.level.img, 0, 0, null);
+		g2d.drawImage(img, 0, 0, null);
 		
 		if(Mouse.selectedEntities != null)
 		{
@@ -123,6 +126,8 @@ public class LabelLevel extends JLabel
 	
 	public void setLevel(Level level)
 	{
+		img = new BufferedImage(level.getWidth(), level.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		
 		Editor.editor.level = level;
 		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.editor.tableLevel.getModel();

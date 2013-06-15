@@ -14,12 +14,14 @@ public class ImageBuffer {
 
 	private static HashMap<String, Image> bufferedImage = new HashMap<String, Image>();
 	
+	@Deprecated
 	public static void bufferImage(String name, String filePath)
 	{
 		Image img = Utils.readImageFromJar(filePath);	
 		bufferedImage.put(name, img);
 	}
 	
+	@Deprecated
 	public static Image getImage(String name)
 	{
 		return bufferedImage.get(name);

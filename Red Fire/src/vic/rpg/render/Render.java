@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import vic.rpg.utils.Utils;
 
+@Deprecated
 public class Render {
 	
 	@Override

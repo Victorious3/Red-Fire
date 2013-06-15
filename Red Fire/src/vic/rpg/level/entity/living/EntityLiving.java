@@ -25,12 +25,12 @@ public class EntityLiving extends Entity
 	@Editable public int rotation = 0;
 	public Image[] sprites;
 	
-	public boolean isWalking = false;
-	public int speed = 2;
+	protected boolean isWalking = false;
+	protected float speed = 2;
 	
-	public int nextX;
-	public int nextY;
-	public boolean walk = false;
+	private int nextX;
+	private int nextY;
+	private boolean walk = false;
 	
 	protected Inventory inventory = new Inventory();
 	
@@ -54,6 +54,20 @@ public class EntityLiving extends Entity
 	{
 		nextX = x; nextY = y;
 		walk = true;
+	}
+	
+	public void setWalking(boolean isWalking)
+	{
+		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		{		
+			Server.server.broadcast(new Packet9EntityMoving(this));
+		}
+		this.isWalking = isWalking;
+	}
+	
+	public boolean isWalking()
+	{
+		return isWalking;
 	}
 	
 	public Inventory getInventory()
@@ -102,31 +116,33 @@ public class EntityLiving extends Entity
 	
 	public void setRotation(int rotation)
 	{
-		if(sprites != null) this.setSprite(sprites[rotation]);
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setSprite(sprites[rotation]);
 		this.rotation = rotation;
 	}
 	
 	public void tick()
 	{
 		if(walk && Utils.getSide().equals(Utils.SIDE_SERVER))
-		{
+		{	
 			isWalking = true;
 			
-			if(nextX < xCoord) setX(xCoord - speed);
-			if(nextX > xCoord) setX(xCoord + speed);
-			if(nextY < yCoord) setY(yCoord - speed);
-			if(nextY > yCoord) setY(yCoord + speed);
+			if(nextX < xCoord) setX((int)(xCoord - speed));
+			if(nextX > xCoord) setX((int)(xCoord + speed));
+			if(nextY < yCoord) setY((int)(yCoord - speed));
+			if(nextY > yCoord) setY((int)(yCoord + speed));
 			
+			if(nextX < xCoord) setRotation(1);
+			else if(nextX > xCoord) setRotation(2);
+			else if(nextY < yCoord) setRotation(3);
+			else if(nextY > yCoord) setRotation(0);
+
 			if(nextX > xCoord - speed && nextX < xCoord + speed && nextY > yCoord - speed && nextY < yCoord + speed)
 			{
 				xCoord = nextX; yCoord = nextY;
 				walk = false; isWalking = false;
 			}
 			
-			if(Utils.getSide() == Utils.SIDE_SERVER)
-			{
-				Server.server.broadcast(new Packet9EntityMoving(this));
-			}
+			Server.server.broadcast(new Packet9EntityMoving(this));
 		}
 	}
 	

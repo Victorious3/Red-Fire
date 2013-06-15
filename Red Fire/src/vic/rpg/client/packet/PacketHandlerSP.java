@@ -107,6 +107,7 @@ public class PacketHandlerSP extends Thread
 					e.xCoord = ((Packet9EntityMoving)p).xCoord;
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
 					e.setRotation(((Packet9EntityMoving)p).rotation);
+					e.setWalking(((Packet9EntityMoving)p).isWalking);
 					Game.level.entities.put(e.uniqueUUID, e);
 				}
 			}

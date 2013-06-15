@@ -1,17 +1,26 @@
 package vic.rpg.utils;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
 import vic.rpg.Game;
 
-public class Utils {
+public class Utils 
+{
 
+	public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	public static GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+	public static GraphicsConfiguration gConfig = defaultScreen.getDefaultConfiguration();
+	
 	public static InputStream getStreamFromString(String s)
 	{
 		return Game.class.getResourceAsStream(s);		
@@ -114,11 +123,20 @@ public class Utils {
     	}
 	}
 	
-	public static String stripExtension (String str) 
+	public static String stripExtension(String str) 
 	{
         if (str == null) return null;
         int pos = str.lastIndexOf(".");
         if (pos == -1) return str;
         return str.substring(0, pos);
     }
+	
+	public boolean withChance(int percent)
+	{
+		Random rand = new Random();
+		int chance = rand.nextInt(percent);
+		
+		if(chance == 0) return true;
+		return false;
+	}
 }

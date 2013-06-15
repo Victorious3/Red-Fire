@@ -64,7 +64,7 @@ public class GTextField extends GControl
 		if(Game.thePlayer != null)
 		{
 			Game.thePlayer.isWalkingBlocked = true;
-			Game.thePlayer.isWalking = false;
+			Game.thePlayer.setWalking(false);
 		}
 	}
 

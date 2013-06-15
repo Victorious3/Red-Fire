@@ -68,10 +68,10 @@ public class EntityPlayer extends EntityLiving
 	
 	public void tick() 
 	{	
-		if(this.isWalking)
+		if(isWalking() && Utils.getSide().equals(Utils.SIDE_CLIENT))
 		{
 			tickCounter++;
-			if(tickCounter == 10)
+			if(tickCounter == 8)
 			{				
 				step++;
 				if(step == 3) step = 0;

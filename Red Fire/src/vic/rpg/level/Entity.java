@@ -1,12 +1,15 @@
 package vic.rpg.level;
 
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
+import java.util.ArrayList;
 import java.util.Comparator;
 
 import org.jnbt.CompoundTag;
 
 import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.render.LightSource;
 import vic.rpg.render.Render;
 import vic.rpg.utils.Utils;
 
@@ -19,6 +22,8 @@ public class Entity extends Render implements Cloneable
 	public int id = 0;
 	@Editable public int zLevel = 0;
 	
+	public ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
+	
 	@Override
 	public Entity clone()
 	{
@@ -30,7 +35,12 @@ public class Entity extends Render implements Cloneable
 		super(width, height);
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}
-
+	
+	public Point getLightPosition(LightSource l)
+	{
+		return new Point(this.xCoord, this.yCoord);
+	}
+	
 	public Entity(int width, int height, int xCoord, int yCoord) 
 	{
 		super(width, height);

@@ -12,6 +12,7 @@ public class Packet9EntityMoving extends Packet
 	public int xCoord;
 	public int yCoord;
 	public int rotation;
+	public boolean isWalking;
 	public String uniqueUUID;
 	public boolean isPlayer = false;
 	public String playerName;
@@ -23,6 +24,7 @@ public class Packet9EntityMoving extends Packet
 		this.xCoord = entity.xCoord;
 		this.yCoord = entity.yCoord;
 		this.rotation = entity.rotation;
+		this.isWalking = entity.isWalking();
 		this.uniqueUUID = entity.uniqueUUID;
 		
 		if(entity instanceof EntityPlayer) 
@@ -45,6 +47,7 @@ public class Packet9EntityMoving extends Packet
 			xCoord = stream.readInt();
 			yCoord = stream.readInt();
 			rotation = stream.readInt();
+			isWalking = stream.readBoolean();
 			isPlayer = stream.readBoolean();
 			if(isPlayer)
 			{
@@ -63,6 +66,7 @@ public class Packet9EntityMoving extends Packet
 			stream.writeInt(xCoord);
 			stream.writeInt(yCoord);
 			stream.writeInt(rotation);
+			stream.writeBoolean(isWalking);
 			stream.writeBoolean(isPlayer);
 			if(isPlayer)
 			{

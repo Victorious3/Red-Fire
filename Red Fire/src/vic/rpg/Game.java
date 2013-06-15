@@ -100,8 +100,7 @@ public class Game extends Canvas implements Runnable
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, Options.COLOR_RENDER);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, Options.INTERPOLATION);
         
-        g2d.scale((double)RES_WIDTH / (double)WIDTH, (double)RES_HEIGHT / (double)HEIGHT);
-        
+        g2d.scale((double)RES_WIDTH / (double)WIDTH, (double)RES_HEIGHT / (double)HEIGHT);       
         g2d.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
         
         if(Gui.currentGui == null)
