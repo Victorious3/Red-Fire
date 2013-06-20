@@ -3,6 +3,7 @@ package vic.rpg.server;
 import java.io.File;
 
 import vic.rpg.level.Level;
+import vic.rpg.server.gui.StatisticPanel;
 
 public class ServerLoop implements Runnable
 {		
@@ -17,9 +18,11 @@ public class ServerLoop implements Runnable
 		thread.start();	
 	}
 	
+	int tickCounter = 0;
 	private void tick() 
 	{
 		level.tick();
+		StatisticPanel.instance.updateUI();
 	}
 	
     public void start()

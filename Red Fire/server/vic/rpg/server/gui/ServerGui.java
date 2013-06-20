@@ -1,15 +1,23 @@
 package vic.rpg.server.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -29,7 +37,8 @@ public class ServerGui
 	public static JScrollPane scrollPane;
 	public static JTextField textField;
 
-	@SuppressWarnings("unused")
+	public static boolean returnPressed = false;
+	
 	private static final LinkedBlockingQueue<Character> sb = new LinkedBlockingQueue<Character>();
 	
 	public static void setup()
@@ -46,8 +55,35 @@ public class ServerGui
 		textField = new JTextField();		
 		textArea.setEditable(false);
 		
-		frame.add(scrollPane, BorderLayout.CENTER);
-		frame.add(textField, BorderLayout.SOUTH);
+		frame.setLayout(new GridBagLayout());
+		GridBagConstraints grid = new GridBagConstraints();
+		grid.gridx = 0;
+		grid.gridy = 0;
+		grid.weightx = 1;
+		grid.weighty = 1;
+		grid.gridheight = 2;
+		grid.anchor = GridBagConstraints.WEST;
+		grid.fill = GridBagConstraints.BOTH;
+		frame.add(scrollPane, grid);
+		grid.gridheight = 1;
+		grid.gridy = 2;
+		grid.weighty = 0;
+		frame.add(textField, grid);
+		grid.gridx = 1;
+		grid.gridy = 0;
+		grid.weightx = 0;
+		grid.weighty = 0;
+		JPanel p1 = new JPanel();
+		p1.setBorder(BorderFactory.createTitledBorder("Statistics"));
+		StatisticPanel.instance.setPreferredSize(new Dimension(300, 110));
+		StatisticPanel.instance.setMinimumSize(new Dimension(300, 110));
+		p1.add(StatisticPanel.instance);
+		frame.add(p1, grid);
+		grid.gridx = 1;
+		grid.gridy = 1;
+		grid.weightx = 0;
+		grid.weighty = 1;
+		frame.add(new JPanel(), grid);
 		frame.setSize(800, 600);
 		frame.addWindowListener(new WindowListener() 
 		{
@@ -80,7 +116,42 @@ public class ServerGui
 		
 		frame.setTitle("-~/RedFire\\~- Server " + GameRegistry.VERSION);
 
-		/*textField.addKeyListener(new KeyListener() {
+		Server.server.console = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(new byte[0])))
+		{
+			class TheAttributeSet extends SimpleAttributeSet
+			{
+				TheAttributeSet()
+				{
+					StyleConstants.setForeground(this, Color.green);
+			        StyleConstants.setFontFamily(this, "Helvetica");
+			        StyleConstants.setFontSize(this, 16);
+				}
+			};
+			
+			AttributeSet set = new TheAttributeSet();
+			
+			@Override
+			public String readLine() throws IOException 
+			{
+				if(returnPressed)
+				{	
+					String s = textField.getText();
+					try {
+						textArea.getDocument().insertString(textArea.getDocument().getLength(), s + "\n", set);
+						textArea.setCaretPosition(textArea.getDocument().getLength());
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
+					
+					returnPressed = false;
+					textField.setText("");
+					return s;
+				}
+				else return "";
+			}		
+		};
+		
+		textField.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) 
 			{
@@ -95,24 +166,11 @@ public class ServerGui
 			{
 				if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
 				{
-					
+					returnPressed = true;
 				}
-			}
-		  
+			}	  
 		});
 
-		System.setIn(new BufferedInputStream(new InputStream(){
-			@Override
-			public int read() throws IOException
-			{
-				int c = -1;
-				try {
-					c = sb.take();            
-				} catch(InterruptedException ie) {} 
-				return c;           
-			}
-		}));*/
-		
 		System.setOut(new PrintStream(System.out) 
 		{
 			class TheAttributeSet extends SimpleAttributeSet
@@ -127,10 +185,59 @@ public class ServerGui
 			
 			public AttributeSet set = new TheAttributeSet();
 			
+			@Override
+			public void print(boolean b) 
+			{
+				print(String.valueOf(b));
+			}
+
+			@Override
+			public void print(char c) 
+			{
+				print(String.valueOf(c));
+			}
+
+			@Override
+			public void print(char[] s) 
+			{
+				print(String.valueOf(s));
+			}
+
+			@Override
+			public void print(double d) 
+			{
+				print(String.valueOf(d));
+			}
+
+			@Override
+			public void print(float f) 
+			{
+				print(String.valueOf(f));
+			}
+
+			@Override
+			public void print(int i) 
+			{
+				print(String.valueOf(i));
+			}
+
+			@Override
+			public void print(long l) 
+			{
+				print(String.valueOf(l));
+			}
+
+			@Override
+			public void print(Object obj) 
+			{
+				print(obj.toString());
+			}
+
 			public void print(final String s) 
 		    {
 				try {
 					textArea.getDocument().insertString(textArea.getDocument().getLength(), s + "\n", set);
+					textArea.setCaretPosition(textArea.getDocument().getLength());
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}
@@ -152,10 +259,60 @@ public class ServerGui
 			
 			public AttributeSet set = new TheAttributeSet();
 			
+			@Override
+			public void print(boolean b) 
+			{
+				print(String.valueOf(b));
+			}
+
+			@Override
+			public void print(char c) 
+			{
+				print(String.valueOf(c));
+			}
+
+			@Override
+			public void print(char[] s) 
+			{
+				print(String.valueOf(s));
+			}
+
+			@Override
+			public void print(double d) 
+			{
+				print(String.valueOf(d));
+			}
+
+			@Override
+			public void print(float f) 
+			{
+				print(String.valueOf(f));
+			}
+
+			@Override
+			public void print(int i) 
+			{
+				print(String.valueOf(i));
+			}
+
+			@Override
+			public void print(long l) 
+			{
+				print(String.valueOf(l));
+			}
+
+			@Override
+			public void print(Object obj) 
+			{
+				print(obj.toString());
+			}
+
+			
 			public void print(final String s) 
 		    {
 				try {
 					textArea.getDocument().insertString(textArea.getDocument().getLength(), s + "\n", set);
+					textArea.setCaretPosition(textArea.getDocument().getLength());
 				} catch (BadLocationException e) {
 					e.printStackTrace();
 				}

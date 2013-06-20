@@ -36,9 +36,7 @@ public class Screen extends Render
 	public void tick()
 	{
 		if(Game.thePlayer != null && !Game.thePlayer.isWalkingBlocked)
-		{			
-			Game.thePlayer.setWalking(false);
-		
+		{						
 			if(!Gui.currentGui.pauseGame)
 			{
 				if(GameRegistry.key.APressed) 
@@ -102,10 +100,18 @@ public class Screen extends Render
 				{
 					Game.thePlayer.setRotation(2);
 				}
+				else
+				{
+					if(Game.thePlayer.isWalking())
+					{
+						Game.thePlayer.setWalking(false);
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+					}
+				}
 			}
 		}
 	}
-	
+
 	public void postRender(Graphics2D g2d)
 	{
 		Composite c = g2d.getComposite();

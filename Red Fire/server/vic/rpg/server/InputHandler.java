@@ -77,7 +77,7 @@ public class InputHandler extends Thread
 			try {
 				String s = Server.server.console.readLine();
 				handleInput(s);
-				
+				Thread.sleep(1);
 			} catch(Exception e){}
 		}  	
 	}

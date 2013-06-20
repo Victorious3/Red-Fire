@@ -7,7 +7,10 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -100,9 +103,10 @@ public class Utils
 		return null;
 	}
 	
-	public static void setFiled(String fieldName, Object value, String type, Object object) throws NoSuchFieldException, SecurityException, NumberFormatException, IllegalArgumentException, IllegalAccessException
+	public static void setField(String fieldName, Object value, Object object) throws NoSuchFieldException, SecurityException, NumberFormatException, IllegalArgumentException, IllegalAccessException
 	{
 		Field field = object.getClass().getField(fieldName);
+    	String type = field.getType().getName();
     	
     	if(field != null)
     	{
@@ -131,12 +135,36 @@ public class Utils
         return str.substring(0, pos);
     }
 	
-	public boolean withChance(int percent)
+	public static boolean withChance(int percent)
 	{
 		Random rand = new Random();
 		int chance = rand.nextInt(percent);
 		
 		if(chance == 0) return true;
 		return false;
+	}
+	
+	private static OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+	
+	public static double getCPUUsage()
+	{	
+		try {
+			Method m = osBean.getClass().getDeclaredMethod("getSystemCpuLoad");
+			m.setAccessible(true);
+			double d = (double) m.invoke(osBean);
+			if(d < 0) d = 0.0D;
+			return d;
+		} catch (Exception e){}
+		return -1.0D;
+	}
+	
+	public static long getDeviceMemory()
+	{	
+		try {
+			Method m = osBean.getClass().getDeclaredMethod("getTotalPhysicalMemorySize");
+			m.setAccessible(true);
+			return (long) m.invoke(osBean);
+		} catch (Exception e){}
+		return -1;
 	}
 }

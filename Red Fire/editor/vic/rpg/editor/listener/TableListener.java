@@ -51,7 +51,7 @@ public class TableListener implements TableModelListener
 	        
 	        try
 	        {
-	        	Utils.setFiled(name, value, type, Editor.editor.level);
+	        	Utils.setField(name, value, Editor.editor.level);
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
@@ -72,10 +72,10 @@ public class TableListener implements TableModelListener
 	        {
 	        	if(Mouse.selectedEntities.size() == 1) 
         		{
-	        		Utils.setFiled(name, value, type, Mouse.selectedEntities.get(0));
+	        		Utils.setField(name, value, Mouse.selectedEntities.get(0));
 	        		Editor.editor.labelLevel.update(false);
         		}
-	        	else Utils.setFiled(name, value, type, entities.get(Integer.parseInt(Editor.editor.dropdownEntities.getSelectedItem().toString().split(":")[0])));
+	        	else Utils.setField(name, value, entities.get(Integer.parseInt(Editor.editor.dropdownEntities.getSelectedItem().toString().split(":")[0])));
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            

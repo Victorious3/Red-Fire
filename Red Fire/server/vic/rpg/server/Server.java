@@ -40,6 +40,8 @@ public class Server extends Thread
 	public static HashMap<String, Connection> connections = new LinkedHashMap<String, Connection>();
 	public static boolean isSinglePlayer = false;
 	
+	static boolean nogui = false;
+	
 	public static void main(final String[] args)
 	{			
 		List<String> argList = Arrays.asList(args);
@@ -47,7 +49,7 @@ public class Server extends Thread
 		{		
 			if(!argList.contains("-nogui") && !argList.contains("-splayer"))
 			{
-				ServerGui.setup();
+				nogui = true;
 			}
 				
 			if(argList.contains("-splayer")) isSinglePlayer = true; 		
@@ -81,7 +83,11 @@ public class Server extends Thread
 		final int port;
 		boolean succsess = true;
 		
-		if(argList.get(0) != null)
+		if(argList.size() == 0)
+		{
+			succsess = false;
+		}
+		else if(argList.get(0) != null)
 		{		
 			try
 			{
@@ -112,10 +118,12 @@ public class Server extends Thread
 				try {
 					System.setProperty("file.encoding", "UTF-8");
 					
+					server = new Server();			
+					if(nogui) ServerGui.setup();
+					
 					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
-					System.out.println("___________________________________________________");
-							
-					server = new Server();
+					System.out.println("__________________________________________________");
+
 					server.serverSocket = new ServerSocket(port);
 					server.listener = new Listener(new Server());
 					server.inputHandler = new InputHandler();
