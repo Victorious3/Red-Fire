@@ -62,7 +62,7 @@ public class StatisticPanel extends JPanel
 		g.drawString("use: " + i[1] + " MB", 25, 30);
 		g.drawString("max: " + Runtime.getRuntime().maxMemory() / (1024 * 1024) + " MB", 25, 40);
 		g.drawString("all: " + Utils.getDeviceMemory() / (1024 * 1024) + " MB", 25, 50);
-		
+
 		g.setColor(Color.white);
 		g.fillRect(0, 0, 20, 101);
 		g.setColor(Color.black);

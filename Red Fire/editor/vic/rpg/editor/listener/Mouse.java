@@ -136,7 +136,11 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	@Override
 	public void mouseReleased(MouseEvent arg0) 
 	{
-		if(Editor.editor.buttonMove.isSelected()) Editor.editor.frame.setCursor(GameRegistry.CURSOR_DROP);
+		if(Editor.editor.buttonMove.isSelected())
+		{
+			Editor.editor.frame.setCursor(GameRegistry.CURSOR_DROP);		
+		}
+		
 		else Editor.editor.frame.setCursor(Cursor.getDefaultCursor());
 		
 		mouseDown = false;

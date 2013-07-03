@@ -36,7 +36,8 @@ public class ServerGui
 	public static JTextPane textArea; 
 	public static JScrollPane scrollPane;
 	public static JTextField textField;
-
+	public static JPanel players;
+	
 	public static boolean returnPressed = false;
 	
 	private static final LinkedBlockingQueue<Character> sb = new LinkedBlockingQueue<Character>();
@@ -83,7 +84,11 @@ public class ServerGui
 		grid.gridy = 1;
 		grid.weightx = 0;
 		grid.weighty = 1;
-		frame.add(new JPanel(), grid);
+		grid.gridheight = 2;
+		players = new JPanel();
+		players.setBorder(BorderFactory.createTitledBorder("Players (" + 0 + "/" + Server.MAX_CONNECTIONS + ")"));
+		frame.add(players, grid);
+		
 		frame.setSize(800, 600);
 		frame.addWindowListener(new WindowListener() 
 		{

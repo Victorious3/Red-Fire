@@ -98,12 +98,14 @@ public class ButtonListener implements ActionListener
 		else if(arg0.getSource() == Editor.editor.buttonRefresh)
 		{
 			Editor.editor.labelLevel.update(false);
+			Editor.editor.level.obstacleMap.recreate(Editor.editor.level);
 			Editor.editor.frame.setTitle("Red Fire Level Editor (" + Editor.editor.level.name + ")");			
 		}
 		else if(arg0.getSource() == Editor.editor.buttonEdit)
 		{
 			Editor.editor.buttonMove.setSelected(false);
 			Editor.editor.buttonPaint.setSelected(false);
+			Editor.editor.buttonPath.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
@@ -113,6 +115,7 @@ public class ButtonListener implements ActionListener
 		{
 			Editor.editor.buttonEdit.setSelected(false);
 			Editor.editor.buttonPaint.setSelected(false);
+			Editor.editor.buttonPath.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
@@ -122,6 +125,17 @@ public class ButtonListener implements ActionListener
 		{
 			Editor.editor.buttonEdit.setSelected(false);
 			Editor.editor.buttonMove.setSelected(false);
+			Editor.editor.buttonPath.setSelected(false);
+			
+			Mouse.selectedEntities.clear();
+			Mouse.selectedTiles.clear();
+			Editor.editor.labelLevel.update(true);
+		}
+		else if(arg0.getSource() == Editor.editor.buttonPath)
+		{
+			Editor.editor.buttonEdit.setSelected(false);
+			Editor.editor.buttonMove.setSelected(false);
+			Editor.editor.buttonPaint.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();

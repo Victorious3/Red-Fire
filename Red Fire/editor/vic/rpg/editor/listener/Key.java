@@ -14,7 +14,7 @@ public class Key implements KeyListener
 	public static Key keyListener = new Key();
 	
 	public boolean shiftPressed = false;
-	private int button;
+	public int button;
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) 
@@ -24,9 +24,11 @@ public class Key implements KeyListener
 			shiftPressed = true;
 			if(Editor.editor.buttonEdit.isSelected()) button = 1;
 			if(Editor.editor.buttonPaint.isSelected()) button = 2;
+			if(Editor.editor.buttonPath.isSelected()) button = 3;
 			
 			Editor.editor.buttonEdit.setSelected(false);
 			Editor.editor.buttonPaint.setSelected(false);
+			Editor.editor.buttonPath.setSelected(false);
 			
 			Editor.editor.buttonMove.setSelected(true);
 			
@@ -112,7 +114,11 @@ public class Key implements KeyListener
 			{
 				if(button == 1) Editor.editor.buttonEdit.setSelected(true);
 				if(button == 2) Editor.editor.buttonPaint.setSelected(true);
+				if(button == 3) Editor.editor.buttonPath.setSelected(true);
+				
 				Editor.editor.buttonMove.setSelected(false);
+				Editor.editor.labelLevel.updateUI();
+				
 				if(Editor.editor.frame.getCursor() == GameRegistry.CURSOR_DRAG || Editor.editor.frame.getCursor() == GameRegistry.CURSOR_DROP)
 				{
 					Editor.editor.frame.setCursor(Cursor.getDefaultCursor());

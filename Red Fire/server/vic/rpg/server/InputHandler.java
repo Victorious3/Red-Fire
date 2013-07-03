@@ -22,18 +22,17 @@ public class InputHandler extends Thread
 			String[] args = s.split(" ");
 			String command = args[0];
 			command = command.replace("/", "");
-			List<String> args2 = new LinkedList<String>(Arrays.asList(args));
+			LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
 			args2.remove(0);
-			args = args2.toArray(args);
-			handleCommand(command, args);
+			handleCommand(command, args2);
 		}
 	}
 	
-	public void handleCommand(String command, String[] args)
+	public void handleCommand(String command, List<String> args)
 	{
 		if(command.equalsIgnoreCase("stop"))
 		{			
-			System.out.println("___________________________________________________");
+			System.out.println("________________________________________________");
 			System.err.println("Stopping Server ...");
 			System.out.println("done!");
 			Server.server.stopServer();			
@@ -53,15 +52,33 @@ public class InputHandler extends Thread
 		}
 		else if(command.equalsIgnoreCase("say"))
 		{
-			if(args[0] != null)
+			if(args.get(0) != null)
 			{
-				Server.server.broadcast(new Packet20Chat(args[0], "server"));
-				System.out.println("{SERVER}: " + args[0]);
+				Server.server.broadcast(new Packet20Chat(args.get(0), "server"));
+				System.out.println("{SERVER}: " + args.get(0));
 			}
 		}
 		else if(command.equalsIgnoreCase("time"))
 		{
-			System.out.println("The current gametime is " + ServerLoop.level.time);
+			if(args.size() > 0 && args.get(0).equals("set"))
+			{
+				if(args.size() > 1 && args.get(1) != null) 
+				{
+					String time = args.get(1);
+					try {
+						int t2 = Integer.parseInt(time);
+						ServerLoop.level.time = t2;
+						System.out.println("Time set to " + t2);
+					} catch (NumberFormatException e) {
+						System.err.println("Time has to be numeric!");
+					}				
+				}
+				else
+				{
+					System.err.println("Usage: /time set <time>");
+				}
+			}
+			else System.out.println("The current game time is " + ServerLoop.level.time);
 		}
 		else
 		{
@@ -78,7 +95,9 @@ public class InputHandler extends Thread
 				String s = Server.server.console.readLine();
 				handleInput(s);
 				Thread.sleep(1);
-			} catch(Exception e){}
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 		}  	
 	}
 }

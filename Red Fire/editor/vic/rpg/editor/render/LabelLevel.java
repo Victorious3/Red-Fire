@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.Vector;
@@ -14,11 +15,14 @@ import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
 import vic.rpg.editor.Editor;
+import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.ZoomListener;
 import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.path.Node;
+import vic.rpg.level.path.ObstacleMap;
 
 public class LabelLevel extends JLabel 
 {
@@ -73,8 +77,7 @@ public class LabelLevel extends JLabel
 				g2d.drawRect(p.x * Level.CELL_SIZE, p.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
 				g2d.setStroke(stroke);
 			}
-		}
-		
+		}		
 		if(Mouse.selection != null)
 		{
 			g2d.setColor(new Color(0, 100, 255, 100));
@@ -85,6 +88,27 @@ public class LabelLevel extends JLabel
 			g2d.setStroke(new BasicStroke(1 / getScale() * 2));
 			g2d.draw(Mouse.selection);
 			g2d.setStroke(stroke);
+		}		
+		if(Editor.editor.buttonPath.isSelected() || Key.keyListener.button == 3)
+		{
+			g2d.setColor(new Color(255, 0, 0, 120));
+			for(Node[] n2 : Editor.editor.level.obstacleMap.obstacles)
+			{
+				for(Node n : n2)
+				{
+					if(n.isBlocked)
+					{
+						Point p = n.toPoint();					
+						g2d.fillRect(p.x, p.y, Level.CELL_SIZE, Level.CELL_SIZE);
+					}
+				}
+			}
+			
+			g2d.setColor(new Color(255, 255, 0));
+			for(Entity e : Editor.editor.level.entities.values())
+			{
+				g2d.draw(e.getCollisionBoxes(new Area()));
+			}
 		}
 		
 		needsUpdate = 0;				
@@ -154,6 +178,8 @@ public class LabelLevel extends JLabel
 		Mouse.selectedEntities.clear();
 		Mouse.selectedTiles.clear();
 		Mouse.selection = null;
+		
+		Editor.editor.level.obstacleMap = new ObstacleMap(Editor.editor.level);
 		
 		scale(1);
 		update(false);

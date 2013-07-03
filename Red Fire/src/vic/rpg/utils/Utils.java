@@ -167,4 +167,35 @@ public class Utils
 		} catch (Exception e){}
 		return -1;
 	}
+	
+	public static int lcm(int... a) 
+	{
+	    for(int m = 1;; m++) 
+	    {
+	        int n = a.length;
+	        for(int i : a) 
+	        {
+	            if(i == 0) break;
+	        	if(m % i != 0) 
+	            {
+	                break;
+	            }
+	            if(--n == 0) 
+	            {
+	                return m;
+	            }
+	        }
+	    }
+	}
+	
+	public static int rnd(int i1, int i2) 
+	{
+		if(i1 % i2 == 0) return i1;
+		else if(i1 > i2)
+		{
+			int i3 = i1 / i2;
+			return i2 * i3;
+		}
+		return 0;
+	}
 }

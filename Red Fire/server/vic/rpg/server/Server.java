@@ -122,7 +122,7 @@ public class Server extends Thread
 					if(nogui) ServerGui.setup();
 					
 					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
-					System.out.println("__________________________________________________");
+					System.out.println("________________________________________________");
 
 					server.serverSocket = new ServerSocket(port);
 					server.listener = new Listener(new Server());

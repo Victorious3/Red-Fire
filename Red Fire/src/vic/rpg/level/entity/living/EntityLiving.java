@@ -1,7 +1,6 @@
 package vic.rpg.level.entity.living;
 
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
@@ -149,7 +148,6 @@ public class EntityLiving extends Entity
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord, yCoord, getWidth(), getHeight())));
 		return area;
 	}
 	

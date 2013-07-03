@@ -89,6 +89,7 @@ public class Editor
 	public JToggleButton buttonMove  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/move.png")));
 	public JToggleButton buttonEdit  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	public JToggleButton buttonPaint = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pencil.png")));
+	public JToggleButton buttonPath  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pathfinding.png")));
 	public JComboBox<String> dropdownMode = new JComboBox<String>(new String[]{"Tiles", "Entities"});
 	
 	public JTabbedPane tabpanelEditor = new JTabbedPane();
@@ -204,6 +205,8 @@ public class Editor
 		buttonMove.addActionListener(ButtonListener.listener);
 		buttonPaint.setPreferredSize(new Dimension(25, 25));
 		buttonPaint.addActionListener(ButtonListener.listener);
+		buttonPath.setPreferredSize(new Dimension(25, 25));
+		buttonPath.addActionListener(ButtonListener.listener);
 		
 		buttonMove.setSelected(true);
 		dropdownMode.addActionListener(new ActionListener(){
@@ -229,6 +232,7 @@ public class Editor
 		panelEdit.add(buttonMove);
 		panelEdit.add(buttonEdit);		
 		panelEdit.add(buttonPaint);
+		panelEdit.add(buttonPath);
 		panelEdit.add(sep2);
 		panelEdit.add(dropdownMode);
 		
