@@ -22,7 +22,7 @@ import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.path.Node;
-import vic.rpg.level.path.ObstacleMap;
+import vic.rpg.level.path.NodeMap;
 
 public class LabelLevel extends JLabel 
 {
@@ -92,7 +92,7 @@ public class LabelLevel extends JLabel
 		if(Editor.editor.buttonPath.isSelected() || Key.keyListener.button == 3)
 		{
 			g2d.setColor(new Color(255, 0, 0, 120));
-			for(Node[] n2 : Editor.editor.level.obstacleMap.obstacles)
+			for(Node[] n2 : Editor.editor.level.nodeMap.nodes)
 			{
 				for(Node n : n2)
 				{
@@ -108,6 +108,22 @@ public class LabelLevel extends JLabel
 			for(Entity e : Editor.editor.level.entities.values())
 			{
 				g2d.draw(e.getCollisionBoxes(new Area()));
+			}
+			
+			g2d.setColor(new Color(0, 255, 0, 120));
+			if(Mouse.start != null) g2d.fillRect(Mouse.start.x * Level.CELL_SIZE, Mouse.start.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+			g2d.setColor(new Color(0, 255, 255, 120));
+			if(Mouse.end != null) g2d.fillRect(Mouse.end.x * Level.CELL_SIZE, Mouse.end.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+			g2d.setColor(new Color(0, 0, 255, 120));
+			
+			if(Mouse.path != null)
+			{
+				while(Mouse.path.hasNext())
+				{
+					Node n = Mouse.path.next();
+					g2d.fillRect(n.x * Level.CELL_SIZE, n.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+				}
+				Mouse.path.revert();
 			}
 		}
 		
@@ -179,7 +195,7 @@ public class LabelLevel extends JLabel
 		Mouse.selectedTiles.clear();
 		Mouse.selection = null;
 		
-		Editor.editor.level.obstacleMap = new ObstacleMap(Editor.editor.level);
+		Editor.editor.level.nodeMap = new NodeMap(Editor.editor.level);
 		
 		scale(1);
 		update(false);

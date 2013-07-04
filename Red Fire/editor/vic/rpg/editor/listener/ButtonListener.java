@@ -98,7 +98,7 @@ public class ButtonListener implements ActionListener
 		else if(arg0.getSource() == Editor.editor.buttonRefresh)
 		{
 			Editor.editor.labelLevel.update(false);
-			Editor.editor.level.obstacleMap.recreate(Editor.editor.level);
+			Editor.editor.level.nodeMap.recreate(Editor.editor.level);
 			Editor.editor.frame.setTitle("Red Fire Level Editor (" + Editor.editor.level.name + ")");			
 		}
 		else if(arg0.getSource() == Editor.editor.buttonEdit)

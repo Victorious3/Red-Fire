@@ -170,22 +170,22 @@ public class Utils
 	
 	public static int lcm(int... a) 
 	{
-	    for(int m = 1;; m++) 
-	    {
-	        int n = a.length;
-	        for(int i : a) 
-	        {
-	            if(i == 0) break;
-	        	if(m % i != 0) 
-	            {
-	                break;
-	            }
-	            if(--n == 0) 
-	            {
-	                return m;
-	            }
-	        }
-	    }
+		for(int m = 1;; m++) 
+		{
+			int n = a.length;
+			for(int i : a) 
+			{
+				if(i == 0) break;
+				if(m % i != 0) 
+				{
+					break;
+				}
+				if(--n == 0) 
+				{
+					return m;
+				}
+			}
+		}
 	}
 	
 	public static int rnd(int i1, int i2) 

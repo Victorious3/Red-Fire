@@ -21,6 +21,7 @@ import vic.rpg.level.entity.EntityTree;
 import vic.rpg.level.entity.living.EntityNPC;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.tiles.TileGrass;
+import vic.rpg.level.tiles.TileVoid;
 import vic.rpg.level.tiles.TileWater;
 
 public class LevelRegistry 
@@ -31,6 +32,7 @@ public class LevelRegistry
 	
 	public static final TileGrass TILE_GRASS = new TileGrass();
 	public static final TileWater TILE_WATER = new TileWater();
+	public static final TileVoid TILE_VOID = new TileVoid();
 	
 	public static final EntityTree ENTITY_TREE = new EntityTree();
 	public static final EntityAppleTree ENTITY_APLTREE = new EntityAppleTree();
@@ -47,6 +49,7 @@ public class LevelRegistry
 	{		
 		register(TILE_GRASS, 1);
 		register(TILE_WATER, 2);
+		register(TILE_VOID, 3);
 		
 		register(ENTITY_TREE, 1);
 		register(ENTITY_HOUSE, 2);

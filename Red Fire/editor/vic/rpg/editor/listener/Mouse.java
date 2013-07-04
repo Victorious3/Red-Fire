@@ -14,6 +14,8 @@ import vic.rpg.editor.Editor;
 import vic.rpg.editor.gui.PopupMenu;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.path.Node;
+import vic.rpg.level.path.Path;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.LevelRegistry;
 
@@ -29,6 +31,10 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	
 	public static int xCoord = 0;
 	public static int yCoord = 0;
+	
+	public static Node start;
+	public static Node end;
+	public static Path path;
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {}
@@ -66,7 +72,23 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			if(Editor.editor.level == null) return;
 			
 			if(Editor.editor.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
-			if(Editor.editor.buttonEdit.isSelected())
+			else if(Editor.editor.buttonPath.isSelected())
+			{
+				int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+				int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+				
+				if(x >= Editor.editor.level.nodeMap.width || y >= Editor.editor.level.nodeMap.height || x < 0 || y < 0) return;
+				
+				start = Editor.editor.level.nodeMap.nodes[x][y];
+				
+				if(end != null)
+				{
+					path = Path.create(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+				}
+				
+				Editor.editor.labelLevel.updateUI();
+			}		
+			else if(Editor.editor.buttonEdit.isSelected())
 			{
 				selection = null;
 				
@@ -129,7 +151,22 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		}
 		else if(arg0.getButton() == MouseEvent.BUTTON3)
 		{
-			PopupMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+			if(!Editor.editor.buttonPath.isSelected()) PopupMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+			else
+			{
+				if(start != null)
+				{
+					int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+					int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+					
+					if(x >= Editor.editor.level.nodeMap.width || y >= Editor.editor.level.nodeMap.height || x < 0 || y < 0) return;
+					
+					end = Editor.editor.level.nodeMap.nodes[x][y];			
+					path = Path.create(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					
+					Editor.editor.labelLevel.updateUI();
+				}
+			}
 		}
 	}
 

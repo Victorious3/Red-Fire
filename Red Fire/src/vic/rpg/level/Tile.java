@@ -14,6 +14,9 @@ public class Tile
 	//Editor stuff
 	public String getDescription(){return "MISSING_DESCRIPTION";}
 	
+	public double getMovementCost(){return 0;}
+	public boolean isWalkingPermitted(){return true;}
+	
 	@Override
 	public Tile clone() 
 	{

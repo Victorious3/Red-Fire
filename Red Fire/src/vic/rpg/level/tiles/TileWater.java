@@ -15,6 +15,12 @@ public class TileWater extends Tile
 	public int tickCount = 0;
 	
 	@Override
+	public double getMovementCost() 
+	{
+		return 5;
+	}
+	
+	@Override
 	public void tick(int x, int y, int data)
 	{
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT))

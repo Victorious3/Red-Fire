@@ -4,10 +4,16 @@ import java.awt.Point;
 
 import vic.rpg.level.Level;
 
-public class Node 
+public class Node implements Cloneable 
 {
 	public int x,y;
 	public boolean isBlocked = false;
+	
+	public double g;
+	public double h;
+	public double f;
+	
+	public Node parent;
 	
 	public Node(int x, int y)
 	{
@@ -21,5 +27,27 @@ public class Node
 		int y2 = y * Level.CELL_SIZE;
 		
 		return new Point(x2, y2);
-	}	
+	}
+
+	@Override
+	public boolean equals(Object arg0) 
+	{
+		if(arg0 instanceof Node)
+		{
+			Node n = (Node) arg0;
+			if(n.x == x && n.y == y) return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public Node clone()
+	{
+		try {
+			return (Node) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

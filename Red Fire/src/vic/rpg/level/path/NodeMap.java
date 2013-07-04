@@ -7,12 +7,13 @@ import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.utils.Utils;
 
-public class ObstacleMap 
+public class NodeMap implements Cloneable 
 {
 	public int width, height;
-	public Node[][] obstacles;	
+	public Node[][] nodes;	
+	public Level level;
 	
-	public ObstacleMap(Level level)
+	public NodeMap(Level level)
 	{
 		recreate(level);
 	}
@@ -22,13 +23,13 @@ public class ObstacleMap
 		this.width = level.width;
 		this.height = level.height;
 		
-		Node[][] obstacles = new Node[width][height];
+		Node[][] nodes = new Node[width][height];
 		
 		for(int i = 0; i < width; i++)
 		{
 			for(int j = 0; j < height; j++)
 			{
-				obstacles[i][j] = new Node(i, j);
+				nodes[i][j] = new Node(i, j);
 			}
 		}
 		
@@ -44,21 +45,33 @@ public class ObstacleMap
 				for(int j = Utils.rnd(r.y, size); j < r.y + r.height; j += size)
 				{
 					if(a.intersects(new Rectangle(i, j, size, size)))
-					{
+					{						
 						int x = i / size;
 						int y = j / size;
 						
 						if(x > 0 && x < width && y > 0 && y < height)
 						{
-							Node n = obstacles[x][y];
+							Node n = nodes[x][y];
 							n.isBlocked = true;
-							obstacles[x][y] = n;
+							nodes[x][y] = n;
 						}
 					}
 				}
 			}
 		}
 		
-		this.obstacles = obstacles;
+		this.nodes = nodes;
+		this.level = level;
+	}
+
+	@Override
+	protected NodeMap clone()
+	{
+		try {
+			return (NodeMap) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

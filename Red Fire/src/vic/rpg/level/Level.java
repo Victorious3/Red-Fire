@@ -28,7 +28,7 @@ import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityPlayer;
-import vic.rpg.level.path.ObstacleMap;
+import vic.rpg.level.path.NodeMap;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
@@ -45,7 +45,7 @@ public class Level
 	public LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
 	public LinkedHashMap<String, EntityPlayer> playerList = new LinkedHashMap<String, EntityPlayer>();
 	
-	public ObstacleMap obstacleMap = new ObstacleMap(this);
+	public NodeMap nodeMap = new NodeMap(this);
 	
 	// Gameplay
 	@Editable public int time = 5000;
@@ -140,7 +140,7 @@ public class Level
 		addEntity(LevelRegistry.ENTITY_APLTREE.id, 700, 400);
 		addEntity(LevelRegistry.ENTITY_LIVING_NPC.id, 200, 200);
 		
-		obstacleMap.recreate(this);
+		nodeMap.recreate(this);
 	}
 	
 	public void fill(int id, int data)
@@ -371,7 +371,7 @@ public class Level
 		
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) level.entitiesForRender = level.sortEntitiesByZLevel();
 		
-		level.obstacleMap.recreate(level);
+		level.nodeMap.recreate(level);
 		
 		return level;
 	}
