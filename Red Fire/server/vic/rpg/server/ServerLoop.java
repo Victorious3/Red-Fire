@@ -3,6 +3,7 @@ package vic.rpg.server;
 import java.io.File;
 
 import vic.rpg.level.Level;
+import vic.rpg.level.path.PathServer;
 import vic.rpg.server.gui.StatisticPanel;
 
 public class ServerLoop implements Runnable
@@ -11,11 +12,13 @@ public class ServerLoop implements Runnable
 	public boolean isRunning = false;
 	public static Level level;
 	public static File file;
+	public PathServer pathServer;
 	
 	public ServerLoop()
 	{
 		thread = new Thread(this);		
-		thread.start();	
+		thread.start();
+		pathServer = new PathServer();
 	}
 	
 	int tickCounter = 0;

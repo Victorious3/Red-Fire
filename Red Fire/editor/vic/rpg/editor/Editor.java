@@ -54,9 +54,8 @@ import vic.rpg.utils.Utils;
 public class Editor 
 {
 	public static Editor editor;
-	
-	public JFrame frame;
-	
+
+	public JFrame frame;	
 	public JMenuBar menubar   = new JMenuBar();	
 	
 	public JMenu menuFile     = new JMenu("File");

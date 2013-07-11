@@ -246,6 +246,7 @@ public class Level
 		e.xCoord = x;
 		e.yCoord = y;
 		e.uniqueUUID = uuid.toString();
+		e.levelObj = this;
 		entities.put(uuid.toString(), e);
 	}
 	
@@ -256,6 +257,7 @@ public class Level
 		ent.xCoord = x;
 		ent.yCoord = y;
 		ent.uniqueUUID = uuid.toString();
+		ent.levelObj = this;
 		entities.put(uuid.toString(), ent);
 	}
 	
@@ -266,6 +268,7 @@ public class Level
 		player.yCoord = y;
 		player.username = username;
 		player.uniqueUUID = uuid.toString();
+		player.levelObj = this;
 		playerList.put(username, player);		
 	}
 
@@ -341,6 +344,8 @@ public class Level
 		List<Tag> entityList = (List<Tag>)levelMap.get("entities").getValue();
 		List<Tag> tileList = (List<Tag>)levelMap.get("tiles").getValue();
 		
+		Level level = new Level(width, height, name);
+		
 		int[][][] worldObjects = new int[width][height][2];		
 		int x = 0; int y = 0;
 		for(Tag tileTag : tileList)
@@ -361,10 +366,10 @@ public class Level
 		for(Tag entityTag : entityList)
 		{
 			Entity ent = LevelRegistry.readEntityFromNBT((CompoundTag)entityTag);
+			ent.levelObj = level;
 			entities.put(ent.uniqueUUID, ent);
 		}
 		
-		Level level = new Level(width, height, name);
 		level.worldobjects = worldObjects;
 		level.entities = entities;
 		level.time = time;

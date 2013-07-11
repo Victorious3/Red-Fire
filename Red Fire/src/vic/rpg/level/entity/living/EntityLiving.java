@@ -1,6 +1,7 @@
 package vic.rpg.level.entity.living;
 
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,8 @@ import org.jnbt.Tag;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
+import vic.rpg.level.path.Node;
+import vic.rpg.level.path.Path;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Utils;
@@ -26,10 +29,12 @@ public class EntityLiving extends Entity
 	
 	protected boolean isWalking = false;
 	protected float speed = 2;
+	protected Path curPath;
 	
+	public boolean walk = false;
+	public boolean walkNow = false; //TODO Makes sense, uh?
 	private int nextX;
 	private int nextY;
-	private boolean walk = false;
 	
 	protected Inventory inventory = new Inventory();
 	
@@ -49,10 +54,13 @@ public class EntityLiving extends Entity
 		GuiIngame.focusedEntity = this;
 	}
 
-	public void walkTo(int x, int y) 
+	public void walkTo(int x, int y, double maxCost) 
 	{
-		nextX = x; nextY = y;
-		walk = true;
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) return;
+		Node begin = Node.fromPoint(new Point(this.xCoord, this.yCoord));
+		Node end = Node.fromPoint(new Point(x, y));
+		this.curPath = Server.server.serverLoop.pathServer.create(this.levelObj.nodeMap, begin, end, maxCost);
+		this.walk = true;
 	}
 	
 	public void setWalking(boolean isWalking)
@@ -121,7 +129,22 @@ public class EntityLiving extends Entity
 	
 	public void tick()
 	{
-		if(walk && Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(walk && !walkNow && curPath.isReady)
+		{
+			if(curPath.isPossible && curPath.hasNext())
+			{
+				Point p = curPath.next().toPoint();
+				this.nextX = p.x;
+				this.nextY = p.y;
+				this.walkNow = true;
+			}
+			else
+			{
+				walk = false;
+			}
+		}
+		
+		if(walkNow && Utils.getSide().equals(Utils.SIDE_SERVER))
 		{	
 			isWalking = true;
 			
@@ -138,7 +161,7 @@ public class EntityLiving extends Entity
 			if(nextX > xCoord - speed && nextX < xCoord + speed && nextY > yCoord - speed && nextY < yCoord + speed)
 			{
 				xCoord = nextX; yCoord = nextY;
-				walk = false; isWalking = false;
+				this.walkNow = false; isWalking = false;
 			}
 			
 			Server.server.broadcast(new Packet9EntityMoving(this));

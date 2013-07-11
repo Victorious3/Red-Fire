@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import vic.rpg.level.path.Path;
 import vic.rpg.server.io.Connection;
 import vic.rpg.server.packet.Packet20Chat;
 
@@ -80,11 +79,6 @@ public class InputHandler extends Thread
 				}
 			}
 			else System.out.println("The current game time is " + ServerLoop.level.time);
-		}
-		else if(command.equalsIgnoreCase("test"))
-		{
-			Path p = Path.create(ServerLoop.level.nodeMap, ServerLoop.level.nodeMap.nodes[0][0], ServerLoop.level.nodeMap.nodes[ServerLoop.level.nodeMap.width - 1][ServerLoop.level.nodeMap.height - 1], 10000);
-			System.out.println(p.getLenght());
 		}
 		else
 		{

@@ -15,10 +15,20 @@ public class Node implements Cloneable
 	
 	public Node parent;
 	
+	private Node(){}
+	
 	public Node(int x, int y)
 	{
 		this.x = x;
 		this.y = y;
+	}
+	
+	public static Node fromPoint(Point p)
+	{
+		Node n = new Node();
+		n.x = (int) ((float)p.x / (float)Level.CELL_SIZE);
+		n.y = (int) ((float)p.y / (float)Level.CELL_SIZE);
+		return n;
 	}
 	
 	public Point toPoint()

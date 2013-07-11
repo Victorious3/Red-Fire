@@ -83,7 +83,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				
 				if(end != null)
 				{
-					path = Path.create(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path = new Path(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path.compute();
 				}
 				
 				Editor.editor.labelLevel.updateUI();
@@ -133,10 +134,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 							selectedEntities.clear();
 						}
 					}
-				}
-				
-				Editor.editor.labelLevel.update(true);
-				
+				}			
+				Editor.editor.labelLevel.update(true);			
 			}
 			else
 			{
@@ -162,7 +161,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					if(x >= Editor.editor.level.nodeMap.width || y >= Editor.editor.level.nodeMap.height || x < 0 || y < 0) return;
 					
 					end = Editor.editor.level.nodeMap.nodes[x][y];			
-					path = Path.create(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path = new Path(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path.compute();
 					
 					Editor.editor.labelLevel.updateUI();
 				}

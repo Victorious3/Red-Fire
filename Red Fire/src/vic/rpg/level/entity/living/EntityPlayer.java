@@ -77,6 +77,8 @@ public class EntityPlayer extends EntityLiving
 	
 	public void tick() 
 	{	
+		super.tick();
+		
 		if(isWalking() && Utils.getSide().equals(Utils.SIDE_CLIENT))
 		{
 			tickCounter++;

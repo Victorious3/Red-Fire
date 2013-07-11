@@ -23,6 +23,7 @@ public class Entity extends Render implements Cloneable
 	@Editable public int zLevel = 0;
 	
 	public ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
+	public Level levelObj;
 	
 	@Override
 	public Entity clone()

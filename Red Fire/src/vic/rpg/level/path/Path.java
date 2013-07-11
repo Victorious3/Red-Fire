@@ -9,7 +9,21 @@ public class Path
 	protected ArrayList<Node> path = new ArrayList<Node>();
 	private int pointer = 1;
 	
-	private Path(){}
+	public Path(NodeMap nodeMap, Node begin, Node end, double maxCost)
+	{
+		this.nodeMap = nodeMap;
+		this.begin = begin;
+		this.end = end;
+		this.maxCost = maxCost;
+	}
+	
+	private NodeMap nodeMap;
+	private Node begin;
+	private Node end;
+	private double maxCost;
+	
+	public boolean isReady = false;
+	public boolean isPossible = true;
 	
 	public Node next()
 	{		
@@ -35,11 +49,11 @@ public class Path
 		return path.size();
 	}
 	
-	public static Path create(NodeMap nodeMap, Node begin, Node end, double maxCost)
+	public boolean compute()
 	{
 		NodeMap map = nodeMap.clone();
 		
-		if(end.isBlocked || begin.isBlocked) return null;
+		if(end.isBlocked || begin.isBlocked) return false;
 		
 		ArrayList<Node> openList = new ArrayList<Node>();
 		ArrayList<Node> closedList = new ArrayList<Node>();
@@ -96,21 +110,18 @@ public class Path
 			cost = f;
 		}
 		
-		Path path = new Path();
-		
 		if(reachedEnd)
 		{
 			Node n = parent;
 			
 			while(!n.equals(begin))
 			{
-				path.path.add(n);
+				path.add(n);
 				n = n.parent;
 			}
-			return path;
+			return true;
 		}
-		
-		return null;
+		return false;
 	}
 	
 	private static double calculateG(Node parent, Node node, NodeMap map)
@@ -174,8 +185,7 @@ public class Path
 			{
 				if(!isNodeBlocked(map.nodes[n.x + 1][n.y - 1], map)) neighbors.add(map.nodes[n.x + 1][n.y - 1]);
 			}
-		}
-		
+		}		
 		return neighbors;
 	}
 	
