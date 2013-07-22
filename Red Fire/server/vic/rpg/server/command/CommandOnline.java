@@ -5,9 +5,9 @@ import java.util.List;
 import vic.rpg.server.Server;
 import vic.rpg.server.io.Connection;
 
-public class Online extends Command 
+public class CommandOnline extends Command 
 {
-	public Online() 
+	public CommandOnline() 
 	{
 		super("online");
 	}

@@ -5,9 +5,9 @@ import java.util.List;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
 
-public class Say extends Command
+public class CommandSay extends Command
 {
-	public Say() 
+	public CommandSay() 
 	{
 		super("say");
 	}

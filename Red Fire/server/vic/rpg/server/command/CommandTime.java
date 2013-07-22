@@ -4,9 +4,9 @@ import java.util.List;
 
 import vic.rpg.server.ServerLoop;
 
-public class Time extends Command
+public class CommandTime extends Command
 {
-	public Time() 
+	public CommandTime() 
 	{
 		super("time");
 	}

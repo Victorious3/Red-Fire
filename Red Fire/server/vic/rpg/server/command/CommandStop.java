@@ -4,9 +4,9 @@ import java.util.List;
 
 import vic.rpg.server.Server;
 
-public class Stop extends Command 
+public class CommandStop extends Command 
 {
-	public Stop() 
+	public CommandStop() 
 	{
 		super("stop");
 	}

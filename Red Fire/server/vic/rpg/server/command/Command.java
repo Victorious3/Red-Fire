@@ -9,11 +9,11 @@ public abstract class Command
 	
 	static
 	{
-		commands.put("help", new Help());
-		commands.put("online", new Online());
-		commands.put("say", new Say());
-		commands.put("stop", new Stop());
-		commands.put("time", new Time());
+		commands.put("help", new CommandHelp());
+		commands.put("online", new CommandOnline());
+		commands.put("say", new CommandSay());
+		commands.put("stop", new CommandStop());
+		commands.put("time", new CommandTime());
 	}
 	
 	public static void getHelp()

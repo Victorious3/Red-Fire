@@ -2,9 +2,9 @@ package vic.rpg.server.command;
 
 import java.util.List;
 
-public class Help extends Command 
+public class CommandHelp extends Command 
 {
-	public Help() 
+	public CommandHelp() 
 	{
 		super("help");
 	}
