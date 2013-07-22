@@ -187,7 +187,13 @@ public class Server extends Thread
 		    	actConnections++;
 		    	
 		    	EntityPlayer playerEntity = (EntityPlayer) LevelRegistry.ENTITY_LIVING_PLAYER.clone();
-		    	ServerLoop.level.addPlayer(playerEntity, player, 550, 550);
+		    	
+		    	if(ServerLoop.level.offlinePlayersList.containsKey(player))
+		    	{
+		    		playerEntity = ServerLoop.level.offlinePlayersList.remove(player);	    		
+		    		ServerLoop.level.addPlayer(playerEntity, player);
+		    	}	    	
+		    	else ServerLoop.level.createPlayer(playerEntity, player, 550, 550);
 		    	
 		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
@@ -255,10 +261,10 @@ public class Server extends Thread
 	    	actConnections--;	    	
 	    	c.connected = false;
 	    	System.out.println("Disconnecting player " + c.player + " Reason: " + e.getMessage());
-	    	broadcast(new Packet7Entity(ServerLoop.level.playerList.get(c.player), Packet7Entity.MODE_DELETE), c.player);
+	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersList.get(c.player), Packet7Entity.MODE_DELETE), c.player);
 	    	connections.remove(c.player);
 	    	c.socket.close(); 
-	    	ServerLoop.level.playerList.remove(c.player);
+	    	ServerLoop.level.offlinePlayersList.put(c.player, ServerLoop.level.onlinePlayersList.remove(c.player));
 
 		} catch (IOException e2) {
 			e.printStackTrace();

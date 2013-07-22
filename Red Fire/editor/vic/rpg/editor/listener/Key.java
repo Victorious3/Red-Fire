@@ -74,7 +74,7 @@ public class Key implements KeyListener
 					{
 						e.xCoord += plusX;
 						e.yCoord += plusY;
-						Editor.editor.level.entities.put(e.uniqueUUID, e);
+						Editor.editor.level.entities.put(e.UUID, e);
 						if(e.xCoord < minX) minX = e.xCoord;
 						if(e.yCoord < minY) minY = e.yCoord;
 						if(e.xCoord + e.getWidth() > maxX) maxX = e.xCoord + e.getWidth();

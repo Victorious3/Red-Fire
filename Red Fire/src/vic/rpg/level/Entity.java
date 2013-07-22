@@ -18,7 +18,7 @@ public class Entity extends Render implements Cloneable
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
 	
-	public String uniqueUUID;
+	public String UUID;
 	public int id = 0;
 	@Editable public int zLevel = 0;
 	

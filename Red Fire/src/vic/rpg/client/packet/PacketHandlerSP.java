@@ -78,7 +78,7 @@ public class PacketHandlerSP extends Thread
 							else continue;
 						}
 					}
-					if(Game.level != null) Game.level.entities.put(e.uniqueUUID, e);				
+					if(Game.level != null) Game.level.entities.put(e.UUID, e);				
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:
@@ -89,7 +89,7 @@ public class PacketHandlerSP extends Thread
 				{
 					for (Entity e : entities)
 					{
-						map.remove(e.uniqueUUID);
+						map.remove(e.UUID);
 					}
 				}			
 			}
@@ -102,13 +102,13 @@ public class PacketHandlerSP extends Thread
 			{
 				EntityLiving e = (EntityLiving) Game.level.entities.get(((Packet9EntityMoving)p).uniqueUUID);
 				
-				if(e.uniqueUUID != Game.thePlayer.uniqueUUID)
+				if(e.UUID != Game.thePlayer.UUID)
 				{
 					e.xCoord = ((Packet9EntityMoving)p).xCoord;
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
 					e.setRotation(((Packet9EntityMoving)p).rotation);
 					e.setWalking(((Packet9EntityMoving)p).isWalking);
-					Game.level.entities.put(e.uniqueUUID, e);
+					Game.level.entities.put(e.UUID, e);
 				}
 			}
 		}
@@ -127,26 +127,30 @@ public class PacketHandlerSP extends Thread
 	{		
 		while(Game.netHandler.connected)
 		{
-			if(packetQueue.size() != 0)
+			try
 			{
-				if(packetQueue.get(0) == null) continue;
-				handlePacket(packetQueue.get(0));
-				packetQueue.remove(0);
-			}
-			if(sendingQueue.size() != 0)
-			{
-				if(sendingQueue.get(0) == null) continue;
-				sendPacket(sendingQueue.get(0));
-				sendingQueue.remove(0);
-			}
-			
-			if(sendingQueue.size() < 50 && packetQueue.size() < 50)
-			{
-				try {
-					Thread.sleep(1);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if(packetQueue.size() != 0)
+				{
+					if(packetQueue.get(0) == null) continue;
+					handlePacket(packetQueue.get(0));
+					packetQueue.remove(0);
 				}
+				if(sendingQueue.size() != 0)
+				{
+					if(sendingQueue.get(0) == null) continue;
+					sendPacket(sendingQueue.get(0));
+					sendingQueue.remove(0);
+				}		
+				if(sendingQueue.size() < 50 && packetQueue.size() < 50)
+				{
+					try {
+						Thread.sleep(1);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

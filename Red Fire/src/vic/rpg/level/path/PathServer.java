@@ -16,14 +16,21 @@ public class PathServer extends Thread
 	public Path create(NodeMap nodeMap, Node begin, Node end, double maxCost)
 	{
 		Path p = new Path(nodeMap, begin, end, maxCost);
-		processingPaths.add(p);
+		if(begin.isBlocked || end.isBlocked)
+		{
+			p.isReady = true;
+			p.isPossible = false;
+		}
+		else processingPaths.add(p);
 		return p;
 	}
+	
+	public boolean isRunning = true;
 	
 	@Override
 	public void run() 
 	{
-		while(true)
+		while(isRunning)
 		{
 			try {
 				Thread.sleep(1);

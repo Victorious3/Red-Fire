@@ -18,7 +18,6 @@ public class ServerLoop implements Runnable
 	{
 		thread = new Thread(this);		
 		thread.start();
-		pathServer = new PathServer();
 	}
 	
 	int tickCounter = 0;
@@ -35,12 +34,15 @@ public class ServerLoop implements Runnable
 		thread = new Thread(this);
 		thread.setName("Server GameLoop");
 		thread.start();
+		pathServer = new PathServer();
 	}
 	
 	public void stop()
 	{
 		if(!isRunning) return;
 		isRunning = false;
+		pathServer.isRunning = false;
+		
 		try {
 			thread.join();
 		} catch (InterruptedException e) {

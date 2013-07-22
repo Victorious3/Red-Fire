@@ -36,7 +36,7 @@ public class EntityLiving extends Entity
 	private int nextX;
 	private int nextY;
 	
-	protected Inventory inventory = new Inventory();
+	public Inventory inventory = new Inventory(this);
 	
 	public EntityLiving(int width, int height) 
 	{
@@ -106,6 +106,8 @@ public class EntityLiving extends Entity
 		
 		return tag;
 	}
+	
+	public void formatInventory(){};
 
 	public void setY(int y)
 	{

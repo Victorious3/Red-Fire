@@ -19,7 +19,6 @@ import vic.rpg.Game;
 
 public class Utils 
 {
-
 	public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	public static GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
 	public static GraphicsConfiguration gConfig = defaultScreen.getDefaultConfiguration();

@@ -11,9 +11,14 @@ import org.jnbt.ListTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
+import vic.rpg.Game;
 import vic.rpg.item.Item;
 import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.LevelRegistry;
+import vic.rpg.server.Server;
+import vic.rpg.server.packet.Packet7Entity;
+import vic.rpg.server.packet.Packet8PlayerUpdate;
+import vic.rpg.utils.Utils;
 
 //TODO Messy code!!!
 public class Inventory 
@@ -21,6 +26,13 @@ public class Inventory
 	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();
 	private HashMap<Integer, Item> slots = new HashMap<Integer, Item>();
 
+	public EntityLiving parentEntity;
+	
+	public Inventory(EntityLiving parentEntity)
+	{
+		this.parentEntity = parentEntity;
+	}
+	
 	public void add(int id, int width, int height)
 	{
 		slotGrids.put(id, new Item[width][height]);
@@ -68,11 +80,12 @@ public class Inventory
 		SlotGrid temp = new SlotGrid(grid, 0, 0, -2, null);
 		
 		if(temp.setItemAndConfirm(xCoord, yCoord, item))
-		{
-			addItems(id, temp.items.clone());
+		{		
+			setItem(id, temp.items.clone());
 			temp = null;
 			return true;
 		}
+		setItem(id, temp.items.clone());
 		temp = null;
 		return false;
 	}
@@ -80,12 +93,30 @@ public class Inventory
 	public boolean setItem(int id, Item item)
 	{		
 		addItem(id, item);
+		if(this.parentEntity != null)
+		{
+			if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+			{
+				System.out.println("Sending Slot " + id + " with item " + item);
+				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));
+			}
+			else Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+		}
 		return true;
 	}
 	
 	public void setItem(int id, Item[][] items) 
 	{
-		slotGrids.put(id, items);
+		addItems(id, items);
+		if(this.parentEntity != null)
+		{
+			if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+			{
+				System.out.println("Sending SlotGrid " + id);
+				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));
+			}
+			else Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+		}
 	}
 	
 	public boolean addToInventory(Item item)
@@ -128,9 +159,9 @@ public class Inventory
 				int id = (int)idTag.getValue();
 				Item i = LevelRegistry.itemRegistry.get(id).clone();
 				i.readFromNBT((CompoundTag) tMap.get("data"));
-				slots.put(slotID, i);
+				slots.put(slotID, i);		
 			}
-			slots.put(slotID, null);
+			else slots.put(slotID, null);
 		}
 		
 		for(CompoundTag t : slotGridList)

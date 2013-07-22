@@ -97,6 +97,14 @@ public class Gui
 		}
 	}
 	
+	public void onMouseWheelMoved(int amount)
+	{
+		for(GControl gc : controlsList)
+		{
+			if(gc.isVisible) gc.onMouseWheelMoved(amount);
+		}
+	}
+	
 	public void updateGui()
 	{
 		int x = GameRegistry.mouse.xCoord;

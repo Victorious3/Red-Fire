@@ -20,7 +20,7 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 	
 	public GuiIngameMenu() 
 	{
-		super(true);
+		super(false);
 	}
 
 	@Override

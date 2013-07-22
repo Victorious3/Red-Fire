@@ -27,6 +27,7 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Game;
+import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.path.NodeMap;
 import vic.rpg.registry.LevelRegistry;
@@ -43,7 +44,8 @@ public class Level
 	public int[][][] worldobjects; //x-y-(id,data)
 	
 	public LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
-	public LinkedHashMap<String, EntityPlayer> playerList = new LinkedHashMap<String, EntityPlayer>();
+	public LinkedHashMap<String, EntityPlayer> onlinePlayersList = new LinkedHashMap<String, EntityPlayer>();
+	public LinkedHashMap<String, EntityPlayer> offlinePlayersList = new LinkedHashMap<String, EntityPlayer>();
 	
 	public NodeMap nodeMap = new NodeMap(this);
 	
@@ -138,7 +140,9 @@ public class Level
 		}
 		addEntity(LevelRegistry.ENTITY_HOUSE.id, 200, 200);
 		addEntity(LevelRegistry.ENTITY_APLTREE.id, 700, 400);
+		
 		addEntity(LevelRegistry.ENTITY_LIVING_NPC.id, 200, 200);
+		addEntity(LevelRegistry.ENTITY_LIVING_NPC.id, 700, 200);
 		
 		nodeMap.recreate(this);
 	}
@@ -201,7 +205,7 @@ public class Level
 		
 		if(Utils.getSide().equals(Utils.SIDE_SERVER))
 		{
-			for(EntityPlayer player : playerList.values())
+			for(EntityPlayer player : onlinePlayersList.values())
 			{
 				player.tick();
 			}
@@ -245,8 +249,12 @@ public class Level
 		UUID uuid = UUID.randomUUID();
 		e.xCoord = x;
 		e.yCoord = y;
-		e.uniqueUUID = uuid.toString();
+		e.UUID = uuid.toString();
 		e.levelObj = this;
+		if(e instanceof EntityLiving)
+		{
+			((EntityLiving)e).formatInventory();
+		}
 		entities.put(uuid.toString(), e);
 	}
 	
@@ -256,20 +264,28 @@ public class Level
 		UUID uuid = UUID.randomUUID(); 
 		ent.xCoord = x;
 		ent.yCoord = y;
-		ent.uniqueUUID = uuid.toString();
+		ent.UUID = uuid.toString();
 		ent.levelObj = this;
 		entities.put(uuid.toString(), ent);
 	}
 	
-	public void addPlayer(EntityPlayer player, String username, int x, int y)
+	public void addPlayer(EntityPlayer player, String username)
+	{
+		player.username = username;
+		player.levelObj = this;
+		onlinePlayersList.put(username, player);		
+	}
+	
+	public void createPlayer(EntityPlayer player, String username, int x, int y)
 	{
 		UUID uuid = UUID.randomUUID();
 		player.xCoord = x;
 		player.yCoord = y;
 		player.username = username;
-		player.uniqueUUID = uuid.toString();
+		player.UUID = uuid.toString();
 		player.levelObj = this;
-		playerList.put(username, player);		
+		player.formatInventory();
+		onlinePlayersList.put(username, player);		
 	}
 
 	public ArrayList<Entity> sortEntitiesByZLevel()
@@ -367,15 +383,27 @@ public class Level
 		{
 			Entity ent = LevelRegistry.readEntityFromNBT((CompoundTag)entityTag);
 			ent.levelObj = level;
-			entities.put(ent.uniqueUUID, ent);
+			entities.put(ent.UUID, ent);
 		}
 		
 		level.worldobjects = worldObjects;
 		level.entities = entities;
 		level.time = time;
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) level.entitiesForRender = level.sortEntitiesByZLevel();
+		if(levelMap.containsKey("players"))
+		{
+			List<Tag> playerList = (List<Tag>)levelMap.get("players").getValue();
+			LinkedHashMap<String, EntityPlayer> players = new LinkedHashMap<String, EntityPlayer>();
+			for(Tag playerTag : playerList)
+			{
+				EntityPlayer ent = (EntityPlayer) LevelRegistry.readEntityFromNBT((CompoundTag)playerTag);
+				ent.levelObj = level;
+				players.put(ent.username, ent);
+			}
+			level.offlinePlayersList = players;
+		}
 		
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) level.entitiesForRender = level.sortEntitiesByZLevel();
 		level.nodeMap.recreate(level);
 		
 		return level;
@@ -411,11 +439,30 @@ public class Level
 		
 		if(send)
 		{
-			for(EntityPlayer e : playerList.values())
+			for(EntityPlayer e : onlinePlayersList.values())
 			{
 				CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
 				entityList.add(enitiyTag);
 			}
+		}
+		else
+		{
+			//Player saves
+			ArrayList<CompoundTag> playerList = new ArrayList<CompoundTag>();
+			
+			for(EntityPlayer e : onlinePlayersList.values())
+			{
+				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
+				playerList.add(entityTag);
+			}
+			for(EntityPlayer e : offlinePlayersList.values())
+			{
+				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
+				playerList.add(entityTag);
+			}
+			
+			ListTag playerListTag = new ListTag("players", CompoundTag.class, playerList);
+			levelMap.put("players", playerListTag);
 		}
 		
 		ListTag tileListTag = new ListTag("tiles", CompoundTag.class, tileList);

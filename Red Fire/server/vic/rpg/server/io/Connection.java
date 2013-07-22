@@ -100,7 +100,7 @@ public class Connection extends Thread
     			packetHandler.addPacketToQueue(p);	    		
 	    	}
 	    }
-	    catch (Exception e)
+	    catch (IOException e)
 	    {
 	    	Server.server.delConnection(this, e);
 	    }

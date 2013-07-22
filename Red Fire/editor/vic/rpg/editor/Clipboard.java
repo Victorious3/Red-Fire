@@ -97,7 +97,7 @@ public class Clipboard
 	{
 		for(Entity e : Mouse.selectedEntities)
 		{
-			Editor.editor.level.entities.remove(e.uniqueUUID);
+			Editor.editor.level.entities.remove(e.UUID);
 		}
 		Mouse.selectedEntities.clear();
 		Editor.editor.labelLevel.update(false);

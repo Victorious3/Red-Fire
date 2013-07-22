@@ -4,13 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import vic.rpg.Game;
-import vic.rpg.client.net.NetHandler;
 import vic.rpg.editor.Editor;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.Gif;
-import vic.rpg.server.Server;
 import vic.rpg.sound.SoundPlayer;
 
 public class GuiMain extends Gui implements IGButton 
@@ -52,24 +50,7 @@ public class GuiMain extends Gui implements IGButton
 	{
 		if(name.equalsIgnoreCase("Singleplayer"))
 		{
-			Server.main(new String[]{"-splayer"});
-			Server.MAX_CONNECTIONS = 1;
-			
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-			Game.netHandler = new NetHandler();
-			Game.netHandler.IS_SINGLEPLAYER = true;
-			
-			if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))
-			{
-				Gui.setGui(null);
-				
-				SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
-			}
+			Gui.setGui(new GuiSinglePlayer());
 		}
 		else if(name.equalsIgnoreCase("Multiplayer"))
 		{

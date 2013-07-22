@@ -181,6 +181,7 @@ public class Game extends Canvas implements Runnable
 		
 		game.addMouseListener(GameRegistry.mouse);
 		game.addMouseMotionListener(GameRegistry.mouse);
+		game.addMouseWheelListener(GameRegistry.mouse);
 		game.addKeyListener(GameRegistry.key);
 		game.addComponentListener(GameRegistry.window);
 		

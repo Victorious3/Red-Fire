@@ -29,7 +29,11 @@ public class EntityPlayer extends EntityLiving
 	{
 		super(33, 32);
 		this.zLevel = -1;
-		
+	}
+	
+	@Override
+	public void formatInventory() 
+	{
 		inventory.add(0, 12, 8);
 		inventory.add(1);
 		inventory.add(2);
@@ -40,13 +44,13 @@ public class EntityPlayer extends EntityLiving
 		inventory.add(7);
 		inventory.add(8);
 		
-		inventory.setItem(2, new ItemApple());
+		inventory.addItem(2, new ItemApple());
 		inventory.addToInventory(new ItemSword());
 		inventory.addToInventory(new ItemSword());
 		inventory.addToInventory(new ItemSword());
 		inventory.addToInventory(new ItemShield());
 	}
-	
+
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
@@ -101,7 +105,6 @@ public class EntityPlayer extends EntityLiving
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
 		this.username = (String) map.get("username").getValue();
-		inventory.readFromNBT(tag);
 	}
 
 	@Override
@@ -125,8 +128,6 @@ public class EntityPlayer extends EntityLiving
 		map2.put("username", username);
 		
 		tag = new CompoundTag(tag.getName(), map2);	
-		tag = this.inventory.writeToNBT(tag);
-		
 		return tag;
 	}	
 }

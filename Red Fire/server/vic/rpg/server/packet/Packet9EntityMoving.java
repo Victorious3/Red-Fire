@@ -25,7 +25,7 @@ public class Packet9EntityMoving extends Packet
 		this.yCoord = entity.yCoord;
 		this.rotation = entity.rotation;
 		this.isWalking = entity.isWalking();
-		this.uniqueUUID = entity.uniqueUUID;
+		this.uniqueUUID = entity.UUID;
 		
 		if(entity instanceof EntityPlayer) 
 		{

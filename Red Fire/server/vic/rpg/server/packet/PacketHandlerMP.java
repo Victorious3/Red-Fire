@@ -32,36 +32,42 @@ public class PacketHandlerMP extends Thread
 	
 	public void handlePacket(Packet p)
 	{			
-		if(p.id == 0)
-		{
-			if(((Packet0Update)p).data == -1) addPacketToSendingQueue(p);
-			else if(((Packet0Update)p).data == 0) Server.server.delConnection(con, new RuntimeException("Disconnect quitting"));
-		}
-		else if(p.id == 8)
-		{
-			p.id = 7;
-			Server.server.broadcast(p);
-		}
-		else if(p.id == 9)
-		{
-			Packet9EntityMoving p9entitymoving = (Packet9EntityMoving) p;
-			
-			Entity e;
-			if(p9entitymoving.isPlayer) e = ServerLoop.level.playerList.get(p9entitymoving.playerName);
-			else e = ServerLoop.level.entities.get(p9entitymoving.uniqueUUID);
-			
-			e.xCoord = p9entitymoving.xCoord;
-			e.yCoord = p9entitymoving.yCoord;
-			
-			if(p9entitymoving.isPlayer) ServerLoop.level.playerList.put(p9entitymoving.playerName, (EntityPlayer)e);
-			else  ServerLoop.level.entities.put(e.uniqueUUID, e);
-			
-			Server.server.broadcast(p);
-		}
-		else if(p.id == 20)
-		{
-			System.out.println("[" + con.player + "]: " + ((Packet20Chat)p).message);
-			Server.server.broadcast(p);
+		try {
+			if(p.id == 0)
+			{
+				if(((Packet0Update)p).data == -1) addPacketToSendingQueue(p);
+				else if(((Packet0Update)p).data == 0) Server.server.delConnection(con, new RuntimeException("Disconnect quitting"));
+			}
+			else if(p.id == 8)
+			{
+				p.id = 7;
+				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
+				ServerLoop.level.onlinePlayersList.put(player.username, player);
+				Server.server.broadcast(p);
+			}
+			else if(p.id == 9)
+			{
+				Packet9EntityMoving p9entitymoving = (Packet9EntityMoving) p;
+				
+				Entity e;
+				if(p9entitymoving.isPlayer) e = ServerLoop.level.onlinePlayersList.get(p9entitymoving.playerName);
+				else e = ServerLoop.level.entities.get(p9entitymoving.uniqueUUID);
+				
+				e.xCoord = p9entitymoving.xCoord;
+				e.yCoord = p9entitymoving.yCoord;
+				
+				if(p9entitymoving.isPlayer) ServerLoop.level.onlinePlayersList.put(p9entitymoving.playerName, (EntityPlayer)e);
+				else  ServerLoop.level.entities.put(e.UUID, e);
+				
+				Server.server.broadcast(p);
+			}
+			else if(p.id == 20)
+			{
+				System.out.println("[" + con.player + "]: " + ((Packet20Chat)p).message);
+				Server.server.broadcast(p);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

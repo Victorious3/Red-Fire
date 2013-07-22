@@ -3,13 +3,15 @@ package vic.rpg.listener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.event.MouseInputListener;
 
 import vic.rpg.Game;
 import vic.rpg.gui.Gui;
 
-public class Mouse implements MouseListener, MouseMotionListener, MouseInputListener {
+public class Mouse implements MouseListener, MouseMotionListener, MouseInputListener, MouseWheelListener {
 
 	public boolean isRightDown = false;
 	public boolean isLeftDown = false;
@@ -86,4 +88,9 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		if(Gui.currentGui != null)Gui.currentGui.onMouseClickEnd(this.xCoord, this.yCoord, arg0.getButton());
 	}
 
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent arg0) 
+	{
+		if(Gui.currentGui != null)Gui.currentGui.onMouseWheelMoved(arg0.getWheelRotation() * arg0.getScrollAmount());
+	}
 }

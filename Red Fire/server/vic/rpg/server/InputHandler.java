@@ -1,11 +1,11 @@
 package vic.rpg.server;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import vic.rpg.server.io.Connection;
-import vic.rpg.server.packet.Packet20Chat;
+import vic.rpg.server.command.Command;
 
 public class InputHandler extends Thread 
 {
@@ -30,60 +30,13 @@ public class InputHandler extends Thread
 	
 	public void handleCommand(String command, List<String> args)
 	{
-		if(command.equalsIgnoreCase("stop"))
-		{			
-			System.out.println("________________________________________________");
-			System.err.println("Stopping Server ...");
-			System.out.println("done!");
-			Server.server.stopServer();			
-		}
-		else if(command.equalsIgnoreCase("online"))
+		Command c = Command.commands.get(command);
+		if(c == null)
 		{
-			String out = "";
-			out += "Online Players: " + Server.actConnections + " (";
-			
-			for(Connection con : Server.connections.values())
-			{
-				out += con.player + ", ";
-			}
-			
-			out += ")";
-			System.out.println(out);
+			System.err.println("No command named \"" + command + "\"!");
+			Command.commands.get("help").cast(new ArrayList<String>());
 		}
-		else if(command.equalsIgnoreCase("say"))
-		{
-			if(args.get(0) != null)
-			{
-				Server.server.broadcast(new Packet20Chat(args.get(0), "server"));
-				System.out.println("{SERVER}: " + args.get(0));
-			}
-		}
-		else if(command.equalsIgnoreCase("time"))
-		{
-			if(args.size() > 0 && args.get(0).equals("set"))
-			{
-				if(args.size() > 1 && args.get(1) != null) 
-				{
-					String time = args.get(1);
-					try {
-						int t2 = Integer.parseInt(time);
-						ServerLoop.level.time = t2;
-						System.out.println("Time set to " + t2);
-					} catch (NumberFormatException e) {
-						System.err.println("Time has to be numeric!");
-					}				
-				}
-				else
-				{
-					System.err.println("Usage: /time set <time>");
-				}
-			}
-			else System.out.println("The current game time is " + ServerLoop.level.time);
-		}
-		else
-		{
-			System.err.println("Unknown Command: " + command);
-		}
+		else c.cast(args);
 	}
 		
 	@Override

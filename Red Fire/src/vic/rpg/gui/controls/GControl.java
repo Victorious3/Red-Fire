@@ -13,7 +13,7 @@ public class GControl {
 	public boolean mouseDown = false;
 	public boolean mouseHovered = false;
 	
-	public GControl(int xCoord, int yCoord, int width, int height)
+	protected GControl(int xCoord, int yCoord, int width, int height)
 	{
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
@@ -32,4 +32,6 @@ public class GControl {
 	public void onClickEnd(int x, int y) {}
 
 	public void tick() {}
+
+	public void onMouseWheelMoved(int amount) {}
 }

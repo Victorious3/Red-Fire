@@ -99,7 +99,7 @@ public class LevelRegistry
 			ent = (Entity) entClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
 			ent.xCoord = xCoord;
 			ent.yCoord = yCoord;
-			ent.uniqueUUID = uuid;
+			ent.UUID = uuid;
 			ent.id = id;
 			ent.zLevel = zLevel;
 		} catch (Exception e) {
@@ -120,7 +120,7 @@ public class LevelRegistry
 		map.put("xcoord", new IntTag("xcoord", ent.xCoord));
 		map.put("ycoord", new IntTag("ycoord", ent.yCoord));
 		map.put("zLevel", new IntTag("zLevel", ent.zLevel));
-		map.put("uuid", new StringTag("uuid", ent.uniqueUUID));
+		map.put("uuid", new StringTag("uuid", ent.UUID));
 		
 		CompoundTag tag = new CompoundTag("entity", map);		
 		tag = ent.writeToNBT(tag);
