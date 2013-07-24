@@ -29,6 +29,7 @@ public class EntityPlayer extends EntityLiving
 	{
 		super(33, 32);
 		this.zLevel = -1;
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}
 	
 	@Override
@@ -107,7 +108,6 @@ public class EntityPlayer extends EntityLiving
 		this.username = (String) map.get("username").getValue();
 	}
 
-	@Override
 	public void initRender() 
 	{
 		this.sprites = steps[0];

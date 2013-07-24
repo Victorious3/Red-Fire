@@ -13,6 +13,8 @@ public class EntityNPC extends EntityLiving
 		this.zLevel = -1;
 		this.sprites = EntityPlayer.steps[this.rotation];
 		this.speed = 2;
+		
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}
 	int tickCounter = 0;
 		
@@ -48,7 +50,6 @@ public class EntityNPC extends EntityLiving
 		return "The Chaser";
 	}
 
-	@Override
 	public void initRender() 
 	{
 		this.sprites = EntityPlayer.steps[0];

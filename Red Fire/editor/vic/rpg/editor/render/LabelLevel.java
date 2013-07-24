@@ -43,15 +43,15 @@ public class LabelLevel extends JLabel
 		
 		g2d.scale(scale, scale);
 		
-		if(Editor.editor == null) return;
+		if(Editor.instance == null) return;
 		
-		if(needsUpdate == 1 && Editor.editor.level != null)
+		if(needsUpdate == 1 && Editor.instance.level != null)
 		{
-			Editor.editor.level.render((Graphics2D)img.getGraphics(), 0, 0, Editor.editor.level.getWidth(), Editor.editor.level.getHeight(), 0, 0);
+			Editor.instance.level.render((Graphics2D)img.getGraphics(), 0, 0, Editor.instance.level.getWidth(), Editor.instance.level.getHeight(), 0, 0);
 		}
-		if(needsUpdate == 2 && Editor.editor.level != null)
+		if(needsUpdate == 2 && Editor.instance.level != null)
 		{
-			Editor.editor.level.render((Graphics2D)img.getGraphics(), offX, offY, width, height, 0, 0);
+			Editor.instance.level.render((Graphics2D)img.getGraphics(), offX, offY, width, height, 0, 0);
 		}
 		
 		g2d.drawImage(img, 0, 0, null);
@@ -89,10 +89,10 @@ public class LabelLevel extends JLabel
 			g2d.draw(Mouse.selection);
 			g2d.setStroke(stroke);
 		}		
-		if(Editor.editor.buttonPath.isSelected() || Key.keyListener.button == 3)
+		if(Editor.instance.buttonPath.isSelected() || Key.keyListener.button == 3)
 		{
 			g2d.setColor(new Color(255, 0, 0, 120));
-			for(Node[] n2 : Editor.editor.level.nodeMap.nodes)
+			for(Node[] n2 : Editor.instance.level.nodeMap.nodes)
 			{
 				for(Node n : n2)
 				{
@@ -105,7 +105,7 @@ public class LabelLevel extends JLabel
 			}
 			
 			g2d.setColor(new Color(255, 255, 0));
-			for(Entity e : Editor.editor.level.entities.values())
+			for(Entity e : Editor.instance.level.entities.values())
 			{
 				g2d.draw(e.getCollisionBoxes(new Area()));
 			}
@@ -150,11 +150,11 @@ public class LabelLevel extends JLabel
 	
 	public void scale(float scale)
 	{
-		if(Editor.editor.level != null)
+		if(Editor.instance.level != null)
 		{
 			if(scale >= 0.1 && scale <= 5) this.scale = scale;
-			this.setSize((int)(Editor.editor.level.getWidth() * scale), (int)(Editor.editor.level.getHeight() * scale));
-			ZoomListener.setZoom(Editor.editor.dropdownZoom, scale);
+			this.setSize((int)(Editor.instance.level.getWidth() * scale), (int)(Editor.instance.level.getHeight() * scale));
+			ZoomListener.setZoom(Editor.instance.dropdownZoom, scale);
 			this.updateUI();
 		}
 	}
@@ -168,9 +168,9 @@ public class LabelLevel extends JLabel
 	{
 		img = new BufferedImage(level.getWidth(), level.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		
-		Editor.editor.level = level;
+		Editor.instance.level = level;
 		
-		DefaultTableModel tableModel = (DefaultTableModel) Editor.editor.tableLevel.getModel();
+		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableLevel.getModel();
 		tableModel.setRowCount(0);
 		
 		for(Field f : level.getClass().getDeclaredFields())
@@ -195,7 +195,7 @@ public class LabelLevel extends JLabel
 		Mouse.selectedTiles.clear();
 		Mouse.selection = null;
 		
-		Editor.editor.level.nodeMap = new NodeMap(Editor.editor.level);
+		Editor.instance.level.nodeMap = new NodeMap(Editor.instance.level);
 		
 		scale(1);
 		update(false);

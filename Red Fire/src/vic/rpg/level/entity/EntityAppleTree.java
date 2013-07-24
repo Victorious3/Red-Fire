@@ -8,6 +8,7 @@ import java.awt.geom.Area;
 import vic.rpg.level.EntityStatic;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.LightSource;
+import vic.rpg.utils.Utils;
 
 public class EntityAppleTree extends EntityStatic 
 {
@@ -15,6 +16,7 @@ public class EntityAppleTree extends EntityStatic
 	{
 		super(70, 87);
 		this.lightSources.add(new LightSource(1000, 1.0F, Color.yellow));
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.drawImage(RenderRegistry.IMG_ENTITY_STATIC_APLTREE, 0, 0, getWidth(), getHeight());
 	}
 	
 	@Override
@@ -25,12 +27,6 @@ public class EntityAppleTree extends EntityStatic
 			return new Point(this.xCoord + this.getWidth() / 2, this.yCoord + this.getHeight() / 2);
 		}
 		return null;
-	}
-
-	@Override
-	public void initRender() 
-	{
-		this.drawImage(RenderRegistry.IMG_ENTITY_STATIC_APLTREE, 0, 0, getWidth(), getHeight());
 	}
 
 	@Override

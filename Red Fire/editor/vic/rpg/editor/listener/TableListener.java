@@ -38,9 +38,9 @@ public class TableListener implements TableModelListener
 	@Override
 	public void tableChanged(TableModelEvent e) 
 	{
-		if(e.getSource() == Editor.editor.tableLevel.getModel() && e.getType() == TableModelEvent.UPDATE)
+		if(e.getSource() == Editor.instance.tableLevel.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
-			if(Editor.editor.level == null) return;
+			if(Editor.instance.level == null) return;
 			
 			int row = e.getFirstRow();
 			
@@ -51,15 +51,15 @@ public class TableListener implements TableModelListener
 	        
 	        try
 	        {
-	        	Utils.setField(name, value, Editor.editor.level);
+	        	Utils.setField(name, value, Editor.instance.level);
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
 	        }
 		}		
-		if(e.getSource() == Editor.editor.tableEntities.getModel() && e.getType() == TableModelEvent.UPDATE)
+		if(e.getSource() == Editor.instance.tableEntities.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
-			if(Editor.editor.level == null) return;
+			if(Editor.instance.level == null) return;
 			
 			int row = e.getFirstRow();
 			
@@ -73,36 +73,36 @@ public class TableListener implements TableModelListener
 	        	if(Mouse.selectedEntities.size() == 1) 
         		{
 	        		Utils.setField(name, value, Mouse.selectedEntities.get(0));
-	        		Editor.editor.labelLevel.update(false);
+	        		Editor.instance.labelLevel.update(false);
         		}
-	        	else Utils.setField(name, value, entities.get(Integer.parseInt(Editor.editor.dropdownEntities.getSelectedItem().toString().split(":")[0])));
+	        	else Utils.setField(name, value, entities.get(Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0])));
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
 	        }
 	        
 		}
-		if(e.getSource() == Editor.editor.tableTiles.getModel() && e.getType() == TableModelEvent.UPDATE)
+		if(e.getSource() == Editor.instance.tableTiles.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
 			if(Mouse.selectedTiles.size() > 0) 
 			{
 				for(Point p: Mouse.selectedTiles)
 				{
-					Editor.editor.level.worldobjects[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
+					Editor.instance.level.worldobjects[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
 				}				
 				
-				Editor.editor.labelLevel.update(false);
+				Editor.instance.labelLevel.update(false);
 			}
-			else tiles.put(Integer.parseInt(Editor.editor.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()));
+			else tiles.put(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()));
 		}
 	}
 	
 	public static void setTile(Tile t, int data)
 	{
-		Editor.editor.dropdownTiles.setSelectedItem(t.id + ": " + t.getClass().getSimpleName());
-		Editor.editor.labelTiles.setText("<html>" + t.getDescription() + "</html>");
+		Editor.instance.dropdownTiles.setSelectedItem(t.id + ": " + t.getClass().getSimpleName());
+		Editor.instance.labelTiles.setText("<html>" + t.getDescription() + "</html>");
 		
-		DefaultTableModel tableModel = (DefaultTableModel) Editor.editor.tableTiles.getModel();
+		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableTiles.getModel();
 		tableModel.setRowCount(0);
 		
 		Vector<Object> v = new Vector<Object>();
@@ -116,9 +116,9 @@ public class TableListener implements TableModelListener
 	
 	public static void setEntity(Entity e)
 	{
-		Editor.editor.dropdownEntities.setSelectedItem(e.id + ": " + e.getClass().getSimpleName());
+		Editor.instance.dropdownEntities.setSelectedItem(e.id + ": " + e.getClass().getSimpleName());
 		
-		DefaultTableModel tableModel = (DefaultTableModel) Editor.editor.tableEntities.getModel();
+		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableEntities.getModel();
 		tableModel.setRowCount(0);
 		
 		for(Field f : e.getClass().getFields())

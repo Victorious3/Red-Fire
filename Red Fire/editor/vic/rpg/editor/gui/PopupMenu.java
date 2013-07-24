@@ -105,8 +105,8 @@ public class PopupMenu implements ActionListener
 			{
 				int id =  Integer.parseInt(((JMenuItem)arg0.getSource()).getText().split(":")[0]);
 				
-				int minX = Editor.editor.level.width;
-				int minY = Editor.editor.level.height;
+				int minX = Editor.instance.level.width;
+				int minY = Editor.instance.level.height;
 				int maxX = 0;
 				int maxY = 0;
 				
@@ -119,15 +119,21 @@ public class PopupMenu implements ActionListener
 						if(p.x > maxX) maxX = p.x;
 						if(p.y > maxY) maxY = p.y;
 						
-						Editor.editor.level.setTile(id, p.x, p.y, TableListener.tiles.get(id));			
+						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id));			
 					}
-					Editor.editor.labelLevel.update(minX * Level.CELL_SIZE, minY * Level.CELL_SIZE, maxX * Level.CELL_SIZE, maxY * Level.CELL_SIZE);
+					Editor.instance.labelLevel.update(minX * Level.CELL_SIZE, minY * Level.CELL_SIZE, maxX * Level.CELL_SIZE, maxY * Level.CELL_SIZE);
 				}
 				else Mouse.paint(x, y, id, false);
 			}
 		}
 	}
 
+	/**
+	 * Opens the right click menu.
+	 * @param component
+	 * @param x
+	 * @param y
+	 */
 	public static void show(Component component, int x, int y) 
 	{
 		popupMenu.x = x;

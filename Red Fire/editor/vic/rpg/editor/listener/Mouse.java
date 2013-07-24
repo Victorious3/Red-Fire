@@ -42,17 +42,17 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	@Override
 	public void mouseEntered(MouseEvent arg0) 
 	{
-		if(Editor.editor.buttonMove.isSelected()) Editor.editor.frame.setCursor(GameRegistry.CURSOR_DROP);
-		else Editor.editor.frame.setCursor(Cursor.getDefaultCursor());
+		if(Editor.instance.buttonMove.isSelected()) Editor.instance.frame.setCursor(GameRegistry.CURSOR_DROP);
+		else Editor.instance.frame.setCursor(Cursor.getDefaultCursor());
 		
-		Editor.editor.panelRender.requestFocus();
+		Editor.instance.panelRender.requestFocus();
 		mouseHovered = true;
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) 
 	{
-		Editor.editor.frame.setCursor(Cursor.getDefaultCursor());
+		Editor.instance.frame.setCursor(Cursor.getDefaultCursor());
 		mouseHovered = false;
 	}
 
@@ -64,41 +64,41 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 
 		if(arg0.getButton() == MouseEvent.BUTTON1)
 		{
-			if(Editor.editor.buttonMove.isSelected()) Editor.editor.frame.setCursor(GameRegistry.CURSOR_DRAG);
-			else Editor.editor.frame.setCursor(Cursor.getDefaultCursor());	
+			if(Editor.instance.buttonMove.isSelected()) Editor.instance.frame.setCursor(GameRegistry.CURSOR_DRAG);
+			else Editor.instance.frame.setCursor(Cursor.getDefaultCursor());	
 			
 			mouseDown = true;
 			
-			if(Editor.editor.level == null) return;
+			if(Editor.instance.level == null) return;
 			
-			if(Editor.editor.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
-			else if(Editor.editor.buttonPath.isSelected())
+			if(Editor.instance.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
+			else if(Editor.instance.buttonPath.isSelected())
 			{
-				int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
-				int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+				int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+				int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 				
-				if(x >= Editor.editor.level.nodeMap.width || y >= Editor.editor.level.nodeMap.height || x < 0 || y < 0) return;
+				if(x >= Editor.instance.level.nodeMap.width || y >= Editor.instance.level.nodeMap.height || x < 0 || y < 0) return;
 				
-				start = Editor.editor.level.nodeMap.nodes[x][y];
+				start = Editor.instance.level.nodeMap.nodes[x][y];
 				
 				if(end != null)
 				{
-					path = new Path(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path = new Path(Editor.instance.level.nodeMap, start, end, Integer.MAX_VALUE);
 					path.compute();
 				}
 				
-				Editor.editor.labelLevel.updateUI();
+				Editor.instance.labelLevel.updateUI();
 			}		
-			else if(Editor.editor.buttonEdit.isSelected())
+			else if(Editor.instance.buttonEdit.isSelected())
 			{
 				selection = null;
 				
-				if(Editor.editor.dropdownMode.getSelectedIndex() == 0)
+				if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
 				{
-					int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
-					int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+					int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+					int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 					
-					if(x >= Editor.editor.level.width || y >= Editor.editor.level.height || x < 0 || y < 0) return;
+					if(x >= Editor.instance.level.width || y >= Editor.instance.level.height || x < 0 || y < 0) return;
 					
 					if(!arg0.isControlDown())
 					{
@@ -106,15 +106,15 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					}
 					selectedTiles.add(new Point(x, y));
 					
-					Editor.editor.tabpanelEditor.setSelectedComponent(Editor.editor.panelTiles);
-					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.editor.level.worldobjects[x][y][0]), Editor.editor.level.worldobjects[x][y][1]);					
+					Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelTiles);
+					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.instance.level.worldobjects[x][y][0]), Editor.instance.level.worldobjects[x][y][1]);					
 				}
 				else
 				{
-					int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) * (1 / Editor.editor.labelLevel.getScale()));
-					int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) * (1 / Editor.editor.labelLevel.getScale()));
+					int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale()));
+					int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));
 					
-					Entity e = Editor.editor.level.intersectOnRender(x, y);
+					Entity e = Editor.instance.level.intersectOnRender(x, y);
 					
 					if(e != null) 
 					{
@@ -124,7 +124,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 						}
 						selectedEntities.add(e);
 						
-						Editor.editor.tabpanelEditor.setSelectedComponent(Editor.editor.panelEntities);					
+						Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelEntities);					
 						TableListener.setEntity(e);
 					}
 					else
@@ -135,36 +135,36 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 						}
 					}
 				}			
-				Editor.editor.labelLevel.update(true);			
+				Editor.instance.labelLevel.update(true);			
 			}
 			else
 			{
-				if(selectedEntities.size() != 0 && !Editor.editor.buttonMove.isSelected())
+				if(selectedEntities.size() != 0 && !Editor.instance.buttonMove.isSelected())
 				{
 					selection = null;
 					selectedEntities.clear();
 					
-					Editor.editor.labelLevel.update(true);
+					Editor.instance.labelLevel.update(true);
 				}
 			}
 		}
 		else if(arg0.getButton() == MouseEvent.BUTTON3)
 		{
-			if(!Editor.editor.buttonPath.isSelected()) PopupMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
+			if(!Editor.instance.buttonPath.isSelected()) PopupMenu.show(arg0.getComponent(), arg0.getX(), arg0.getY());
 			else
 			{
 				if(start != null)
 				{
-					int x = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
-					int y = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+					int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+					int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 					
-					if(x >= Editor.editor.level.nodeMap.width || y >= Editor.editor.level.nodeMap.height || x < 0 || y < 0) return;
+					if(x >= Editor.instance.level.nodeMap.width || y >= Editor.instance.level.nodeMap.height || x < 0 || y < 0) return;
 					
-					end = Editor.editor.level.nodeMap.nodes[x][y];			
-					path = new Path(Editor.editor.level.nodeMap, start, end, Integer.MAX_VALUE);
+					end = Editor.instance.level.nodeMap.nodes[x][y];			
+					path = new Path(Editor.instance.level.nodeMap, start, end, Integer.MAX_VALUE);
 					path.compute();
 					
-					Editor.editor.labelLevel.updateUI();
+					Editor.instance.labelLevel.updateUI();
 				}
 			}
 		}
@@ -173,18 +173,18 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	@Override
 	public void mouseReleased(MouseEvent arg0) 
 	{
-		if(Editor.editor.buttonMove.isSelected())
+		if(Editor.instance.buttonMove.isSelected())
 		{
-			Editor.editor.frame.setCursor(GameRegistry.CURSOR_DROP);		
+			Editor.instance.frame.setCursor(GameRegistry.CURSOR_DROP);		
 		}
 		
-		else Editor.editor.frame.setCursor(Cursor.getDefaultCursor());
+		else Editor.instance.frame.setCursor(Cursor.getDefaultCursor());
 		
 		mouseDown = false;
 		
-		if(Editor.editor.buttonEdit.isSelected())
+		if(Editor.instance.buttonEdit.isSelected())
 		{
-			if(Editor.editor.dropdownMode.getSelectedIndex() == 0)
+			if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
 			{
 				if(selection != null)
 				{
@@ -208,23 +208,23 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					if(arg0.isControlDown())
 					{
-						selectedEntities.addAll(Editor.editor.level.intersectOnRender(selection));
+						selectedEntities.addAll(Editor.instance.level.intersectOnRender(selection));
 					}
 					else
 					{
-						selectedEntities = Editor.editor.level.intersectOnRender(selection);				
+						selectedEntities = Editor.instance.level.intersectOnRender(selection);				
 					}				
 				}
 			}
 			Mouse.selection = null;
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
 		}
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) 
 	{
-		Editor.editor.labelLevel.scale(Editor.editor.labelLevel.getScale() - arg0.getUnitsToScroll() / 100.0F);
+		Editor.instance.labelLevel.scale(Editor.instance.labelLevel.getScale() - arg0.getUnitsToScroll() / 100.0F);
 	}
 	
 	int preX = 0;
@@ -236,37 +236,37 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		xCoord = arg0.getX(); 
 		yCoord = arg0.getY(); 
 		
-		if(Editor.editor.level == null) return;
+		if(Editor.instance.level == null) return;
 		
-		if(Editor.editor.buttonMove.isSelected())
+		if(Editor.instance.buttonMove.isSelected())
 		{
-			int x = Editor.editor.labelLevel.getX() + (arg0.getX() - preX);
-			int y = Editor.editor.labelLevel.getY() + (arg0.getY() - preY);
+			int x = Editor.instance.labelLevel.getX() + (arg0.getX() - preX);
+			int y = Editor.instance.labelLevel.getY() + (arg0.getY() - preY);
 			
-			Editor.editor.labelLevel.setLocation(x, y);
+			Editor.instance.labelLevel.setLocation(x, y);
 			
 			preX = arg0.getX();
 			preY = arg0.getY();
 		}
-		else if(Editor.editor.buttonPaint.isSelected() && Editor.editor.dropdownMode.getSelectedIndex() == 0)
+		else if(Editor.instance.buttonPaint.isSelected() && Editor.instance.dropdownMode.getSelectedIndex() == 0)
 		{
 			paint(arg0.getX(), arg0.getY());
 		}
 		
-		if(Editor.editor.buttonEdit.isSelected()) 
+		if(Editor.instance.buttonEdit.isSelected()) 
 		{
-			int x = (int) ((float)(preX - Editor.editor.labelLevel.getX()) * (1 / Editor.editor.labelLevel.getScale())); 
-			int y = (int) ((float)(preY - Editor.editor.labelLevel.getY()) * (1 / Editor.editor.labelLevel.getScale()));		
+			int x = (int) ((float)(preX - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale())); 
+			int y = (int) ((float)(preY - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));		
 			
-			int x2 = (int) ((float)(arg0.getX() - Editor.editor.labelLevel.getX()) * (1 / Editor.editor.labelLevel.getScale()));
-			int y2 = (int) ((float)(arg0.getY() - Editor.editor.labelLevel.getY()) * (1 / Editor.editor.labelLevel.getScale()));
+			int x2 = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale()));
+			int y2 = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));
 			
 			if(x2 > x && y2 > y) selection = new Rectangle(x, y, x2 - x, y2 - y);
 			if(x2 < x && y2 < y) selection = new Rectangle(x2, y2, x - x2, y - y2);
 			if(x2 < x && y2 > y) selection = new Rectangle(x2, y, x - x2, y2 - y);
 			if(x2 > x && y2 < y) selection = new Rectangle(x, y2, x2 - x, y - y2);
 			 
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
 		}
 	}
 
@@ -279,13 +279,13 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	
 	private synchronized void paint(int x, int y)
 	{
-		if(Editor.editor.dropdownMode.getSelectedIndex() == 0)
+		if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
 		{
-			paint(x, y, Integer.parseInt(Editor.editor.dropdownTiles.getSelectedItem().toString().split(":")[0]), false);
+			paint(x, y, Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), false);
 		}
 		else
 		{
-			paint(x, y, Integer.parseInt(Editor.editor.dropdownEntities.getSelectedItem().toString().split(":")[0]), true);
+			paint(x, y, Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0]), true);
 		}
 	}
 	
@@ -293,23 +293,23 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	{
 		if(!isEntity)
 		{
-			int x2 = (int) ((float)(x - Editor.editor.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.editor.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.editor.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 			
-			if(x2 < 0 || y2 < 0 || x2 >= Editor.editor.level.width || y2 >= Editor.editor.level.height) return;
+			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.width || y2 >= Editor.instance.level.height) return;
 			
-			Editor.editor.level.setTile(id, x2, y2, TableListener.tiles.get(id));
-			Editor.editor.labelLevel.update((x2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, (y2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
+			Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id));
+			Editor.instance.labelLevel.update((x2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, (y2 * Level.CELL_SIZE) - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
 		}
 		else
 		{
-			int x2 = (int) ((float)(x - Editor.editor.labelLevel.getX()) * (1 / Editor.editor.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.editor.labelLevel.getY()) * (1 / Editor.editor.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));
 			
-			if(x2 < 0 || y2 < 0 || x2 >= Editor.editor.level.getWidth() || y2 >= Editor.editor.level.getHeight()) return;
+			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.getWidth() || y2 >= Editor.instance.level.getHeight()) return;
 			
-			Editor.editor.level.addEntity(TableListener.entities.get(id).clone(), x2, y2);			
-			Editor.editor.labelLevel.update(x2 - Level.CELL_SIZE * 5, y2 - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
+			Editor.instance.level.addEntity(TableListener.entities.get(id).clone(), x2, y2);			
+			Editor.instance.labelLevel.update(x2 - Level.CELL_SIZE * 5, y2 - Level.CELL_SIZE * 5, Level.CELL_SIZE * 5, Level.CELL_SIZE * 5);
 		}
 	}
 }

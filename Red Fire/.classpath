@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="jars/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="jars/compress-lzf-0.9.8.jar"/>
 	<classpathentry kind="lib" path="jars/jocl.jar"/>
+	<classpathentry kind="lib" path="jars/bsh-2.0b4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

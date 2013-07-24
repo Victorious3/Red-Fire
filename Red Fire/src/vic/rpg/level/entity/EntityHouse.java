@@ -5,19 +5,14 @@ import java.awt.geom.Area;
 
 import vic.rpg.level.EntityStatic;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.utils.Utils;
 
 public class EntityHouse extends EntityStatic
 {
 	public EntityHouse()
 	{
 		super(300, 340);
-	}
-
-	@Override
-	public void initRender() 
-	{
-		super.initRender();
-		this.drawImage(RenderRegistry.IMG_ENTITY_STATIC_HOUSE, 0, 0, getWidth(), getHeight());
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.drawImage(RenderRegistry.IMG_ENTITY_STATIC_HOUSE, 0, 0, getWidth(), getHeight());
 	}
 
 	@Override
@@ -34,6 +29,4 @@ public class EntityHouse extends EntityStatic
 //		list.add(p);
 		return area;
 	}
-	
-	
 }

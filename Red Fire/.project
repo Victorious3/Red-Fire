@@ -14,4 +14,17 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>appdata</name>
+			<type>2</type>
+			<locationURI>REDFIRE_APPDATA</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>REDFIRE_APPDATA</name>
+			<value>file:/C:/Users/Daniel/AppData/Roaming/.RedFire</value>
+		</variable>
+	</variableList>
 </projectDescription>

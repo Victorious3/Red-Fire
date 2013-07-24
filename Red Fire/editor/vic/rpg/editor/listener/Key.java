@@ -22,41 +22,41 @@ public class Key implements KeyListener
 		if(arg0.getKeyCode() == KeyEvent.VK_SHIFT)
 		{
 			shiftPressed = true;
-			if(Editor.editor.buttonEdit.isSelected()) button = 1;
-			if(Editor.editor.buttonPaint.isSelected()) button = 2;
-			if(Editor.editor.buttonPath.isSelected()) button = 3;
+			if(Editor.instance.buttonEdit.isSelected()) button = 1;
+			if(Editor.instance.buttonPaint.isSelected()) button = 2;
+			if(Editor.instance.buttonPath.isSelected()) button = 3;
 			
-			Editor.editor.buttonEdit.setSelected(false);
-			Editor.editor.buttonPaint.setSelected(false);
-			Editor.editor.buttonPath.setSelected(false);
+			Editor.instance.buttonEdit.setSelected(false);
+			Editor.instance.buttonPaint.setSelected(false);
+			Editor.instance.buttonPath.setSelected(false);
 			
-			Editor.editor.buttonMove.setSelected(true);
+			Editor.instance.buttonMove.setSelected(true);
 			
 			if(Mouse.mouseHovered)
 			{
-				if(Editor.editor.frame.getCursor() != GameRegistry.CURSOR_DROP && Editor.editor.frame.getCursor() != GameRegistry.CURSOR_DRAG) 
+				if(Editor.instance.frame.getCursor() != GameRegistry.CURSOR_DROP && Editor.instance.frame.getCursor() != GameRegistry.CURSOR_DRAG) 
 				{				
-					if(!Mouse.mouseDown) Editor.editor.frame.setCursor(GameRegistry.CURSOR_DROP);
-					else Editor.editor.frame.setCursor(GameRegistry.CURSOR_DRAG); 
+					if(!Mouse.mouseDown) Editor.instance.frame.setCursor(GameRegistry.CURSOR_DROP);
+					else Editor.instance.frame.setCursor(GameRegistry.CURSOR_DRAG); 
 				}
 			}
 		}
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
 		{
-			if(Editor.editor.dropdownMode.getSelectedIndex() == 0) Editor.editor.dropdownMode.setSelectedIndex(1);
-			else Editor.editor.dropdownMode.setSelectedIndex(0);
+			if(Editor.instance.dropdownMode.getSelectedIndex() == 0) Editor.instance.dropdownMode.setSelectedIndex(1);
+			else Editor.instance.dropdownMode.setSelectedIndex(0);
 		}
-		if(Editor.editor.buttonEdit.isSelected())
+		if(Editor.instance.buttonEdit.isSelected())
 		{
 			if(arg0.getKeyCode() == KeyEvent.VK_DELETE)
 			{
 				Clipboard.delete();
 			}
 				
-			if(Editor.editor.dropdownMode.getSelectedIndex() == 1)
+			if(Editor.instance.dropdownMode.getSelectedIndex() == 1)
 			{
-				int minX = Editor.editor.level.getWidth();
-				int minY = Editor.editor.level.getHeight();
+				int minX = Editor.instance.level.getWidth();
+				int minY = Editor.instance.level.getHeight();
 				int maxX = 0;
 				int maxY = 0;
 				
@@ -74,13 +74,13 @@ public class Key implements KeyListener
 					{
 						e.xCoord += plusX;
 						e.yCoord += plusY;
-						Editor.editor.level.entities.put(e.UUID, e);
+						Editor.instance.level.entities.put(e.UUID, e);
 						if(e.xCoord < minX) minX = e.xCoord;
 						if(e.yCoord < minY) minY = e.yCoord;
 						if(e.xCoord + e.getWidth() > maxX) maxX = e.xCoord + e.getWidth();
 						if(e.yCoord + e.getHeight() > maxY) maxY = e.yCoord + e.getHeight();
 					}			
-					Editor.editor.labelLevel.update(minX, minY, maxX - minX, maxY - minY);
+					Editor.instance.labelLevel.update(minX, minY, maxX - minX, maxY - minY);
 					Mouse.selection = null;
 				}
 			}
@@ -112,16 +112,16 @@ public class Key implements KeyListener
 			shiftPressed = false;
 			if(button > 0)
 			{
-				if(button == 1) Editor.editor.buttonEdit.setSelected(true);
-				if(button == 2) Editor.editor.buttonPaint.setSelected(true);
-				if(button == 3) Editor.editor.buttonPath.setSelected(true);
+				if(button == 1) Editor.instance.buttonEdit.setSelected(true);
+				if(button == 2) Editor.instance.buttonPaint.setSelected(true);
+				if(button == 3) Editor.instance.buttonPath.setSelected(true);
 				
-				Editor.editor.buttonMove.setSelected(false);
-				Editor.editor.labelLevel.updateUI();
+				Editor.instance.buttonMove.setSelected(false);
+				Editor.instance.labelLevel.updateUI();
 				
-				if(Editor.editor.frame.getCursor() == GameRegistry.CURSOR_DRAG || Editor.editor.frame.getCursor() == GameRegistry.CURSOR_DROP)
+				if(Editor.instance.frame.getCursor() == GameRegistry.CURSOR_DRAG || Editor.instance.frame.getCursor() == GameRegistry.CURSOR_DROP)
 				{
-					Editor.editor.frame.setCursor(Cursor.getDefaultCursor());
+					Editor.instance.frame.setCursor(Cursor.getDefaultCursor());
 				}
 			}
 			button = 0;

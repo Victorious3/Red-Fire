@@ -11,7 +11,6 @@ import org.jnbt.CompoundTag;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.Render;
-import vic.rpg.utils.Utils;
 
 public class Entity extends Render implements Cloneable
 {
@@ -34,7 +33,6 @@ public class Entity extends Render implements Cloneable
 	public Entity(int width, int height) 
 	{
 		super(width, height);
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}
 	
 	public Point getLightPosition(LightSource l)
@@ -48,11 +46,8 @@ public class Entity extends Render implements Cloneable
 		
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}
 
-	public void initRender() {}
-	
 	public void tick() {}
 	
 	public void readFromNBT(CompoundTag tag) {}

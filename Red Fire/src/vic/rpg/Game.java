@@ -68,8 +68,6 @@ public class Game extends Canvas implements Runnable
     	
     	screen = new Screen(WIDTH, HEIGHT);
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-
-        USERNAME = String.valueOf(new Random().nextLong());
     }
 	
     public void stopGame()
@@ -223,6 +221,12 @@ public class Game extends Canvas implements Runnable
 		
 		game.requestFocus();
 		game.start();
+		
+		if(args.length > 0 && args[0] != null)
+		{
+			Game.USERNAME = args[0];
+		}
+		else Game.USERNAME = String.valueOf(new Random().nextLong());
 		
 		Gui.setGui(new GuiMain());
 	}

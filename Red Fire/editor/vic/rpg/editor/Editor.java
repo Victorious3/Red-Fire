@@ -53,8 +53,10 @@ import vic.rpg.utils.Utils;
 
 public class Editor 
 {
-	public static Editor editor;
+	public static Editor instance;
 
+	public EntityEditor entityEditor = new EntityEditor();
+	
 	public JFrame frame;	
 	public JMenuBar menubar   = new JMenuBar();	
 	
@@ -67,8 +69,7 @@ public class Editor
 	
 	public JMenu menuEdit     = new JMenu("Edit");
 	public JMenuItem undo	  = new JMenuItem("Undo");
-	public JMenuItem redo     = new JMenuItem("Redo");
-	public JMenuItem newTile  = new JMenuItem("New...");	
+	public JMenuItem redo     = new JMenuItem("Redo");	
 	public JMenu run          = new JMenu("Run...");	
 	public JMenuItem copy     = new JMenuItem("Copy");
 	public JMenuItem paste    = new JMenuItem("Paste");
@@ -98,6 +99,8 @@ public class Editor
 	
 	public JComboBox<String> dropdownTiles = new JComboBox<String>();
 	public JComboBox<String> dropdownEntities = new JComboBox<String>();
+	
+	public JButton buttonNewEntity = new JButton("New");
 	
 	public JTable tableLevel = new JTable(new DefaultTableModel(new String[][]{}, new String[]{"NBTTag", "Type", "value"}))
 	{
@@ -158,11 +161,12 @@ public class Editor
 		exit.addActionListener(ButtonListener.listener);
 		undo.addActionListener(ButtonListener.listener);
 		redo.addActionListener(ButtonListener.listener);
-		newTile.addActionListener(ButtonListener.listener);
 		run.addActionListener(ButtonListener.listener);
 		copy.addActionListener(ButtonListener.listener);
 		paste.addActionListener(ButtonListener.listener);
 		delete.addActionListener(ButtonListener.listener);
+		
+		buttonNewEntity.addActionListener(ButtonListener.listener);
 		
 		menuFile.add(open);
 		menuFile.add(newLevel);
@@ -174,7 +178,6 @@ public class Editor
 		menuEdit.add(undo);
 		menuEdit.add(redo);
 		menuEdit.addSeparator();
-		menuEdit.add(newTile);
 		menuEdit.add(run);
 		menuEdit.addSeparator();
 		menuEdit.add(copy);
@@ -344,7 +347,15 @@ public class Editor
 		
 		panelEntities.add(dropdownEntities, panelEntitiesConstraints);
 		
-		panelEntitiesConstraints.gridy = 1;		
+		panelEntitiesConstraints.gridx = 1;
+		panelEntitiesConstraints.weightx = 0;
+		
+		panelEntities.add(buttonNewEntity, panelEntitiesConstraints);
+		
+		panelEntitiesConstraints.gridwidth = 2;
+		panelEntitiesConstraints.gridx = 0;
+		panelEntitiesConstraints.gridy = 1;
+		panelEntitiesConstraints.weightx = 1;
 		JLabel lb2 = new JLabel("Entity Attributes:");
 		lb2.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 		panelEntities.add(lb2, panelEntitiesConstraints);
@@ -415,7 +426,7 @@ public class Editor
 		RenderRegistry.bufferImages();
 		RenderRegistry.setup();
 		
-		editor = new Editor();
+		instance = new Editor();
 		
 		TableListener.setTile(LevelRegistry.tileRegistry.values().iterator().next(), 0);
 		TableListener.setEntity(LevelRegistry.entityRegistry.values().iterator().next());
@@ -441,6 +452,12 @@ public class Editor
 		
 	}
 
+	/**
+	 * Loads a given jar file and runs the method "run" located in the class named the same as
+	 * the jar file and which is located in vic.rpg.script.
+	 * @param className
+	 * @param filePath
+	 */
 	public static void runScript(String className, String filePath)
 	{
 		File f = new File(filePath);
@@ -452,8 +469,8 @@ public class Editor
 			Class<Script> cls = (Class<Script>) cl.loadClass("vic.rpg.editor.script." + className);
 			Script script = cls.newInstance();
 			
-			script.run(editor.level);
-			editor.labelLevel.update(false);
+			script.run(instance.level);
+			instance.labelLevel.update(false);
 			
 			cl.close();
 			
@@ -463,6 +480,9 @@ public class Editor
 		}
 	}
 
+	/**
+	 * Opens the "New Level" - dialogue.
+	 */
 	public static void createNewLevel()
 	{
 		boolean quit = false;
@@ -555,9 +575,9 @@ public class Editor
 					{							
 						Level level = new Level(Integer.parseInt(width.getText()), Integer.parseInt(width.getText()), name.getText());
 						level.fill(id, Integer.parseInt(data.getText()));
-						editor.labelLevel.setLevel(level);
-						editor.setLevelName(editor.level.name);
-		            	JOptionPane.showMessageDialog(null, "Level \"" + editor.level.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
+						instance.labelLevel.setLevel(level);
+						instance.setLevelName(instance.level.name);
+		            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
 		            	quit = true;
 		            	
 					} catch(NumberFormatException e) {
@@ -570,6 +590,9 @@ public class Editor
 		}
 	}
 
+	/**
+	 * Opens the "Open Level" - dialogue.
+	 */
 	public static void openLevel()
 	{
 		JFileChooser chooser = new JFileChooser();
@@ -580,7 +603,7 @@ public class Editor
 	    chooser.setDialogTitle("Open...");
 	    chooser.setVisible(true); 
 	
-	    int result = chooser.showOpenDialog(editor.frame);
+	    int result = chooser.showOpenDialog(instance.frame);
 	    
 	    if (result == JFileChooser.APPROVE_OPTION) { 
 	
@@ -590,9 +613,9 @@ public class Editor
 	        {
 	            System.out.println(file + " selected for loading"); 
 	            try{
-	            	editor.labelLevel.setLevel(Level.readFromFile(file));       
-	            	editor.setLevelName(editor.level.name);
-	            	JOptionPane.showMessageDialog(null, "Level \"" + editor.level.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
+	            	instance.labelLevel.setLevel(Level.readFromFile(file));       
+	            	instance.setLevelName(instance.level.name);
+	            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
 	        		ButtonListener.file = file;
 	            } catch (Exception e) {
 	            	e.printStackTrace();
@@ -608,6 +631,9 @@ public class Editor
 	    }
 	}
 	
+	/**
+	 * Opens the "Save Level" - dialogue.
+	 */
 	public static void saveLevel()
 	{
 		JFileChooser chooser = new JFileChooser();
@@ -618,7 +644,7 @@ public class Editor
         chooser.setDialogTitle("Save as..."); 
         chooser.setVisible(true); 
 
-        int result = chooser.showSaveDialog(Editor.editor.frame);
+        int result = chooser.showSaveDialog(Editor.instance.frame);
         
         if (result == JFileChooser.APPROVE_OPTION) { 
 
@@ -627,19 +653,23 @@ public class Editor
             if (plainFilter.accept(file))
             {
                 System.out.println(file + " selected for saving"); 
-            	Editor.editor.level.writeToFile(file);
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.editor.level.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
+            	Editor.instance.level.writeToFile(file);
+            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
             	ButtonListener.file = file;
             }
             else
             {
             	System.out.println(path + " is not valid for saving");
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.editor.level.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
             }                
             chooser.setVisible(false);            
         } 
 	}
 	
+	/**
+	 * Used to format the title of the editor window given the name of a level.
+	 * @param name
+	 */
 	public void setLevelName(String name)
 	{
 		if(name.length() > 0)

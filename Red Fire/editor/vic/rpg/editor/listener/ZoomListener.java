@@ -43,7 +43,7 @@ public class ZoomListener implements ActionListener
 			}
 		}
 		
-		Editor.editor.labelLevel.scale(getZoom(box, Editor.editor.labelLevel.getScale()));
+		Editor.instance.labelLevel.scale(getZoom(box, Editor.instance.labelLevel.getScale()));
 	}
 	
 	public static float getZoom(JComboBox<?> box, float zoom)

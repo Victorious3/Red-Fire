@@ -20,15 +20,15 @@ public class ButtonListener implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent arg0) 
 	{
-		if(arg0.getSource() == Editor.editor.open)
+		if(arg0.getSource() == Editor.instance.open)
 		{
 			Editor.openLevel();
 		}
-		else if(arg0.getSource() == Editor.editor.newLevel)
+		else if(arg0.getSource() == Editor.instance.newLevel)
 		{
 			Editor.createNewLevel();
 		}
-		else if(arg0.getSource() == Editor.editor.save)
+		else if(arg0.getSource() == Editor.instance.save)
 		{
 			if(file == null)
 			{
@@ -36,33 +36,29 @@ public class ButtonListener implements ActionListener
 			}
 			else
 			{
-				Editor.editor.level.writeToFile(file);
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.editor.level.name + "\" was saved", "Save", JOptionPane.INFORMATION_MESSAGE);  	
+				Editor.instance.level.writeToFile(file);
+            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" was saved", "Save", JOptionPane.INFORMATION_MESSAGE);  	
 			}
 		}
-		else if(arg0.getSource() == Editor.editor.saveas)
+		else if(arg0.getSource() == Editor.instance.saveas)
 		{
 			Editor.saveLevel();
 		}
-		else if(arg0.getSource() == Editor.editor.exit)
+		else if(arg0.getSource() == Editor.instance.exit)
 		{
 			
 		}
-		else if(arg0.getSource() == Editor.editor.undo)
+		else if(arg0.getSource() == Editor.instance.undo)
 		{
 			
 		}
-		else if(arg0.getSource() == Editor.editor.redo)
-		{
-			
-		}
-		else if(arg0.getSource() == Editor.editor.newTile)
+		else if(arg0.getSource() == Editor.instance.redo)
 		{
 			
 		}
 		else if(arg0.getSource() instanceof JMenuItem)
 		{
-			if(((JPopupMenu)((JMenuItem)arg0.getSource()).getParent()).getInvoker() == Editor.editor.run)
+			if(((JPopupMenu)((JMenuItem)arg0.getSource()).getParent()).getInvoker() == Editor.instance.run)
 			{
 				String s = ((JMenuItem)arg0.getSource()).getText();
 				String s1 = Utils.getAppdata() + "/scripts/" + s + ".jar";		
@@ -75,71 +71,75 @@ public class ButtonListener implements ActionListener
 				}
 			}
 		}
-		else if(arg0.getSource() == Editor.editor.copy)
+		else if(arg0.getSource() == Editor.instance.copy)
 		{
 			Clipboard.copy();
 		}
-		else if(arg0.getSource() == Editor.editor.paste)
+		else if(arg0.getSource() == Editor.instance.paste)
 		{
 			Clipboard.paste(0, 0);
 		}
-		else if(arg0.getSource() == Editor.editor.delete)
+		else if(arg0.getSource() == Editor.instance.delete)
 		{
 			Clipboard.delete();
 		}
-		else if(arg0.getSource() == Editor.editor.buttonZoomIn)
+		else if(arg0.getSource() == Editor.instance.buttonZoomIn)
 		{
-			ZoomListener.setZoom(Editor.editor.dropdownZoom, ZoomListener.getZoom(Editor.editor.dropdownZoom, 0) + 0.1F);
+			ZoomListener.setZoom(Editor.instance.dropdownZoom, ZoomListener.getZoom(Editor.instance.dropdownZoom, 0) + 0.1F);
 		}
-		else if(arg0.getSource() == Editor.editor.buttonZoomOut)
+		else if(arg0.getSource() == Editor.instance.buttonZoomOut)
 		{
-			ZoomListener.setZoom(Editor.editor.dropdownZoom, ZoomListener.getZoom(Editor.editor.dropdownZoom, 0) - 0.1F);
+			ZoomListener.setZoom(Editor.instance.dropdownZoom, ZoomListener.getZoom(Editor.instance.dropdownZoom, 0) - 0.1F);
 		}
-		else if(arg0.getSource() == Editor.editor.buttonRefresh)
+		else if(arg0.getSource() == Editor.instance.buttonRefresh)
 		{
-			Editor.editor.labelLevel.update(false);
-			Editor.editor.level.nodeMap.recreate(Editor.editor.level);
-			Editor.editor.frame.setTitle("Red Fire Level Editor (" + Editor.editor.level.name + ")");			
+			Editor.instance.labelLevel.update(false);
+			Editor.instance.level.nodeMap.recreate(Editor.instance.level);
+			Editor.instance.frame.setTitle("Red Fire Level Editor (" + Editor.instance.level.name + ")");			
 		}
-		else if(arg0.getSource() == Editor.editor.buttonEdit)
+		else if(arg0.getSource() == Editor.instance.buttonEdit)
 		{
-			Editor.editor.buttonMove.setSelected(false);
-			Editor.editor.buttonPaint.setSelected(false);
-			Editor.editor.buttonPath.setSelected(false);
+			Editor.instance.buttonMove.setSelected(false);
+			Editor.instance.buttonPaint.setSelected(false);
+			Editor.instance.buttonPath.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
 		}
-		else if(arg0.getSource() == Editor.editor.buttonMove)
+		else if(arg0.getSource() == Editor.instance.buttonMove)
 		{
-			Editor.editor.buttonEdit.setSelected(false);
-			Editor.editor.buttonPaint.setSelected(false);
-			Editor.editor.buttonPath.setSelected(false);
+			Editor.instance.buttonEdit.setSelected(false);
+			Editor.instance.buttonPaint.setSelected(false);
+			Editor.instance.buttonPath.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
 		}
-		else if(arg0.getSource() == Editor.editor.buttonPaint)
+		else if(arg0.getSource() == Editor.instance.buttonPaint)
 		{
-			Editor.editor.buttonEdit.setSelected(false);
-			Editor.editor.buttonMove.setSelected(false);
-			Editor.editor.buttonPath.setSelected(false);
+			Editor.instance.buttonEdit.setSelected(false);
+			Editor.instance.buttonMove.setSelected(false);
+			Editor.instance.buttonPath.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
 		}
-		else if(arg0.getSource() == Editor.editor.buttonPath)
+		else if(arg0.getSource() == Editor.instance.buttonPath)
 		{
-			Editor.editor.buttonEdit.setSelected(false);
-			Editor.editor.buttonMove.setSelected(false);
-			Editor.editor.buttonPaint.setSelected(false);
+			Editor.instance.buttonEdit.setSelected(false);
+			Editor.instance.buttonMove.setSelected(false);
+			Editor.instance.buttonPaint.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.editor.labelLevel.update(true);
+			Editor.instance.labelLevel.update(true);
+		}
+		else if(arg0.getSource() == Editor.instance.buttonNewEntity)
+		{
+			Editor.instance.entityEditor.show(null);
 		}
 	}
 }

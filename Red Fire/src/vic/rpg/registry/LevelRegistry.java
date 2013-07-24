@@ -1,5 +1,7 @@
 package vic.rpg.registry;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import vic.rpg.item.ItemSword;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Tile;
 import vic.rpg.level.entity.EntityAppleTree;
+import vic.rpg.level.entity.EntityCustom;
 import vic.rpg.level.entity.EntityHouse;
 import vic.rpg.level.entity.EntityTree;
 import vic.rpg.level.entity.living.EntityNPC;
@@ -23,6 +26,8 @@ import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.tiles.TileGrass;
 import vic.rpg.level.tiles.TileVoid;
 import vic.rpg.level.tiles.TileWater;
+import vic.rpg.utils.Utils;
+import bsh.Interpreter;
 
 public class LevelRegistry 
 {
@@ -61,6 +66,31 @@ public class LevelRegistry
 		register(ITEM_PEER, 2);
 		register(ITEM_SWORD, 3);
 		register(ITEM_SHIELD, 4);
+		
+		File f = Utils.getOrCreateFile(Utils.getAppdata() + "/resources/entities/");
+		
+		for(File f2 : f.listFiles(new FilenameFilter(){
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".bsh");
+			}
+		})){
+			Interpreter i = new Interpreter();
+			try {
+				i.source(f2.getAbsolutePath());				
+				EntityCustom e = (EntityCustom) i.get("instance");
+				int id = e.getSuggestedID();
+				if(entityRegistry.containsKey(id))
+				{
+					System.err.println("[LevelRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
+					continue;
+				}
+				register(e, id);
+			} catch (Exception e) {
+				System.err.println("[LevelRegistry]: Caught error in file " + f2 + ". Entity could't be loaded!");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void register(Entity ent, int id)
