@@ -75,21 +75,26 @@ public class LevelRegistry
 				return name.endsWith(".bsh");
 			}
 		})){
-			Interpreter i = new Interpreter();
-			try {
-				i.source(f2.getAbsolutePath());				
-				EntityCustom e = (EntityCustom) i.get("instance");
-				int id = e.getSuggestedID();
-				if(entityRegistry.containsKey(id))
-				{
-					System.err.println("[LevelRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
-					continue;
-				}
-				register(e, id);
-			} catch (Exception e) {
-				System.err.println("[LevelRegistry]: Caught error in file " + f2 + ". Entity could't be loaded!");
-				e.printStackTrace();
+			addNewEntity(f2);
+		}
+	}
+	
+	public static void addNewEntity(File f)
+	{
+		Interpreter i = new Interpreter();
+		try {
+			i.source(f.getAbsolutePath());				
+			EntityCustom e = (EntityCustom) i.get("instance");
+			int id = e.getSuggestedID();
+			if(entityRegistry.containsKey(id))
+			{
+				System.err.println("[LevelRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
+				return;
 			}
+			register(e, id);
+		} catch (Exception e) {
+			System.err.println("[LevelRegistry]: Caught error in file " + f + ". Entity could't be loaded!");
+			e.printStackTrace();
 		}
 	}
 	

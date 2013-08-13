@@ -91,42 +91,44 @@ public class LabelLevel extends JLabel
 		}		
 		if(Editor.instance.buttonPath.isSelected() || Key.keyListener.button == 3)
 		{
-			g2d.setColor(new Color(255, 0, 0, 120));
-			for(Node[] n2 : Editor.instance.level.nodeMap.nodes)
+			if(Editor.instance.level != null)
 			{
-				for(Node n : n2)
+				g2d.setColor(new Color(255, 0, 0, 120));
+				for(Node[] n2 : Editor.instance.level.nodeMap.nodes)
 				{
-					if(n.isBlocked)
+					for(Node n : n2)
 					{
-						Point p = n.toPoint();					
-						g2d.fillRect(p.x, p.y, Level.CELL_SIZE, Level.CELL_SIZE);
+						if(n.isBlocked)
+						{
+							Point p = n.toPoint();					
+							g2d.fillRect(p.x, p.y, Level.CELL_SIZE, Level.CELL_SIZE);
+						}
 					}
 				}
-			}
-			
-			g2d.setColor(new Color(255, 255, 0));
-			for(Entity e : Editor.instance.level.entities.values())
-			{
-				g2d.draw(e.getCollisionBoxes(new Area()));
-			}
-			
-			g2d.setColor(new Color(0, 255, 0, 120));
-			if(Mouse.start != null) g2d.fillRect(Mouse.start.x * Level.CELL_SIZE, Mouse.start.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
-			g2d.setColor(new Color(0, 255, 255, 120));
-			if(Mouse.end != null) g2d.fillRect(Mouse.end.x * Level.CELL_SIZE, Mouse.end.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
-			g2d.setColor(new Color(0, 0, 255, 120));
-			
-			if(Mouse.path != null)
-			{
-				while(Mouse.path.hasNext())
+				
+				g2d.setColor(new Color(255, 255, 0));
+				for(Entity e : Editor.instance.level.entities.values())
 				{
-					Node n = Mouse.path.next();
-					g2d.fillRect(n.x * Level.CELL_SIZE, n.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+					g2d.draw(e.getCollisionBoxes(new Area()));
 				}
-				Mouse.path.revert();
+				
+				g2d.setColor(new Color(0, 255, 0, 120));
+				if(Mouse.start != null) g2d.fillRect(Mouse.start.x * Level.CELL_SIZE, Mouse.start.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+				g2d.setColor(new Color(0, 255, 255, 120));
+				if(Mouse.end != null) g2d.fillRect(Mouse.end.x * Level.CELL_SIZE, Mouse.end.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+				g2d.setColor(new Color(0, 0, 255, 120));
+				
+				if(Mouse.path != null)
+				{
+					while(Mouse.path.hasNext())
+					{
+						Node n = Mouse.path.next();
+						g2d.fillRect(n.x * Level.CELL_SIZE, n.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+					}
+					Mouse.path.revert();
+				}
 			}
-		}
-		
+		}		
 		needsUpdate = 0;				
 	}
 	

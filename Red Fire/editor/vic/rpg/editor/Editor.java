@@ -238,7 +238,6 @@ public class Editor
 		panelEdit.add(sep2);
 		panelEdit.add(dropdownMode);
 		
-		panelRender.setLayout(null);
 		panelRender.setBackground(Color.white);
 		panelRender.add(labelLevel);
 		panelRender.addMouseMotionListener(mouse);
@@ -261,15 +260,7 @@ public class Editor
 		panelEastConstraints.fill = GridBagConstraints.BOTH;
 		panelEast.add(panelRender, panelEastConstraints);
 		
-		for(Tile t : LevelRegistry.tileRegistry.values())
-		{
-			dropdownTiles.addItem(t.id + ": " + t.getClass().getSimpleName());
-		}
-		
-		for(Entity e : TableListener.entities.values())
-		{
-			dropdownEntities.addItem(e.id + ": " + e.getClass().getSimpleName());
-		}
+		updateTilesAndEntites();
 		
 		dropdownTiles.addActionListener(new ActionListener(){
 			@Override
@@ -408,6 +399,19 @@ public class Editor
 		frame.setVisible(true);
 	}
 	
+	public void updateTilesAndEntites() 
+	{
+		for(Tile t : LevelRegistry.tileRegistry.values())
+		{
+			dropdownTiles.addItem(t.id + ": " + t.getClass().getSimpleName());
+		}
+		
+		for(Entity e : TableListener.entities.values())
+		{
+			dropdownEntities.addItem(e.id + ": " + e.getClass().getSimpleName());
+		}
+	}
+
 	public static boolean isInternal = false;
 	
 	public static void main(String[] args)

@@ -240,13 +240,13 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		
 		if(Editor.instance.buttonMove.isSelected())
 		{
-			int x = Editor.instance.labelLevel.getX() + (arg0.getX() - preX);
-			int y = Editor.instance.labelLevel.getY() + (arg0.getY() - preY);
+			int x = Editor.instance.labelLevel.getX() + (xCoord - preX);
+			int y = Editor.instance.labelLevel.getY() + (yCoord - preY);
 			
 			Editor.instance.labelLevel.setLocation(x, y);
 			
-			preX = arg0.getX();
-			preY = arg0.getY();
+			preX = xCoord;
+			preY = yCoord;
 		}
 		else if(Editor.instance.buttonPaint.isSelected() && Editor.instance.dropdownMode.getSelectedIndex() == 0)
 		{

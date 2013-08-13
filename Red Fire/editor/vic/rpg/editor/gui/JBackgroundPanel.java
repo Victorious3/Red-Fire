@@ -1,5 +1,6 @@
 package vic.rpg.editor.gui;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -12,10 +13,18 @@ public class JBackgroundPanel extends JPanel
 	public JBackgroundPanel(Image image)
 	{
 		this.image = image;
+		this.setLayout(null);
+	}
+	
+	public JBackgroundPanel(Image image, Component comp)
+	{
+		this.image = image;
+		this.setLayout(null);
+		this.add(comp);
 	}
 	
 	@Override
-	public void paintComponent(Graphics g) 
+	protected void paintComponent(Graphics g) 
 	{
         super.paintComponent(g);
 
