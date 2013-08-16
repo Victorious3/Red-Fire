@@ -10,6 +10,7 @@ import javax.swing.JPopupMenu;
 
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
+import vic.rpg.registry.LevelRegistry;
 import vic.rpg.utils.Utils;
 
 public class ButtonListener implements ActionListener 
@@ -139,7 +140,27 @@ public class ButtonListener implements ActionListener
 		}
 		else if(arg0.getSource() == Editor.instance.buttonNewEntity)
 		{
-			Editor.instance.entityEditor.show(null);
+			Editor.instance.entityEditor.show();
+		}
+		else if(arg0.getSource() == Editor.instance.buttonEditEntity)
+		{
+			Editor.instance.entityEditor.show(TableListener.entities.get(Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0])));
+		}
+		else if(arg0.getSource() == Editor.instance.buttonDeleteEntity)
+		{
+			int id = Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0]);
+			String name = Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[1];
+			
+			int confirm = JOptionPane.showConfirmDialog(Editor.instance.frame, "Do you really want to delete Entity " + name + "?", "Delete Entity", JOptionPane.OK_CANCEL_OPTION);
+			if(confirm == JOptionPane.OK_OPTION)
+			{
+				TableListener.entities.remove(id);
+				LevelRegistry.entityRegistry.remove(id);
+				Editor.instance.updateTilesAndEntites();
+				File f = new File(Utils.getAppdata() + "/resources/entities/" + name.substring(1) + ".bsh");
+				System.out.println("Deleted File " + f.getAbsolutePath());
+				f.delete();
+			}
 		}
 	}
 }

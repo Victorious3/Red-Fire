@@ -3,10 +3,12 @@ package vic.rpg.utils;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Field;
@@ -31,8 +33,13 @@ public class Utils
 	public static String getAppdata()
 	{
 		String s =  System.getenv("APPDATA") + "/.RedFire";
-		s = s.replaceAll("\\\\", "/");
+		s = replaceBackslashes(s);
 		return s;
+	}
+	
+	public static String replaceBackslashes(String s)
+	{
+		return s.replaceAll("\\\\", "/");
 	}
 	
 	public static File getOrCreateFile(String s)
@@ -89,11 +96,11 @@ public class Utils
 		return SIDE_CLIENT;
 	}
 	
-	public static Image readImageFromJar(String s)
+	public static BufferedImage readImageFromJar(String s)
 	{
 		try {
 			InputStream in = getStreamFromString(s);
-			Image img = ImageIO.read(in);
+			BufferedImage img = ImageIO.read(in);
 			in.close();
 			return img;
 		} catch (IOException e) {
@@ -141,6 +148,14 @@ public class Utils
 		
 		if(chance == 0) return true;
 		return false;
+	}
+	
+	public static String getStackTrace(Exception e)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		return sw.toString();
 	}
 	
 	private static OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);

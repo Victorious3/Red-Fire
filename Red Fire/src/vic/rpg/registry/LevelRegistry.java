@@ -79,7 +79,7 @@ public class LevelRegistry
 		}
 	}
 	
-	public static void addNewEntity(File f)
+	public static Entity addNewEntity(File f)
 	{
 		Interpreter i = new Interpreter();
 		try {
@@ -89,13 +89,16 @@ public class LevelRegistry
 			if(entityRegistry.containsKey(id))
 			{
 				System.err.println("[LevelRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
-				return;
-			}
+				return null;
+			}			
 			register(e, id);
+			System.out.println("[LevelRegistry]: Registered Entity " + e.getClass().getSimpleName() + " with ID:" + id);
+			return e;
 		} catch (Exception e) {
 			System.err.println("[LevelRegistry]: Caught error in file " + f + ". Entity could't be loaded!");
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	public static void register(Entity ent, int id)

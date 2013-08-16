@@ -26,7 +26,7 @@ public class EntityHouse extends EntityStatic
 //		p.ypoints = new int[]{yCoord + 021, yCoord + 000, yCoord + 000, yCoord + 021, yCoord + 021, yCoord + 000, yCoord + 061, yCoord + 318, yCoord + 318, yCoord + 234, yCoord + 234};
 //		p.npoints = p.xpoints.length;
 		
-//		list.add(p);
+//		area.add(new Area(p));
 		return area;
 	}
 }

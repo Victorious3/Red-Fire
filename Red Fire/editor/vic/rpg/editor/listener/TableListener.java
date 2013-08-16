@@ -116,8 +116,6 @@ public class TableListener implements TableModelListener
 	
 	public static void setEntity(Entity e)
 	{
-		Editor.instance.dropdownEntities.setSelectedItem(e.id + ": " + e.getClass().getSimpleName());
-		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableEntities.getModel();
 		tableModel.setRowCount(0);
 		

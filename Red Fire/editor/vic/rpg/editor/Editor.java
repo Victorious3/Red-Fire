@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;
@@ -47,6 +49,7 @@ import vic.rpg.editor.script.Script;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
+import vic.rpg.level.entity.EntityCustom;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.utils.Utils;
@@ -100,7 +103,9 @@ public class Editor
 	public JComboBox<String> dropdownTiles = new JComboBox<String>();
 	public JComboBox<String> dropdownEntities = new JComboBox<String>();
 	
-	public JButton buttonNewEntity = new JButton("New");
+	public JButton buttonNewEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
+	public JButton buttonEditEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
+	public JButton buttonDeleteEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
 	
 	public JTable tableLevel = new JTable(new DefaultTableModel(new String[][]{}, new String[]{"NBTTag", "Type", "value"}))
 	{
@@ -167,6 +172,13 @@ public class Editor
 		delete.addActionListener(ButtonListener.listener);
 		
 		buttonNewEntity.addActionListener(ButtonListener.listener);
+		buttonNewEntity.setPreferredSize(new Dimension(25, 25));
+		buttonEditEntity.addActionListener(ButtonListener.listener);
+		buttonEditEntity.setPreferredSize(new Dimension(25, 25));
+		buttonEditEntity.setEnabled(false);
+		buttonDeleteEntity.addActionListener(ButtonListener.listener);
+		buttonDeleteEntity.setPreferredSize(new Dimension(25, 25));
+		buttonDeleteEntity.setEnabled(false);
 		
 		menuFile.add(open);
 		menuFile.add(newLevel);
@@ -262,25 +274,43 @@ public class Editor
 		
 		updateTilesAndEntites();
 		
-		dropdownTiles.addActionListener(new ActionListener(){
+		dropdownTiles.addItemListener(new ItemListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) 
+			public void itemStateChanged(ItemEvent arg0) 
 			{
-				@SuppressWarnings("unchecked")
-				int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
-				
-				TableListener.setTile(LevelRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
+				if(arg0.getStateChange() == ItemEvent.SELECTED)
+				{
+					@SuppressWarnings("unchecked")
+					int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
+					
+					TableListener.setTile(LevelRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
+				}
 			}		
 		});
 		
-		dropdownEntities.addActionListener(new ActionListener(){
+		dropdownEntities.addItemListener(new ItemListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) 
+			public void itemStateChanged(ItemEvent arg0) 
 			{
-				@SuppressWarnings("unchecked")
-				int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
-				
-				TableListener.setEntity(TableListener.entities.get(id));
+				if(arg0.getStateChange() == ItemEvent.SELECTED)
+				{
+					@SuppressWarnings("unchecked")
+					int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
+					if(TableListener.entities.get(id) instanceof EntityCustom)
+					{
+						buttonEditEntity.setEnabled(true);
+						buttonDeleteEntity.setEnabled(true);
+					}
+					else
+					{
+						buttonEditEntity.setEnabled(false);
+						buttonDeleteEntity.setEnabled(false);
+					}
+					
+					TableListener.setEntity(TableListener.entities.get(id));
+				}
 			}		
 		});
 		
@@ -334,16 +364,20 @@ public class Editor
 		panelEntitiesConstraints.gridy = 0;
 		panelEntitiesConstraints.weightx = 1;		
 		panelEntitiesConstraints.anchor = GridBagConstraints.WEST;	
-		panelEntitiesConstraints.fill = GridBagConstraints.BOTH;
-		
+		panelEntitiesConstraints.fill = GridBagConstraints.BOTH;	
 		panelEntities.add(dropdownEntities, panelEntitiesConstraints);
 		
 		panelEntitiesConstraints.gridx = 1;
-		panelEntitiesConstraints.weightx = 0;
+		panelEntitiesConstraints.weightx = 0;	
+		panelEntities.add(buttonEditEntity, panelEntitiesConstraints);
 		
+		panelEntitiesConstraints.gridx = 2;
+		panelEntities.add(buttonDeleteEntity, panelEntitiesConstraints);
+		
+		panelEntitiesConstraints.gridx = 3;
 		panelEntities.add(buttonNewEntity, panelEntitiesConstraints);
 		
-		panelEntitiesConstraints.gridwidth = 2;
+		panelEntitiesConstraints.gridwidth = 4;
 		panelEntitiesConstraints.gridx = 0;
 		panelEntitiesConstraints.gridy = 1;
 		panelEntitiesConstraints.weightx = 1;
@@ -401,6 +435,9 @@ public class Editor
 	
 	public void updateTilesAndEntites() 
 	{
+		dropdownTiles.removeAllItems();
+		dropdownEntities.removeAllItems();
+		
 		for(Tile t : LevelRegistry.tileRegistry.values())
 		{
 			dropdownTiles.addItem(t.id + ": " + t.getClass().getSimpleName());

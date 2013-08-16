@@ -125,6 +125,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 						selectedEntities.add(e);
 						
 						Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelEntities);					
+						Editor.instance.dropdownEntities.setSelectedItem(e.id + ": " + e.getClass().getSimpleName());
 						TableListener.setEntity(e);
 					}
 					else
