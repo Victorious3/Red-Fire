@@ -382,8 +382,11 @@ public class Level
 		for(Tag entityTag : entityList)
 		{
 			Entity ent = LevelRegistry.readEntityFromNBT((CompoundTag)entityTag);
-			ent.levelObj = level;
-			entities.put(ent.UUID, ent);
+			if(ent != null)
+			{
+				ent.levelObj = level;
+				entities.put(ent.UUID, ent);
+			}
 		}
 		
 		level.worldobjects = worldObjects;

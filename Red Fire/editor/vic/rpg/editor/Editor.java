@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
@@ -35,6 +33,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
@@ -93,7 +93,6 @@ public class Editor
 	public JToggleButton buttonEdit  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	public JToggleButton buttonPaint = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pencil.png")));
 	public JToggleButton buttonPath  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pathfinding.png")));
-	public JComboBox<String> dropdownMode = new JComboBox<String>(new String[]{"Tiles", "Entities"});
 	
 	public JTabbedPane tabpanelEditor = new JTabbedPane();
 	public JPanel panelTiles = new JPanel();
@@ -223,9 +222,10 @@ public class Editor
 		buttonPath.addActionListener(ButtonListener.listener);
 		
 		buttonMove.setSelected(true);
-		dropdownMode.addActionListener(new ActionListener(){
+		tabpanelEditor.addChangeListener(new ChangeListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) 
+			public void stateChanged(ChangeEvent arg0) 
 			{
 				Mouse.selectedEntities.clear();
 				Mouse.selectedTiles.clear();
@@ -235,8 +235,6 @@ public class Editor
 		
 		JSeparator sep1 = new JSeparator(JSeparator.VERTICAL);
 		sep1.setPreferredSize(new Dimension(1, 25));
-		JSeparator sep2 = new JSeparator(JSeparator.VERTICAL);
-		sep2.setPreferredSize(new Dimension(1, 25));
 		
 		panelEdit.add(dropdownZoom);
 		panelEdit.add(buttonZoomIn);
@@ -247,8 +245,6 @@ public class Editor
 		panelEdit.add(buttonEdit);		
 		panelEdit.add(buttonPaint);
 		panelEdit.add(buttonPath);
-		panelEdit.add(sep2);
-		panelEdit.add(dropdownMode);
 		
 		panelRender.setBackground(Color.white);
 		panelRender.add(labelLevel);

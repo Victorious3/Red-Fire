@@ -43,8 +43,8 @@ public class Key implements KeyListener
 		}
 		if(arg0.getKeyCode() == KeyEvent.VK_ENTER)
 		{
-			if(Editor.instance.dropdownMode.getSelectedIndex() == 0) Editor.instance.dropdownMode.setSelectedIndex(1);
-			else Editor.instance.dropdownMode.setSelectedIndex(0);
+			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1) Editor.instance.tabpanelEditor.setSelectedIndex(2);
+			else Editor.instance.tabpanelEditor.setSelectedIndex(1);
 		}
 		if(Editor.instance.buttonEdit.isSelected())
 		{
@@ -53,7 +53,7 @@ public class Key implements KeyListener
 				Clipboard.delete();
 			}
 				
-			if(Editor.instance.dropdownMode.getSelectedIndex() == 1)
+			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 			{
 				int minX = Editor.instance.level.getWidth();
 				int minY = Editor.instance.level.getHeight();

@@ -132,20 +132,28 @@ public class LevelRegistry
 		String uuid = (String)(map.get("uuid")).getValue();
 		
 		Entity ent = null;
-		Class entClass = entityRegistry.get(id).getClass();
-		try {		
-			ent = (Entity) entClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
-			ent.xCoord = xCoord;
-			ent.yCoord = yCoord;
-			ent.UUID = uuid;
-			ent.id = id;
-			ent.zLevel = zLevel;
-		} catch (Exception e) {
-			e.printStackTrace();
+		Entity entLoad = entityRegistry.get(id);
+		
+		if(entLoad != null)
+		{
+			Class entClass = entLoad.getClass();
+			try {		
+				ent = (Entity) entClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+				ent.xCoord = xCoord;
+				ent.yCoord = yCoord;
+				ent.UUID = uuid;
+				ent.id = id;
+				ent.zLevel = zLevel;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			ent.readFromNBT(tag);
 		}
-		
-		ent.readFromNBT(tag);
-		
+		else
+		{
+			System.err.println("Entity with ID " + id + " at " + xCoord + ", " + yCoord + " is missing! Skipping...");
+		}
 		return ent;
 	}
 	

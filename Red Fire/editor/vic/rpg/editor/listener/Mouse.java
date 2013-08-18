@@ -93,7 +93,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			{
 				selection = null;
 				
-				if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
+				if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 				{
 					int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 					int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
@@ -109,7 +109,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelTiles);
 					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.instance.level.worldobjects[x][y][0]), Editor.instance.level.worldobjects[x][y][1]);					
 				}
-				else
+				else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 				{
 					int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale()));
 					int y = (int) ((float)(arg0.getY() - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));
@@ -185,7 +185,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		
 		if(Editor.instance.buttonEdit.isSelected())
 		{
-			if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
+			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 			{
 				if(selection != null)
 				{
@@ -203,7 +203,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					}
 				}
 			}
-			else
+			else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 			{
 				if(selection != null)
 				{
@@ -249,7 +249,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			preX = xCoord;
 			preY = yCoord;
 		}
-		else if(Editor.instance.buttonPaint.isSelected() && Editor.instance.dropdownMode.getSelectedIndex() == 0)
+		else if(Editor.instance.buttonPaint.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{
 			paint(arg0.getX(), arg0.getY());
 		}
@@ -280,11 +280,11 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	
 	private synchronized void paint(int x, int y)
 	{
-		if(Editor.instance.dropdownMode.getSelectedIndex() == 0)
+		if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{
 			paint(x, y, Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), false);
 		}
-		else
+		else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 		{
 			paint(x, y, Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0]), true);
 		}
