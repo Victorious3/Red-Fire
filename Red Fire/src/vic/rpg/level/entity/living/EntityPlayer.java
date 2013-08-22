@@ -15,6 +15,8 @@ import vic.rpg.item.ItemShield;
 import vic.rpg.item.ItemSword;
 import vic.rpg.level.Editable;
 import vic.rpg.render.ImageBuffer;
+import vic.rpg.server.Server;
+import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Utils;
 
 public class EntityPlayer extends EntityLiving 
@@ -97,6 +99,14 @@ public class EntityPlayer extends EntityLiving
 				
 				tickCounter = 0;	
 			}
+		}
+	}
+	
+	public void sendChatMessage(String message, String username)
+	{
+		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		{
+			Server.connections.get(this.username).packetHandler.addPacketToSendingQueue(new Packet20Chat(message, username));
 		}
 	}
 

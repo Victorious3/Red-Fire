@@ -160,7 +160,7 @@ public class SlotGrid extends GControl
 	public SlotGrid setItems(Item[][] items) 
 	{
 		this.items = items;
-		if(gui != null) gui.inventory.setItem(id, items);
+		if(gui != null) gui.inventory.setItemGrid(id, items);
 		return this;
 	}
 	

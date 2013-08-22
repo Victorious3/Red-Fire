@@ -1,9 +1,14 @@
 package vic.rpg.render;
 
+import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.image.BufferedImage;
 
 import vic.rpg.Game;
 import vic.rpg.gui.Gui;
+import vic.rpg.level.Entity;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.packet.Packet9EntityMoving;
 
@@ -109,7 +114,9 @@ public class Screen extends Render
 
 	public void postRender(Graphics2D g2d)
 	{
-		/*Composite c = g2d.getComposite();
+		Composite c = g2d.getComposite();
+		g2d.setComposite(BlendComposite.Multiply);
+		
 		if(Game.level != null)
 		{					
 			BufferedImage bLight = new BufferedImage(Game.WIDTH, Game.HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -128,11 +135,9 @@ public class Screen extends Render
 					}
 				}
 			}
-			g2d.setComposite(BlendComposite.Multiply);
 			g2d.drawImage(bLight, null, 0, 0);
 		}
-		
-		g2d.setComposite(c);*/
-		if(Gui.currentGui != null)Gui.currentGui.render(g2d);    
+		g2d.setComposite(c);
+		if(Gui.currentGui != null) Gui.currentGui.render(g2d);    
 	}
 }

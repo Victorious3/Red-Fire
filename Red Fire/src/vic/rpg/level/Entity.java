@@ -8,9 +8,12 @@ import java.util.Comparator;
 
 import org.jnbt.CompoundTag;
 
+import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.Render;
+import vic.rpg.server.packet.Packet11EntityInteraction;
+import vic.rpg.utils.Utils;
 
 public class Entity extends Render implements Cloneable
 {
@@ -64,7 +67,13 @@ public class Entity extends Render implements Cloneable
 	
 	public void onMouseHovered(int x, int y, EntityPlayer entity){}
 	
-	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent){}
+	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent)
+	{
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		{
+			Game.packetHandler.addPacketToSendingQueue(new Packet11EntityInteraction(this, Packet11EntityInteraction.MODE_ONCLICK, x, y, mouseEvent));
+		}
+	}
 
 	public void onKeyPressed(KeyEvent key){}
 	

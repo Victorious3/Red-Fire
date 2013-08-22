@@ -42,6 +42,7 @@ public class GuiPlayer extends IGuiContainer
 	{
 		setInventory(Game.thePlayer.getInventory());
 		
+		controlsList.clear();
 		controlsList.add(new Slot(620, 20, 1, this, 2, 2));
 		controlsList.add(new Slot(700, 50, 2, this).addFilter(new ItemFilter.SimpleItemFilter(ItemApple.class)));
 		controlsList.add(new Slot(730, 50, 3, this).addFilter(new ItemFilter.SimpleItemFilter(ItemPeer.class)));

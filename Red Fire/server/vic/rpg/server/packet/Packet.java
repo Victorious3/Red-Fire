@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.HashMap;
 
-public class Packet implements Cloneable {
+public abstract class Packet implements Cloneable {
 	
 	public int id = 0;
 	
@@ -13,7 +13,7 @@ public class Packet implements Cloneable {
 		this.id = id;
 	}
 	
-	public void readData(DataInputStream stream){}
+	public abstract void readData(DataInputStream stream);
 	
 	@Override
 	public Packet clone() 
@@ -26,7 +26,7 @@ public class Packet implements Cloneable {
 		return null;
 	}
 
-	public void writeData(DataOutputStream stream){}
+	public abstract void writeData(DataOutputStream stream);
 	
 	private static HashMap<Integer, Packet> packetRegistry = new HashMap<Integer, Packet>(); 
 
@@ -40,6 +40,7 @@ public class Packet implements Cloneable {
 		packetRegistry.put(8, new Packet8PlayerUpdate());
 		packetRegistry.put(9, new Packet9EntityMoving());
 		packetRegistry.put(10, new Packet10TimePacket());
+		packetRegistry.put(11, new Packet11EntityInteraction());
 	}
 	
 	public static Packet getPacket(int id)

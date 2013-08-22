@@ -20,12 +20,12 @@ public class Connection extends Thread
     public boolean connected = true;
     public PacketHandlerMP packetHandler = new PacketHandlerMP(this);
     
-    public String player;
+    public String username;
     
     public Connection(Socket socket) 
     {
     	this.socket = socket;
-    	this.player = "NO_PLAYER!";
+    	this.username = "NO_PLAYER!";
     	
     	try {      
     		in = new DataInputStream(socket.getInputStream());
@@ -63,7 +63,7 @@ public class Connection extends Thread
 	@Override
 	public synchronized void start() 
 	{
-		this.setName("Connection for player " + player);
+		this.setName("Server Connection for player " + username);
 		this.setDaemon(true);
 		super.start();
 	}

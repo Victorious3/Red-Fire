@@ -260,11 +260,11 @@ public class Server extends Thread
 	    	if(!connections.containsValue(c)) return;
 	    	actConnections--;	    	
 	    	c.connected = false;
-	    	System.out.println("Disconnecting player " + c.player + " Reason: " + e.getMessage());
-	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersList.get(c.player), Packet7Entity.MODE_DELETE), c.player);
-	    	connections.remove(c.player);
+	    	System.out.println("Disconnecting player " + c.username + " Reason: " + e.getMessage());
+	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersList.get(c.username), Packet7Entity.MODE_DELETE), c.username);
+	    	connections.remove(c.username);
 	    	c.socket.close(); 
-	    	ServerLoop.level.offlinePlayersList.put(c.player, ServerLoop.level.onlinePlayersList.remove(c.player));
+	    	ServerLoop.level.offlinePlayersList.put(c.username, ServerLoop.level.onlinePlayersList.remove(c.username));
 
 		} catch (IOException e2) {
 			e.printStackTrace();
@@ -277,7 +277,7 @@ public class Server extends Thread
 	    { 		
 			try
 			{
-				if(!Arrays.asList(withoutPlayer).contains(con.player)) con.packetHandler.addPacketToSendingQueue(p);
+				if(!Arrays.asList(withoutPlayer).contains(con.username)) con.packetHandler.addPacketToSendingQueue(p);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}  		

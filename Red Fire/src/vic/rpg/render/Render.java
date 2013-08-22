@@ -1,16 +1,10 @@
 package vic.rpg.render;
 
-import static vic.rpg.registry.RenderRegistry.CL_CONTEXT;
-import static vic.rpg.registry.RenderRegistry.CL_ENABLED;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import vic.rpg.utils.Utils;
 
 @Deprecated
 public class Render {
@@ -28,23 +22,6 @@ public class Render {
 
 	public BufferedImage img;
 	public Graphics2D g2d;
-	
-	public static void setup()
-	{
-		if(CL_ENABLED)
-		{
-			try {
-				CL_CONTEXT.createProgram(Utils.getStreamFromString("/vic/rpg/resources/jocl/render.cl")).build().createCLKernel("render");;
-//				DRAW_RECT = CL_CONTEXT.createProgram(Utils.getStreamFromString("/vic/rpg/resources/jocl/render_rect.cl")).build().createCLKernel("render");
-//				DRAW_LINE = CL_CONTEXT.createProgram(Utils.getStreamFromString("/vic/rpg/resources/jocl/render_line.cl")).build().createCLKernel("render");
-//				DRAW_FILLEDCIRCLE = CL_CONTEXT.createProgram(Utils.getStreamFromString("/vic/rpg/resources/jocl/render_filledcircle.cl")).build().createCLKernel("render");
-//				DRAW_CIRCLE = CL_CONTEXT.createProgram(Utils.getStreamFromString("/vic/rpg/resources/jocl/render_circle.cl")).build().createCLKernel("render");
-							
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 	
 	public Render(int width, int height)
 	{

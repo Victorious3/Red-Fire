@@ -43,7 +43,7 @@ public class Inventory
 		slots.put(id, null);
 	}
 	
-	public void addItems(int id, Item[][] items)
+	public void addItemGrid(int id, Item[][] items)
 	{
 		slotGrids.put(id, items);
 	}
@@ -81,11 +81,11 @@ public class Inventory
 		
 		if(temp.setItemAndConfirm(xCoord, yCoord, item))
 		{		
-			setItem(id, temp.items.clone());
+			setItemGrid(id, temp.items.clone());
 			temp = null;
 			return true;
 		}
-		setItem(id, temp.items.clone());
+		setItemGrid(id, temp.items.clone());
 		temp = null;
 		return false;
 	}
@@ -105,9 +105,9 @@ public class Inventory
 		return true;
 	}
 	
-	public void setItem(int id, Item[][] items) 
+	public void setItemGrid(int id, Item[][] items) 
 	{
-		addItems(id, items);
+		addItemGrid(id, items);
 		if(this.parentEntity != null)
 		{
 			if(Utils.getSide().equals(Utils.SIDE_CLIENT))
@@ -126,7 +126,7 @@ public class Inventory
 			SlotGrid temp = new SlotGrid(slotGrids.get(id), 0, 0, -2, null);
 			if(temp.addItemToGrid(item))
 			{
-				addItems(id, temp.items);
+				setItemGrid(id, temp.items);
 				return true;
 			}
 		}

@@ -50,7 +50,7 @@ public class Listener extends Thread
 		        	
 		        	if(player.length() != 0 || version.length() != 0)
 		        	{
-		        		con.player = player;
+		        		con.username = player;
 		        		con.start();
 			        	server.addConnection(con, player, version);
 		        	}

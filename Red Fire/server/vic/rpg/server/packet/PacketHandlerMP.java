@@ -18,7 +18,7 @@ public class PacketHandlerMP extends Thread
 	public PacketHandlerMP(Connection con)
 	{
 		this.con = con;
-		this.setName("PacketHandler for player " + con.player);
+		this.setName("Server PacketHandler for player " + con.username);
 	}
 
 	public void addPacketToQueue(Packet p)
@@ -63,8 +63,18 @@ public class PacketHandlerMP extends Thread
 			}
 			else if(p.id == 20)
 			{
-				System.out.println("[" + con.player + "]: " + ((Packet20Chat)p).message);
+				System.out.println("[" + con.username + "]: " + ((Packet20Chat)p).message);
 				Server.server.broadcast(p);
+			}
+			else if(p.id == 11)
+			{
+				Packet11EntityInteraction packet = (Packet11EntityInteraction) p;
+				Entity entity = ServerLoop.level.entities.get(packet.UUID);
+				EntityPlayer player = ServerLoop.level.onlinePlayersList.get(con.username);
+				if(packet.mode == Packet11EntityInteraction.MODE_ONCLICK)
+				{
+					entity.onMouseClicked(packet.data[0], packet.data[1], player, packet.data[2]);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import vic.rpg.Game;
+import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
+import vic.rpg.gui.GuiPlayer;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityLiving;
@@ -67,15 +69,15 @@ public class PacketHandlerSP extends Thread
 				{
 					if(e instanceof EntityPlayer)
 					{
-						if (((EntityPlayer)e).username.equals(Game.USERNAME))
+						if(((EntityPlayer)e).username.equals(Game.USERNAME))
 						{
-							if(Game.thePlayer == null)
+							Game.thePlayer = (EntityPlayer) e;
+							Screen.xOffset = -e.xCoord + (Game.WIDTH - e.getWidth()) / 2;
+							Screen.yOffset = -e.yCoord + (Game.HEIGHT - e.getHeight()) / 2;
+							if(Gui.currentGui instanceof GuiPlayer)
 							{
-								Game.thePlayer = (EntityPlayer) e;
-								Screen.xOffset = -e.xCoord + (Game.WIDTH - e.getWidth()) / 2;
-								Screen.yOffset = -e.yCoord + (Game.HEIGHT - e.getHeight()) / 2;
+								Gui.currentGui.initGui();
 							}
-							else continue;
 						}
 					}
 					if(Game.level != null) Game.level.entities.put(e.UUID, e);				

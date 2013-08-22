@@ -20,7 +20,7 @@ public class CommandOnline extends Command
 		
 		for(Connection con : Server.connections.values())
 		{
-			out += con.player + ", ";
+			out += con.username + ", ";
 		}
 		
 		out += ")";

@@ -5,7 +5,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
+import vic.rpg.item.ItemApple;
 import vic.rpg.level.EntityStatic;
+import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.LightSource;
 import vic.rpg.utils.Utils;
@@ -27,6 +29,17 @@ public class EntityAppleTree extends EntityStatic
 			return new Point(this.xCoord + this.getWidth() / 2, this.yCoord + this.getHeight() / 2);
 		}
 		return null;
+	}
+
+	@Override
+	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent) 
+	{
+		super.onMouseClicked(x, y, entity, mouseEvent);
+		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		{
+			entity.inventory.addToInventory(new ItemApple());
+			entity.sendChatMessage("You take a delicious apple", "Apple Tree");
+		}
 	}
 
 	@Override
