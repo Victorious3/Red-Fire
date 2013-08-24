@@ -2,9 +2,10 @@ package vic.rpg.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.config.Options;
@@ -30,22 +31,22 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	}
 	
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{
-		g2d.setColor(new Color(80, 80, 80, 180));
-		g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-		g2d.setColor(Color.WHITE);
+		gl2.setColor(new Color(80, 80, 80, 180));
+		gl2.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+		gl2.setColor(Color.WHITE);
 		
-		super.render(g2d);
+		super.render(gl2);
 		
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
-		g2d.drawString("Options", Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 180);
-		g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+		gl2.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
+		gl2.drawString("Options", Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 180);
+		gl2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
 		
-		g2d.drawString("Render Passes:", Game.WIDTH / 2 - 176, Game.HEIGHT / 2 - 95);
-		g2d.drawString("Antialasing:", Game.WIDTH / 2 - 148, Game.HEIGHT / 2 - 50);
-		g2d.drawString("Color Render:", Game.WIDTH / 2 - 164, Game.HEIGHT / 2 - 10);
-		g2d.drawString("Interpolation:", Game.WIDTH / 2 - 157, Game.HEIGHT / 2 + 30);
+		gl2.drawString("Render Passes:", Game.WIDTH / 2 - 176, Game.HEIGHT / 2 - 95);
+		gl2.drawString("Antialasing:", Game.WIDTH / 2 - 148, Game.HEIGHT / 2 - 50);
+		gl2.drawString("Color Render:", Game.WIDTH / 2 - 164, Game.HEIGHT / 2 - 10);
+		gl2.drawString("Interpolation:", Game.WIDTH / 2 - 157, Game.HEIGHT / 2 + 30);
 	}
 
 	@Override

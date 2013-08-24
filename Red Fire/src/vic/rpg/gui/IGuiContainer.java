@@ -1,13 +1,14 @@
 package vic.rpg.gui;
 
 import java.awt.Cursor;
-import java.awt.Graphics2D;
-import java.awt.image.RescaleOp;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.item.Slot;
 import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
+import vic.rpg.render.DrawUtils;
 
 public class IGuiContainer extends Gui 
 {
@@ -15,16 +16,16 @@ public class IGuiContainer extends Gui
 	public Inventory inventory;
 	
 	@Override
-	public void render(Graphics2D g2d) 
-	{
-		super.render(g2d);
-		
+	public void render(GL2 gl2) 
+	{		
 		if(currentSlot != null) Game.frame.setCursor(GameRegistry.CURSOR_DRAG);
 		else if(isSlotHovered) Game.frame.setCursor(GameRegistry.CURSOR_DROP);	
 		else Game.frame.setCursor(Cursor.getDefaultCursor());
 		isSlotHovered = false;
 		
-		if(currentSlot != null) g2d.drawImage(currentSlot.item.img, new RescaleOp(new float[]{1.0f, 1.0f, 1.0f, 0.8f}, new float[]{0f, 0f, 0f, -20f}, null), GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15);
+		DrawUtils.setGL(gl2);
+		super.render(gl2);
+		if(currentSlot != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, currentSlot.item.texture);
 	}
 	
 	public IGuiContainer(boolean pauseGame, boolean overridesEsc) 

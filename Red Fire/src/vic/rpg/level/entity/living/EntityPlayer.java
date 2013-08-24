@@ -1,6 +1,5 @@
 package vic.rpg.level.entity.living;
 
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
@@ -14,10 +13,13 @@ import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemShield;
 import vic.rpg.item.ItemSword;
 import vic.rpg.level.Editable;
-import vic.rpg.render.ImageBuffer;
+import vic.rpg.render.TextureFX;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Utils;
+
+import com.jogamp.opengl.util.texture.Texture;
 
 public class EntityPlayer extends EntityLiving 
 {	
@@ -25,8 +27,7 @@ public class EntityPlayer extends EntityLiving
 	@Editable public String username = "NO_USERNAME";
 	public boolean isWalkingBlocked = false;
 	
-	public static Image[][] steps = new Image[][]{ImageBuffer.getAnimatedImageData("/vic/rpg/resources/character/player_main_1.gif"), ImageBuffer.getAnimatedImageData("/vic/rpg/resources/character/player_main_2.gif"), ImageBuffer.getAnimatedImageData("/vic/rpg/resources/character/player_main_3.gif")};
-	
+	public static TextureFX[] sprites = new TextureFX[]{new TextureFX("/vic/rpg/resources/character/player_main_4.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_3.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_2.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_1.gif", 1F)};	
 	public EntityPlayer() 
 	{
 		super(33, 32);
@@ -61,10 +62,10 @@ public class EntityPlayer extends EntityLiving
 		return area;
 	}
 
-	public static Image portrait = Utils.readImageFromJar("/vic/rpg/resources/character/portrait.png");
+	public static Texture portrait = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/portrait.png"));
 	
 	@Override
-	public Image getShortcutImage() 
+	public Texture getShortcutImage() 
 	{
 		return portrait;
 	}
@@ -74,32 +75,12 @@ public class EntityPlayer extends EntityLiving
 	{
 		return username;
 	}
-
-	public void reRender()
-	{		
-		setImage(sprite);
-	}
-
+	
 	public int tickCounter = 0;	
 	
 	public void tick() 
 	{	
 		super.tick();
-		
-		if(isWalking() && Utils.getSide().equals(Utils.SIDE_CLIENT))
-		{
-			tickCounter++;
-			if(tickCounter == 8)
-			{				
-				step++;
-				if(step == 3) step = 0;
-				this.sprites = steps[step];
-				this.sprite = sprites[this.rotation];
-				this.reRender();
-				
-				tickCounter = 0;	
-			}
-		}
 	}
 	
 	public void sendChatMessage(String message, String username)
@@ -120,10 +101,8 @@ public class EntityPlayer extends EntityLiving
 
 	public void initRender() 
 	{
-		this.sprites = steps[0];
-		this.sprite = sprites[0];
-
-		this.reRender();
+		super.rotatedSprites = EntityPlayer.sprites.clone();
+		this.setRotation(0);
 	}
 
 	@Override

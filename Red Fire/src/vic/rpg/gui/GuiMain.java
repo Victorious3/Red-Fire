@@ -1,35 +1,35 @@
 package vic.rpg.gui;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.editor.Editor;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.Gif;
+import vic.rpg.render.DrawUtils;
+import vic.rpg.render.TextureFX;
 import vic.rpg.sound.SoundPlayer;
+
 
 public class GuiMain extends Gui implements IGButton 
 {
-	public static Gif bgimage = new Gif("/vic/rpg/resources/redfire.gif", 5);
-	
+	public static TextureFX bgimage = new TextureFX("/vic/rpg/resources/fire.gif", 4);	
 	public GuiMain() 
 	{
 		super(true, true);
 	}
 
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{
-		g2d.drawImage(bgimage.getImage(), 0, 0, null);
-		g2d.setColor(new Color(80, 80, 80, 180));
-		g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-		super.render(g2d);
-		
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(80.0F));
-		g2d.drawString("Red Fire", Game.WIDTH / 2 - 130, Game.HEIGHT / 2 - 100);
+		DrawUtils.setGL(gl2);	
+		bgimage.draw(gl2, 0, 0);
+		super.render(gl2);	
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(80.0F));
+		DrawUtils.drawString(Game.WIDTH / 2 - 130, Game.HEIGHT / 2 - 100, "Red Fire", Color.white);
 	}
 
 	@Override

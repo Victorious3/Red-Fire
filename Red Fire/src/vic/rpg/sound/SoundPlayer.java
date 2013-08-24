@@ -19,7 +19,7 @@ public class SoundPlayer
 		if(clip != null) clip.close();
 		
 		try {
-			as1 = AudioSystem.getAudioInputStream(Utils.getStreamFromString(path));		
+			as1 = AudioSystem.getAudioInputStream(Utils.getStreamFromJar(path));		
 
 	        clip = AudioSystem.getClip();
         	clip.open(as1);
@@ -36,7 +36,7 @@ public class SoundPlayer
 		if(clip != null) clip.close();
 		
 		try {
-			as1 = AudioSystem.getAudioInputStream(new BufferedInputStream(Utils.getStreamFromString(path)));		
+			as1 = AudioSystem.getAudioInputStream(new BufferedInputStream(Utils.getStreamFromJar(path)));		
 			
 			clip = AudioSystem.getClip();   
         	clip.open(as1);

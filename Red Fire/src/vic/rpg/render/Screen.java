@@ -1,18 +1,13 @@
 package vic.rpg.render;
 
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.image.BufferedImage;
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.Gui;
-import vic.rpg.level.Entity;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.packet.Packet9EntityMoving;
 
-public class Screen extends Render 
+public class Screen extends Drawable 
 {	
 	public static int xOffset = 0;
 	public static int yOffset = 0;
@@ -23,12 +18,12 @@ public class Screen extends Render
 	}
 
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{
 		if(Game.level != null)
 		{			
-			resetImage();		
-			Game.level.render(g2d);			
+			resetTexture();		
+			Game.level.render(gl2);			
 		}
 	}
 	
@@ -112,9 +107,9 @@ public class Screen extends Render
 		}
 	}
 
-	public void postRender(Graphics2D g2d)
+	public void postRender(GL2 gl2)
 	{
-		Composite c = g2d.getComposite();
+		/*Composite c = g2d.getComposite();
 		g2d.setComposite(BlendComposite.Multiply);
 		
 		if(Game.level != null)
@@ -137,7 +132,7 @@ public class Screen extends Render
 			}
 			g2d.drawImage(bLight, null, 0, 0);
 		}
-		g2d.setComposite(c);
-		if(Gui.currentGui != null) Gui.currentGui.render(g2d);    
+		g2d.setComposite(c);*/
+		if(Gui.currentGui != null) Gui.currentGui.render(gl2);    
 	}
 }

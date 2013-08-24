@@ -1,11 +1,12 @@
 package vic.rpg.gui;
 
 import java.awt.Cursor;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.controls.GControl;
@@ -42,7 +43,7 @@ public class Gui
 	public boolean pauseGame = false;
 	public boolean overridesEsc = false;
 	
-	public void render(Graphics2D g2d)
+	public void render(GL2 gl2)
 	{
 		synchronized(controlsList)
 		{
@@ -51,7 +52,7 @@ public class Gui
 			while(i.hasNext())
 			{
 				GControl gc = i.next();
-				if(gc.isVisible) gc.render(g2d, GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord);
+				if(gc.isVisible) gc.render(gl2, GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord);
 			}
 		}
 	}

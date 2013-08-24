@@ -1,10 +1,12 @@
 package vic.rpg.item;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.gui.IGuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.render.DrawUtils;
 
 //TODO Clean that mess up -_-
 public class SlotGrid extends GControl
@@ -42,13 +44,14 @@ public class SlotGrid extends GControl
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{		
+		DrawUtils.setGL(gl2);
 		for(Item[] items : this.items)
 		{
 			for(Item item : items)
 			{
-				if(item != null) item.render(g2d);
+				if(item != null) item.render(gl2);
 			}
 		}
 		
@@ -56,13 +59,30 @@ public class SlotGrid extends GControl
 		{
 			for(int j = 0; j < gridHeight; j++)
 			{
-				g2d.setColor(new Color(112, 112, 112, 180));
-				if(items[i][j] != null) g2d.setColor(items[i][j].getBgColor());
-				
-				Item item = overlapsWith(1, 1, i, j);		
-				if(item != null) g2d.setColor(item.getBgColor());
-				
-				g2d.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30);
+				Item item = overlapsWith(1, 1, i, j);
+				if(items[i][j] != null)
+				{
+					DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, items[i][j].getBgColor());
+				}
+				else if(item != null) DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, item.getBgColor());
+				else DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, new Color(112, 112, 112, 180));
+			}
+		}
+		
+		for(int i = 0; i <= width; i += 30)
+		{
+			DrawUtils.drawLine(xCoord + i, yCoord, xCoord + i, yCoord + height, Color.black);
+		}
+		for(int i = 0; i <= height; i += 30)
+		{
+			DrawUtils.drawLine(xCoord, yCoord + i, xCoord + width, yCoord + i, Color.black);
+		}
+		
+		for(int i = 0; i < gridWidth; i++)
+		{
+			for(int j = 0; j < gridHeight; j++)
+			{
+				if(items[i][j] != null) DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, items[i][j].texture);
 			}
 		}
 		
@@ -77,33 +97,13 @@ public class SlotGrid extends GControl
 				
 				if(canBePlacedAt(x1, y1, gui.currentSlot.item))
 				{
-					g2d.setColor(new Color(0, 0, 0, 50));
-					g2d.fillRect(xCoord + x1 * 30, yCoord + y1 * 30, gui.currentSlot.item.gridWidth * 30, gui.currentSlot.item.gridHeight * 30);
+					DrawUtils.fillRect(xCoord + x1 * 30, yCoord + y1 * 30, gui.currentSlot.item.gridWidth * 30, gui.currentSlot.item.gridHeight * 30, new Color(0, 0, 0, 50));
 				}
 			}
 			else if(it != null)
 			{
 				gui.isSlotHovered = true;
-				g2d.setColor(new Color(0, 0, 0, 50));
-				g2d.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30);
-			}
-		}			
-		
-		g2d.setColor(Color.black);
-		for(int i = 0; i <= width; i += 30)
-		{
-			g2d.drawLine(xCoord + i, yCoord, xCoord + i, yCoord + height);
-		}
-		for(int i = 0; i <= height; i += 30)
-		{
-			g2d.drawLine(xCoord, yCoord + i, xCoord + width, yCoord + i);
-		}
-		
-		for(int i = 0; i < gridWidth; i++)
-		{
-			for(int j = 0; j < gridHeight; j++)
-			{
-				if(items[i][j] != null) g2d.drawImage(items[i][j].img, null, xCoord + i * 30, yCoord + j * 30);
+				DrawUtils.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30, new Color(0, 0, 0, 50));
 			}
 		}		
 	}

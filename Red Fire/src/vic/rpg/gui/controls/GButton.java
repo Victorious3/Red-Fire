@@ -1,12 +1,11 @@
 package vic.rpg.gui.controls;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
 
 public class GButton extends GControl {
 
@@ -21,29 +20,25 @@ public class GButton extends GControl {
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{	
-		if(this.mouseDown)g2d.setColor(new Color(158, 31, 74));
-		else if(this.mouseHovered)g2d.setColor(new Color(130, 91, 213));
-		else g2d.setColor(new Color(68, 21, 150));
+		DrawUtils.setGL(gl2);
 		
-		g2d.fillRect(xCoord, yCoord, width, height);
+		if(this.mouseDown)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(158, 31, 74));
+		else if(this.mouseHovered)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(130, 91, 213));
+		else DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(68, 21, 150));
 		
-		g2d.setColor(new Color(120, 31, 0));		
 		float thickness = 3;
-		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(thickness));		
-		g2d.drawRect(xCoord, yCoord, width, height);
-		g2d.setStroke(oldStroke);
+		float oldThickness = DrawUtils.getLineWidth();
 		
-		g2d.setColor(Color.white);
-		g2d.setFont(RenderRegistry.RPGFont);
+		DrawUtils.setLineWidth(thickness);
+		DrawUtils.drawRect(xCoord, yCoord, width, height, new Color(120, 31, 0));
+		DrawUtils.setLineWidth(oldThickness);
 		
-		FontMetrics fm = g2d.getFontMetrics();		
-		int sWidth = fm.stringWidth(name);
-		int sHeight = fm.getHeight() / 2;
-		
-		g2d.drawString(name, xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2);
+		DrawUtils.setFont(RenderRegistry.RPGFont);		
+		int sWidth = (int) DrawUtils.getTextRenderer().getBounds(name).getWidth();
+		int sHeight = (int) DrawUtils.getTextRenderer().getBounds(name).getHeight() / 2;
+		DrawUtils.drawString(xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2, name, Color.white);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package vic.rpg.gui.controls;
 
-import java.awt.Graphics2D;
+import javax.media.opengl.GL2;
 
 public class GControl {
 
@@ -21,7 +21,7 @@ public class GControl {
 		this.width = width;	
 	}
 	
-	public void render(Graphics2D g2d, int x, int y){}
+	public void render(GL2 gl2, int x, int y){}
 	
 	public void onClickStart(int x, int y){}
 	

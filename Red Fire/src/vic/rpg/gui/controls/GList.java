@@ -1,10 +1,12 @@
 package vic.rpg.gui.controls;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
+import java.awt.Font;
 import java.util.ArrayList;
+
+import javax.media.opengl.GL2;
+
+import vic.rpg.render.DrawUtils;
 
 public class GList extends GControl 
 {
@@ -31,12 +33,15 @@ public class GList extends GControl
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{
-		g2d.setColor(new Color(97, 74, 119, 190));
-		g2d.fillRect(xCoord, yCoord, width, height);
+		DrawUtils.setGL(gl2);
+		DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(97, 74, 119, 190));
+		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
 		
-		g2d.setClip(xCoord, yCoord, width, height);	
+		gl2.glEnable(GL2.GL_SCISSOR_TEST);
+		gl2.glPushMatrix();
+		gl2.glScissor(xCoord, yCoord, width, height);	
 		
 		int offset = (int) (scrollPos * maxOffset);
 		
@@ -45,15 +50,14 @@ public class GList extends GControl
 			int i2 = offset + yCoord + 20 + i * (elementHeight + 5);
 			
 			Object o = data.get(i);
-			g2d.setColor(new Color(68, 21, 150));
-			if(this.selectedPos == i) g2d.setColor(new Color(158, 31, 74));
-			g2d.fillRect(xCoord + 20, i2, width - 80, elementHeight);
-			g2d.setColor(new Color(120, 31, 0));
-			g2d.drawRect(xCoord + 20, i2, width - 80, elementHeight);
-			g2d.setColor(Color.white);
-			g2d.drawString(o.toString(), xCoord + 25, i2 + (elementHeight + g2d.getFont().getSize()) / 2);
+			if(this.selectedPos == i) DrawUtils.fillRect(xCoord + 20, i2, width - 80, elementHeight, new Color(158, 31, 74));
+			else DrawUtils.fillRect(xCoord + 20, i2, width - 80, elementHeight, new Color(68, 21, 150));
+
+			DrawUtils.drawRect(xCoord + 20, i2, width - 80, elementHeight, new Color(120, 31, 0));
+			DrawUtils.drawString(xCoord + 25, i2 + (elementHeight + DrawUtils.getFont().getSize()) / 2, o.toString(), Color.white);
 		}
-		g2d.setClip(null);
+		gl2.glPopMatrix();
+		gl2.glDisable(GL2.GL_SCISSOR_TEST);
 		
 		int x2 = xCoord + width - 35;
 		int y2 = (int) (yCoord + 5 + scrollPos * (height - 69));
@@ -68,19 +72,16 @@ public class GList extends GControl
 			}
 		}
 
-		if(!this.isScrollingEnabled) g2d.setColor(new Color(60, 60, 60));
-		else if(this.isScrolling) g2d.setColor(new Color(158, 31, 74));
-		else g2d.setColor(new Color(68, 21, 150));
-			
-		g2d.fillRect(x2, y2, 31, 60);
+		if(!this.isScrollingEnabled) DrawUtils.fillRect(x2, y2, 31, 60, new Color(60, 60, 60));
+		else if(this.isScrolling) DrawUtils.fillRect(x2, y2, 31, 60, new Color(158, 31, 74));
+		else DrawUtils.fillRect(x2, y2, 31, 60, new Color(158, 31, 74));	
 
-		g2d.setColor(new Color(120, 31, 0));		
 		float thickness = 3;
-		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(thickness));		
-		g2d.drawRect(xCoord, yCoord, width, height);
-		g2d.drawLine(xCoord + width - 40, yCoord, xCoord + width - 40, yCoord + height);
-		g2d.setStroke(oldStroke);
+		float oldThickness = DrawUtils.getLineWidth();
+		DrawUtils.setLineWidth(thickness);		
+		DrawUtils.drawRect(xCoord, yCoord, width, height, new Color(120, 31, 0));
+		DrawUtils.drawLine(xCoord + width - 40, yCoord, xCoord + width - 40, yCoord + height, new Color(120, 31, 0));
+		DrawUtils.setLineWidth(oldThickness);		
 	}
 
 	long lastClickTime = System.currentTimeMillis();

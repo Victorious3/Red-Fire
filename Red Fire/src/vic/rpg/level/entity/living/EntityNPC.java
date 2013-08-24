@@ -11,7 +11,6 @@ public class EntityNPC extends EntityLiving
 	{
 		super(33, 32);
 		this.zLevel = -1;
-		this.sprites = EntityPlayer.steps[this.rotation];
 		this.speed = 2;
 		
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
@@ -29,19 +28,6 @@ public class EntityNPC extends EntityLiving
 			player = ServerLoop.level.onlinePlayersList.values().toArray(player);		
 			if(player.length > 0) walkTo(player[0].xCoord - 70, player[0].yCoord, Double.MAX_VALUE);
 		}
-		if(isWalking() && Utils.getSide().equals(Utils.SIDE_CLIENT))
-		{						
-			tickCounter++;
-			if(tickCounter == 8)
-			{				
-				step++;
-				if(step == 3) step = 0;
-				this.sprites = EntityPlayer.steps[step];
-				this.sprite = sprites[this.rotation];
-				setImage(sprite);				
-				tickCounter = 0;	
-			}
-		}
 	}
 
 	@Override
@@ -52,9 +38,7 @@ public class EntityNPC extends EntityLiving
 
 	public void initRender() 
 	{
-		this.sprites = EntityPlayer.steps[0];
-		this.sprite = sprites[0];
-
-		setImage(sprite);
+		this.rotatedSprites = EntityPlayer.sprites.clone();
+		this.setRotation(0);
 	}
 }

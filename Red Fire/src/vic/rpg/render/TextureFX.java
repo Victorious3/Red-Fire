@@ -1,52 +1,99 @@
 package vic.rpg.render;
 
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.media.opengl.GL2;
+
+import vic.rpg.utils.Utils;
+
+import com.jogamp.opengl.util.texture.Texture;
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
 public class TextureFX 
 {
-	private Image[] data;
-	private int tickRate;
-	public boolean hasUpdated = true;
-	public Image currImage;
+	private Texture[] data;
+	private float framerate;
+	private boolean isPlaying = true;
+	private boolean hasFinished = false;
+	private boolean isRepeating = true;
+	private int imgPointer = 0;
 	
-	private static ArrayList<TextureFX> images = new ArrayList<TextureFX>();
-	
-	public TextureFX(Image[] data, int tickRate)
+	public TextureFX(String gifURL, float framerate)
 	{
-		this.data = data;
-		this.tickRate = tickRate;
+		this.framerate = framerate;
 		
-		currImage = data[0];
-		images.add(this);
+		ArrayList<BufferedImage> frames = new ArrayList<BufferedImage>();
+	    ImageReader ir = new GIFImageReader(new GIFImageReaderSpi());
+	    try {
+			ir.setInput(ImageIO.createImageInputStream(Utils.getStreamFromJar(gifURL)));
+			for(int i = 0; i < ir.getNumImages(true); i++)
+			{
+				frames.add(ir.read(i));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    ir.dispose();
+	    
+	    ArrayList<Texture> texFrames = new ArrayList<Texture>();
+	    for(BufferedImage img : frames)
+	    {
+	    	texFrames.add(TextureLoader.requestTexture(img));
+	    }
+	    data = texFrames.toArray(new Texture[texFrames.size()]);
 	}
 	
-	int tickPointer = 0;
-	int imgPointer = 0;
+	private long lastTime = System.currentTimeMillis();
 	
-	public void tick()
+	public void draw(GL2 gl2, int x, int y)
 	{
-		hasUpdated = false;
-		
-		tickPointer++;
-		
-		if(tickPointer == tickRate)
-		{
-			imgPointer++;
-			if(imgPointer >= data.length) imgPointer = 0;
-			
-			currImage = data[imgPointer];
-			hasUpdated = true;
-			
-			tickPointer = 0;
-		}
+		DrawUtils.setGL(gl2);
+		DrawUtils.drawTexture(x, y, data[getNextFrame()]);	
 	}
 	
-	public static void tickAll()
+	public Texture getCurrentTexture()
 	{
-		for(TextureFX tex : images)
+		return(data[getNextFrame()]);
+	}
+	
+	public boolean hasFinished()
+	{
+		return hasFinished;
+	}
+	
+	public void start()
+	{
+		this.isPlaying = true;
+	}
+	
+	public void stop()
+	{
+		this.isPlaying = false;
+	}
+	
+	private int getNextFrame()
+	{
+		if(isPlaying)
 		{
-			tex.tick();
+			float frametime = 100 / framerate;
+			long currTime = System.currentTimeMillis();
+			if(currTime - lastTime >= frametime)
+			{
+				int offset = (int) ((currTime - lastTime) / frametime);
+				imgPointer += offset;
+				lastTime = System.currentTimeMillis();
+				if(imgPointer >= data.length) 
+				{
+					if(isRepeating) imgPointer = 0;
+					else imgPointer = data.length - 1;
+				}
+			}
 		}
+		return imgPointer;
 	}
 }

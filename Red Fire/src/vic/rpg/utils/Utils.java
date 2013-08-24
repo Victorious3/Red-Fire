@@ -13,6 +13,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -25,9 +26,19 @@ public class Utils
 	public static GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
 	public static GraphicsConfiguration gConfig = defaultScreen.getDefaultConfiguration();
 	
-	public static InputStream getStreamFromString(String s)
+	public static InputStream getStreamFromJar(String s)
 	{
 		return Game.class.getResourceAsStream(s);		
+	}
+	
+	public static File getFileFromJar(String s)
+	{
+		try {
+			return new File(Game.class.getResource(s).toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static String getAppdata()
@@ -99,7 +110,7 @@ public class Utils
 	public static BufferedImage readImageFromJar(String s)
 	{
 		try {
-			InputStream in = getStreamFromString(s);
+			InputStream in = getStreamFromJar(s);
 			BufferedImage img = ImageIO.read(in);
 			in.close();
 			return img;

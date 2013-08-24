@@ -1,14 +1,13 @@
 package vic.rpg.gui.controls;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 
+import javax.media.opengl.GL2;
+
 import vic.rpg.Game;
+import vic.rpg.render.DrawUtils;
 
 public class GTextField extends GControl
 {
@@ -34,27 +33,25 @@ public class GTextField extends GControl
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{
-		g2d.setColor(Color.black);
-		g2d.fillRect(xCoord, yCoord, width, height);
+		DrawUtils.setGL(gl2);
+		DrawUtils.fillRect(xCoord, yCoord, width, height, Color.black);
 		
-		g2d.setColor(Color.lightGray);
-		if(this.activated) g2d.setColor(Color.white);
 		float thickness = 3;
-		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(thickness));		
-		g2d.drawRect(xCoord, yCoord, width, height);
-		g2d.setStroke(oldStroke);
+		float oldThickness = DrawUtils.getLineWidth();
+		DrawUtils.setLineWidth(thickness);		
 		
-		g2d.setFont(new Font("Lucida Console", Font.PLAIN, 12));
-		FontMetrics metrics = g2d.getFontMetrics();
+		if(this.activated) DrawUtils.drawRect(xCoord, yCoord, width, height, Color.white);
+		else DrawUtils.drawRect(xCoord, yCoord, width, height, Color.LIGHT_GRAY); 
+		DrawUtils.setLineWidth(oldThickness);
 		
-		wdt = metrics.stringWidth(text);
-		wdt1 = metrics.stringWidth(" ");
+		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
 		
-		g2d.setColor(Color.white);
-		g2d.drawString(text, xCoord + 5, yCoord + height - 6);
+		wdt = (int) DrawUtils.getTextRenderer().getBounds(text).getWidth();
+		wdt1 = (int) DrawUtils.getTextRenderer().getBounds(" ").getWidth();
+		
+		DrawUtils.drawString(xCoord + 5, yCoord + height - 6, text, Color.white);
 	}
 
 	@Override

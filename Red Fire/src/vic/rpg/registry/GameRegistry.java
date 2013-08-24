@@ -11,7 +11,7 @@ import vic.rpg.utils.Utils;
 
 public class GameRegistry 
 {
-	public static final String VERSION = "0.3r23";
+	public static final String VERSION = "0.4r01";
 	
 	public static Mouse mouse = new Mouse();
 	public static Key key = new Key();

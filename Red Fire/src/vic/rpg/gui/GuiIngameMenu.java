@@ -1,20 +1,22 @@
 package vic.rpg.gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Stroke;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.registry.GameRegistry;
+import vic.rpg.render.DrawUtils;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
+
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GuiIngameMenu extends Gui implements GButton.IGButton {
 
-	private Image logo;
+	private Texture logo = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/Red Fire.png"));
 	private int xOffset;
 	private int yOffset;
 	
@@ -24,25 +26,22 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 	}
 
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{		
-		g2d.setColor(new Color(80, 80, 80, 180));
-		g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
+		DrawUtils.setGL(gl2);
+		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, new Color(80, 80, 80, 180));
 		
-		g2d.drawImage(logo, xOffset, yOffset, null);
+		DrawUtils.drawTexture(xOffset, yOffset, logo);
 		
-		g2d.setColor(new Color(120, 31, 0));
-
-		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(3.0F));
-		g2d.drawRect(xOffset, yOffset, 544, 268);		
-		g2d.setStroke(oldStroke);
+		float oldStroke = DrawUtils.getLineWidth();
+		DrawUtils.setLineWidth(3F);
+		DrawUtils.drawRect(xOffset, yOffset, 544, 268, new Color(120, 31, 0));		
+		DrawUtils.setLineWidth(oldStroke);
 		
-		g2d.setFont(new Font("Veranda", 0, 20));
-		g2d.setColor(Color.white);
-		g2d.drawString("Red Fire V." + GameRegistry.VERSION, 5, 20);
+		DrawUtils.setFont(new Font("Veranda", 0, 20));
+		DrawUtils.drawString(5, 20, "Red Fire V." + GameRegistry.VERSION, Color.white);
 		
-		super.render(g2d);
+		super.render(gl2);
 	}
 
 	@Override
@@ -59,8 +58,6 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 		this.controlsList.add(new GButton(16 + xOffset + 3*(width + 10), yOffset + 15, width, 30, this, "Quit to Title"));
 		this.controlsList.add(new GButton(16 + xOffset, yOffset + 222, width, 30, this, "Continue"));
 
-		logo = Utils.readImageFromJar("/vic/rpg/resources/Red Fire.png");	
-		
 		super.initGui();
 	}
 	

@@ -2,13 +2,15 @@ package vic.rpg.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.controls.GTextField;
 import vic.rpg.level.entity.living.EntityLiving;
+import vic.rpg.render.DrawUtils;
 import vic.rpg.server.packet.Packet20Chat;
 
 public class GuiIngame extends Gui 
@@ -59,27 +61,27 @@ public class GuiIngame extends Gui
 	}
 	
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{
-		super.render(g2d);
-		g2d.setFont(new Font("Veranda", 0, 20));
-		g2d.setColor(Color.white);
-		g2d.drawString(Game.fps + " FPS", 5, 20);
+		super.render(gl2);
+		DrawUtils.setGL(gl2);
+		DrawUtils.setFont(new Font("Veranda", 0, 20));
+		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
 		
-		g2d.setFont(new Font("Lucida Console", Font.PLAIN, 14));
+		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 14));
 		
 		int stringHeight = 0;
 		for(int i = chatValues.size() - 1; i >= 0; i--)
 		{
 			String s = chatValues.get(i) != null ? chatValues.get(i): " ";
-			g2d.drawString(s, 0, 50 + stringHeight * g2d.getFontMetrics().getHeight());
+			DrawUtils.drawString(0, (int)(50 + stringHeight * DrawUtils.getTextRenderer().getBounds("X").getHeight()), s, Color.white);
 			stringHeight += 1;
 		}
 		
 		if(focusedEntity != null)
 		{
-			g2d.drawImage(focusedEntity.getShortcutImage(), 200, 0, null);
-			g2d.drawString(focusedEntity.getName(), 200, 10);
+			DrawUtils.drawTexture(200, 0, focusedEntity.getShortcutImage());
+			DrawUtils.drawString(200, 10, focusedEntity.getName(), Color.white);
 		}
 		
 	}

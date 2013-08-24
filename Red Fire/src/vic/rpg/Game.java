@@ -1,15 +1,15 @@
 package vic.rpg;
 
-import java.awt.Canvas;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -18,19 +18,19 @@ import vic.rpg.client.packet.PacketHandlerSP;
 import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiMain;
-import vic.rpg.gui.controls.GSlider;
 import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.Gif;
+import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
-import vic.rpg.render.TextureFX;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.utils.Utils;
 
-public class Game extends Canvas implements Runnable 
+import com.jogamp.opengl.util.Animator;
+
+public class Game extends GLCanvas implements Runnable 
 {
 	public static String USERNAME = "victorious3";
 	
@@ -41,33 +41,28 @@ public class Game extends Canvas implements Runnable
 	
 	public static int RES_HEIGHT = 600;
 	public static int RES_WIDTH = 800;
-	
-	public static NetHandler netHandler = new NetHandler();
+
+	public static GLProfile GL_PROFILE;
+    public static NetHandler netHandler = new NetHandler();
 	public static PacketHandlerSP packetHandler = new PacketHandlerSP();
-	public static Game game = new Game();	
+	public static Game game;	
 	public Screen screen;
-	
-	public BufferedImage img;
 		
 	private Thread thread;
+	public Animator GL_ANIMATOR;
 	public boolean isRunning = false;
 	public static int frames = 0;
-	public static int fps = 0;
 	
 	//Game Objects
 	public static EntityPlayer thePlayer;
 	public static Level level;
 	
-    public Game()
+    public Game(GLCapabilities glcapabilities)
     {
+    	super(glcapabilities);
     	RenderRegistry.bufferImages();
-        RenderRegistry.setup();
-        new LevelRegistry();
-        
-        Options.load();
-    	
-    	screen = new Screen(WIDTH, HEIGHT);
-        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        RenderRegistry.setup();  
+        Options.load();	 	
     }
 	
     public void stopGame()
@@ -82,40 +77,38 @@ public class Game extends Canvas implements Runnable
     	
     	System.exit(0);
     }
-    
-    private void render()
+  
+    private void init(GL2 gl2)
     {
-        BufferStrategy bs = this.getBufferStrategy();
-        if (bs == null) {
-            createBufferStrategy((int)GSlider.returnValue(1, 10, Options.RENDER_PASSES));
-            return;
-        }
-
-        Graphics g = bs.getDrawGraphics();
-        Graphics2D g2d = (Graphics2D)g;
-        
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, Options.ANTIALASING);
-        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, Options.COLOR_RENDER);
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, Options.INTERPOLATION);
-        
-        g2d.scale((double)RES_WIDTH / (double)WIDTH, (double)RES_HEIGHT / (double)HEIGHT);       
-        g2d.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
-        
-        if(Gui.currentGui == null)
-        {
-        	screen.render(g2d); 
-        }
-        else if(!Gui.currentGui.pauseGame)
-        {
-        	screen.render(g2d);
-        }
-        
-        g2d.drawImage(screen.img, 0, 0, WIDTH, HEIGHT, null);
-              
-        screen.postRender(g2d);
-        
-        g2d.dispose();
-        bs.show();
+    	gl2.glEnable(GL2.GL_ALPHA_TEST);
+    	gl2.glAlphaFunc(GL2.GL_GREATER, 0.1F);
+    	gl2.glEnable(GL2.GL_BLEND);
+    	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+    	gl2.glDisable(GL2.GL_DEPTH_TEST);
+    	
+    	gl2.glMatrixMode(GL2.GL_PROJECTION);
+    	gl2.glLoadIdentity();
+    	gl2.glViewport(0, 0, Game.WIDTH, Game.HEIGHT);
+    	gl2.glOrtho(0, Game.WIDTH, Game.HEIGHT, 0, -1, 1);
+    	gl2.glMatrixMode(GL2.GL_MODELVIEW);
+    	
+    	screen = new Screen(WIDTH, HEIGHT);
+		Gui.setGui(new GuiMain());
+		start();
+		
+		GL_ANIMATOR = new Animator();
+		GL_ANIMATOR.add(this);
+		GL_ANIMATOR.setUpdateFPSFrames(3, null);
+		GL_ANIMATOR.start();
+    }
+    
+    private void render(GL2 gl2)
+    {
+    	gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+    	DrawUtils.setGL(gl2);
+    	screen.render(gl2);
+    	screen.postRender(gl2);
+    	gl2.glFlush();
     }
     
 	private void tick() 
@@ -129,12 +122,7 @@ public class Game extends Canvas implements Runnable
 		if(level != null)
 		{
 			level.tick();
-		}		
-		if(Gui.currentGui != null)
-		{
-			if(!Gui.currentGui.pauseGame) TextureFX.tickAll();		
-			if(Gui.currentGui.pauseGame) Gif.tickAll();
-		}
+		}	
 	}
 	
     public void start()
@@ -157,18 +145,6 @@ public class Game extends Canvas implements Runnable
 		}
 	}
 	
-	public void halt()
-	{
-		if(isRunning)
-		{
-			isRunning = false;
-		}
-		else
-		{
-			isRunning = true;
-		}
-	}
-	
 	public static void main(String[] args)
 	{		
 		try {
@@ -177,6 +153,29 @@ public class Game extends Canvas implements Runnable
 			e.printStackTrace();
 		}
 		
+		GL_PROFILE = GLProfile.getDefault();
+        GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
+		
+        game = new Game(glcapabilities);
+        game.addGLEventListener(new GLEventListener() 
+        {		
+			@Override
+			public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {}
+			
+			@Override public void init(GLAutoDrawable drawable) 
+			{
+				game.init(drawable.getGL().getGL2());
+			}	
+			
+			@Override public void dispose(GLAutoDrawable drawable) {}
+			
+			@Override
+			public void display(GLAutoDrawable drawable) 
+			{
+				game.render(drawable.getGL().getGL2());
+				TextureLoader.setupTextures(drawable.getGL().getGL2());
+			}
+		});
 		game.addMouseListener(GameRegistry.mouse);
 		game.addMouseMotionListener(GameRegistry.mouse);
 		game.addMouseWheelListener(GameRegistry.mouse);
@@ -217,18 +216,14 @@ public class Game extends Canvas implements Runnable
 			
 		});
 		
-		frame.setVisible(true);
-		
+		frame.setVisible(true);		
 		game.requestFocus();
-		game.start();
 		
 		if(args.length > 0 && args[0] != null)
 		{
 			Game.USERNAME = args[0];
 		}
-		else Game.USERNAME = String.valueOf(new Random().nextLong());
-		
-		Gui.setGui(new GuiMain());
+		else Game.USERNAME = String.valueOf(new Random().nextLong());	
 	}
 
 	@Override
@@ -257,17 +252,14 @@ public class Game extends Canvas implements Runnable
 				if(tickCount % 60 == 0)
 				{
 					previousTime += 1000;
-					fps = frames;
 					frames = 0;
 				}
 			}
 			if(ticked)
 			{
 				frames++;
-				render();
 			}
 			frames++;
-			render();
 		}		
 	}
 }

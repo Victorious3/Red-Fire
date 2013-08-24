@@ -5,10 +5,10 @@ import java.awt.Color;
 import org.jnbt.CompoundTag;
 
 import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.render.Render;
+import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 
-public class Item extends Render implements Cloneable
+public class Item extends Drawable implements Cloneable
 {
 	protected String image; 
 	
@@ -39,7 +39,7 @@ public class Item extends Render implements Cloneable
 		
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
 		{
-			g2d.drawImage(Utils.readImageFromJar(image), 0, 0, null);
+			this.setTexture(Utils.readImageFromJar(image));
 		}
 	}
 	

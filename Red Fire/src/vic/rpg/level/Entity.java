@@ -11,11 +11,11 @@ import org.jnbt.CompoundTag;
 import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.LightSource;
-import vic.rpg.render.Render;
+import vic.rpg.render.Drawable;
 import vic.rpg.server.packet.Packet11EntityInteraction;
 import vic.rpg.utils.Utils;
 
-public class Entity extends Render implements Cloneable
+public class Entity extends Drawable implements Cloneable
 {
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;

@@ -1,6 +1,5 @@
 package vic.rpg.level.entity.living;
 
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Area;
 import java.util.HashMap;
@@ -15,17 +14,21 @@ import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.Path;
+import vic.rpg.render.TextureFX;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Utils;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 public class EntityLiving extends Entity
 {
-	public static Image sprite_unknown = Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png");
+	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png"));
 	
-	public Image sprite;
 	@Editable public int rotation = 0;
-	public Image[] sprites;
+	public TextureFX sprite;
+	public TextureFX[] rotatedSprites;
 	
 	protected boolean isWalking = false;
 	protected float speed = 2;
@@ -114,18 +117,15 @@ public class EntityLiving extends Entity
 		this.yCoord = y;
 	}
 	
-	public void setSprite(Image image)
+	public void setSprite(TextureFX fx)
 	{
-		if(!sprite.equals(image))
-		{
-			setImage(sprite);
-			sprite = image;
-		}
+		this.sprite = fx;
+		this.setTexture(fx);
 	}
 	
 	public void setRotation(int rotation)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setSprite(sprites[rotation]);
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setSprite(rotatedSprites[rotation]);
 		this.rotation = rotation;
 	}
 	
@@ -168,6 +168,15 @@ public class EntityLiving extends Entity
 			
 			Server.server.broadcast(new Packet9EntityMoving(this));
 		}
+		
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		{
+			if(isWalking())
+			{
+				this.sprite.start();
+			}
+			else this.sprite.stop();
+		}
 	}
 	
 	@Override
@@ -176,7 +185,7 @@ public class EntityLiving extends Entity
 		return area;
 	}
 	
-	public Image getShortcutImage()
+	public Texture getShortcutImage()
 	{
 		return sprite_unknown;
 	}

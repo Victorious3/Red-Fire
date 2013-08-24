@@ -9,6 +9,7 @@ import vic.rpg.item.ItemApple;
 import vic.rpg.level.EntityStatic;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.render.LightSource;
 import vic.rpg.utils.Utils;
 
@@ -18,7 +19,7 @@ public class EntityAppleTree extends EntityStatic
 	{
 		super(70, 87);
 		this.lightSources.add(new LightSource(1000, 1.0F, Color.yellow));
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.drawImage(RenderRegistry.IMG_ENTITY_STATIC_APLTREE, 0, 0, getWidth(), getHeight());
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_APLTREE));
 	}
 	
 	@Override

@@ -3,19 +3,20 @@ package vic.rpg.level.tiles;
 import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.Render;
+import vic.rpg.render.Drawable;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
 public class TileGrass extends Tile 
 {
-	public Render renderFlowers = new Render(Level.CELL_SIZE, Level.CELL_SIZE);
+	public Drawable drawableFlowers = new Drawable(Level.CELL_SIZE, Level.CELL_SIZE);
 	
 	public TileGrass()
 	{
 		if(Utils.getSide().contains(Utils.SIDE_CLIENT)) 
 		{
-			render.drawImage(RenderRegistry.IMG_TERRAIN_GRASS, 0, 0, render.getWidth(), render.getHeight());
-			renderFlowers.drawImage(RenderRegistry.IMG_TERRAIN_GRASS_2, 0, 0, render.getWidth(), render.getHeight());
+			drawable.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_TERRAIN_GRASS));
+			drawableFlowers.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_TERRAIN_GRASS_2));
 		}
 	}
 	
@@ -26,9 +27,9 @@ public class TileGrass extends Tile
 	}
 
 	@Override
-	public Render getRender(int x, int y, int data) 
+	public Drawable getDrawable(int x, int y, int data) 
 	{
-		if(data == 1) return renderFlowers;
-		else return render;
+		if(data == 1) return drawableFlowers;
+		else return drawable;
 	}
 }

@@ -2,9 +2,9 @@ package vic.rpg.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
@@ -12,12 +12,16 @@ import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GTextField;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.sound.SoundPlayer;
 import vic.rpg.utils.Utils;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 public class GuiConnect extends Gui implements IGButton
 {
-	private Image bgimage = Utils.readImageFromJar("/vic/rpg/resources/connect_1.png");
+	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
 	
 	private GTextField server = new GTextField(Game.WIDTH / 2 - 75, Game.HEIGHT / 2 - 20, 150, 20, 15, true).setText("localhost");
 	private GTextField username = new GTextField(Game.WIDTH / 2 - 75, Game.HEIGHT / 2 + 10, 150, 20, 15, true).setText(Game.USERNAME);
@@ -30,27 +34,24 @@ public class GuiConnect extends Gui implements IGButton
 	}
 
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{		
-		g2d.drawImage(bgimage, 0, 0, null);
+		DrawUtils.setGL(gl2);
+		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, new Color(80, 80, 80, 180));
+		DrawUtils.drawTexture(0, 0, bgimage);
+		super.render(gl2);
 		
-		g2d.setColor(new Color(80, 80, 80, 180));
-		g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-		super.render(g2d);
-		
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
-		g2d.drawString("Connect to a Server", Game.WIDTH / 2 - 200, Game.HEIGHT / 2 - 100);
-		g2d.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-		g2d.drawString("Sponsored Servers: bobcraft.de", Game.WIDTH / 2 - 200, Game.HEIGHT / 2 - 80);
-		g2d.drawString("Server Adress:", Game.WIDTH / 2 - 180, Game.HEIGHT / 2 - 5);
-		g2d.drawString("Username:", Game.WIDTH / 2 - 156, Game.HEIGHT / 2 + 25);
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
+		DrawUtils.drawString(Game.WIDTH / 2 - 200, Game.HEIGHT / 2 - 100, "Connect to a Server", Color.white);
+		DrawUtils.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+		DrawUtils.drawString(Game.WIDTH / 2 - 200, Game.HEIGHT / 2 - 80, "Sponsored Servers: bobcraft.de", Color.white);
+		DrawUtils.drawString(Game.WIDTH / 2 - 180, Game.HEIGHT / 2 - 5, "Server Adress:", Color.white);
+		DrawUtils.drawString(Game.WIDTH / 2 - 156, Game.HEIGHT / 2 + 25, "Username:", Color.white);
 		
 		if(errorMessage.length() > 0)
 		{
-			g2d.setColor(Color.black);
-			g2d.fillRect(Game.WIDTH / 2 - 205, Game.HEIGHT / 2 + 110, g2d.getFontMetrics().stringWidth("Connection failed! Reason: " + errorMessage) + 10, 30);
-			g2d.setColor(Color.red);
-			g2d.drawString("Connection failed! Reason: " + errorMessage, Game.WIDTH / 2 - 200, Game.HEIGHT / 2 + 130);
+			DrawUtils.fillRect(Game.WIDTH / 2 - 205, Game.HEIGHT / 2 + 110, (int) (DrawUtils.getTextRenderer().getBounds("Connection failed! Reason: " + errorMessage).getWidth() + 10), 30, Color.black);
+			DrawUtils.drawString(Game.WIDTH / 2 - 200, Game.HEIGHT / 2 + 130, "Connection failed! Reason: " + errorMessage, Color.red);
 		}
 	}
 

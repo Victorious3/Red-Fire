@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.media.opengl.GL2;
+
 import org.jnbt.CompoundTag;
 import org.jnbt.IntTag;
 import org.jnbt.ListTag;
@@ -31,6 +33,7 @@ import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.path.NodeMap;
 import vic.rpg.registry.LevelRegistry;
+import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet10TimePacket;
@@ -75,7 +78,7 @@ public class Level
 		
 	public void onMouseMoved(int x, int y)
 	{
-		Entity ent = intersect(x - Screen.xOffset, y - Screen.yOffset); 
+		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
 		if(ent != null)
 		{
 			ent.onMouseHovered(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.thePlayer);
@@ -158,20 +161,22 @@ public class Level
 		}
 	}
 	
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{
-		render(g2d, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT, -Screen.xOffset, -Screen.yOffset);
+		render(gl2, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT, -Screen.xOffset, -Screen.yOffset);
 	}
 
-	public void render(Graphics2D g2d, int xOffset, int yOffset, int width, int height, int xOffset2, int yOffset2)
+	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height, int xOffset2, int yOffset2)
 	{
+		DrawUtils.setGL(gl2);
+		
 		for(int x = 0; x < this.width; x++)
 		{
 			for(int y = 0; y < this.height; y++)
 			{
 				if(x * CELL_SIZE >= xOffset - CELL_SIZE && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE && y * CELL_SIZE <= yOffset + height)
 				{
-					g2d.drawImage(LevelRegistry.tileRegistry.get(worldobjects[x][y][0]).getRender(x, y, worldobjects[x][y][1]).img, x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, null);
+					DrawUtils.drawTexture(x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, LevelRegistry.tileRegistry.get(worldobjects[x][y][0]).getDrawable(x, y, worldobjects[x][y][1]).texture);
 				}				
 			}
 		}
@@ -180,8 +185,8 @@ public class Level
 		{
 			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
 			{
-				e.render(g2d);
-				g2d.drawImage(e.img, e.xCoord - xOffset2, e.yCoord - yOffset2, null);
+				e.render(gl2);
+				DrawUtils.drawTexture(e.xCoord - xOffset2, e.yCoord - yOffset2, e.texture);
 			}
 		}
 	}
@@ -293,28 +298,6 @@ public class Level
 		ArrayList<Entity> ent2 = new ArrayList<Entity>(entities.values());
 		Collections.sort(ent2, new Entity.EntityComperator());
 		return ent2;
-	}
-	
-	/**
-	 * Searches for transparent pixels, doesn't use the collision box.
-	 * @param x
-	 * @param y
-	 * @return Entity
-	 */
-	public Entity intersect(int x, int y)
-	{
-		for(Entity ent : entities.values())
-		{
-			Rectangle rect = new Rectangle(ent.xCoord, ent.yCoord, ent.getWidth(), ent.getHeight());
-			if(rect.contains(x, y))
-			{
-				if(((ent.img.getRGB(x - rect.x, y - rect.y)>>24) & 0xff) != 0)
-				{				
-					return ent;
-				}
-			}
-		}
-		return null;
 	}
 	
 	public Entity intersectOnRender(int x, int y)

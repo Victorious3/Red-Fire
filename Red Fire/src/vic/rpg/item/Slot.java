@@ -1,10 +1,12 @@
 package vic.rpg.item;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.gui.IGuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.render.DrawUtils;
 
 public class Slot extends GControl implements Cloneable
 {		
@@ -56,37 +58,35 @@ public class Slot extends GControl implements Cloneable
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{
 		if(item != null)
 		{
-			item.render(g2d);
+			item.render(gl2);
 		}
+		DrawUtils.setGL(gl2);
 		
-		g2d.setColor(new Color(112, 112, 112, 180));
-		if(item != null) g2d.setColor(item.getBgColor());
-		g2d.fillRect(xCoord, yCoord, width, height);
-		g2d.setColor(new Color(0, 0, 0, 50));
+		if(item == null) DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(112, 112, 112, 180));
+		else DrawUtils.fillRect(xCoord, yCoord, width, height, item.getBgColor());
+		
 		if(this.mouseHovered)
 		{
 			if(gui.currentSlot != null)
 			{
 				if(canBePlacedIn(gui.currentSlot.item))
 				{
-					g2d.fillRect(xCoord, yCoord, width, height);
+					DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 				}
 			}
 			else if(this.item != null)
 			{
-				g2d.fillRect(xCoord, yCoord, width, height);
+				DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 			}
 		}
 		
-		g2d.setColor(Color.white);
-		if(item != null) g2d.drawImage(item.img, null, xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2);
-		
-		g2d.setColor(Color.black);
-		g2d.drawRect(xCoord, yCoord, width, height);
+		if(item != null) DrawUtils.drawTexture(xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2, item.texture);
+	
+		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		
 		if(mouseHovered && item != null)
 		{		

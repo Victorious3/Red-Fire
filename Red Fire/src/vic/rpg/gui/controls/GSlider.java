@@ -4,8 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.Stroke;
+
+import javax.media.opengl.GL2;
 
 public class GSlider extends GControl {
 
@@ -34,21 +35,21 @@ public class GSlider extends GControl {
 	}
 
 	@Override
-	public void render(Graphics2D g2d, int x, int y) 
+	public void render(GL2 gl2, int x, int y) 
 	{
-		g2d.setColor(new Color(97, 74, 119, 190));
-		g2d.fillRect(xCoord, yCoord, width, height);
+		gl2.setColor(new Color(97, 74, 119, 190));
+		gl2.fillRect(xCoord, yCoord, width, height);
 		
-		if(this.mouseDown)g2d.setColor(new Color(158, 31, 74));
-		else if(this.mouseHovered)g2d.setColor(new Color(130, 91, 213));
-		else g2d.setColor(new Color(68, 21, 150));
-		g2d.fillRect(xCoord + (int)((float)(width - 17) * this.xScroll), yCoord, 16, height);
+		if(this.mouseDown)gl2.setColor(new Color(158, 31, 74));
+		else if(this.mouseHovered)gl2.setColor(new Color(130, 91, 213));
+		else gl2.setColor(new Color(68, 21, 150));
+		gl2.fillRect(xCoord + (int)((float)(width - 17) * this.xScroll), yCoord, 16, height);
 		
-		g2d.setColor(new Color(120, 31, 0));		
-		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(3.0F));		
-		g2d.drawRect(xCoord, yCoord, width, height);
-		g2d.setStroke(oldStroke);
+		gl2.setColor(new Color(120, 31, 0));		
+		Stroke oldStroke = gl2.getStroke();
+		gl2.setStroke(new BasicStroke(3.0F));		
+		gl2.drawRect(xCoord, yCoord, width, height);
+		gl2.setStroke(oldStroke);
 		
 		String s = null;
 		
@@ -59,13 +60,13 @@ public class GSlider extends GControl {
 		case GSlider.MODE_PERCENT : s = String.valueOf((int)returnValue) + "%"; break;  
 		}
 		
-		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Veranda", 2, 18));
+		gl2.setColor(Color.WHITE);
+		gl2.setFont(new Font("Veranda", 2, 18));
 		
-		FontMetrics fm = g2d.getFontMetrics();		
+		FontMetrics fm = gl2.getFontMetrics();		
 		int sWidth = fm.stringWidth(String.valueOf((int)returnValue));
 		int sHeight = fm.getHeight() / 2;		
-		g2d.drawString(s, xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2);
+		gl2.drawString(s, xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2);
 
 		if(isScrolling)
 		{

@@ -1,7 +1,8 @@
 package vic.rpg.gui;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.item.ItemApple;
@@ -10,6 +11,7 @@ import vic.rpg.item.ItemPeer;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
 
 public class GuiPlayer extends IGuiContainer
 {
@@ -19,22 +21,22 @@ public class GuiPlayer extends IGuiContainer
 	}
 
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{						
-		super.render(g2d);
+		super.render(gl2);
+		DrawUtils.setGL(gl2);
 		
-		g2d.setColor(Color.white);
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(36F));
-		g2d.drawString("Inventory", 400, 300);
-		g2d.drawString("Equipment", 400, 30);
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(36F));
+		DrawUtils.drawString(400, 300, "Inventory", Color.white);
+		DrawUtils.drawString(400, 30, "Equipment", Color.white);
 		
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(18F));
-		g2d.drawString("Helmet", 620, 20);
-		g2d.drawString("Gems", 700, 50);
-		g2d.drawString("right Hand", 530, 100);
-		g2d.drawString("Armor", 620, 100);
-		g2d.drawString("left Hand", 700, 100);
-		g2d.drawString("Boots", 620, 210);		
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(18F));
+		DrawUtils.drawString(620, 20, "Helmet", Color.white);
+		DrawUtils.drawString(700, 50, "Gems", Color.white);
+		DrawUtils.drawString(530, 100, "right Hand", Color.white);
+		DrawUtils.drawString(620, 100, "Armor", Color.white);
+		DrawUtils.drawString(700, 100, "left Hand", Color.white);
+		DrawUtils.drawString(620, 210, "Boots", Color.white);		
 	}
 
 	@Override

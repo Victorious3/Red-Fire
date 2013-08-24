@@ -1,24 +1,28 @@
 package vic.rpg.gui;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
 import vic.rpg.gui.controls.GList;
 import vic.rpg.gui.controls.GList.IGList;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.sound.SoundPlayer;
 import vic.rpg.utils.Utils;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 public class GuiSinglePlayer extends Gui implements IGList
 {
-	private Image bgimage = Utils.readImageFromJar("/vic/rpg/resources/connect_1.png");
+	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
 	private GList levelList;
 	
 	public GuiSinglePlayer() 
@@ -27,17 +31,15 @@ public class GuiSinglePlayer extends Gui implements IGList
 	}
 	
 	@Override
-	public void render(Graphics2D g2d) 
+	public void render(GL2 gl2) 
 	{		
-		g2d.drawImage(bgimage, 0, 0, null);
+		DrawUtils.setGL(gl2);
+		DrawUtils.drawTexture(0, 0, bgimage);	
+		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, new Color(80, 80, 80, 180));
+		super.render(gl2);
 		
-		g2d.setColor(new Color(80, 80, 80, 180));
-		g2d.fillRect(0, 0, Game.WIDTH, Game.HEIGHT);
-		super.render(g2d);
-		
-		g2d.setColor(Color.white);
-		g2d.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
-		g2d.drawString("Start a Game", Game.WIDTH / 2 - 135, 50);
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
+		DrawUtils.drawString(Game.WIDTH / 2 - 135, 50, "Start a Game", Color.white);
 	}
 	
 	@Override
