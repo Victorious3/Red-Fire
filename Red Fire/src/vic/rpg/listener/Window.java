@@ -22,10 +22,10 @@ public class Window implements ComponentListener {
 	@Override
 	public void componentResized(ComponentEvent arg0) 
 	{
-		if(Game.RES_WIDTH != Game.frame.getWidth() || Game.RES_HEIGHT != Game.frame.getHeight())
+		if(Game.RES_WIDTH != Game.game.getWidth() || Game.RES_HEIGHT != Game.game.getHeight())
 		{
-			Game.RES_WIDTH = Game.frame.getWidth();
-			Game.RES_HEIGHT = Game.frame.getHeight();			
+			Game.RES_WIDTH = Game.game.getWidth();
+			Game.RES_HEIGHT = Game.game.getHeight();			
 		}
 	}
 

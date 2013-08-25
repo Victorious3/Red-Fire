@@ -11,7 +11,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.Random;
@@ -167,6 +169,27 @@ public class Utils
 		PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		return sw.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends Object> T[] cloneArray(Object[] source, Class<T> type)
+	{
+		if(source == null)
+		{
+			throw new NullPointerException();
+		}
+		T[] clone = (T[]) Array.newInstance(type, source.length);
+		for(int i = 0; i < source.length; i++)
+		{
+			try {
+				Method cloneMethod = source[i].getClass().getMethod("clone");
+				cloneMethod.setAccessible(true);
+				clone[i] = (T) cloneMethod.invoke(source[i]);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				throw new IllegalArgumentException("Object of type " + clone[i].getClass().getSimpleName() + " can't be cloned!");
+			}
+		}
+		return clone;
 	}
 	
 	private static OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);

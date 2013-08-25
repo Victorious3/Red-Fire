@@ -72,6 +72,7 @@ public class PacketHandlerSP extends Thread
 						if(((EntityPlayer)e).username.equals(Game.USERNAME))
 						{
 							Game.thePlayer = (EntityPlayer) e;
+							Game.thePlayer.setRotation(Game.thePlayer.rotation);
 							Screen.xOffset = -e.xCoord + (Game.WIDTH - e.getWidth()) / 2;
 							Screen.yOffset = -e.yCoord + (Game.HEIGHT - e.getHeight()) / 2;
 							if(Gui.currentGui instanceof GuiPlayer)

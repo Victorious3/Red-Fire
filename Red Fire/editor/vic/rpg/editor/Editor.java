@@ -13,6 +13,8 @@ import java.io.FilenameFilter;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLProfile;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -38,6 +40,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import vic.rpg.Game;
 import vic.rpg.editor.gui.JBackgroundPanel;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
@@ -83,7 +86,8 @@ public class Editor
 	public JPanel panelEast   = new JPanel(); 
 	public JPanel panelRender = new JBackgroundPanel(Utils.readImageFromJar("/vic/rpg/resources/editor/transparent_bg.png"));
 	public JPanel panelEdit   = new JPanel();
-	public LabelLevel labelLevel = new LabelLevel();
+	
+	public LabelLevel labelLevel;
 	
 	public JComboBox<String> dropdownZoom = new JComboBox<String>(new String[]{"500%", "400%", "300%", "200%", "100%", "66%", "50%", "33%", "25%", "16%", "10%"});
 	public JButton buttonZoomIn      = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/zoom-in.png")));
@@ -138,6 +142,10 @@ public class Editor
 	
 	public Editor()
 	{				
+		Game.GL_PROFILE = GLProfile.getDefault();
+        GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
+        labelLevel = new LabelLevel(glcapabilities);
+		
 		frame = new JFrame();	
 		if(!isInternal) frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

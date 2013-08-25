@@ -39,10 +39,7 @@ public class GList extends GControl
 		DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(97, 74, 119, 190));
 		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
 		
-		gl2.glEnable(GL2.GL_SCISSOR_TEST);
-		gl2.glPushMatrix();
-		gl2.glScissor(xCoord, yCoord, width, height);	
-		
+		DrawUtils.startClip(xCoord, yCoord, width, height);
 		int offset = (int) (scrollPos * maxOffset);
 		
 		for(int i = 0; i < data.size(); i++)
@@ -56,8 +53,7 @@ public class GList extends GControl
 			DrawUtils.drawRect(xCoord + 20, i2, width - 80, elementHeight, new Color(120, 31, 0));
 			DrawUtils.drawString(xCoord + 25, i2 + (elementHeight + DrawUtils.getFont().getSize()) / 2, o.toString(), Color.white);
 		}
-		gl2.glPopMatrix();
-		gl2.glDisable(GL2.GL_SCISSOR_TEST);
+		DrawUtils.endClip();
 		
 		int x2 = xCoord + width - 35;
 		int y2 = (int) (yCoord + 5 + scrollPos * (height - 69));
@@ -96,11 +92,10 @@ public class GList extends GControl
 			int offset = (int) (scrollPos * maxOffset);
 			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
 			
-			if(time - lastClickTime < 500)
+			if(time - lastClickTime < 500 && this.selectedPos >= 0 && this.selectedPos < data.size())
 			{				
 				handler.onElementDoubleClick(this, data.get(this.selectedPos));
 			}
-			
 			lastClickTime = time;
 		}
 		

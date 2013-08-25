@@ -1,5 +1,6 @@
 package vic.rpg.level.entity.living;
 
+import vic.rpg.render.TextureFX;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.utils.Utils;
 
@@ -38,7 +39,7 @@ public class EntityNPC extends EntityLiving
 
 	public void initRender() 
 	{
-		this.rotatedSprites = EntityPlayer.sprites.clone();
+		this.rotatedSprites = Utils.cloneArray(EntityPlayer.sprites, TextureFX.class);
 		this.setRotation(0);
 	}
 }

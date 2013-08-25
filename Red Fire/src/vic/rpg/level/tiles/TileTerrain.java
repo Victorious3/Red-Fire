@@ -4,23 +4,17 @@ import java.awt.Point;
 
 import vic.rpg.level.Tile;
 
-public class TileVoid extends Tile
+public class TileTerrain extends Tile 
 {	
 	@Override
 	public String getDescription() 
 	{
-		return "The impassable void. It's black. And dark.";
-	}
-
-	@Override
-	public boolean isWalkingPermitted() 
-	{
-		return false;
+		return "Standart Terrain Tile";
 	}
 
 	@Override
 	public Point getTextureCoord(int x, int y, int data) 
-	{	
-		return new Point(0, 15);
-	}
+	{
+		return new Point((int) (((double)(data / 16) - (int)(data / 16)) / 10D * 16), (int)(data / 16));
+	}	
 }

@@ -7,11 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.geom.Area;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.Vector;
 
-import javax.swing.JLabel;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.awt.GLJPanel;
 import javax.swing.table.DefaultTableModel;
 
 import vic.rpg.editor.Editor;
@@ -23,8 +26,12 @@ import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.NodeMap;
+import vic.rpg.render.DrawUtils;
+import vic.rpg.render.TextureLoader;
 
-public class LabelLevel extends JLabel 
+import com.jogamp.opengl.util.Animator;
+
+public class LabelLevel extends GLJPanel
 {
 	private int needsUpdate = 0;
 	private float scale = 1;
@@ -34,28 +41,72 @@ public class LabelLevel extends JLabel
 	private int width = 0;
 	private int height = 0;
 	
-	private BufferedImage img;
+	public LabelLevel(GLCapabilities glCapabilities)
+	{
+		super(glCapabilities);
+		
+		this.addGLEventListener(new GLEventListener() 
+		{		
+			@Override public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {}
+			
+			@Override
+			public void init(GLAutoDrawable drawable) 
+			{
+				GL2 gl2 = drawable.getGL().getGL2();
+				gl2.glEnable(GL2.GL_ALPHA_TEST);
+		    	gl2.glAlphaFunc(GL2.GL_GREATER, 0.1F);
+		    	gl2.glEnable(GL2.GL_BLEND);
+		    	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		    	gl2.glDisable(GL2.GL_DEPTH_TEST);
+	
+				Animator animator = new Animator();
+				animator.add(drawable);
+				animator.start();
+			}
+			
+			@Override public void dispose(GLAutoDrawable drawable) {}
+			
+			@Override
+			public void display(GLAutoDrawable drawable) 
+			{
+				GL2 gl2 = drawable.getGL().getGL2();
+				gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+				
+				if(Editor.instance.level != null)
+				{
+					gl2.glMatrixMode(GL2.GL_PROJECTION);
+			    	gl2.glLoadIdentity();
+			    	gl2.glViewport(0, 0, (int)(Editor.instance.level.width * Level.CELL_SIZE * scale), (int)(Editor.instance.level.height * Level.CELL_SIZE * scale));
+			    	gl2.glOrtho(0, (int)(Editor.instance.level.width * Level.CELL_SIZE * scale), (int)(Editor.instance.level.height * Level.CELL_SIZE * scale), 0, -1, 1);
+			    	gl2.glMatrixMode(GL2.GL_MODELVIEW);
+				}
+				
+				gl2.glPushMatrix();
+				gl2.glLoadIdentity();
+				gl2.glScalef(scale, scale, scale);
+				
+		    	DrawUtils.setGL(gl2);
+		    	TextureLoader.setupTextures(gl2);
+				if(Editor.instance.level != null)
+				{
+					Editor.instance.level.render(gl2, 0, 0, Editor.instance.level.width * Level.CELL_SIZE, Editor.instance.level.height * Level.CELL_SIZE, 0, 0);
+				}
+				gl2.glPopMatrix();
+				gl2.glFlush();
+			}
+		});
+	}
 	
 	@Override
 	public void paintComponent(Graphics g) 
 	{		
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.scale(scale, scale);
 		
 		if(Editor.instance == null) return;
-		
-		if(needsUpdate == 1 && Editor.instance.level != null)
-		{
-			Editor.instance.level.render((Graphics2D)img.getGraphics(), 0, 0, Editor.instance.level.getWidth(), Editor.instance.level.getHeight(), 0, 0);
-		}
-		if(needsUpdate == 2 && Editor.instance.level != null)
-		{
-			Editor.instance.level.render((Graphics2D)img.getGraphics(), offX, offY, width, height, 0, 0);
-		}
-		
-		g2d.drawImage(img, 0, 0, null);
-		
+				
 		if(Mouse.selectedEntities != null)
 		{
 			for(Entity e : Mouse.selectedEntities)
@@ -129,7 +180,7 @@ public class LabelLevel extends JLabel
 				}
 			}
 		}		
-		needsUpdate = 0;				
+		needsUpdate = 0;
 	}
 	
 	public void update(boolean onlySelection)
@@ -155,8 +206,8 @@ public class LabelLevel extends JLabel
 		if(Editor.instance.level != null)
 		{
 			if(scale >= 0.1 && scale <= 5) this.scale = scale;
-			this.setSize((int)(Editor.instance.level.getWidth() * scale), (int)(Editor.instance.level.getHeight() * scale));
-			ZoomListener.setZoom(Editor.instance.dropdownZoom, scale);
+			this.setSize((int)(Editor.instance.level.getWidth() * this.scale), (int)(Editor.instance.level.getHeight() * this.scale));
+			ZoomListener.setZoom(Editor.instance.dropdownZoom, this.scale);
 			this.updateUI();
 		}
 	}
@@ -167,9 +218,7 @@ public class LabelLevel extends JLabel
 	}
 	
 	public void setLevel(Level level)
-	{
-		img = new BufferedImage(level.getWidth(), level.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		
+	{	
 		Editor.instance.level = level;
 		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableLevel.getModel();

@@ -111,7 +111,7 @@ public class DrawUtils
 	
 	public static void drawTexture(int x, int y, Texture tex)
 	{
-		if(tex != null)
+		if(tex != null && tex.getWidth() > 0 && tex.getHeight() > 0)
 		{
 			gl2.glEnable(GL2.GL_TEXTURE_2D);
 			gl2.glPushMatrix();
@@ -127,6 +127,41 @@ public class DrawUtils
 	        gl2.glVertex2i(x + tex.getWidth(), y + tex.getHeight());
 	        gl2.glTexCoord2i(0, 1);
 	        gl2.glVertex2i(x, y + tex.getHeight());
+	        gl2.glEnd();
+			gl2.glPopMatrix();
+			gl2.glDisable(GL2.GL_TEXTURE_2D);
+		}
+	}
+	
+	public static void drawTextureWithOffset(int x, int y, int texX, int texY, int width, int height, Texture tex)
+	{
+		if(tex != null && tex.getWidth() > 0 && tex.getHeight() > 0)
+		{			
+			double texX2 = (double)texX / (double)tex.getWidth();
+			double texY2 = (double)texY / (double)tex.getHeight();
+			
+			double texX3 = texX2 + (double)width / (double)tex.getWidth();
+			double texY3 = texY2 + (double)height / (double)tex.getHeight();
+			
+			//DEBUG
+//			System.out.println("Texture: " + tex.getWidth() + " " + tex.getHeight());
+//			System.out.println("Rearanged: " + texX2 + " " + texY2 + " " + texX3 + " " + texY3);
+//			System.out.println("Orginal: " + texX + " " + texY + " " + width + " " + height);
+			
+			gl2.glEnable(GL2.GL_TEXTURE_2D);
+			gl2.glPushMatrix();
+			gl2.glColor3f(1.0F, 1.0F, 1.0F);
+			gl2.glBindTexture(GL2.GL_TEXTURE_2D, tex.getTextureObject(gl2));
+			gl2.glBegin(GL2.GL_QUADS);
+			gl2.glNormal3i(0, 0, 1);
+	        gl2.glTexCoord2d(texX2, texY2);
+	        gl2.glVertex2i(x, y);
+	        gl2.glTexCoord2d(texX3, texY2);
+	        gl2.glVertex2i(x + width, y);
+	        gl2.glTexCoord2d(texX3, texY3);
+	        gl2.glVertex2i(x + width, y + height);
+	        gl2.glTexCoord2d(texX2, texY3);
+	        gl2.glVertex2i(x, y + height);
 	        gl2.glEnd();
 			gl2.glPopMatrix();
 			gl2.glDisable(GL2.GL_TEXTURE_2D);
@@ -151,6 +186,17 @@ public class DrawUtils
 		TEXT_RENDERER.beginRendering(Game.WIDTH, Game.HEIGHT);
 		TEXT_RENDERER.draw(string, x, -y + Game.HEIGHT);
 		TEXT_RENDERER.endRendering();
+	}
+	
+	public static void startClip(int x, int y, int width, int height)
+	{
+		gl2.glEnable(GL2.GL_SCISSOR_TEST);
+		gl2.glScissor((int) (x * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) ((-y + Game.HEIGHT - height) * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)), (int) (width * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) (height * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)));	
+	}
+	
+	public static void endClip()
+	{
+		gl2.glDisable(GL2.GL_SCISSOR_TEST);
 	}
 	
 	public static float getLineWidth()

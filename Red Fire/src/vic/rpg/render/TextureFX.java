@@ -14,7 +14,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.sun.imageio.plugins.gif.GIFImageReader;
 import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
-public class TextureFX 
+public class TextureFX implements Cloneable
 {
 	private Texture[] data;
 	private float framerate;
@@ -48,6 +48,19 @@ public class TextureFX
 	    data = texFrames.toArray(new Texture[texFrames.size()]);
 	}
 	
+	private TextureFX(float framerate)
+	{
+		this.framerate = framerate;
+	}
+	
+	@Override
+	public TextureFX clone()
+	{
+		TextureFX clone = new TextureFX(this.framerate);
+		clone.data = this.data;
+		return clone;
+	}
+
 	private long lastTime = System.currentTimeMillis();
 	
 	public void draw(GL2 gl2, int x, int y)

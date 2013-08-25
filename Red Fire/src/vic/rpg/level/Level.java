@@ -2,6 +2,7 @@ package vic.rpg.level;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
@@ -112,24 +113,25 @@ public class Level
 		}
 	}
 	
+	@Deprecated
 	public void populate()
 	{			
 		for(int x = 0; x < width; x++)
 		{
 			for(int y = 0; y < height; y++)
 			{
-				setTile(LevelRegistry.TILE_GRASS.id, x, y, 4);
+				setTile(LevelRegistry.TILE_TERRAIN.id, x, y, 0);
 			}
 		}
 		
-		for(int x = 12; x < 19; x++)
+		for(int x = 30; x < 60; x++)
 		{
-			for(int y = 2; y < 8; y++)
+			for(int y = 30; y < 60; y++)
 			{
-				setTile(LevelRegistry.TILE_WATER.id, x, y);
+				setTile(LevelRegistry.TILE_VOID.id, x, y);
 			}
 		}
-
+		
 		Random rand = new Random();
 		int amount = rand.nextInt(51);
 		amount += 50;
@@ -176,7 +178,10 @@ public class Level
 			{
 				if(x * CELL_SIZE >= xOffset - CELL_SIZE && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE && y * CELL_SIZE <= yOffset + height)
 				{
-					DrawUtils.drawTexture(x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, LevelRegistry.tileRegistry.get(worldobjects[x][y][0]).getDrawable(x, y, worldobjects[x][y][1]).texture);
+					int data = worldobjects[x][y][1];
+					Tile tile = LevelRegistry.tileRegistry.get(worldobjects[x][y][0]);
+					Point texPos = tile.getTextureCoord(x, y, data);
+					DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE, tile.getTexture(x, y, data));
 				}				
 			}
 		}

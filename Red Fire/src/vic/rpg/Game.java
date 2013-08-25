@@ -157,6 +157,7 @@ public class Game extends GLCanvas implements Runnable
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
 		
         game = new Game(glcapabilities);
+        game.setSize(WIDTH, HEIGHT);
         game.addGLEventListener(new GLEventListener() 
         {		
 			@Override
@@ -183,8 +184,6 @@ public class Game extends GLCanvas implements Runnable
 		game.addComponentListener(GameRegistry.window);
 		
 		frame.add(game);
-		frame.setSize(WIDTH, HEIGHT);
-		frame.setLocationRelativeTo(null);
 		frame.setTitle("Red Fire Alpha " + GameRegistry.VERSION);
 		
 		frame.addWindowListener(new WindowListener() 
@@ -216,6 +215,8 @@ public class Game extends GLCanvas implements Runnable
 			
 		});
 		
+		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);		
 		game.requestFocus();
 		

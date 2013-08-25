@@ -101,7 +101,7 @@ public class EntityPlayer extends EntityLiving
 
 	public void initRender() 
 	{
-		super.rotatedSprites = EntityPlayer.sprites.clone();
+		super.rotatedSprites = Utils.cloneArray(EntityPlayer.sprites, TextureFX.class);
 		this.setRotation(0);
 	}
 

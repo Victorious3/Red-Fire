@@ -1,14 +1,28 @@
 package vic.rpg.level;
 
-import vic.rpg.render.Drawable;
+import java.awt.Point;
+
+import vic.rpg.render.TextureLoader;
+import vic.rpg.utils.Utils;
+
+import com.jogamp.opengl.util.texture.Texture;
 
 public class Tile
 {	
+	protected static Texture terrainTex = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/terrain/terrain.png"));
 	public int data = 0;
 	public int id = 0;
-	public Drawable drawable = new Drawable(Level.CELL_SIZE, Level.CELL_SIZE);
 	
-	public Drawable getDrawable(int x, int y, int data){return drawable;};	
+	public Texture getTexture(int x, int y, int data)
+	{
+		return terrainTex;
+	}
+	
+	public Point getTextureCoord(int x, int y, int data)
+	{
+		return new Point(0, 0);
+	}
+	
 	public void tick(int x, int y, int data){};
 	
 	//Editor stuff

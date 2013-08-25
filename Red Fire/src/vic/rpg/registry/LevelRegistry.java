@@ -23,9 +23,8 @@ import vic.rpg.level.entity.EntityHouse;
 import vic.rpg.level.entity.EntityTree;
 import vic.rpg.level.entity.living.EntityNPC;
 import vic.rpg.level.entity.living.EntityPlayer;
-import vic.rpg.level.tiles.TileGrass;
+import vic.rpg.level.tiles.TileTerrain;
 import vic.rpg.level.tiles.TileVoid;
-import vic.rpg.level.tiles.TileWater;
 import vic.rpg.utils.Utils;
 import bsh.Interpreter;
 
@@ -35,8 +34,7 @@ public class LevelRegistry
 	public static HashMap<Integer, Tile> tileRegistry = new HashMap<Integer, Tile>();
 	public static HashMap<Integer, Item> itemRegistry = new HashMap<Integer, Item>();
 	
-	public static final TileGrass TILE_GRASS = new TileGrass();
-	public static final TileWater TILE_WATER = new TileWater();
+	public static final TileTerrain TILE_TERRAIN = new TileTerrain();
 	public static final TileVoid TILE_VOID = new TileVoid();
 	
 	public static final EntityTree ENTITY_TREE = new EntityTree();
@@ -52,9 +50,8 @@ public class LevelRegistry
 	
 	static
 	{		
-		register(TILE_GRASS, 1);
-		register(TILE_WATER, 2);
-		register(TILE_VOID, 3);
+		register(TILE_TERRAIN, 1);
+		register(TILE_VOID, 2);
 		
 		register(ENTITY_TREE, 1);
 		register(ENTITY_HOUSE, 2);
