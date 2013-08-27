@@ -117,6 +117,8 @@ public class DrawUtils
 			gl2.glPushMatrix();
 			gl2.glColor3f(1.0F, 1.0F, 1.0F);
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D, tex.getTextureObject(gl2));
+			gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+			gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
 			gl2.glBegin(GL2.GL_QUADS);
 			gl2.glNormal3i(0, 0, 1);
 	        gl2.glTexCoord2i(0, 0);
@@ -152,6 +154,8 @@ public class DrawUtils
 			gl2.glPushMatrix();
 			gl2.glColor3f(1.0F, 1.0F, 1.0F);
 			gl2.glBindTexture(GL2.GL_TEXTURE_2D, tex.getTextureObject(gl2));
+			gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+			gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
 			gl2.glBegin(GL2.GL_QUADS);
 			gl2.glNormal3i(0, 0, 1);
 	        gl2.glTexCoord2d(texX2, texY2);
