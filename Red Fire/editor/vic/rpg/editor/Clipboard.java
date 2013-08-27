@@ -25,8 +25,8 @@ public class Clipboard
 		{
 			Entity e2 = e.clone();
 			
-			int x2 = (int) ((float)(x - Editor.instance.labelLevel.getX()) * (1 / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.instance.labelLevel.getY()) * (1 / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelLevel.xOffset) * (1 / Editor.instance.labelLevel.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelLevel.yOffset) * (1 / Editor.instance.labelLevel.getScale()));
 			
 			e2.xCoord += x2;
 			e2.yCoord += y2;
@@ -38,8 +38,8 @@ public class Clipboard
 		{
 			Point p2 = (Point) p.clone();
 			
-			int x2 = (int) ((float)(x - Editor.instance.labelLevel.getX()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.instance.labelLevel.getY()) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelLevel.xOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelLevel.yOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 			
 			p2.x += x2;
 			p2.y += y2;
@@ -48,7 +48,7 @@ public class Clipboard
 			Editor.instance.level.setTile(data[0].intValue(), p2.x, p2.y, data[1].intValue());
 		}
 		
-		Editor.instance.labelLevel.update(false);
+		Editor.instance.labelLevel.updateUI();
 	}
 	
 	/**
@@ -111,6 +111,6 @@ public class Clipboard
 			Editor.instance.level.entities.remove(e.UUID);
 		}
 		Mouse.selectedEntities.clear();
-		Editor.instance.labelLevel.update(false);
+		Editor.instance.labelLevel.updateUI();
 	}
 }

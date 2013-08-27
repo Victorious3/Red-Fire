@@ -80,7 +80,7 @@ public class Key implements KeyListener
 						if(e.xCoord + e.getWidth() > maxX) maxX = e.xCoord + e.getWidth();
 						if(e.yCoord + e.getHeight() > maxY) maxY = e.yCoord + e.getHeight();
 					}			
-					Editor.instance.labelLevel.update(minX, minY, maxX - minX, maxY - minY);
+					Editor.instance.labelLevel.updateUI();
 					Mouse.selection = null;
 				}
 			}

@@ -165,10 +165,10 @@ public class Level
 	
 	public void render(GL2 gl2) 
 	{
-		render(gl2, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT, -Screen.xOffset, -Screen.yOffset);
+		render(gl2, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT);
 	}
 
-	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height, int xOffset2, int yOffset2)
+	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height)
 	{
 		DrawUtils.setGL(gl2);
 		
@@ -181,7 +181,7 @@ public class Level
 					int data = worldobjects[x][y][1];
 					Tile tile = LevelRegistry.tileRegistry.get(worldobjects[x][y][0]);
 					Point texPos = tile.getTextureCoord(x, y, data);
-					DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset2, y * CELL_SIZE - yOffset2, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE, tile.getTexture(x, y, data));
+					DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE, tile.getTexture(x, y, data));
 				}				
 			}
 		}
@@ -191,7 +191,7 @@ public class Level
 			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
 			{
 				e.render(gl2);
-				DrawUtils.drawTexture(e.xCoord - xOffset2, e.yCoord - yOffset2, e.texture);
+				DrawUtils.drawTexture(e.xCoord - xOffset, e.yCoord - yOffset, e.texture);
 			}
 		}
 	}

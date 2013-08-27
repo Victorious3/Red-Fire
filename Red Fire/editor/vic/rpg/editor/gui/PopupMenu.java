@@ -14,7 +14,6 @@ import vic.rpg.editor.Editor;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
 import vic.rpg.level.Entity;
-import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
 import vic.rpg.registry.LevelRegistry;
 
@@ -121,7 +120,7 @@ public class PopupMenu implements ActionListener
 						
 						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id));			
 					}
-					Editor.instance.labelLevel.update(minX * Level.CELL_SIZE, minY * Level.CELL_SIZE, maxX * Level.CELL_SIZE, maxY * Level.CELL_SIZE);
+					Editor.instance.labelLevel.updateUI();
 				}
 				else Mouse.paint(x, y, id, false);
 			}

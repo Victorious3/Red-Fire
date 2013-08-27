@@ -73,7 +73,7 @@ public class TableListener implements TableModelListener
 	        	if(Mouse.selectedEntities.size() == 1) 
         		{
 	        		Utils.setField(name, value, Mouse.selectedEntities.get(0));
-	        		Editor.instance.labelLevel.update(false);
+	        		Editor.instance.labelLevel.updateUI();
         		}
 	        	else Utils.setField(name, value, entities.get(Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0])));
 	        } catch (Exception ex) {
@@ -91,7 +91,7 @@ public class TableListener implements TableModelListener
 					Editor.instance.level.worldobjects[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
 				}				
 				
-				Editor.instance.labelLevel.update(false);
+				Editor.instance.labelLevel.updateUI();
 			}
 			else tiles.put(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()));
 		}

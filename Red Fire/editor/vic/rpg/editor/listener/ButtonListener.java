@@ -94,7 +94,7 @@ public class ButtonListener implements ActionListener
 		}
 		else if(arg0.getSource() == Editor.instance.buttonRefresh)
 		{
-			Editor.instance.labelLevel.update(false);
+			Editor.instance.labelLevel.updateUI();
 			Editor.instance.level.nodeMap.recreate(Editor.instance.level);
 			Editor.instance.frame.setTitle("Red Fire Level Editor (" + Editor.instance.level.name + ")");			
 		}
@@ -106,7 +106,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.update(true);
+			Editor.instance.labelLevel.updateUI();
 		}
 		else if(arg0.getSource() == Editor.instance.buttonMove)
 		{
@@ -116,7 +116,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.update(true);
+			Editor.instance.labelLevel.updateUI();
 		}
 		else if(arg0.getSource() == Editor.instance.buttonPaint)
 		{
@@ -126,7 +126,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.update(true);
+			Editor.instance.labelLevel.updateUI();
 		}
 		else if(arg0.getSource() == Editor.instance.buttonPath)
 		{
@@ -136,7 +136,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.update(true);
+			Editor.instance.labelLevel.updateUI();
 		}
 		else if(arg0.getSource() == Editor.instance.buttonNewEntity)
 		{

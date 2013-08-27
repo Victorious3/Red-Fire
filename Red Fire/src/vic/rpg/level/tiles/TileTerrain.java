@@ -2,8 +2,10 @@ package vic.rpg.level.tiles;
 
 import java.awt.Point;
 
+import vic.rpg.level.TexturePath;
 import vic.rpg.level.Tile;
 
+@TexturePath(path = "/vic/rpg/resources/terrain/terrain.png")
 public class TileTerrain extends Tile 
 {	
 	@Override

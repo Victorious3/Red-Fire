@@ -41,7 +41,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import vic.rpg.Game;
-import vic.rpg.editor.gui.JBackgroundPanel;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.Mouse;
@@ -84,7 +83,6 @@ public class Editor
 	public JSplitPane panelMain = new JSplitPane();
 	
 	public JPanel panelEast   = new JPanel(); 
-	public JPanel panelRender = new JBackgroundPanel(Utils.readImageFromJar("/vic/rpg/resources/editor/transparent_bg.png"));
 	public JPanel panelEdit   = new JPanel();
 	
 	public LabelLevel labelLevel;
@@ -237,7 +235,7 @@ public class Editor
 			{
 				Mouse.selectedEntities.clear();
 				Mouse.selectedTiles.clear();
-				labelLevel.update(true);
+				labelLevel.updateUI();
 			}		
 		});
 		
@@ -254,13 +252,12 @@ public class Editor
 		panelEdit.add(buttonPaint);
 		panelEdit.add(buttonPath);
 		
-		panelRender.setBackground(Color.white);
-		panelRender.add(labelLevel);
-		panelRender.addMouseMotionListener(mouse);
-		panelRender.addMouseWheelListener(mouse);
-		panelRender.addMouseListener(mouse);
-		panelRender.setFocusable(true);
-		panelRender.addKeyListener(Key.keyListener);
+		labelLevel.setBackground(Color.white);
+		labelLevel.addMouseMotionListener(mouse);
+		labelLevel.addMouseWheelListener(mouse);
+		labelLevel.addMouseListener(mouse);
+		labelLevel.setFocusable(true);
+		labelLevel.addKeyListener(Key.keyListener);
 		
 		GridBagConstraints panelEastConstraints = new GridBagConstraints();
 		panelEastConstraints.gridx = 0;
@@ -274,7 +271,7 @@ public class Editor
 		panelEastConstraints.gridy = 1;
 		panelEastConstraints.weighty = 1;
 		panelEastConstraints.fill = GridBagConstraints.BOTH;
-		panelEast.add(panelRender, panelEastConstraints);
+		panelEast.add(labelLevel, panelEastConstraints);
 		
 		updateTilesAndEntites();
 		
@@ -515,7 +512,7 @@ public class Editor
 			Script script = cls.newInstance();
 			
 			script.run(instance.level);
-			instance.labelLevel.update(false);
+			instance.labelLevel.updateUI();
 			
 			cl.close();
 			

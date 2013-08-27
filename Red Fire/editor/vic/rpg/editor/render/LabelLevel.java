@@ -33,13 +33,9 @@ import com.jogamp.opengl.util.Animator;
 
 public class LabelLevel extends GLJPanel
 {
-	private int needsUpdate = 0;
 	private float scale = 1;
-	
-	private int offX = 0;
-	private int offY = 0;
-	private int width = 0;
-	private int height = 0;
+	public int xOffset = 0;
+	public int yOffset = 0;
 	
 	public LabelLevel(GLCapabilities glCapabilities)
 	{
@@ -58,7 +54,7 @@ public class LabelLevel extends GLJPanel
 		    	gl2.glEnable(GL2.GL_BLEND);
 		    	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    	gl2.glDisable(GL2.GL_DEPTH_TEST);
-	
+		    	
 				Animator animator = new Animator();
 				animator.add(drawable);
 				animator.start();
@@ -72,26 +68,24 @@ public class LabelLevel extends GLJPanel
 				GL2 gl2 = drawable.getGL().getGL2();
 				gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 				
-				if(Editor.instance.level != null)
-				{
-					gl2.glMatrixMode(GL2.GL_PROJECTION);
-			    	gl2.glLoadIdentity();
-			    	gl2.glViewport(0, 0, (int)(Editor.instance.level.width * Level.CELL_SIZE * scale), (int)(Editor.instance.level.height * Level.CELL_SIZE * scale));
-			    	gl2.glOrtho(0, (int)(Editor.instance.level.width * Level.CELL_SIZE * scale), (int)(Editor.instance.level.height * Level.CELL_SIZE * scale), 0, -1, 1);
-			    	gl2.glMatrixMode(GL2.GL_MODELVIEW);
-				}
-				
-				gl2.glPushMatrix();
-				gl2.glLoadIdentity();
-				gl2.glScalef(scale, scale, scale);
-				
 		    	DrawUtils.setGL(gl2);
 		    	TextureLoader.setupTextures(gl2);
+				
 				if(Editor.instance.level != null)
-				{
-					Editor.instance.level.render(gl2, 0, 0, Editor.instance.level.width * Level.CELL_SIZE, Editor.instance.level.height * Level.CELL_SIZE, 0, 0);
+				{										
+					gl2.glPushMatrix();
+					
+					gl2.glMatrixMode(GL2.GL_PROJECTION);
+			    	gl2.glLoadIdentity();
+			    	gl2.glViewport(0, 0, Editor.instance.labelLevel.getWidth(), Editor.instance.labelLevel.getHeight());
+			    	gl2.glOrtho(0, Editor.instance.labelLevel.getWidth(), Editor.instance.labelLevel.getHeight(), 0, -1, 1);
+			    	gl2.glMatrixMode(GL2.GL_MODELVIEW);
+			    	
+			    	gl2.glScalef(scale, scale, scale);
+			    	
+			    	Editor.instance.level.render(gl2, (int)(-xOffset / scale), (int)(-yOffset / scale), (int)(Editor.instance.labelLevel.getWidth() / scale), (int)(Editor.instance.labelLevel.getHeight() / scale));
+					gl2.glPopMatrix();
 				}
-				gl2.glPopMatrix();
 				gl2.glFlush();
 			}
 		});
@@ -104,6 +98,7 @@ public class LabelLevel extends GLJPanel
 		Graphics2D g2d = (Graphics2D) g;
 		
 		g2d.scale(scale, scale);
+		g2d.translate(xOffset / scale, yOffset / scale);
 		
 		if(Editor.instance == null) return;
 				
@@ -180,33 +175,15 @@ public class LabelLevel extends GLJPanel
 				}
 			}
 		}		
-		needsUpdate = 0;
-	}
-	
-	public void update(boolean onlySelection)
-	{
-		this.needsUpdate = onlySelection ? 3 : 1;
-		this.updateUI();
-	}
-	
-	public void update(int xOffset, int yOffset, int width, int height)
-	{
-		this.needsUpdate = 2;
-		
-		this.offX = xOffset;
-		this.offY = yOffset;
-		this.width = width;
-		this.height = height;
-		
-		this.updateUI();
 	}
 	
 	public void scale(float scale)
 	{
 		if(Editor.instance.level != null)
 		{
-			if(scale >= 0.1 && scale <= 5) this.scale = scale;
-			this.setSize((int)(Editor.instance.level.getWidth() * this.scale), (int)(Editor.instance.level.getHeight() * this.scale));
+			if(scale < 0.1F) scale = 0.1F;
+			if(scale > 5F) scale = 5F;
+			this.scale = scale;
 			ZoomListener.setZoom(Editor.instance.dropdownZoom, this.scale);
 			this.updateUI();
 		}
@@ -249,6 +226,6 @@ public class LabelLevel extends GLJPanel
 		Editor.instance.level.nodeMap = new NodeMap(Editor.instance.level);
 		
 		scale(1);
-		update(false);
+		this.updateUI();
 	}
 }
