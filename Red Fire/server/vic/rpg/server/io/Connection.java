@@ -18,7 +18,7 @@ public class Connection extends Thread
     public DataOutputStream out;    
     public long time;       
     public boolean connected = true;
-    public PacketHandlerMP packetHandler = new PacketHandlerMP(this);
+    public PacketHandlerMP packetHandler;
     
     public String username;
     
@@ -31,7 +31,6 @@ public class Connection extends Thread
     		in = new DataInputStream(socket.getInputStream());
     		out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
     		time = new Date().getTime();
-    		packetHandler.start();
     	}
     	catch (IOException e) {
     		connected = false;
@@ -64,6 +63,8 @@ public class Connection extends Thread
 	public synchronized void start() 
 	{
 		this.setName("Server Connection for player " + username);
+		packetHandler = new PacketHandlerMP(this);
+		packetHandler.start();
 		this.setDaemon(true);
 		super.start();
 	}

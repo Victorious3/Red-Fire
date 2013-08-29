@@ -512,8 +512,8 @@ public class EntityEditor implements WindowListener
 			fieldDimensionY.setText(e.getHeight() + "");
 			fieldID.setText(e.id + "");
 			
-			int l = editor.getText().indexOf("this.g2d.drawImage(ImageIO.read(new File(Utils.getAppdata() + \"") + "this.g2d.drawImage(ImageIO.read(new File(Utils.getAppdata() + \"".length();
-			int m = editor.getText().indexOf("\"))", l);
+			int l = editor.getText().indexOf("this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"") + "this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"".length();
+			int m = editor.getText().indexOf("\"))))", l);
 			String url = editor.getText().substring(l, m);
 			fieldImageURL.setText(url);
 			pArea.setImage(ImageIO.read(new File(Utils.getAppdata() + url)));
@@ -534,6 +534,7 @@ public class EntityEditor implements WindowListener
 		"//IMPORTANT! Don't change any of the existing methods if you want the auto edit to be sufficent!" + n +
 		"//IMPORTS" + n +
 		"import vic.rpg.level.entity.*;" + n +
+		"import vic.rpg.render.TextureLoader;" + n +
 		"import vic.rpg.utils.Utils;" + n +
 		"import java.awt.geom.Area;" + n +
 		"import java.awt.Polygon;" + n +
@@ -545,7 +546,7 @@ public class EntityEditor implements WindowListener
 		"\tpublic " + fieldName.getText() + "()" + n +
 		"\t{" + n +
 		"\t\tsuper(" + fieldDimensionX.getText() + ", " + fieldDimensionY.getText() +");" + n +
-		"\t\tif(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.g2d.drawImage(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\")), 0, 0, null);" + n +
+		"\t\tif(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\"))));" + n +
 		"\t}" + n +
 		n +
 		"\tpublic int getSuggestedID()" + n +
@@ -607,7 +608,7 @@ public class EntityEditor implements WindowListener
 			fieldDimensionX.setText(String.valueOf(img.getWidth()));
         	fieldDimensionY.setText(String.valueOf(img.getHeight()));
 			
-        	editor.setText(editor.getText().replace("this.g2d.drawImage(ImageIO.read(new File(Utils.getAppdata() + \"" + url + "\")), 0, 0, null)", "this.g2d.drawImage(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\")), 0, 0, null)"));
+        	editor.setText(editor.getText().replace("this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"" + url + "\"))))", "this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\"))))"));
 			url = fieldImageURL.getText();
         }
 	}

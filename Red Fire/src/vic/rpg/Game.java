@@ -173,8 +173,8 @@ public class Game extends GLCanvas implements Runnable
 			@Override
 			public void display(GLAutoDrawable drawable) 
 			{
-				game.render(drawable.getGL().getGL2());
 				TextureLoader.setupTextures(drawable.getGL().getGL2());
+				game.render(drawable.getGL().getGL2());
 			}
 		});
 		game.addMouseListener(GameRegistry.mouse);

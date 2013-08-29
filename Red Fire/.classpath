@@ -6,13 +6,8 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jars/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="jars/compress-lzf-0.9.8.jar"/>
 	<classpathentry kind="lib" path="jars/bsh-2.0b4.jar"/>
-	<classpathentry kind="lib" path="jars/jogl-all.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="jars/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="jars/compress-lzf-0.9.8.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogamp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
