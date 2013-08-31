@@ -1,4 +1,4 @@
-package vic.rpg.editor.render;
+package vic.rpg.editor.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.lang.reflect.Field;
 import java.util.Vector;
@@ -31,13 +32,13 @@ import vic.rpg.render.TextureLoader;
 
 import com.jogamp.opengl.util.Animator;
 
-public class LabelLevel extends GLJPanel
+public class PanelLevel extends GLJPanel
 {
 	private float scale = 1;
 	public int xOffset = 0;
 	public int yOffset = 0;
 	
-	public LabelLevel(GLCapabilities glCapabilities)
+	public PanelLevel(GLCapabilities glCapabilities)
 	{
 		super(glCapabilities);
 		
@@ -97,8 +98,11 @@ public class LabelLevel extends GLJPanel
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
-		g2d.scale(scale, scale);
-		g2d.translate(xOffset / scale, yOffset / scale);
+		AffineTransform oldTransform = g2d.getTransform();
+		AffineTransform transform = new AffineTransform();
+		transform.scale(scale, scale);
+		transform.translate(xOffset / scale, yOffset / scale);
+		g2d.transform(transform);
 		
 		if(Editor.instance == null) return;
 				
@@ -174,7 +178,8 @@ public class LabelLevel extends GLJPanel
 					Mouse.path.revert();
 				}
 			}
-		}		
+		}
+		g2d.setTransform(oldTransform);
 	}
 	
 	public void scale(float scale)

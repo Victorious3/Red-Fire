@@ -43,7 +43,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileView;
 import javax.swing.text.PlainDocument;
 
-import vic.rpg.editor.gui.JPaintArea;
+import vic.rpg.editor.gui.PanelEntity;
 import vic.rpg.editor.listener.TableListener;
 import vic.rpg.level.Entity;
 import vic.rpg.registry.LevelRegistry;
@@ -53,7 +53,7 @@ public class EntityEditor implements WindowListener
 {
 	public JFrame frame;
 	public JTextArea editor;
-	public JPaintArea pArea;
+	public PanelEntity pArea;
 	public JSplitPane splitPane;
 	public JPanel panelEdit;
 	
@@ -118,7 +118,7 @@ public class EntityEditor implements WindowListener
 		frame.addWindowListener(this);
 		
 		editor.getDocument().putProperty(PlainDocument.tabSizeAttribute, 4);
-		pArea = new JPaintArea(null, this);
+		pArea = new PanelEntity(null, this);
 		
 		if(e != null) loadEntity(e);
 		

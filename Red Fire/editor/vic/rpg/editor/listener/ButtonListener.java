@@ -103,6 +103,7 @@ public class ButtonListener implements ActionListener
 			Editor.instance.buttonMove.setSelected(false);
 			Editor.instance.buttonPaint.setSelected(false);
 			Editor.instance.buttonPath.setSelected(false);
+			Editor.instance.buttonErase.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
@@ -113,6 +114,7 @@ public class ButtonListener implements ActionListener
 			Editor.instance.buttonEdit.setSelected(false);
 			Editor.instance.buttonPaint.setSelected(false);
 			Editor.instance.buttonPath.setSelected(false);
+			Editor.instance.buttonErase.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
@@ -123,16 +125,30 @@ public class ButtonListener implements ActionListener
 			Editor.instance.buttonEdit.setSelected(false);
 			Editor.instance.buttonMove.setSelected(false);
 			Editor.instance.buttonPath.setSelected(false);
+			Editor.instance.buttonErase.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
 		}
+		else if(arg0.getSource() == Editor.instance.buttonErase)
+		{
+			Editor.instance.buttonEdit.setSelected(false);
+			Editor.instance.buttonMove.setSelected(false);
+			Editor.instance.buttonPath.setSelected(false);
+			Editor.instance.buttonPaint.setSelected(false);
+			
+			Mouse.selectedEntities.clear();
+			Mouse.selectedTiles.clear();
+			Editor.instance.labelLevel.updateUI();
+		}
+
 		else if(arg0.getSource() == Editor.instance.buttonPath)
 		{
 			Editor.instance.buttonEdit.setSelected(false);
 			Editor.instance.buttonMove.setSelected(false);
 			Editor.instance.buttonPaint.setSelected(false);
+			Editor.instance.buttonErase.setSelected(false);
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();

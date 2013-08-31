@@ -16,7 +16,7 @@ import vic.rpg.editor.EntityEditor;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.utils.Utils;
 
-public class JPaintArea extends JBackgroundPanel implements MouseListener, MouseMotionListener
+public class PanelEntity extends JBackgroundPanel implements MouseListener, MouseMotionListener
 {
 	private BufferedImage img;
 	private EntityEditor editor;
@@ -26,7 +26,7 @@ public class JPaintArea extends JBackgroundPanel implements MouseListener, Mouse
 	public int offX = 0;
 	public int offY = 0;
 	
-	public JPaintArea(BufferedImage img, EntityEditor editor)
+	public PanelEntity(BufferedImage img, EntityEditor editor)
 	{	
 		super(Utils.readImageFromJar("/vic/rpg/resources/editor/transparent_bg.png"));
 		this.img = img;

@@ -129,7 +129,7 @@ public class Path
 		double f = 0;	
 		f += Math.abs(parent.x - node.x) + Math.abs(parent.y - node.y);
 		f += parent.g;	
-		f += LevelRegistry.tileRegistry.get(map.level.worldobjects[node.x][node.y][0]).getMovementCost();		
+		f += LevelRegistry.tileRegistry.get(map.level.layers.get(0)[node.x][node.y][0]).getMovementCost();		
 		return f;
 	}
 	
@@ -192,7 +192,17 @@ public class Path
 	private static boolean isNodeBlocked(Node n, NodeMap map)
 	{
 		if(n.isBlocked) return true;
-		if(!LevelRegistry.tileRegistry.get(map.level.worldobjects[n.x][n.y][0]).isWalkingPermitted()) return true;
+		if(!isWalkingPermitted(n.x, n.y, map)) return true;
 		return false;
+	}
+	
+	private static boolean isWalkingPermitted(int x, int y, NodeMap map)
+	{
+		for(Integer[][][] layer : map.level.layers)
+		{
+			if(layer[x][y][0] == null) continue;
+			if(!LevelRegistry.tileRegistry.get(layer[x][y][0]).isWalkingPermitted()) return false;
+		}
+		return true;
 	}
 }

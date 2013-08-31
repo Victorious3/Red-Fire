@@ -88,7 +88,7 @@ public class TableListener implements TableModelListener
 			{
 				for(Point p: Mouse.selectedTiles)
 				{
-					Editor.instance.level.worldobjects[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
+					Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
 				}				
 				
 				Editor.instance.labelLevel.updateUI();

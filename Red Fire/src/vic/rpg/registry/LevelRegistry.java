@@ -176,21 +176,25 @@ public class LevelRegistry
 	{
 		Map<String, Tag> map = tag.getValue();
 		
-		int data = (int)(map.get("data")).getValue();
-		int id = (int)(map.get("id")).getValue(); 
-		
-		Tile obj = null;	
-		Class objClass = tileRegistry.get(id).getClass();
-		try {		
-			obj = (Tile) objClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(map.containsKey("id"))
+		{
+			int data = (int)(map.get("data")).getValue();
+			int id = (int)(map.get("id")).getValue(); 
+			
+			Tile obj = null;	
+			Class objClass = tileRegistry.get(id).getClass();
+			try {		
+				obj = (Tile) objClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			obj.data = data;
+			obj.id = id;
+			
+			return obj;
 		}
-		
-		obj.data = data;
-		obj.id = id;
-		
-		return obj;
+		return null;
 	}
 	
 	public static CompoundTag writeTileToNBT(Tile obj)

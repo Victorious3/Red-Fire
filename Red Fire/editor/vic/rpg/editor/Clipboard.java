@@ -92,7 +92,7 @@ public class Clipboard
 		}
 		for(Point p : tiles)
 		{
-			Integer[] values = new Integer[]{Editor.instance.level.worldobjects[p.x][p.y][0], Editor.instance.level.worldobjects[p.x][p.y][1]};
+			Integer[] values = new Integer[]{Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][0], Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][1]};
 			
 			p.x -= minX;
 			p.y -= minY;

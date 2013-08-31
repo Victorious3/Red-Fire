@@ -17,6 +17,9 @@ public class TileTerrain extends Tile
 	@Override
 	public Point getTextureCoord(int x, int y, int data) 
 	{
-		return new Point((int) (((double)(data / 16) - (int)(data / 16)) / 10D * 16), (int)(data / 16));
+		int xCoord = (int)((double)data % 16D);
+		int yCoord = (int)((double)data / 16D);
+
+		return new Point(xCoord, yCoord);
 	}	
 }

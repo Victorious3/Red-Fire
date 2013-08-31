@@ -3,6 +3,7 @@ package vic.rpg.editor;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,15 +40,19 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import vic.rpg.Game;
+import vic.rpg.editor.gui.DockableDesktopManager;
+import vic.rpg.editor.gui.JDockableFrame;
+import vic.rpg.editor.gui.PanelLevel;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
+import vic.rpg.editor.listener.LayerFrameListener;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
 import vic.rpg.editor.listener.ZoomListener;
-import vic.rpg.editor.render.LabelLevel;
 import vic.rpg.editor.script.Script;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
@@ -85,7 +91,7 @@ public class Editor
 	public JPanel panelEast   = new JPanel(); 
 	public JPanel panelEdit   = new JPanel();
 	
-	public LabelLevel labelLevel;
+	public PanelLevel labelLevel;
 	
 	public JComboBox<String> dropdownZoom = new JComboBox<String>(new String[]{"500%", "400%", "300%", "200%", "100%", "66%", "50%", "33%", "25%", "16%", "10%"});
 	public JButton buttonZoomIn      = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/zoom-in.png")));
@@ -94,6 +100,7 @@ public class Editor
 	public JToggleButton buttonMove  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/move.png")));
 	public JToggleButton buttonEdit  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	public JToggleButton buttonPaint = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pencil.png")));
+	public JToggleButton buttonErase = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/rubber.png")));
 	public JToggleButton buttonPath  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pathfinding.png")));
 	
 	public JTabbedPane tabpanelEditor = new JTabbedPane();
@@ -136,13 +143,20 @@ public class Editor
 	};
 	public JLabel labelTiles = new JLabel();
 	
+	//Layer Frame
+	public JDesktopPane desktop;
+	public JDockableFrame frameLayers;
+	public JTable tableLayers = new JTable();
+	public JButton buttonNewLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
+	public JButton buttonRemoveLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
+	
 	public Level level;
 	
 	public Editor()
 	{				
 		Game.GL_PROFILE = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
-        labelLevel = new LabelLevel(glcapabilities);
+        labelLevel = new PanelLevel(glcapabilities);
 		
 		frame = new JFrame();	
 		if(!isInternal) frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -204,8 +218,6 @@ public class Editor
 		menubar.add(menuFile);
 		menubar.add(menuEdit);		
 		
-		labelLevel.setSize(10, 10);		
-		
 		Mouse mouse = new Mouse();
 		
 		dropdownZoom.setEditable(true);
@@ -220,6 +232,8 @@ public class Editor
 		buttonRefresh.addActionListener(ButtonListener.listener);
 		buttonEdit.setPreferredSize(new Dimension(25, 25));
 		buttonEdit.addActionListener(ButtonListener.listener);
+		buttonErase.setPreferredSize(new Dimension(25, 25));
+		buttonErase.addActionListener(ButtonListener.listener);
 		buttonMove.setPreferredSize(new Dimension(25, 25));
 		buttonMove.addActionListener(ButtonListener.listener);
 		buttonPaint.setPreferredSize(new Dimension(25, 25));
@@ -248,7 +262,8 @@ public class Editor
 		panelEdit.add(buttonRefresh);
 		panelEdit.add(sep1);
 		panelEdit.add(buttonMove);
-		panelEdit.add(buttonEdit);		
+		panelEdit.add(buttonEdit);
+		panelEdit.add(buttonErase);
 		panelEdit.add(buttonPaint);
 		panelEdit.add(buttonPath);
 		
@@ -258,6 +273,57 @@ public class Editor
 		labelLevel.addMouseListener(mouse);
 		labelLevel.setFocusable(true);
 		labelLevel.addKeyListener(Key.keyListener);
+		labelLevel.setLayout(new BorderLayout());
+		
+		desktop = new JDesktopPane();
+		desktop.setOpaque(false);
+		DockableDesktopManager desktopManager = new DockableDesktopManager();
+		desktop.setDesktopManager(desktopManager);
+		desktop.addComponentListener(desktopManager);
+		
+		frameLayers = new JDockableFrame("Layers", true, false);
+		frameLayers.setFrameIcon(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/windows.png")));
+		frameLayers.getContentPane().setLayout(new BorderLayout());
+		tableLayers.setModel(new DefaultTableModel(0, 2)
+		{
+			@Override
+			public boolean isCellEditable(int row, int column) 
+			{
+				return column != 0;
+			}
+
+			@Override
+			public Class<?> getColumnClass(int arg0) 
+			{
+				return arg0 == 1 ? Boolean.class : super.getColumnClass(arg0);
+			}	
+		});
+		tableLayers.setTableHeader(null);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+		tableLayers.getModel().addTableModelListener(LayerFrameListener.instance);
+		tableLayers.setDefaultRenderer(Object.class, centerRenderer);	
+		tableLayers.setRowHeight(30);
+		tableLayers.setFont(tableLayers.getFont().deriveFont(16f));
+		tableLayers.getSelectionModel().addListSelectionListener(LayerFrameListener.instance);
+		JScrollPane scroll1 = new JScrollPane(tableLayers);
+		scroll1.setPreferredSize(new Dimension(150, 150));
+		frameLayers.getContentPane().add(scroll1, BorderLayout.CENTER);
+		
+		buttonNewLayer.setPreferredSize(new Dimension(25, 25));
+		buttonRemoveLayer.setPreferredSize(new Dimension(25, 25));
+		buttonNewLayer.addActionListener(LayerFrameListener.instance);
+		buttonRemoveLayer.addActionListener(LayerFrameListener.instance);
+		
+		JPanel p1 = new JPanel();
+		p1.setLayout(new FlowLayout());
+		p1.add(buttonNewLayer);
+		p1.add(buttonRemoveLayer);
+		frameLayers.add(p1, BorderLayout.SOUTH);
+		
+		desktop.add(frameLayers);
+		
+		labelLevel.add(desktop, BorderLayout.CENTER);
 		
 		GridBagConstraints panelEastConstraints = new GridBagConstraints();
 		panelEastConstraints.gridx = 0;
@@ -483,15 +549,23 @@ public class Editor
 		{
 			Editor.openLevel();
 		}
-		if(choose == 2)
-		{
-			Editor.displayHelp();
-		}
 	}
 	
-	public static void displayHelp()
+	private static boolean firstTime = true;
+	public static void updateLayerFrame()
 	{
-		
+		instance.frameLayers.setVisible(false);
+		LayerFrameListener.updateLayers();
+		if(firstTime)
+		{
+			instance.frameLayers.pack();
+			instance.frameLayers.setLocation(instance.desktop.getWidth() - instance.frameLayers.getWidth(), instance.desktop.getHeight() - instance.frameLayers.getHeight());
+			instance.frameLayers.addDock(JDockableFrame.EAST);
+			instance.frameLayers.addDock(JDockableFrame.SOUTH);
+		}
+		instance.tableLayers.setRowSelectionInterval(0, 0);
+		instance.frameLayers.setVisible(true);
+		firstTime = false;
 	}
 
 	/**
@@ -616,8 +690,9 @@ public class Editor
 					try
 					{							
 						Level level = new Level(Integer.parseInt(width.getText()), Integer.parseInt(width.getText()), name.getText());
-						level.fill(id, Integer.parseInt(data.getText()));
+						level.fill(id, Integer.parseInt(data.getText()), 0);
 						instance.labelLevel.setLevel(level);
+						updateLayerFrame();
 						instance.setLevelName(instance.level.name);
 		            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
 		            	quit = true;
@@ -657,6 +732,7 @@ public class Editor
 	            try{
 	            	instance.labelLevel.setLevel(Level.readFromFile(file));       
 	            	instance.setLevelName(instance.level.name);
+	            	updateLayerFrame();
 	            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
 	        		ButtonListener.file = file;
 	            } catch (Exception e) {

@@ -25,10 +25,13 @@ public class Key implements KeyListener
 			if(Editor.instance.buttonEdit.isSelected()) button = 1;
 			if(Editor.instance.buttonPaint.isSelected()) button = 2;
 			if(Editor.instance.buttonPath.isSelected()) button = 3;
+			if(Editor.instance.buttonErase.isSelected()) button = 4;
 			
 			Editor.instance.buttonEdit.setSelected(false);
 			Editor.instance.buttonPaint.setSelected(false);
 			Editor.instance.buttonPath.setSelected(false);
+			Editor.instance.buttonErase.setSelected(false);
+
 			
 			Editor.instance.buttonMove.setSelected(true);
 			
@@ -53,7 +56,7 @@ public class Key implements KeyListener
 				Clipboard.delete();
 			}
 				
-			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
+			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 			{
 				int minX = Editor.instance.level.getWidth();
 				int minY = Editor.instance.level.getHeight();
@@ -115,6 +118,7 @@ public class Key implements KeyListener
 				if(button == 1) Editor.instance.buttonEdit.setSelected(true);
 				if(button == 2) Editor.instance.buttonPaint.setSelected(true);
 				if(button == 3) Editor.instance.buttonPath.setSelected(true);
+				if(button == 4) Editor.instance.buttonErase.setSelected(true);
 				
 				Editor.instance.buttonMove.setSelected(false);
 				Editor.instance.labelLevel.updateUI();

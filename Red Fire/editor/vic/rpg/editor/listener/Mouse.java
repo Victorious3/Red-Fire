@@ -72,6 +72,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			if(Editor.instance.level == null) return;
 			
 			if(Editor.instance.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
+			else if(Editor.instance.buttonErase.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1) paint(arg0.getX(), arg0.getY(), null, false);
 			else if(Editor.instance.buttonPath.isSelected())
 			{
 				int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.xOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
@@ -107,7 +108,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					selectedTiles.add(new Point(x, y));
 					
 					Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelTiles);
-					TableListener.setTile(LevelRegistry.tileRegistry.get(Editor.instance.level.worldobjects[x][y][0]), Editor.instance.level.worldobjects[x][y][1]);					
+					Integer id = Editor.instance.level.layers.get(Editor.instance.level.getLayer())[x][y][0];
+					if(id != null) TableListener.setTile(LevelRegistry.tileRegistry.get(id), Editor.instance.level.layers.get(Editor.instance.level.getLayer())[x][y][1]);					
 				}
 				else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 				{
@@ -250,9 +252,16 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			preX = xCoord;
 			preY = yCoord;
 		}
-		else if(Editor.instance.buttonPaint.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
+		else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{
-			paint(arg0.getX(), arg0.getY());
+			if(Editor.instance.buttonPaint.isSelected())
+			{
+				paint(arg0.getX(), arg0.getY());
+			}
+			else if(Editor.instance.buttonErase.isSelected())
+			{
+				paint(arg0.getX(), arg0.getY(), null, false);
+			}
 		}
 		
 		if(Editor.instance.buttonEdit.isSelected()) 
@@ -291,7 +300,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		}
 	}
 	
-	public static synchronized void paint(int x, int y, int id, boolean isEntity)
+	public static synchronized void paint(int x, int y, Integer id, boolean isEntity)
 	{
 		if(!isEntity)
 		{
@@ -300,7 +309,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.width || y2 >= Editor.instance.level.height) return;
 			
-			Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id));
+			if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id));
+			else Editor.instance.level.setTile(id, x2, y2);
 			Editor.instance.labelLevel.updateUI();
 		}
 		else
