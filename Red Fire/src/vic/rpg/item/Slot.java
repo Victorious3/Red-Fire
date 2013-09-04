@@ -4,13 +4,13 @@ import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
-import vic.rpg.gui.IGuiContainer;
+import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.render.DrawUtils;
 
 public class Slot extends GControl implements Cloneable
 {		
-	public IGuiContainer gui;
+	public GuiContainer gui;
 	public Item item = null;
 	public int sWidth = 1;
 	public int sHeight = 1;
@@ -18,22 +18,22 @@ public class Slot extends GControl implements Cloneable
 	public boolean acceptOtherSizes = false;
 	public int id;
 	
-	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui) 
+	public Slot(int xCoord, int yCoord, int id, GuiContainer gui) 
 	{
 		this(xCoord, yCoord, id, gui, 1, 1, false);
 	}
 	
-	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, boolean acceptOtherSizes) 
+	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, boolean acceptOtherSizes) 
 	{
 		this(xCoord, yCoord, id, gui, 1, 1, acceptOtherSizes);
 	}
 	
-	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, int sWidth, int sHeight) 
+	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, int sWidth, int sHeight) 
 	{
 		this(xCoord, yCoord, id, gui, sWidth, sHeight, false);
 	}
 	
-	public Slot(int xCoord, int yCoord, int id, IGuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
+	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
 	{
 		super(xCoord, yCoord, 30 * sWidth, 30 * sHeight);
 		this.gui = gui;
@@ -84,7 +84,7 @@ public class Slot extends GControl implements Cloneable
 			}
 		}
 		
-		if(item != null) DrawUtils.drawTexture(xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2, item.texture);
+		if(item != null) DrawUtils.drawTexture(xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2, item.getTexture());
 	
 		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		

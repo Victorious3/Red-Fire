@@ -65,7 +65,8 @@ import vic.rpg.utils.Utils;
 public class Editor 
 {
 	public static Editor instance;
-
+	public static int layerID = 0;
+	
 	public EntityEditor entityEditor = new EntityEditor();
 	
 	public JFrame frame;	
@@ -666,7 +667,8 @@ public class Editor
 	  	con.weightx = 0;
 	  	con.gridx = 1;
 	  	multiPanel.add(j5, con);
-		con.gridx = 2;
+		con.gridx = 2; 
+		data.setPreferredSize(new Dimension(25, 0));
 		multiPanel.add(data, con);
 		
 		while(!quit)

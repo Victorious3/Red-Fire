@@ -42,7 +42,7 @@ public class PacketHandlerMP extends Thread
 			{
 				p.id = 7;
 				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
-				ServerLoop.level.onlinePlayersList.put(player.username, player);
+				ServerLoop.level.onlinePlayersMap.put(player.username, player);
 				Server.server.broadcast(p);
 			}
 			else if(p.id == 9)
@@ -50,14 +50,14 @@ public class PacketHandlerMP extends Thread
 				Packet9EntityMoving p9entitymoving = (Packet9EntityMoving) p;
 				
 				Entity e;
-				if(p9entitymoving.isPlayer) e = ServerLoop.level.onlinePlayersList.get(p9entitymoving.playerName);
-				else e = ServerLoop.level.entities.get(p9entitymoving.uniqueUUID);
+				if(p9entitymoving.isPlayer) e = ServerLoop.level.onlinePlayersMap.get(p9entitymoving.playerName);
+				else e = ServerLoop.level.entityMap.get(p9entitymoving.uniqueUUID);
 				
 				e.xCoord = p9entitymoving.xCoord;
 				e.yCoord = p9entitymoving.yCoord;
 				
-				if(p9entitymoving.isPlayer) ServerLoop.level.onlinePlayersList.put(p9entitymoving.playerName, (EntityPlayer)e);
-				else  ServerLoop.level.entities.put(e.UUID, e);
+				if(p9entitymoving.isPlayer) ServerLoop.level.onlinePlayersMap.put(p9entitymoving.playerName, (EntityPlayer)e);
+				else  ServerLoop.level.entityMap.put(e.UUID, e);
 				
 				Server.server.broadcast(p);
 			}
@@ -69,8 +69,8 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 11)
 			{
 				Packet11EntityInteraction packet = (Packet11EntityInteraction) p;
-				Entity entity = ServerLoop.level.entities.get(packet.UUID);
-				EntityPlayer player = ServerLoop.level.onlinePlayersList.get(con.username);
+				Entity entity = ServerLoop.level.entityMap.get(packet.UUID);
+				EntityPlayer player = ServerLoop.level.onlinePlayersMap.get(con.username);
 				if(packet.mode == Packet11EntityInteraction.MODE_ONCLICK)
 				{
 					entity.onMouseClicked(packet.data[0], packet.data[1], player, packet.data[2]);

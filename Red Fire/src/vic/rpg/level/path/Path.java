@@ -2,7 +2,7 @@ package vic.rpg.level.path;
 
 import java.util.ArrayList;
 
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.level.Tile;
 
 public class Path
 {
@@ -128,8 +128,8 @@ public class Path
 	{
 		double f = 0;	
 		f += Math.abs(parent.x - node.x) + Math.abs(parent.y - node.y);
-		f += parent.g;	
-		f += LevelRegistry.tileRegistry.get(map.level.layers.get(0)[node.x][node.y][0]).getMovementCost();		
+		f += parent.g;
+		f += map.level.getTileAt(node.x, node.y, 0).getMovementCost();		
 		return f;
 	}
 	
@@ -198,10 +198,10 @@ public class Path
 	
 	private static boolean isWalkingPermitted(int x, int y, NodeMap map)
 	{
-		for(Integer[][][] layer : map.level.layers)
+		for(Tile t : map.level.getTilesAt(x, y))
 		{
-			if(layer[x][y][0] == null) continue;
-			if(!LevelRegistry.tileRegistry.get(layer[x][y][0]).isWalkingPermitted()) return false;
+			if(t == null) continue;
+			if(!t.isWalkingPermitted()) return false;
 		}
 		return true;
 	}

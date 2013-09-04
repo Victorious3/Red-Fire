@@ -145,11 +145,6 @@ public class DrawUtils
 			double texX3 = texX2 + (double)width / (double)tex.getWidth();
 			double texY3 = texY2 + (double)height / (double)tex.getHeight();
 			
-			//DEBUG
-//			System.out.println("Texture: " + tex.getWidth() + " " + tex.getHeight());
-//			System.out.println("Rearanged: " + texX2 + " " + texY2 + " " + texX3 + " " + texY3);
-//			System.out.println("Orginal: " + texX + " " + texY + " " + width + " " + height);
-			
 			gl2.glEnable(GL2.GL_TEXTURE_2D);
 			gl2.glPushMatrix();
 			gl2.glColor3f(1.0F, 1.0F, 1.0F);
@@ -196,6 +191,11 @@ public class DrawUtils
 	{
 		gl2.glEnable(GL2.GL_SCISSOR_TEST);
 		gl2.glScissor((int) (x * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) ((-y + Game.HEIGHT - height) * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)), (int) (width * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) (height * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)));	
+	}
+	
+	public static void glColor(Color color)
+	{
+		gl2.glColor4f(getR(color), getG(color), getB(color), getA(color));
 	}
 	
 	public static void endClip()

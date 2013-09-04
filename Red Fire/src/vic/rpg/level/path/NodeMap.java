@@ -35,7 +35,7 @@ public class NodeMap implements Cloneable
 		
 		int size = Level.CELL_SIZE;
 		
-		for(Entity e : level.entities.values())
+		for(Entity e : level.entityMap.values())
 		{
 			Area a = e.getCollisionBoxes(new Area());
 			Rectangle r = a.getBounds();

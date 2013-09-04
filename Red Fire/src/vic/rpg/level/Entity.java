@@ -79,7 +79,7 @@ public class Entity extends Drawable implements Cloneable
 	
 	public boolean collides(Level level)
 	{
-		for(Entity ent : level.entities.values())
+		for(Entity ent : level.entityMap.values())
 		{
 			if(ent == this) continue;
 			

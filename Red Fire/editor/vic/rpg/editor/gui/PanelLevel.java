@@ -157,7 +157,7 @@ public class PanelLevel extends GLJPanel
 				}
 				
 				g2d.setColor(new Color(255, 255, 0));
-				for(Entity e : Editor.instance.level.entities.values())
+				for(Entity e : Editor.instance.level.entityMap.values())
 				{
 					g2d.draw(e.getCollisionBoxes(new Area()));
 				}

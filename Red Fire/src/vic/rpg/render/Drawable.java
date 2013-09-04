@@ -22,7 +22,7 @@ public class Drawable
 		return null;
 	}
 
-	public Object texture;
+	private Object texture;
 	
 	public Drawable(int width, int height)
 	{
@@ -35,6 +35,11 @@ public class Drawable
 		} catch (NegativeArraySizeException e) {
 			throw new IllegalArgumentException("Width (" + width + ") * height (" + height + ") cannot be bigger than " + Integer.MAX_VALUE);
 		}
+	}
+	
+	public Object getTexture()
+	{
+		return texture;
 	}
 
 	public int getWidth()

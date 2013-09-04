@@ -45,7 +45,7 @@ public class Clipboard
 			p2.y += y2;
 			
 			Integer[] data = tilesID.get(p).clone();
-			Editor.instance.level.setTile(data[0].intValue(), p2.x, p2.y, data[1].intValue());
+			Editor.instance.level.setTile(data[0].intValue(), p2.x, p2.y, data[1].intValue(), Editor.layerID);
 		}
 		
 		Editor.instance.labelLevel.updateUI();
@@ -92,7 +92,7 @@ public class Clipboard
 		}
 		for(Point p : tiles)
 		{
-			Integer[] values = new Integer[]{Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][0], Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][1]};
+			Integer[] values = new Integer[]{Editor.instance.level.getTileAt(p.x, p.y, Editor.layerID).id, Editor.instance.level.getTileDataAt(p.x, p.y, Editor.layerID)};
 			
 			p.x -= minX;
 			p.y -= minY;
@@ -108,7 +108,7 @@ public class Clipboard
 	{
 		for(Entity e : Mouse.selectedEntities)
 		{
-			Editor.instance.level.entities.remove(e.UUID);
+			Editor.instance.level.entityMap.remove(e.UUID);
 		}
 		Mouse.selectedEntities.clear();
 		Editor.instance.labelLevel.updateUI();

@@ -81,12 +81,12 @@ public class PacketHandlerSP extends Thread
 							}
 						}
 					}
-					if(Game.level != null) Game.level.entities.put(e.UUID, e);				
+					if(Game.level != null) Game.level.entityMap.put(e.UUID, e);				
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:
 				
-				Map<String, Entity> map = Collections.synchronizedMap(Game.level.entities);
+				Map<String, Entity> map = Collections.synchronizedMap(Game.level.entityMap);
 				
 				synchronized(map)
 				{
@@ -103,7 +103,7 @@ public class PacketHandlerSP extends Thread
 		{
 			if(Game.level != null && Game.thePlayer != null)
 			{
-				EntityLiving e = (EntityLiving) Game.level.entities.get(((Packet9EntityMoving)p).uniqueUUID);
+				EntityLiving e = (EntityLiving) Game.level.entityMap.get(((Packet9EntityMoving)p).uniqueUUID);
 				
 				if(e.UUID != Game.thePlayer.UUID)
 				{
@@ -111,7 +111,7 @@ public class PacketHandlerSP extends Thread
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
 					e.setRotation(((Packet9EntityMoving)p).rotation);
 					e.setWalking(((Packet9EntityMoving)p).isWalking);
-					Game.level.entities.put(e.UUID, e);
+					Game.level.entityMap.put(e.UUID, e);
 				}
 			}
 		}

@@ -109,30 +109,20 @@ public class Screen extends Drawable
 
 	public void postRender(GL2 gl2)
 	{
-		/*Composite c = g2d.getComposite();
-		g2d.setComposite(BlendComposite.Multiply);
-		
-		if(Game.level != null)
-		{					
-			BufferedImage bLight = new BufferedImage(Game.WIDTH, Game.HEIGHT, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2d2 = (Graphics2D) bLight.getGraphics();
-			g2d2.setColor(Color.darkGray);
-			g2d2.fillRect(0, 0, bLight.getWidth(), bLight.getHeight());
-			
-			for(Entity e : Game.level.entities.values())
+		/*if(Game.level != null)
+		{						
+			for(Entity e : Game.level.entityMap.values())
 			{
 				for(LightSource s : e.lightSources)
 				{
 					Point p = e.getLightPosition(s);
 					if(p.x + s.width >= -xOffset && p.x <= -xOffset + Game.WIDTH && p.y + s.width >= -yOffset && p.y <= -yOffset + Game.HEIGHT)
 					{	
-						g2d2.drawImage(s.getImage(), p.x + xOffset - s.width / 2, p.y + yOffset - s.width / 2, null);				
+						s.draw(gl2, p.x + xOffset - s.width / 2, p.y + yOffset - s.width / 2);				
 					}
 				}
 			}
-			g2d.drawImage(bLight, null, 0, 0);
-		}
-		g2d.setComposite(c);*/
+		}*/
 		if(Gui.currentGui != null) Gui.currentGui.render(gl2);    
 	}
 }

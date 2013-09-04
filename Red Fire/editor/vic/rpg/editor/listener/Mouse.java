@@ -14,10 +14,10 @@ import vic.rpg.editor.Editor;
 import vic.rpg.editor.gui.PopupMenu;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.Tile;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.Path;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.registry.LevelRegistry;
 
 public class Mouse implements MouseListener, MouseMotionListener, MouseWheelListener
 {
@@ -72,7 +72,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			if(Editor.instance.level == null) return;
 			
 			if(Editor.instance.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
-			else if(Editor.instance.buttonErase.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1) paint(arg0.getX(), arg0.getY(), null, false);
+			else if(Editor.instance.buttonErase.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1 && Editor.layerID != 0) paint(arg0.getX(), arg0.getY(), null, false);
 			else if(Editor.instance.buttonPath.isSelected())
 			{
 				int x = (int) ((float)(arg0.getX() - Editor.instance.labelLevel.xOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
@@ -108,8 +108,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					selectedTiles.add(new Point(x, y));
 					
 					Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelTiles);
-					Integer id = Editor.instance.level.layers.get(Editor.instance.level.getLayer())[x][y][0];
-					if(id != null) TableListener.setTile(LevelRegistry.tileRegistry.get(id), Editor.instance.level.layers.get(Editor.instance.level.getLayer())[x][y][1]);					
+					Tile t = Editor.instance.level.getTileAt(x, y, Editor.layerID);
+					if(t != null) TableListener.setTile(t, Editor.instance.level.getTileDataAt(x, y, Editor.layerID));					
 				}
 				else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 				{
@@ -258,7 +258,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			{
 				paint(arg0.getX(), arg0.getY());
 			}
-			else if(Editor.instance.buttonErase.isSelected())
+			else if(Editor.instance.buttonErase.isSelected() && Editor.layerID != 0)
 			{
 				paint(arg0.getX(), arg0.getY(), null, false);
 			}
@@ -309,8 +309,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.width || y2 >= Editor.instance.level.height) return;
 			
-			if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id));
-			else Editor.instance.level.setTile(id, x2, y2);
+			if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
+			else Editor.instance.level.setTile(id, x2, y2, Editor.layerID);
 			Editor.instance.labelLevel.updateUI();
 		}
 		else

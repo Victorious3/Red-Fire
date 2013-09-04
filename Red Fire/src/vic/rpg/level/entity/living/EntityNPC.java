@@ -25,8 +25,8 @@ public class EntityNPC extends EntityLiving
 		
 		if(!isWalking() && !walk && Utils.getSide().equals(Utils.SIDE_SERVER))
 		{
-			EntityPlayer[] player = new EntityPlayer[ServerLoop.level.onlinePlayersList.values().size()];
-			player = ServerLoop.level.onlinePlayersList.values().toArray(player);		
+			EntityPlayer[] player = new EntityPlayer[ServerLoop.level.onlinePlayersMap.values().size()];
+			player = ServerLoop.level.onlinePlayersMap.values().toArray(player);		
 			if(player.length > 0) walkTo(player[0].xCoord - 70, player[0].yCoord, Double.MAX_VALUE);
 		}
 	}

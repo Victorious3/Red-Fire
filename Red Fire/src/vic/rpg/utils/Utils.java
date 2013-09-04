@@ -1,8 +1,10 @@
 package vic.rpg.utils;
 
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -120,6 +122,20 @@ public class Utils
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static Point conv1Dto2DPoint(int data, double width)
+	{
+		int xCoord = (int)((double)data % width);
+		int yCoord = (int)((double)data / width);
+
+		return new Point(xCoord, yCoord);
+	}
+	
+	public static Dimension conv1Dto2DDim(int data, double width)
+	{
+		Point p = conv1Dto2DPoint(data, width);
+		return new Dimension(p.x, p.y);	
 	}
 	
 	public static void setField(String fieldName, Object value, Object object) throws NoSuchFieldException, SecurityException, NumberFormatException, IllegalArgumentException, IllegalAccessException

@@ -86,9 +86,14 @@ public class TableListener implements TableModelListener
 		{
 			if(Mouse.selectedTiles.size() > 0) 
 			{
-				for(Point p: Mouse.selectedTiles)
+				for(Point p : Mouse.selectedTiles)
 				{
-					Editor.instance.level.layers.get(Editor.instance.level.getLayer())[p.x][p.y][1] = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()); 
+					Tile t = Editor.instance.level.getTileAt(p.x, p.y, Editor.layerID);
+					if(t != null)
+					{
+						int data = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString());
+						Editor.instance.level.setTile(t.id, p.x, p.y, data, Editor.layerID);
+					}
 				}				
 				
 				Editor.instance.labelLevel.updateUI();

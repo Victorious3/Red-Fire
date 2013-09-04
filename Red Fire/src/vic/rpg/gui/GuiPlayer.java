@@ -13,7 +13,7 @@ import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 
-public class GuiPlayer extends IGuiContainer
+public class GuiPlayer extends GuiContainer
 {
 	public GuiPlayer() 
 	{

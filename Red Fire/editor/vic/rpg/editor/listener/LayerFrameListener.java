@@ -24,7 +24,7 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 		
 		tableModel.setRowCount(0);
-		for(int i = 0; i < Editor.instance.level.layers.size(); i++)
+		for(int i = 0; i < Editor.instance.level.getLayerAmount(); i++)
 		{
 			Vector<Object> row = new Vector<Object>();
 			row.add(i);
@@ -43,12 +43,12 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 		}
 		if(arg0.getSource() == Editor.instance.buttonRemoveLayer)
 		{
-			Integer levelID = (Integer) Editor.instance.tableLayers.getModel().getValueAt(Editor.instance.tableLayers.getSelectedRow(), 0);
-			if(Editor.instance.level.getLayer() == levelID)
+			Integer layerID = (Integer) Editor.instance.tableLayers.getModel().getValueAt(Editor.instance.tableLayers.getSelectedRow(), 0);
+			if(Editor.layerID == layerID)
 			{
-				Editor.instance.tableLayers.setRowSelectionInterval(Editor.instance.level.layers.size() - 1, Editor.instance.level.layers.size() - 1);
+				Editor.instance.tableLayers.setRowSelectionInterval(Editor.instance.level.getLayerAmount() - 1, Editor.instance.level.getLayerAmount() - 1);
 			}
-			Editor.instance.level.removeLayer(levelID);
+			Editor.instance.level.removeLayer(layerID);
 			Editor.updateLayerFrame();
 		}
 	}
@@ -72,7 +72,7 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 		
 		if(Editor.instance.tableLayers.getSelectedRow() != -1)
 		{
-			Editor.instance.level.setLayer((Integer) Editor.instance.tableLayers.getModel().getValueAt(Editor.instance.tableLayers.getSelectedRow(), 0));
+			Editor.layerID = (Integer) Editor.instance.tableLayers.getModel().getValueAt(Editor.instance.tableLayers.getSelectedRow(), 0);
 		}
 	}
 }

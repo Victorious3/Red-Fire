@@ -1,5 +1,6 @@
 package vic.rpg.level;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -43,12 +44,12 @@ public class Level
 	public int width;
 	public int height;
 	
-	public ArrayList<Integer[][][]> layers;
+	private ArrayList<Integer[][][]> layers;
 	public HashMap<Integer, Boolean> layerVisibility;
 	
-	public LinkedHashMap<String, Entity> entities = new LinkedHashMap<String, Entity>();
-	public LinkedHashMap<String, EntityPlayer> onlinePlayersList = new LinkedHashMap<String, EntityPlayer>();
-	public LinkedHashMap<String, EntityPlayer> offlinePlayersList = new LinkedHashMap<String, EntityPlayer>();
+	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
+	public LinkedHashMap<String, EntityPlayer> onlinePlayersMap = new LinkedHashMap<String, EntityPlayer>();
+	public LinkedHashMap<String, EntityPlayer> offlinePlayersMap = new LinkedHashMap<String, EntityPlayer>();
 	
 	public NodeMap nodeMap = new NodeMap(this);
 	
@@ -100,7 +101,7 @@ public class Level
 	
 	public void onKeyPressed(KeyEvent key)
 	{
-		for(Entity e : entities.values())
+		for(Entity e : entityMap.values())
 		{
 			e.onKeyPressed(key);
 		}
@@ -113,7 +114,7 @@ public class Level
 		{
 			for(int y = 0; y < height; y++)
 			{
-				setTile(LevelRegistry.TILE_TERRAIN.id, x, y, 0);
+				setTile(LevelRegistry.TILE_TERRAIN.id, x, y, 29);
 			}
 		}
 		
@@ -162,6 +163,47 @@ public class Level
 	{
 		render(gl2, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT);
 	}
+	
+	public Tile getTileAt(int x, int y)
+	{
+		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
+		if(t != null) t.setWorldObj(this);
+		return t;
+	}
+	
+	public int getTileDataAt(int x, int y)
+	{
+		return layers.get(getLayer())[x][y][1];
+	}
+	
+	public Tile getTileAt(int x, int y, int layerID)
+	{
+		this.setLayer(layerID);
+		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
+		if(t != null) t.setWorldObj(this);
+		return t;
+	}
+	
+	public Tile[] getTilesAt(int x, int y)
+	{
+		Tile[] tiles = new Tile[this.layers.size()];
+		for(int l = 0; l < this.layers.size(); l++)
+		{
+			tiles[l] = getTileAt(x, y, l);
+		}
+		return tiles;
+	}
+	
+	public int getTileDataAt(int x, int y, int layerID)
+	{
+		this.setLayer(layerID);
+		return layers.get(getLayer())[x][y][1];
+	}
+	
+	public int getLayerAmount()
+	{
+		return layers.size();
+	}
 
 	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height)
 	{
@@ -170,7 +212,7 @@ public class Level
 		for(int l = 0; l < layers.size(); l++)
 		{
 			Integer[][][] layer = layers.get(l);
-			
+			this.setLayer(l);		
 			if(isLayerVisible(l))
 			{
 				for(int x = 0; x < this.width; x++)
@@ -183,8 +225,10 @@ public class Level
 							Tile tile = LevelRegistry.tileRegistry.get(layer[x][y][0]);
 							if(tile != null)
 							{
+								tile.setWorldObj(this);
 								Point texPos = tile.getTextureCoord(x, y, data);
-								DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE, tile.getTexture(x, y, data));
+								Dimension tileDim = tile.getDimension(x, y, data);
+								DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));
 							}
 						}				
 					}
@@ -197,7 +241,7 @@ public class Level
 			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
 			{
 				e.render(gl2);
-				DrawUtils.drawTexture(e.xCoord - xOffset, e.yCoord - yOffset, e.texture);
+				DrawUtils.drawTexture(e.xCoord - xOffset, e.yCoord - yOffset, e.getTexture());
 			}
 		}
 	}
@@ -208,24 +252,27 @@ public class Level
 	{	
 		for(int l = 0; l < layers.size(); l++)
 		{
-			Integer[][][] layer = layers.get(l);				
+			Integer[][][] layer = layers.get(l);
+			this.setLayer(l);
 			for(int x = 0; x < width; x++)
 			{
 				for(int y = 0; y < height; y++)
 				{
-					LevelRegistry.tileRegistry.get(layer[x][y][0]).tick(x, y, layer[x][y][1]);	
+					Tile t = LevelRegistry.tileRegistry.get(layer[x][y][0]);
+					t.setWorldObj(this);
+					t.tick(x, y, layer[x][y][1]);	
 				}
 			}
 		}
 		
-		for(Entity e : entities.values())
+		for(Entity e : entityMap.values())
 		{
 			e.tick();
 		}
 		
 		if(Utils.getSide().equals(Utils.SIDE_SERVER))
 		{
-			for(EntityPlayer player : onlinePlayersList.values())
+			for(EntityPlayer player : onlinePlayersMap.values())
 			{
 				player.tick();
 			}
@@ -289,14 +336,22 @@ public class Level
 	
 	public void setTile(Integer id, int x, int y)
 	{
-		Integer[][][] layer = layers.get(currentLayer);
+		Integer[][][] layer = layers.get(getLayer());
 		layer[x][y][0] = id;
 		layer[x][y][1] = 0;
 	}
 	
 	public void setTile(Integer id, int x, int y, int data)
 	{
-		Integer[][][] layer = layers.get(currentLayer);
+		Integer[][][] layer = layers.get(getLayer());
+		layer[x][y][0] = id;
+		layer[x][y][1] = data;
+	}
+	
+	public void setTile(Integer id, int x, int y, int data, int layerID)
+	{
+		this.setLayer(layerID);
+		Integer[][][] layer = layers.get(getLayer());
 		layer[x][y][0] = id;
 		layer[x][y][1] = data;
 	}
@@ -313,7 +368,7 @@ public class Level
 		{
 			((EntityLiving)e).formatInventory();
 		}
-		entities.put(uuid.toString(), e);
+		entityMap.put(uuid.toString(), e);
 	}
 	
 	public void addEntity(Entity ent, int x, int y)
@@ -324,14 +379,14 @@ public class Level
 		ent.yCoord = y;
 		ent.UUID = uuid.toString();
 		ent.levelObj = this;
-		entities.put(uuid.toString(), ent);
+		entityMap.put(uuid.toString(), ent);
 	}
 	
 	public void addPlayer(EntityPlayer player, String username)
 	{
 		player.username = username;
 		player.levelObj = this;
-		onlinePlayersList.put(username, player);		
+		onlinePlayersMap.put(username, player);		
 	}
 	
 	public void createPlayer(EntityPlayer player, String username, int x, int y)
@@ -343,19 +398,19 @@ public class Level
 		player.UUID = uuid.toString();
 		player.levelObj = this;
 		player.formatInventory();
-		onlinePlayersList.put(username, player);		
+		onlinePlayersMap.put(username, player);		
 	}
 
 	public ArrayList<Entity> sortEntitiesByZLevel()
 	{
-		ArrayList<Entity> ent2 = new ArrayList<Entity>(entities.values());
+		ArrayList<Entity> ent2 = new ArrayList<Entity>(entityMap.values());
 		Collections.sort(ent2, new Entity.EntityComperator());
 		return ent2;
 	}
 	
 	public Entity intersectOnRender(int x, int y)
 	{
-		for(Entity ent : entities.values())
+		for(Entity ent : entityMap.values())
 		{
 			if(x >= ent.xCoord && x <= ent.xCoord + ent.getWidth() && y >= ent.yCoord && y <= ent.yCoord + ent.getHeight())
 			{
@@ -370,7 +425,7 @@ public class Level
 		Area a1 = new Area(shape);
 		ArrayList<Entity> retEnts = new ArrayList<Entity>();
 		
-		for(Entity ent : entities.values())
+		for(Entity ent : entityMap.values())
 		{
 			Area a2 = new Area(new Rectangle(ent.xCoord, ent.yCoord, ent.getWidth(), ent.getHeight()));
 			a2.intersect(a1);
@@ -441,7 +496,7 @@ public class Level
 			level.layerVisibility.put(i, true);
 		}
 		
-		level.entities = entities;
+		level.entityMap = entities;
 		level.time = time;
 		
 		if(levelMap.containsKey("players"))
@@ -454,7 +509,7 @@ public class Level
 				ent.levelObj = level;
 				players.put(ent.username, ent);
 			}
-			level.offlinePlayersList = players;
+			level.offlinePlayersMap = players;
 		}
 		
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) level.entitiesForRender = level.sortEntitiesByZLevel();
@@ -501,7 +556,7 @@ public class Level
 			layerList.add(layerTag);
 		}
 		
-		for(Entity e : entities.values())
+		for(Entity e : entityMap.values())
 		{
 			CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
 			entityList.add(enitiyTag);
@@ -509,7 +564,7 @@ public class Level
 		
 		if(send)
 		{
-			for(EntityPlayer e : onlinePlayersList.values())
+			for(EntityPlayer e : onlinePlayersMap.values())
 			{
 				CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
 				entityList.add(enitiyTag);
@@ -520,12 +575,12 @@ public class Level
 			//Player saves
 			ArrayList<CompoundTag> playerList = new ArrayList<CompoundTag>();
 			
-			for(EntityPlayer e : onlinePlayersList.values())
+			for(EntityPlayer e : onlinePlayersMap.values())
 			{
 				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
 				playerList.add(entityTag);
 			}
-			for(EntityPlayer e : offlinePlayersList.values())
+			for(EntityPlayer e : offlinePlayersMap.values())
 			{
 				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
 				playerList.add(entityTag);

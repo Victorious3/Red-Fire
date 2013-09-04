@@ -1,43 +1,50 @@
 package vic.rpg.render;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.RescaleOp;
+
+import javax.media.opengl.GL2;
 
 import vic.rpg.utils.Utils;
 
+import com.jogamp.opengl.util.texture.Texture;
+
 public class LightSource 
 {
-	public static Image baseImage = Utils.readImageFromJar("/vic/rpg/resources/light.png");
+	public static Texture baseTexture = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/light.png"));
 	
-	private Image img;
 	public int width;
+	private float brightness;
+	private Color color;
 	
 	public LightSource(int width, float brightness, Color color)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
-		{
-			BufferedImage img = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
-			
-			Graphics2D g2d = (Graphics2D) img.getGraphics();
-			g2d.scale(width / baseImage.getWidth(null), width / baseImage.getHeight(null));
-			g2d.setColor(color);
-			g2d.fillRect(0, 0, img.getWidth(), img.getHeight());
-			g2d.setComposite(AlphaComposite.DstIn);
-			g2d.drawImage(baseImage, 0, 0, null);
-			
-			new RescaleOp(brightness, 0, null).filter(img, img);
-			
-			this.img = img;
-			this.width = width;
-		}
+		this.width = width;
+		this.brightness = brightness;
+		this.color = color;
 	}
 	
-	public Image getImage()
+	public void draw(GL2 gl2, int x, int y)
 	{
-		return img;
+		DrawUtils.setGL(gl2);
+		gl2.glEnable(GL2.GL_TEXTURE_2D);
+		gl2.glPushMatrix();
+		gl2.glScalef(width / baseTexture.getWidth(), width / baseTexture.getWidth(), width / baseTexture.getWidth());
+		DrawUtils.glColor(color);
+		gl2.glBindTexture(GL2.GL_TEXTURE_2D, baseTexture.getTextureObject(gl2));
+		gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_NEAREST);
+		gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
+		gl2.glBegin(GL2.GL_QUADS);
+		gl2.glNormal3i(0, 0, 1);
+        gl2.glTexCoord2i(0, 0);
+        gl2.glVertex2i(x, y);
+        gl2.glTexCoord2i(1, 0);
+        gl2.glVertex2i(x + baseTexture.getWidth(), y);
+        gl2.glTexCoord2i(1, 1);
+        gl2.glVertex2i(x + baseTexture.getWidth(), y + baseTexture.getHeight());
+        gl2.glTexCoord2i(0, 1);
+        gl2.glVertex2i(x, y + baseTexture.getHeight());
+        gl2.glEnd();
+		gl2.glPopMatrix();
+		gl2.glDisable(GL2.GL_TEXTURE_2D);
 	}
 }

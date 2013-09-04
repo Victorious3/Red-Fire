@@ -188,9 +188,9 @@ public class Server extends Thread
 		    	
 		    	EntityPlayer playerEntity = (EntityPlayer) LevelRegistry.ENTITY_LIVING_PLAYER.clone();
 		    	
-		    	if(ServerLoop.level.offlinePlayersList.containsKey(player))
+		    	if(ServerLoop.level.offlinePlayersMap.containsKey(player))
 		    	{
-		    		playerEntity = ServerLoop.level.offlinePlayersList.remove(player);	    		
+		    		playerEntity = ServerLoop.level.offlinePlayersMap.remove(player);	    		
 		    		ServerLoop.level.addPlayer(playerEntity, player);
 		    	}	    	
 		    	else ServerLoop.level.createPlayer(playerEntity, player, 550, 550);
@@ -261,10 +261,10 @@ public class Server extends Thread
 	    	actConnections--;	    	
 	    	c.connected = false;
 	    	System.out.println("Disconnecting player " + c.username + " Reason: " + e.getMessage());
-	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersList.get(c.username), Packet7Entity.MODE_DELETE), c.username);
+	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersMap.get(c.username), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
-	    	ServerLoop.level.offlinePlayersList.put(c.username, ServerLoop.level.onlinePlayersList.remove(c.username));
+	    	ServerLoop.level.offlinePlayersMap.put(c.username, ServerLoop.level.onlinePlayersMap.remove(c.username));
 
 		} catch (IOException e2) {
 			e.printStackTrace();

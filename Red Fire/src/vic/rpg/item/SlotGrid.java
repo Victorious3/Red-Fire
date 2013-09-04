@@ -4,14 +4,14 @@ import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
-import vic.rpg.gui.IGuiContainer;
+import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.render.DrawUtils;
 
 //TODO Clean that mess up -_-
 public class SlotGrid extends GControl
 {	
-	public IGuiContainer gui;
+	public GuiContainer gui;
 	
 	public int gridWidth = 1;
 	public int gridHeight = 1;
@@ -19,7 +19,7 @@ public class SlotGrid extends GControl
 	
 	public Item[][] items;
 	
-	public SlotGrid(int xCoord, int yCoord, int width, int height, int id, IGuiContainer gui) 
+	public SlotGrid(int xCoord, int yCoord, int width, int height, int id, GuiContainer gui) 
 	{
 		super(xCoord, yCoord, width * 30, height * 30);
 		
@@ -31,7 +31,7 @@ public class SlotGrid extends GControl
 		this.items = gui.inventory.getItemGrid(id);
 	}
 	
-	public SlotGrid(Item[][] items, int xCoord, int yCoord, int id, IGuiContainer gui)
+	public SlotGrid(Item[][] items, int xCoord, int yCoord, int id, GuiContainer gui)
 	{
 		super(xCoord, yCoord, items.length * 30, items[0].length * 30);
 		
@@ -82,7 +82,7 @@ public class SlotGrid extends GControl
 		{
 			for(int j = 0; j < gridHeight; j++)
 			{
-				if(items[i][j] != null) DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, items[i][j].texture);
+				if(items[i][j] != null) DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, items[i][j].getTexture());
 			}
 		}
 		

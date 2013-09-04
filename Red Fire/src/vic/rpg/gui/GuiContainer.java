@@ -10,7 +10,7 @@ import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 
-public class IGuiContainer extends Gui 
+public class GuiContainer extends Gui 
 {
 	public boolean isSlotHovered = false;
 	public Inventory inventory;
@@ -25,15 +25,15 @@ public class IGuiContainer extends Gui
 		
 		DrawUtils.setGL(gl2);
 		super.render(gl2);
-		if(currentSlot != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, currentSlot.item.texture);
+		if(currentSlot != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, currentSlot.item.getTexture());
 	}
 	
-	public IGuiContainer(boolean pauseGame, boolean overridesEsc) 
+	public GuiContainer(boolean pauseGame, boolean overridesEsc) 
 	{
 		super(pauseGame, overridesEsc);
 	}
 	
-	public IGuiContainer(boolean pauseGame) 
+	public GuiContainer(boolean pauseGame) 
 	{
 		super(pauseGame);
 	}
