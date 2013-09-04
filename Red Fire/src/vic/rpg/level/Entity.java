@@ -10,8 +10,8 @@ import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityPlayer;
-import vic.rpg.render.LightSource;
 import vic.rpg.render.Drawable;
+import vic.rpg.render.LightSource;
 import vic.rpg.server.packet.Packet11EntityInteraction;
 import vic.rpg.utils.Utils;
 
@@ -106,6 +106,19 @@ public class Entity extends Drawable implements Cloneable
 			
 			if(collides) return true;
 		}
+		
+		int x = (int)((double)xCoord / (double)Level.CELL_SIZE);
+		int y = (int)((double)yCoord / (double)Level.CELL_SIZE);
+		
+		if(x < 0 || y < 0 || x >= level.width || y >= level.height) return true;
+		
+		Tile[] tiles = level.getTilesAt(x, y);		
+		for(Tile t : tiles)
+		{
+			if(t == null) continue;
+			if(!t.isWalkingPermitted()) return true;
+		}
+		
 		return false;
 	}
 	

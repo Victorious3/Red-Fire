@@ -310,7 +310,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.width || y2 >= Editor.instance.level.height) return;
 			
 			if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
-			else Editor.instance.level.setTile(id, x2, y2, Editor.layerID);
+			else Editor.instance.level.setTile(id, x2, y2, 0, Editor.layerID);
 			Editor.instance.labelLevel.updateUI();
 		}
 		else

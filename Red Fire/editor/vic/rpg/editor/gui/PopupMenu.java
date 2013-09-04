@@ -118,7 +118,7 @@ public class PopupMenu implements ActionListener
 						if(p.x > maxX) maxX = p.x;
 						if(p.y > maxY) maxY = p.y;
 						
-						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id));			
+						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id), Editor.layerID);			
 					}
 					Editor.instance.labelLevel.updateUI();
 				}

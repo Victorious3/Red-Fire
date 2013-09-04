@@ -132,6 +132,11 @@ public class Utils
 		return new Point(xCoord, yCoord);
 	}
 	
+	public static int conv2Dto1Dint(int x, int y, double width)
+	{
+		return (int)((double)x + (double)y * width);
+	}
+	
 	public static Dimension conv1Dto2DDim(int data, double width)
 	{
 		Point p = conv1Dto2DPoint(data, width);

@@ -32,6 +32,7 @@ import vic.rpg.Game;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.path.NodeMap;
+import vic.rpg.level.tiles.TilePlaceHolder;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
@@ -168,6 +169,7 @@ public class Level
 	{
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
 		if(t != null) t.setWorldObj(this);
+		else if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
 	
@@ -181,6 +183,7 @@ public class Level
 		this.setLayer(layerID);
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
 		if(t != null) t.setWorldObj(this);
+		else if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
 	
@@ -259,8 +262,11 @@ public class Level
 				for(int y = 0; y < height; y++)
 				{
 					Tile t = LevelRegistry.tileRegistry.get(layer[x][y][0]);
-					t.setWorldObj(this);
-					t.tick(x, y, layer[x][y][1]);	
+					if(t != null)
+					{
+						t.setWorldObj(this);
+						t.tick(x, y, layer[x][y][1]);
+					}
 				}
 			}
 		}
@@ -336,22 +342,56 @@ public class Level
 	
 	public void setTile(Integer id, int x, int y)
 	{
-		Integer[][][] layer = layers.get(getLayer());
-		layer[x][y][0] = id;
-		layer[x][y][1] = 0;
+		setTile(id, x, y, 0);
 	}
 	
 	public void setTile(Integer id, int x, int y, int data)
 	{
-		Integer[][][] layer = layers.get(getLayer());
-		layer[x][y][0] = id;
-		layer[x][y][1] = data;
+		setTile(id, x, y, data, getLayer());
 	}
 	
 	public void setTile(Integer id, int x, int y, int data, int layerID)
 	{
 		this.setLayer(layerID);
 		Integer[][][] layer = layers.get(getLayer());
+		
+		if(layer[x][y][0] != null && layer[x][y][0] == LevelRegistry.TILE_PLACEHOLDER.id)
+		{
+			int loc = getTileDataAt(x, y, layerID);
+			Point p = Utils.conv1Dto2DPoint(loc, width);
+			Tile t2 = getTileAt(p.x, p.y, layerID);
+			
+			Dimension dim = t2.getDimension(x, y, data);
+			if(dim.getWidth() > 1 || dim.getHeight() > 1)
+			{
+				for(int x1 = 0; x1 < dim.getWidth(); x1++)
+				{
+					for(int y1 = 0; y1 < dim.getHeight(); y1++)
+					{
+						layer[p.x + x1][p.y + y1][0] = null;
+					}
+				}
+			}
+		}
+		
+		Tile t = LevelRegistry.tileRegistry.get(id);
+		if(t != null)
+		{
+			Dimension dim = t.getDimension(x, y, data);
+			if(dim.getWidth() > 1 || dim.getHeight() > 1)
+			{
+				if(layerID == 0) return;
+				for(int x1 = 0; x1 < dim.getWidth(); x1++)
+				{
+					for(int y1 = 0; y1 < dim.getHeight(); y1++)
+					{
+						layer[x + x1][y + y1][0] = LevelRegistry.TILE_PLACEHOLDER.id;
+						layer[x + x1][y + y1][1] = Utils.conv2Dto1Dint(x, y, width);
+					}
+				}
+			}
+		}
+		
 		layer[x][y][0] = id;
 		layer[x][y][1] = data;
 	}
