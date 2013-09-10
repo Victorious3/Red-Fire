@@ -108,6 +108,7 @@ public class ButtonListener implements ActionListener
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
+			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonMove)
 		{
@@ -119,6 +120,7 @@ public class ButtonListener implements ActionListener
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
+			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonPaint)
 		{
@@ -130,6 +132,7 @@ public class ButtonListener implements ActionListener
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
+			Editor.instance.frameBrush.setVisible(true);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonErase)
 		{
@@ -141,8 +144,8 @@ public class ButtonListener implements ActionListener
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
+			Editor.instance.frameBrush.setVisible(true);
 		}
-
 		else if(arg0.getSource() == Editor.instance.buttonPath)
 		{
 			Editor.instance.buttonEdit.setSelected(false);
@@ -153,6 +156,7 @@ public class ButtonListener implements ActionListener
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
 			Editor.instance.labelLevel.updateUI();
+			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonNewEntity)
 		{

@@ -13,13 +13,11 @@ public class JBackgroundPanel extends JPanel
 	public JBackgroundPanel(Image image)
 	{
 		this.image = image;
-		this.setLayout(null);
 	}
 	
 	public JBackgroundPanel(Image image, Component comp)
 	{
 		this.image = image;
-		this.setLayout(null);
 		this.add(comp);
 	}
 	

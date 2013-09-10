@@ -31,11 +31,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -47,6 +49,8 @@ import vic.rpg.Game;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
 import vic.rpg.editor.gui.PanelLevel;
+import vic.rpg.editor.gui.PanelTexture;
+import vic.rpg.editor.listener.BrushFrameListener;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.LayerFrameListener;
@@ -144,12 +148,20 @@ public class Editor
 	};
 	public JLabel labelTiles = new JLabel();
 	
-	//Layer Frame
 	public JDesktopPane desktop;
+	
+	//Layer Frame
 	public JDockableFrame frameLayers;
 	public JTable tableLayers = new JTable();
 	public JButton buttonNewLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
 	public JButton buttonRemoveLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
+	
+	//Brush Frame
+	public JDockableFrame frameBrush;
+	public JSlider sliderBrushSize = new JSlider(SwingConstants.VERTICAL, 0, 20, 1);
+	public PanelTexture panelTexture1 = new PanelTexture(Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png"));
+	public PanelTexture panelTexture2 = new PanelTexture(Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png"));
+	public JButton buttonEditBrush = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	
 	public Level level;
 	
@@ -282,6 +294,7 @@ public class Editor
 		desktop.setDesktopManager(desktopManager);
 		desktop.addComponentListener(desktopManager);
 		
+		//Layer Frame
 		frameLayers = new JDockableFrame("Layers", true, false);
 		frameLayers.setFrameIcon(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/windows.png")));
 		frameLayers.getContentPane().setLayout(new BorderLayout());
@@ -323,6 +336,58 @@ public class Editor
 		frameLayers.add(p1, BorderLayout.SOUTH);
 		
 		desktop.add(frameLayers);
+		
+		//Brush Frame
+		frameBrush = new JDockableFrame("Brush Settings", true, false);
+		frameBrush.setFrameIcon(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/windows.png")));
+		frameBrush.setSize(150, 200);
+		frameBrush.setLocation(0, desktop.getHeight() - frameLayers.getHeight());
+		frameBrush.addDock(JDockableFrame.WEST);
+		frameBrush.addDock(JDockableFrame.SOUTH);
+		frameBrush.setLayout(new GridBagLayout());
+		GridBagConstraints frameBrushConstraints = new GridBagConstraints();
+		
+		JPanel p2 = new JPanel(new GridBagLayout());
+		p2.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		GridBagConstraints p2Constraints = new GridBagConstraints();
+		p2Constraints.fill = GridBagConstraints.BOTH;
+		p2Constraints.weightx = 1;
+		p2Constraints.weighty = 1;
+		panelTexture1.setFocusable(true);
+		panelTexture1.addMouseListener(BrushFrameListener.instance);
+		p2.add(panelTexture1, p2Constraints);
+		p2Constraints.gridy = 1;
+		panelTexture2.setFocusable(true);
+		panelTexture2.addMouseListener(BrushFrameListener.instance);
+		p2.add(panelTexture2, p2Constraints);
+		
+		sliderBrushSize.setPaintTicks(true);
+		sliderBrushSize.setMinorTickSpacing(1);
+		sliderBrushSize.setMajorTickSpacing(5);
+		sliderBrushSize.setSnapToTicks(true);
+		sliderBrushSize.setPaintLabels(true);
+		
+		JPanel p3 = new JPanel(new GridBagLayout());
+		p3.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 0));
+		GridBagConstraints p3Constraints = new GridBagConstraints();
+		p3Constraints.fill = GridBagConstraints.VERTICAL;
+		p3Constraints.weightx = 1;
+		p3Constraints.weighty = 1;
+		p3.add(sliderBrushSize, p3Constraints);
+		p3Constraints.weighty = 0;
+		p3Constraints.gridy = 1;
+		buttonEditBrush.setPreferredSize(new Dimension(25, 25));
+		p3.add(buttonEditBrush, p3Constraints);
+		
+		frameBrushConstraints.fill = GridBagConstraints.BOTH;
+		frameBrushConstraints.weightx = 0;
+		frameBrushConstraints.weighty = 1;
+		frameBrush.add(p3, frameBrushConstraints);
+		frameBrushConstraints.weightx = 1;
+		frameBrushConstraints.gridx = 1;
+		frameBrush.add(p2, frameBrushConstraints);
+		
+		desktop.add(frameBrush);
 		
 		labelLevel.add(desktop, BorderLayout.CENTER);
 		
@@ -552,12 +617,12 @@ public class Editor
 		}
 	}
 	
-	private static boolean firstTime = true;
+	private static boolean firstTimeLayer = true;
 	public static void updateLayerFrame()
 	{
 		instance.frameLayers.setVisible(false);
 		LayerFrameListener.updateLayers();
-		if(firstTime)
+		if(firstTimeLayer)
 		{
 			instance.frameLayers.pack();
 			instance.frameLayers.setLocation(instance.desktop.getWidth() - instance.frameLayers.getWidth(), instance.desktop.getHeight() - instance.frameLayers.getHeight());
@@ -566,7 +631,7 @@ public class Editor
 		}
 		instance.tableLayers.setRowSelectionInterval(0, 0);
 		instance.frameLayers.setVisible(true);
-		firstTime = false;
+		firstTimeLayer = false;
 	}
 
 	/**

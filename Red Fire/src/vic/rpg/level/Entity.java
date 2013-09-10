@@ -20,7 +20,7 @@ public class Entity extends Drawable implements Cloneable
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
 	
-	public String UUID;
+	@Editable public String UUID;
 	public int id = 0;
 	@Editable public int zLevel = 0;
 	
@@ -107,8 +107,9 @@ public class Entity extends Drawable implements Cloneable
 			if(collides) return true;
 		}
 		
-		int x = (int)((double)xCoord / (double)Level.CELL_SIZE);
-		int y = (int)((double)yCoord / (double)Level.CELL_SIZE);
+		//TODO A little bit onto a single point
+		int x = (int)((double)(xCoord + (getWidth() / 2D)) / (double)Level.CELL_SIZE);
+		int y = (int)((double)(yCoord + (getHeight() / 2D)) / (double)Level.CELL_SIZE);
 		
 		if(x < 0 || y < 0 || x >= level.width || y >= level.height) return true;
 		

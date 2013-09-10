@@ -57,6 +57,8 @@ public class Level
 	// Gameplay
 	@Editable public int time = 5000;
 	@Editable public String name = "NO_NAME";
+	@Editable public int spawnX = 0;
+	@Editable public int spawnY = 0;
 	
 	// Client stuff
 	public ArrayList<Entity> entitiesForRender;
@@ -221,19 +223,19 @@ public class Level
 				for(int x = 0; x < this.width; x++)
 				{
 					for(int y = 0; y < this.height; y++)
-					{
-						if(x * CELL_SIZE >= xOffset - CELL_SIZE && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE && y * CELL_SIZE <= yOffset + height)
+					{				
+						Integer data = layer[x][y][1];
+						Tile tile = LevelRegistry.tileRegistry.get(layer[x][y][0]);
+						if(tile != null)
 						{
-							Integer data = layer[x][y][1];
-							Tile tile = LevelRegistry.tileRegistry.get(layer[x][y][0]);
-							if(tile != null)
+							Dimension tileDim = tile.getDimension(x, y, data);
+							if(x * CELL_SIZE >= xOffset - CELL_SIZE * tileDim.getWidth() && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE * tileDim.getHeight() && y * CELL_SIZE <= yOffset + height)
 							{
 								tile.setWorldObj(this);
 								Point texPos = tile.getTextureCoord(x, y, data);
-								Dimension tileDim = tile.getDimension(x, y, data);
-								DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));
+								DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));			
 							}
-						}				
+						}					
 					}
 				}
 			}
@@ -390,8 +392,7 @@ public class Level
 					}
 				}
 			}
-		}
-		
+		}	
 		layer[x][y][0] = id;
 		layer[x][y][1] = data;
 	}
@@ -486,6 +487,8 @@ public class Level
 		int width = (int)levelMap.get("width").getValue();
 		int height = (int)levelMap.get("height").getValue();
 		int time = (int)levelMap.get("time").getValue();
+		int spawnX = (int)levelMap.get("spawnX").getValue();
+		int spawnY = (int)levelMap.get("spawnY").getValue();
 		String name = (String)levelMap.get("name").getValue();
 		
 		List<Tag> entityList = (List<Tag>)levelMap.get("entities").getValue();
@@ -538,6 +541,8 @@ public class Level
 		
 		level.entityMap = entities;
 		level.time = time;
+		level.spawnX = spawnX;
+		level.spawnY = spawnY;
 		
 		if(levelMap.containsKey("players"))
 		{
@@ -563,6 +568,8 @@ public class Level
 		IntTag widthTag = new IntTag("width", width);
 		IntTag heightTag = new IntTag("height", height);
 		IntTag timeTag = new IntTag("time", time);
+		IntTag spawnXTag = new IntTag("spawnX", spawnX);
+		IntTag spawnYTag = new IntTag("spawnY", spawnY);
 		StringTag nameTag = new StringTag("name", name);
 		
 		Map<String, Tag> levelMap = new HashMap<String, Tag>();
@@ -637,6 +644,8 @@ public class Level
 		levelMap.put("height", heightTag);
 		levelMap.put("time", timeTag);
 		levelMap.put("name", nameTag);
+		levelMap.put("spawnX", spawnXTag);
+		levelMap.put("spawnY", spawnYTag);
 		levelMap.put("tiles", tileListTag);
 		levelMap.put("entities", entityListTag);
 		

@@ -193,7 +193,7 @@ public class Server extends Thread
 		    		playerEntity = ServerLoop.level.offlinePlayersMap.remove(player);	    		
 		    		ServerLoop.level.addPlayer(playerEntity, player);
 		    	}	    	
-		    	else ServerLoop.level.createPlayer(playerEntity, player, 550, 550);
+		    	else ServerLoop.level.createPlayer(playerEntity, player, ServerLoop.level.spawnX, ServerLoop.level.spawnY);
 		    	
 		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
