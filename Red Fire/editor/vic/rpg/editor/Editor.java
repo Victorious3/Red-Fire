@@ -58,6 +58,7 @@ import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
 import vic.rpg.editor.listener.ZoomListener;
 import vic.rpg.editor.script.Script;
+import vic.rpg.editor.tiles.TileMaterial;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
@@ -615,6 +616,7 @@ public class Editor
 		{
 			Editor.openLevel();
 		}
+		TileMaterial.loadMaterials();
 	}
 	
 	private static boolean firstTimeLayer = true;
