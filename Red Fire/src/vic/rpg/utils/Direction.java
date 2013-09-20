@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public enum Direction 
 {
-	NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), NORTH_WEST(5), SOUTH_EAST(6), SOUTH_WEST(7);
+	NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7), CENTER(8);
 	
 	private final int id;
 	
@@ -13,15 +13,42 @@ public enum Direction
 		this.id = id;
 	}
 	
+	private static HashMap<Integer, Direction> allValues = new HashMap<Integer, Direction>();
+	
+	static 
+	{
+		for(Direction d : values())
+		{
+			allValues.put(d.id, d);
+		}
+	}
+	
 	public int getID()
 	{
 		return id;
 	}
 	
-	private static HashMap<Integer, Direction> allValues = new HashMap<Integer, Direction>();
-	
+	public Direction rot90Clockwise(Direction d)
+	{
+		if(d == CENTER) return d;
+		if(d == WEST)
+		{
+			return NORTH;
+		}
+		if(d == NORTH_WEST)
+		{
+			return NORTH_EAST;
+		}
+		else return getDirection(d.getID() + 1);
+	}
+		
 	public static Direction getDirection(int id)
 	{
 		return allValues.get(id);
+	}
+	
+	public static int getAmount()
+	{
+		return allValues.size();
 	}
 }

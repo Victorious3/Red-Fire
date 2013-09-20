@@ -6,6 +6,7 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.render.DrawUtils.GradientAnimator;
 
 public class GButton extends GControl {
 
@@ -19,14 +20,27 @@ public class GButton extends GControl {
 		this.name = name;
 	}
 
+	private GradientAnimator gAnimIN = DrawUtils.createGratientAnimator(200, new Color(68, 21, 150), new Color(130, 91, 213));
+	private GradientAnimator gAnimOUT = DrawUtils.createGratientAnimator(200, new Color(130, 91, 213), new Color(68, 21, 150)).forward();
+
 	@Override
 	public void render(GL2 gl2, int x, int y) 
 	{	
 		DrawUtils.setGL(gl2);
 		
 		if(this.mouseDown)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(158, 31, 74));
-		else if(this.mouseHovered)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(130, 91, 213));
-		else DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(68, 21, 150));
+		else if(this.mouseHovered)
+		{
+			gAnimOUT.reset();		
+			gAnimIN.animate();
+			DrawUtils.fillRect(xCoord, yCoord, width, height, gAnimIN.getColor());
+		}
+		else
+		{
+			gAnimIN.reset();
+			gAnimOUT.animate();
+			DrawUtils.fillRect(xCoord, yCoord, width, height, gAnimOUT.getColor());
+		}
 		
 		float thickness = 3;
 		float oldThickness = DrawUtils.getLineWidth();

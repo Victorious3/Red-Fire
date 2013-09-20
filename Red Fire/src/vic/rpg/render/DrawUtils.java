@@ -2,6 +2,8 @@ package vic.rpg.render;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import javax.media.opengl.GL2;
 
@@ -14,8 +16,8 @@ public class DrawUtils
 {
 	private static GL2 gl2;
 	private static float LINE_WIDTH = 1.0F;
-	private static Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 10); 
-	private static TextRenderer TEXT_RENDERER = new TextRenderer(FONT);
+	private static Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 10); 	
+	private static HashMap<Font, TextRenderer> textRenderers = new HashMap<Font, TextRenderer>();
 	
 	public static void setGL(GL2 gl2)
 	{
@@ -30,7 +32,10 @@ public class DrawUtils
 	public static void setFont(Font f)
 	{
 		FONT = f;
-		TEXT_RENDERER = new TextRenderer(f);
+		if(!textRenderers.containsKey(FONT))
+		{
+			textRenderers.put(FONT, new TextRenderer(FONT));
+		}
 	}
 	
 	public static void fillRect(int x, int y, int width, int height, Color color)
@@ -181,10 +186,12 @@ public class DrawUtils
 	
 	public static void drawString(int x, int y, String string, Color color) 
 	{
-		TEXT_RENDERER.setColor(color);
-		TEXT_RENDERER.beginRendering(Game.WIDTH, Game.HEIGHT);
-		TEXT_RENDERER.draw(string, x, -y + Game.HEIGHT);
-		TEXT_RENDERER.endRendering();
+		TextRenderer tr = textRenderers.get(FONT);
+		if(tr == null) throw new NoSuchElementException("No TextRenderer for the font " + FONT.getName() + "! Create one using setFont(FONT)");
+		tr.setColor(color);
+		tr.beginRendering(Game.WIDTH, Game.HEIGHT);
+		tr.draw(string, x, -y + Game.HEIGHT);
+		tr.endRendering();
 	}
 	
 	public static void startClip(int x, int y, int width, int height)
@@ -215,7 +222,9 @@ public class DrawUtils
 	
 	public static TextRenderer getTextRenderer()
 	{
-		return TEXT_RENDERER;
+		TextRenderer tr = textRenderers.get(FONT);
+		if(tr == null) throw new NoSuchElementException("No TextRenderer for the font " + FONT.getName() + "! Create one using setFont(FONT)");
+		return tr;
 	}
 	
 	public static float getR(Color color)
@@ -236,5 +245,193 @@ public class DrawUtils
 	public static float getA(Color color)
 	{
 		return color.getAlpha() / 255.0F;
+	}
+
+	public static FPSAnimator createFPSAnimator(double fps, int times)
+	{
+		if(times > 0) return new FPSAnimator(fps, times);
+		else return new FPSAnimator(fps);
+	}
+	
+	public static GradientAnimator createGratientAnimator(int timeMillis, Color start, Color end)
+	{
+		return new GradientAnimator(timeMillis, start, end);
+	}
+	
+	public static SlopeAnimator createSlopeAnimator(int timeMillis, long start, long end, int fadeInTime, int fadeOutTime)
+	{
+		return new SlopeAnimator(timeMillis, start, end, fadeInTime, fadeOutTime);
+	}
+	
+	public static interface Animator
+	{
+		public boolean animate();
+	}
+	
+	public static class FPSAnimator implements Animator
+	{
+		private final boolean repeat;
+		private final int maxTimes;
+		private final double timePerFrame;
+		
+		private FPSAnimator(double fps)
+		{
+			this.timePerFrame = 1000D / fps;
+			this.repeat = true;
+			this.maxTimes = 0;
+			lastTime = System.currentTimeMillis();
+		}
+		
+		private FPSAnimator(double fps, int times)
+		{
+			this.timePerFrame = 1000D / fps;
+			this.repeat = false;
+			this.maxTimes = times;
+			lastTime = System.currentTimeMillis();
+		}
+		
+		private long lastTime;
+		private long times = 0;
+		
+		@Override
+		public boolean animate()
+		{
+			if(!repeat && times >= maxTimes) return false;		
+			long currTime = System.currentTimeMillis();
+			if(currTime >= lastTime + timePerFrame)
+			{
+				lastTime = currTime;
+				times++;
+				return true;
+			}
+			return false;
+		}
+		
+		public long getTimes()
+		{
+			return times;
+		}
+	}
+	
+	public static class GradientAnimator implements Animator
+	{
+		private final Color start;
+		
+		private double r;
+		private double g;
+		private double b;
+		private double a;
+		private final double rEnd;
+		private final double gEnd;
+		private final double bEnd;
+		private final double aEnd;
+		private double rStep;
+		private double gStep;
+		private double bStep;
+		private double aStep;
+		
+		private static final double FPS = 30D;
+		
+		private GradientAnimator(int timeMillis, Color start, Color end)
+		{
+			r = start.getRed();
+			g = start.getGreen();
+			b = start.getBlue();
+			a = start.getAlpha();
+			rEnd = end.getRed();
+			gEnd = end.getGreen();
+			bEnd = end.getBlue();
+			aEnd = end.getAlpha();
+			
+			double timePerFrame = 0.001 * (double)FPS;
+			
+			rStep = (rEnd - r) / (timePerFrame * (double)timeMillis);
+			gStep = (gEnd - g) / (timePerFrame * (double)timeMillis);
+			bStep = (bEnd - b) / (timePerFrame * (double)timeMillis);
+			aStep = (aEnd - a) / (timePerFrame * (double)timeMillis);
+			
+			this.start = start;
+		}
+		
+		private FPSAnimator animator = new FPSAnimator(FPS);		
+		@Override
+		public boolean animate() 
+		{	
+			if(animator.animate())
+			{
+				double newR = r + rStep;
+				double newG = g + gStep;
+				double newB = b + bStep;
+				double newA = a + aStep;
+
+				if((rStep < 0 && newR >= rEnd) || (rStep > 0 && newR <= rEnd)) r = newR;
+				if((gStep < 0 && newG >= gEnd) || (gStep > 0 && newG <= gEnd)) g = newG;
+				if((bStep < 0 && newB >= bEnd) || (bStep > 0 && newB <= bEnd)) b = newB;
+				if((aStep < 0 && newA >= aEnd) || (aStep > 0 && newA <= aEnd)) a = newA;
+			}
+			return true;
+		}
+		
+		public Color getColor()
+		{
+			return new Color((int)r, (int)g, (int)b, (int)a);
+		}
+		
+		public GradientAnimator reset()
+		{
+			r = start.getRed();
+			g = start.getGreen();
+			b = start.getBlue();
+			a = start.getAlpha();		
+			return this;
+		}
+		
+		public GradientAnimator forward()
+		{
+			r = rEnd;
+			g = gEnd;
+			b = bEnd;
+			a = aEnd;
+			return this;
+		}
+	}
+
+	//TODO This is NOT working
+	public static class SlopeAnimator implements Animator
+	{	
+		private final double end;
+		private final boolean fadeIN;
+		private final boolean fadeOut;
+		
+		private double acc;
+		private double value;
+		
+		private static final double FPS = 30D;
+		
+		private SlopeAnimator(int timeMillis, long start, long end, int fadeInTime, int fadeOutTime)
+		{
+			this.acc = 1;
+			this.end = end;
+			this.value = start;
+			fadeIN = fadeInTime > 0;
+			fadeOut = fadeOutTime > 0;
+		}
+		
+		private FPSAnimator animator = new FPSAnimator(FPS);
+		@Override
+		public boolean animate() 
+		{
+			if(animator.animate())
+			{
+				double newVal = value + acc;
+				if((acc < 0 && newVal >= end) || (acc > 0 && newVal <= end)) value = newVal;
+			}
+			return true;
+		}
+		
+		public double getValue()
+		{
+			return value;
+		}
 	}
 }

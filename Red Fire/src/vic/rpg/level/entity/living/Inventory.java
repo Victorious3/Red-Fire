@@ -151,12 +151,12 @@ public class Inventory
 		for(CompoundTag t : slotList)
 		{
 			Map<String, Tag> tMap = t.getValue();
-			int slotID = (int)tMap.get("slotID").getValue();
+			int slotID = (Integer)tMap.get("slotID").getValue();
 			Tag idTag = tMap.get("id");
 			
 			if(idTag != null)
 			{
-				int id = (int)idTag.getValue();
+				int id = (Integer)idTag.getValue();
 				Item i = LevelRegistry.itemRegistry.get(id).clone();
 				i.readFromNBT((CompoundTag) tMap.get("data"));
 				slots.put(slotID, i);		
@@ -167,8 +167,8 @@ public class Inventory
 		for(CompoundTag t : slotGridList)
 		{
 			Map<String, Tag> tMap = t.getValue();
-			int slotID = (int)tMap.get("slotGridID").getValue();
-			Item[][] its = new Item[(int)tMap.get("width").getValue()][(int)tMap.get("height").getValue()];
+			int slotID = (Integer)tMap.get("slotGridID").getValue();
+			Item[][] its = new Item[(Integer)tMap.get("width").getValue()][(Integer)tMap.get("height").getValue()];
 			
 			for(Tag t2 : (List<Tag>)tMap.get("itemList").getValue())
 			{
@@ -179,7 +179,7 @@ public class Inventory
 				int x = Integer.parseInt(coords.split("-")[0]);
 				int y = Integer.parseInt(coords.split("-")[1]);
 				
-				Item it = LevelRegistry.itemRegistry.get((int)itemMap.get("id").getValue()).clone();
+				Item it = LevelRegistry.itemRegistry.get((Integer)itemMap.get("id").getValue()).clone();
 				it.readFromNBT((CompoundTag)itemMap.get("data"));
 				its[x][y] = it;
 			}

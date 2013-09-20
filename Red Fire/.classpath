@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="editor"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="server"/>
-	<classpathentry kind="src" path="resources"/>
+	<classpathentry excluding="vic/rpg/resources/heap/" kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jars/commons-lang3-3.1.jar">
 		<attributes>

@@ -9,7 +9,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import vic.rpg.utils.Utils;
 
-public class SoundPlayer 
+public class SoundEngine 
 {
 	public static Clip clip = null;
 	

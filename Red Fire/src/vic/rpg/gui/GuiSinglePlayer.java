@@ -15,7 +15,7 @@ import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
-import vic.rpg.sound.SoundPlayer;
+import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -88,7 +88,7 @@ public class GuiSinglePlayer extends Gui implements IGList
 		{
 			Gui.setGui(null);
 			
-			SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
+			SoundEngine.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
 		}
 	}
 

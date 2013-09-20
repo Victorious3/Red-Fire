@@ -378,6 +378,7 @@ public class Editor
 		p3Constraints.weighty = 0;
 		p3Constraints.gridy = 1;
 		buttonEditBrush.setPreferredSize(new Dimension(25, 25));
+		buttonEditBrush.addActionListener(BrushFrameListener.instance);
 		p3.add(buttonEditBrush, p3Constraints);
 		
 		frameBrushConstraints.fill = GridBagConstraints.BOTH;

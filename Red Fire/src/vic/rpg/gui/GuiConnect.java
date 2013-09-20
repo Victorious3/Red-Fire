@@ -14,7 +14,7 @@ import vic.rpg.gui.controls.GTextField;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
-import vic.rpg.sound.SoundPlayer;
+import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -91,7 +91,7 @@ public class GuiConnect extends Gui implements IGButton
 			if(Game.netHandler.connect(adress, port, username))
 			{
 				Gui.setGui(null);
-				SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
+				SoundEngine.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
 			}
 			else
 			{

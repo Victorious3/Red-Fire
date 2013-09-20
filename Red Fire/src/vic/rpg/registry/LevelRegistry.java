@@ -127,10 +127,10 @@ public class LevelRegistry
 	{	
 		Map<String, Tag> map = tag.getValue();
 		
-		int xCoord = (int)(map.get("xcoord")).getValue();
-		int yCoord = (int)(map.get("ycoord")).getValue();
-		int id = (int)(map.get("id")).getValue();
-		int zLevel = (int)(map.get("zLevel")).getValue(); 
+		int xCoord = (Integer)(map.get("xcoord")).getValue();
+		int yCoord = (Integer)(map.get("ycoord")).getValue();
+		int id = (Integer)(map.get("id")).getValue();
+		int zLevel = (Integer)(map.get("zLevel")).getValue(); 
 		
 		String uuid = (String)(map.get("uuid")).getValue();
 		
@@ -184,8 +184,8 @@ public class LevelRegistry
 		
 		if(map.containsKey("id"))
 		{
-			int data = (int)(map.get("data")).getValue();
-			int id = (int)(map.get("id")).getValue(); 
+			int data = (Integer)(map.get("data")).getValue();
+			int id = (Integer)(map.get("id")).getValue(); 
 			
 			Tile obj = null;	
 			Class objClass = tileRegistry.get(id).getClass();

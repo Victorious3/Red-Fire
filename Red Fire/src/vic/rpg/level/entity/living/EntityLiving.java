@@ -90,7 +90,7 @@ public class EntityLiving extends Entity
 	{
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
-		this.rotation = (int) map.get("rotation").getValue();
+		this.rotation = (Integer) map.get("rotation").getValue();
 		inventory.readFromNBT(tag);
 	}
 

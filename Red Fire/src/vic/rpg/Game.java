@@ -64,7 +64,7 @@ public class Game extends GLCanvas implements Runnable
         RenderRegistry.setup();  
         Options.load();	 	
     }
-	
+    
     public void stopGame()
     {
     	System.err.println("STOPPING!");

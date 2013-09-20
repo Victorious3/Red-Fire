@@ -10,32 +10,40 @@ import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.render.DrawUtils.GradientAnimator;
 import vic.rpg.render.TextureFX;
-import vic.rpg.sound.SoundPlayer;
+import vic.rpg.sound.SoundEngine;
 
 
 public class GuiMain extends Gui implements IGButton 
 {
-	public static TextureFX bgimage = new TextureFX("/vic/rpg/resources/fire.gif", 4);	
+	public static TextureFX bgimage = new TextureFX("/vic/rpg/resources/fire.gif", 40);	
 	public GuiMain() 
 	{
 		super(true, true);
 	}
 
+	GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
+//	SlopeAnimator fadeRight = DrawUtils.createSlopeAnimator(1000, -500, 0, 0, 1, 20);
+	
 	@Override
 	public void render(GL2 gl2) 
-	{
-		DrawUtils.setGL(gl2);	
+	{	
+		DrawUtils.setGL(gl2);
 		bgimage.draw(gl2, 0, 0);
 		super.render(gl2);	
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(80.0F));
-		DrawUtils.drawString(Game.WIDTH / 2 - 130, Game.HEIGHT / 2 - 100, "Red Fire", Color.white);
+//		fadeRight.animate();
+		DrawUtils.drawString(Game.WIDTH / 2 - 130 /*+ (int)fadeRight.getValue()*/, Game.HEIGHT / 2 - 100, "Red Fire", Color.white);
+		
+		fadeIn.animate();
+		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, fadeIn.getColor());
 	}
 
 	@Override
 	public void initGui() 
 	{
-		SoundPlayer.playSoundLoop("/vic/rpg/resources/sounds/fire.wav");
+		SoundEngine.playSoundLoop("/vic/rpg/resources/sounds/fire.wav");
 		
 		super.initGui();
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, "Singleplayer"));

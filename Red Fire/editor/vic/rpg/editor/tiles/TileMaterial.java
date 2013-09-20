@@ -23,18 +23,40 @@ import vic.rpg.utils.Utils;
 
 public class TileMaterial 
 {
-	protected HashMap<String, ArrayList<Point>> map;
+	protected HashMap<String, Point[]> map;
 	protected String name;
 	
-	public TileMaterial(HashMap<String, ArrayList<Point>> map, String name)
+	public TileMaterial(HashMap<String, Point[]> map, String name)
 	{
 		this.map = map;
 		this.name = name;
 	}
 	
+	public TileMaterial(String name)
+	{
+		this.map = new HashMap<String, Point[]>();
+		this.name = name;
+	}
+	
+	public void addMaterial(TileMaterial mat)
+	{
+		Point[] al = new Point[Direction.getAmount()];
+		this.map.put(mat.getName(), al);
+	}
+	
+	public void setTextureCoord(TileMaterial mat, Point texCoord, Direction dir)
+	{
+		if(!map.containsKey(mat.name))
+		{
+			addMaterial(mat);
+		}
+		Point[] al = map.get(mat.name);
+		al[dir.getID()] = texCoord;
+	}
+	
 	public Point getTextureCoord(TileMaterial outer, Direction direction)
 	{
-		return map.get(outer.getName()).get(direction.getID());
+		return map.get(outer.getName())[direction.getID()];
 	}
 	
 	public void setName(String name)
@@ -54,24 +76,6 @@ public class TileMaterial
 		return materials.get(name);
 	}
 	
-	/*public static void test()
-	{
-		HashMap<String, ArrayList<Point>> m1map = new HashMap<String, ArrayList<Point>>(); 
-		m1map.put("test2", new ArrayList<Point>(Arrays.asList(new Point[]{new Point(1, 2), new Point(3, 4), new Point(5, 6), new Point(7, 8), new Point(9, 10), new Point(11, 12), new Point(13, 14), new Point(15, 16)})));		
-		TileMaterial m1 = new TileMaterial(m1map, "test1");
-		
-		HashMap<String, ArrayList<Point>> m2map = new HashMap<String, ArrayList<Point>>(); 
-		m1map.put("test1", new ArrayList<Point>(Arrays.asList(new Point[]{new Point(1, 2), new Point(3, 4), new Point(5, 6), new Point(7, 8), new Point(9, 10), new Point(11, 12), new Point(13, 14), new Point(15, 16)})));		
-		TileMaterial m2 = new TileMaterial(m2map, "test2");
-		
-		materials.put(m1.name, m1);
-		materials.put(m2.name, m2);
-		
-		System.out.println(m1.getTextureCoord(m2, Direction.EAST));
-		
-		saveMaterials();
-	}*/
-	
 	public static void saveMaterials()
 	{
 		for(TileMaterial tm : materials.values())
@@ -83,12 +87,12 @@ public class TileMaterial
 				ArrayList<Tag> subMaterialsList = new ArrayList<Tag>();
 				for(String name : tm.map.keySet())
 				{
-					ArrayList<Point> al1 = tm.map.get(name);
+					Point[] al1 = tm.map.get(name);
 					HashMap<String, Tag> hs1 = new HashMap<String, Tag>();
 					hs1.put("name", new StringTag("name", name));
-					for(int i = 0; i < al1.size(); i++)
+					for(int i = 0; i < al1.length; i++)
 					{
-						Point p = al1.get(i);
+						Point p = al1[i];
 						IntTag x = new IntTag("x" + i, p.x);
 						IntTag y = new IntTag("y" + i, p.y);
 						hs1.put("x" + i, x);
@@ -127,19 +131,19 @@ public class TileMaterial
 					Map<String, Tag> materialMap = ((CompoundTag)nbtIN.readTag()).getValue();
 					
 					String name = (String)materialMap.get("name").getValue();
-					HashMap<String, ArrayList<Point>> mats = new HashMap<String, ArrayList<Point>>();
+					HashMap<String, Point[]> mats = new HashMap<String, Point[]>();
 					
 					List<Tag> subMaterialsList = ((ListTag)materialMap.get("subMaterials")).getValue();
 					for(Tag t : subMaterialsList)
 					{
 						Map<String, Tag> subMaterialMap = ((CompoundTag)t).getValue();
-						ArrayList<Point> subMaterialSides = new ArrayList<Point>();
+						Point[] subMaterialSides = new Point[Direction.getAmount()];
 						
-						for(int i = 0; i < 8; i++)
+						for(int i = 0; i < Direction.getAmount(); i++)
 						{
 							int x = (Integer) subMaterialMap.get("x" + i).getValue();
 							int y = (Integer) subMaterialMap.get("y" + i).getValue();
-							subMaterialSides.add(new Point(x, y));
+							subMaterialSides[i] = new Point(x, y);
 						}
 						
 						String subName = (String) subMaterialMap.get("name").getValue();

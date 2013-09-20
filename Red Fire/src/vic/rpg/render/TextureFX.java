@@ -93,7 +93,7 @@ public class TextureFX implements Cloneable
 	{
 		if(isPlaying)
 		{
-			float frametime = 100 / framerate;
+			float frametime = 1000 / framerate;
 			long currTime = System.currentTimeMillis();
 			if(currTime - lastTime >= frametime)
 			{
