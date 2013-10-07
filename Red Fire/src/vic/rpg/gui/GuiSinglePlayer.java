@@ -87,8 +87,9 @@ public class GuiSinglePlayer extends Gui implements IGList
 		if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))
 		{
 			Gui.setGui(null);
-			
-			SoundEngine.playSoundLoop("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav");
+			SoundEngine.loadClip("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav", "Level.MainLoop");
+			SoundEngine.stopAll();
+			SoundEngine.playClip("Level.MainLoop", true);
 		}
 	}
 

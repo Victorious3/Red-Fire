@@ -38,7 +38,12 @@ public class TileMaterial
 		this.name = name;
 	}
 	
-	public void addMaterial(TileMaterial mat)
+	public HashMap<String, Point[]> getSubMaterials()
+	{
+		return map;
+	}
+	
+	public void addSubMaterial(TileMaterial mat)
 	{
 		Point[] al = new Point[Direction.getAmount()];
 		this.map.put(mat.getName(), al);
@@ -48,7 +53,7 @@ public class TileMaterial
 	{
 		if(!map.containsKey(mat.name))
 		{
-			addMaterial(mat);
+			addSubMaterial(mat);
 		}
 		Point[] al = map.get(mat.name);
 		al[dir.getID()] = texCoord;
@@ -56,6 +61,7 @@ public class TileMaterial
 	
 	public Point getTextureCoord(TileMaterial outer, Direction direction)
 	{
+		if(!map.containsKey(outer.getName())) return null;
 		return map.get(outer.getName())[direction.getID()];
 	}
 	
@@ -71,13 +77,30 @@ public class TileMaterial
 	
 	private static HashMap<String, TileMaterial> materials = new HashMap<String, TileMaterial>();
 	
+	public static HashMap<String, TileMaterial> getMaterials()
+	{
+		return materials;
+	}
+	
 	public static TileMaterial getMaterial(String name)
 	{
 		return materials.get(name);
 	}
 	
+	public static void addMaterial(TileMaterial material)
+	{
+		materials.put(material.getName(), material);
+	}
+	
 	public static void saveMaterials()
 	{
+		try {
+			File dir = Utils.getOrCreateFile(Utils.getAppdata() + "/resources/materials/");
+			for(File file: dir.listFiles()) file.delete();
+		} catch (Exception e) {
+			
+		}
+		
 		for(TileMaterial tm : materials.values())
 		{
 			try {
@@ -150,21 +173,18 @@ public class TileMaterial
 						mats.put(subName, subMaterialSides);
 					}
 					
-					nbtIN.close();			
+					nbtIN.close();
+					System.out.println("Loaded material \"" + name  + "\"");
 					materials.put(name, new TileMaterial(mats, name));
 				} catch (Exception e) {
 					System.err.println("Failed loading material \"" + f.getName() + "\"!");
+					e.printStackTrace();
 					continue;
 				}
 			}
 				
 		} catch (Exception e) {
-			System.err.println("Failed loading materials. Abortinig...");
+			System.err.println("Failed loading materials. Aborting...");
 		}
-	}
-	
-	public static void editMaterials()
-	{
-		
 	}
 }

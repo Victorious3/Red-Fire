@@ -18,6 +18,7 @@ import vic.rpg.sound.SoundEngine;
 public class GuiMain extends Gui implements IGButton 
 {
 	public static TextureFX bgimage = new TextureFX("/vic/rpg/resources/fire.gif", 40);	
+	
 	public GuiMain() 
 	{
 		super(true, true);
@@ -43,7 +44,9 @@ public class GuiMain extends Gui implements IGButton
 	@Override
 	public void initGui() 
 	{
-		SoundEngine.playSoundLoop("/vic/rpg/resources/sounds/fire.wav");
+		SoundEngine.loadClip("/vic/rpg/resources/sounds/fire.wav", "GuiMain.fireBg");
+		SoundEngine.stopAll();
+		SoundEngine.playClip("GuiMain.fireBg", true);
 		
 		super.initGui();
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, "Singleplayer"));

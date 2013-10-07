@@ -175,7 +175,7 @@ public class Level
 		return t;
 	}
 	
-	public int getTileDataAt(int x, int y)
+	public Integer getTileDataAt(int x, int y)
 	{
 		return layers.get(getLayer())[x][y][1];
 	}
@@ -199,7 +199,7 @@ public class Level
 		return tiles;
 	}
 	
-	public int getTileDataAt(int x, int y, int layerID)
+	public Integer getTileDataAt(int x, int y, int layerID)
 	{
 		this.setLayer(layerID);
 		return layers.get(getLayer())[x][y][1];
@@ -255,6 +255,10 @@ public class Level
 	
 	public void tick()
 	{	
+		/*if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		{
+			SoundEngine.adjustClipRelativeToPlayer("Level.MainLoop", 400, 400, 2F);
+		}*/
 		for(int l = 0; l < layers.size(); l++)
 		{
 			Integer[][][] layer = layers.get(l);
@@ -354,6 +358,7 @@ public class Level
 	
 	public void setTile(Integer id, int x, int y, int data, int layerID)
 	{
+		if(x < 0 || y < 0 || x >= width || y >= height) return;
 		this.setLayer(layerID);
 		Integer[][][] layer = layers.get(getLayer());
 		

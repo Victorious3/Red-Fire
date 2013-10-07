@@ -9,6 +9,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;
@@ -71,6 +74,7 @@ public class Editor
 {
 	public static Editor instance;
 	public static int layerID = 0;
+	public static BufferedImage NO_TEXTURE = Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png");
 	
 	public EntityEditor entityEditor = new EntityEditor();
 	
@@ -160,8 +164,8 @@ public class Editor
 	//Brush Frame
 	public JDockableFrame frameBrush;
 	public JSlider sliderBrushSize = new JSlider(SwingConstants.VERTICAL, 0, 20, 1);
-	public PanelTexture panelTexture1 = new PanelTexture(Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png"));
-	public PanelTexture panelTexture2 = new PanelTexture(Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png"));
+	public PanelTexture panelTexture1 = new PanelTexture(NO_TEXTURE);
+	public PanelTexture panelTexture2 = new PanelTexture(NO_TEXTURE);
 	public JButton buttonEditBrush = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	
 	public Level level;
@@ -173,7 +177,24 @@ public class Editor
         labelLevel = new PanelLevel(glcapabilities);
 		
 		frame = new JFrame();	
-		if(!isInternal) frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowListener() {
+			
+			@Override public void windowOpened(WindowEvent e) {}		
+			@Override public void windowIconified(WindowEvent e) {}		
+			@Override public void windowDeiconified(WindowEvent e) {}		
+			@Override public void windowDeactivated(WindowEvent e) {}
+			
+			@Override 
+			public void windowClosing(WindowEvent e) 
+			{
+				TileMaterial.saveMaterials();
+				System.exit(0);
+			}
+			
+			@Override public void windowClosed(WindowEvent e) {}	
+			@Override public void windowActivated(WindowEvent e) {}
+		});
 
 		frame.setSize(1024, 720);
 		frame.setLocationRelativeTo(null);
@@ -583,16 +604,9 @@ public class Editor
 			dropdownEntities.addItem(e.id + ": " + e.getClass().getSimpleName());
 		}
 	}
-
-	public static boolean isInternal = false;
 	
 	public static void main(String[] args)
 	{
-		if(args.length > 0)
-		{
-			if(args[0].equals("internal")) isInternal = true; 
-		}
-		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {

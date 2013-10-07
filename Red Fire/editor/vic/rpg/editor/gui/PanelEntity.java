@@ -171,10 +171,22 @@ public class PanelEntity extends JBackgroundPanel implements MouseListener, Mous
 		}
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent arg0) 
-	{	
-		if(editor.boxIsBoundsAuto.isSelected())
+	@Override public void mouseClicked(MouseEvent arg0) {}
+	@Override public void mouseEntered(MouseEvent arg0) {}
+	@Override public void mouseExited(MouseEvent arg0) {}
+	
+	int preX;
+	int preY;
+	
+	@Override 
+	public void mousePressed(MouseEvent arg0)
+	{
+		preX = arg0.getX();
+		preY = arg0.getY();
+		
+		if(arg0.isShiftDown()) this.setCursor(GameRegistry.CURSOR_DRAG);
+		
+		if(editor.boxIsBoundsAuto.isSelected() && !arg0.isShiftDown())
 		{
 			if(arg0.getButton() == MouseEvent.BUTTON1)
 			{
@@ -195,21 +207,6 @@ public class PanelEntity extends JBackgroundPanel implements MouseListener, Mous
 			editor.editor.replaceRange(s, i1, i2 + ("\t\treturn area;" + n + "\t}" + n).length());
 		}
 		this.updateUI();
-	}
-
-	@Override public void mouseEntered(MouseEvent arg0) {}
-	@Override public void mouseExited(MouseEvent arg0) {}
-	
-	int preX;
-	int preY;
-	
-	@Override 
-	public void mousePressed(MouseEvent arg0)
-	{
-		preX = arg0.getX();
-		preY = arg0.getY();
-		
-		if(arg0.isShiftDown()) this.setCursor(GameRegistry.CURSOR_DRAG);
 	}
 	
 	@Override 

@@ -21,13 +21,12 @@ public class EntityHouse extends EntityStatic
 	{
 		area.add(new Area(new Rectangle(xCoord, yCoord + 21, 175, 215)));
 		area.add(new Area(new Rectangle(xCoord + 175, yCoord, 127, 320)));
-		
-//		Polygon p = new Polygon();
-//		p.xpoints = new int[]{xCoord + 000, xCoord + 138, xCoord + 160, xCoord + 160, xCoord + 214, xCoord + 235, xCoord + 300, xCoord + 300, xCoord + 317, xCoord + 172, xCoord + 000};
-//		p.ypoints = new int[]{yCoord + 021, yCoord + 000, yCoord + 000, yCoord + 021, yCoord + 021, yCoord + 000, yCoord + 061, yCoord + 318, yCoord + 318, yCoord + 234, yCoord + 234};
-//		p.npoints = p.xpoints.length;
-		
-//		area.add(new Area(p));
 		return area;
+	}
+
+	@Override
+	public void tick() 
+	{
+		
 	}
 }

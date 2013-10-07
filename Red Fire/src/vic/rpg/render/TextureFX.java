@@ -23,7 +23,7 @@ public class TextureFX implements Cloneable
 	private boolean isRepeating = true;
 	private int imgPointer = 0;
 	
-	public TextureFX(String gifURL, float framerate)
+	public TextureFX(String gifURL, int framerate)
 	{
 		this.framerate = framerate;
 		

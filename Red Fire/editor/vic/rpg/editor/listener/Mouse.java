@@ -12,12 +12,16 @@ import java.util.ArrayList;
 
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.gui.PopupMenu;
+import vic.rpg.editor.tiles.TileMaterial;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.Tile;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.Path;
 import vic.rpg.registry.GameRegistry;
+import vic.rpg.registry.LevelRegistry;
+import vic.rpg.utils.Direction;
+import vic.rpg.utils.Utils;
 
 public class Mouse implements MouseListener, MouseMotionListener, MouseWheelListener
 {
@@ -288,7 +292,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		yCoord = arg0.getY(); 
 	}
 	
-	private synchronized void paint(int x, int y)
+	private void paint(int x, int y)
 	{
 		if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{
@@ -300,18 +304,77 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		}
 	}
 	
-	public static synchronized void paint(int x, int y, Integer id, boolean isEntity)
+	public static void brush(int ox, int oy, TileMaterial inner, TileMaterial outer, int r)
+	{
+		if(inner == null || outer == null) return;
+		
+		boolean[][] circle = new boolean[r * 2 + 2][r * 2 + 2];
+		for(int x = -r; x < r ; x++)
+		{
+		    int height = (int)Math.sqrt(r * r - x * x);
+
+		    for (int y = -height; y < height; y++)
+		    {
+		    	circle[x + r + 1][y + r + 1] = true;
+		    }
+		}
+		
+		for(int x = 0; x < r * 2 + 2; x++)
+		{
+			for(int y = 0; y < r * 2 + 2; y++)
+			{
+				Point p = null;
+				
+				int x2 = x + ox - r;
+				int y2 = y + oy - r;
+				
+				if(x2 > 0 && y2 > 0 && x2 < Editor.instance.level.height && y2 < Editor.instance.level.width) 
+				{
+					Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 16D);
+					if(op.equals(inner.getTextureCoord(outer, Direction.CENTER))) continue;
+				}
+				
+				if(circle[x][y] && circle[x - 1][y - 1] && circle[x][y - 1] && circle[x + 1][y - 1] && circle[x + 1][y] && circle[x + 1][y + 1] && circle[x][y + 1] && circle[x - 1][y + 1] && circle[x - 1][y]) p = inner.getTextureCoord(outer, Direction.CENTER);
+				
+				else if(circle[x][y] && !circle[x - 1][y] && !circle[x - 1][y - 1] && !circle[x][y - 1]) p = inner.getTextureCoord(outer, Direction.NORTH_WEST);
+				else if(circle[x][y] && !circle[x][y - 1] && !circle[x + 1][y - 1] && !circle[x + 1][y]) p = inner.getTextureCoord(outer, Direction.NORTH_EAST);
+				else if(circle[x][y] && !circle[x + 1][y] && !circle[x + 1][y + 1] && !circle[x][y + 1]) p = inner.getTextureCoord(outer, Direction.SOUTH_EAST);
+				else if(circle[x][y] && !circle[x][y + 1] && !circle[x - 1][y + 1] && !circle[x - 1][y]) p = inner.getTextureCoord(outer, Direction.SOUTH_WEST);
+				
+				else if(circle[x][y] && circle[x - 1][y] && circle[x + 1][y] && !circle[x][y - 1]) p = inner.getTextureCoord(outer, Direction.NORTH);
+				else if(circle[x][y] && circle[x][y - 1] && circle[x][y + 1] && !circle[x + 1][y]) p = inner.getTextureCoord(outer, Direction.EAST);
+				else if(circle[x][y] && circle[x - 1][y] && circle[x + 1][y] && !circle[x][y + 1]) p = inner.getTextureCoord(outer, Direction.SOUTH);
+				else if(circle[x][y] && circle[x][y - 1] && circle[x][y + 1] && !circle[x - 1][y]) p = inner.getTextureCoord(outer, Direction.WEST);				
+				
+				else if(circle[x][y] && circle[x][y + 1] && circle[x - 1][y] && !circle[x - 1][y - 1]) p = outer.getTextureCoord(inner, Direction.SOUTH_EAST);
+				else if(circle[x][y] && circle[x + 1][y] && circle[x][y - 1] && !circle[x + 1][y - 1]) p = outer.getTextureCoord(inner, Direction.SOUTH_WEST);
+				else if(circle[x][y] && circle[x + 1][y] && circle[x][y + 1] && !circle[x + 1][y + 1]) p = outer.getTextureCoord(inner, Direction.NORTH_WEST);
+				else if(circle[x][y] && circle[x][y + 1] && circle[x - 1][y] && !circle[x - 1][y + 1]) p = outer.getTextureCoord(inner, Direction.NORTH_EAST);
+			
+				else continue;
+				
+				Editor.instance.level.setTile(LevelRegistry.TILE_TERRAIN.id, x2, y2, Utils.conv2Dto1Dint(p.x, p.y, 16D), Editor.layerID);
+			}
+		}
+	}
+	
+	public static void paint(int x, int y, Integer id, boolean isEntity)
 	{
 		if(!isEntity)
 		{
 			int x2 = (int) ((float)(x - Editor.instance.labelLevel.xOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 			int y2 = (int) ((float)(y - Editor.instance.labelLevel.yOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
 			
-			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.width || y2 >= Editor.instance.level.height) return;
-			
-			if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
-			else Editor.instance.level.setTile(id, x2, y2, 0, Editor.layerID);
-			Editor.instance.labelLevel.updateUI();
+			if(id != null && id == LevelRegistry.TILE_TERRAIN.id)
+			{
+				brush(x2, y2, BrushFrameListener.instance.inner, BrushFrameListener.instance.outer, Editor.instance.sliderBrushSize.getValue());
+			}
+			else
+			{
+				if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
+				else Editor.instance.level.setTile(id, x2, y2, 0, Editor.layerID);
+				Editor.instance.labelLevel.updateUI();
+			}
 		}
 		else
 		{

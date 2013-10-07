@@ -27,7 +27,7 @@ public class EntityPlayer extends EntityLiving
 	@Editable public String username = "NO_USERNAME";
 	public boolean isWalkingBlocked = false;
 	
-	public static TextureFX[] sprites = new TextureFX[]{new TextureFX("/vic/rpg/resources/character/player_main_4.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_3.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_2.gif", 1F), new TextureFX("/vic/rpg/resources/character/player_main_1.gif", 1F)};	
+	public static TextureFX[] sprites = new TextureFX[]{new TextureFX("/vic/rpg/resources/character/player_main_4.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_3.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_2.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_1.gif", 10)};	
 	public EntityPlayer() 
 	{
 		super(33, 32);
