@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.gui.PopupMenu;
@@ -308,31 +309,34 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 	{
 		if(inner == null || outer == null) return;
 		
-		boolean[][] circle = new boolean[r * 2 + 2][r * 2 + 2];
+		boolean[][] circle = new boolean[r * 2 + 4][r * 2 + 4];
+		
+		for(int x = 0; x < r * 2 + 4; x++)
+		{
+			for(int y = 0; y < r * 2 + 4; y++)
+			{
+				hfunc(x, y, ox, oy, r, inner, outer, circle);
+			}
+		}
+		
 		for(int x = -r; x < r ; x++)
 		{
 		    int height = (int)Math.sqrt(r * r - x * x);
 
 		    for (int y = -height; y < height; y++)
 		    {
-		    	circle[x + r + 1][y + r + 1] = true;
+		    	circle[x + r + 2][y + r + 2] = true;
 		    }
 		}
-		
-		for(int x = 0; x < r * 2 + 2; x++)
+	
+		for(int x = 1; x < r * 2 + 3; x++)
 		{
-			for(int y = 0; y < r * 2 + 2; y++)
+			for(int y = 1; y < r * 2 + 3; y++)
 			{
 				Point p = null;
 				
-				int x2 = x + ox - r;
-				int y2 = y + oy - r;
-				
-				if(x2 > 0 && y2 > 0 && x2 < Editor.instance.level.height && y2 < Editor.instance.level.width) 
-				{
-					Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 16D);
-					if(op.equals(inner.getTextureCoord(outer, Direction.CENTER))) continue;
-				}
+				int x2 = x + ox - r - 1;
+				int y2 = y + oy - r - 1;
 				
 				if(circle[x][y] && circle[x - 1][y - 1] && circle[x][y - 1] && circle[x + 1][y - 1] && circle[x + 1][y] && circle[x + 1][y + 1] && circle[x][y + 1] && circle[x - 1][y + 1] && circle[x - 1][y]) p = inner.getTextureCoord(outer, Direction.CENTER);
 				
@@ -355,6 +359,29 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				
 				Editor.instance.level.setTile(LevelRegistry.TILE_TERRAIN.id, x2, y2, Utils.conv2Dto1Dint(p.x, p.y, 16D), Editor.layerID);
 			}
+		}
+	}
+	
+	private static void hfunc(int x, int y, int ox, int oy, int r, TileMaterial inner, TileMaterial outer, boolean[][] circle)
+	{
+		int x2 = x + ox - r - 1;
+		int y2 = y + oy - r - 1;
+		
+		if(x2 >= 0 && y2 >= 0 && x2 < Editor.instance.level.height && y2 < Editor.instance.level.width) 
+		{
+			Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 16D);
+			
+			if(Arrays.asList(inner.getSubMaterials().get(outer.getName())).contains(op) || Arrays.asList(outer.getSubMaterials().get(inner.getName())).contains(op))
+			{
+				if(!outer.getTextureCoord(inner, Direction.CENTER).equals(op))
+				{
+					circle[x][y] = true;
+				}
+			}
+		}
+		else
+		{
+			circle[x][y] = true;
 		}
 	}
 	
