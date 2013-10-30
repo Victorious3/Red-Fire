@@ -92,7 +92,7 @@ public class EntityPlayer extends EntityLiving
 	}
 
 	@Override
-	public void readFromNBT(CompoundTag tag) 
+	public void readFromNBT(CompoundTag tag, Object... args) 
 	{
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
@@ -106,7 +106,7 @@ public class EntityPlayer extends EntityLiving
 	}
 
 	@Override
-	public CompoundTag writeToNBT(CompoundTag tag) 
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		tag = super.writeToNBT(tag);
 		

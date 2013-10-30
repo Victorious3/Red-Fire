@@ -89,7 +89,7 @@ public class LevelRegistry
 			i.source(f.getAbsolutePath());				
 			EntityCustom e = (EntityCustom) i.get("instance");
 			int id = e.getSuggestedID();
-			if(entityRegistry.containsKey(id))
+			if(entityRegistry.containsKey(id) && !entityRegistry.get(id).getClass().equals(e.getClass()))
 			{
 				System.err.println("[LevelRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
 				return null;

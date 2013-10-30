@@ -40,7 +40,7 @@ import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.utils.Utils;
 
-public class Level
+public class Level implements INBTReadWrite
 {
 	public int width;
 	public int height;
@@ -74,6 +74,15 @@ public class Level
 		this.layerVisibility.put(0, true);
 	}
 		
+	public Level() 
+	{
+		this.width = 0;
+		this.height = 0;
+		this.name = "NO_NAME!";
+		this.layers = new ArrayList<Integer[][][]>();
+		this.layerVisibility = new HashMap<Integer, Boolean>();
+	}
+
 	public void onMouseMoved(int x, int y)
 	{
 		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
@@ -484,8 +493,9 @@ public class Level
 		return retEnts;
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
-	public static Level readFromNBT(CompoundTag tag)
+	public void readFromNBT(CompoundTag tag, Object... args)
 	{
 		Map<String, Tag> levelMap = tag.getValue();
 		
@@ -499,8 +509,10 @@ public class Level
 		List<Tag> entityList = (List<Tag>)levelMap.get("entities").getValue();
 		List<Tag> layerList = (List<Tag>)levelMap.get("layers").getValue();
 		
-		Level level = new Level(width, height, name);
-		
+		this.width = width;
+		this.height = height;
+		this.name = name;
+
 		ArrayList<Integer[][][]> layers = new ArrayList<Integer[][][]>();
 		for(Tag layerTag : layerList)
 		{
@@ -532,22 +544,22 @@ public class Level
 			Entity ent = LevelRegistry.readEntityFromNBT((CompoundTag)entityTag);
 			if(ent != null)
 			{
-				ent.levelObj = level;
+				ent.levelObj = this;
 				entities.put(ent.UUID, ent);
 			}
 		}
 		
-		level.layers = layers;
+		this.layers = layers;
 		
-		for(int i = 0; i < level.layers.size(); i++)
+		for(int i = 0; i < this.layers.size(); i++)
 		{
-			level.layerVisibility.put(i, true);
+			this.layerVisibility.put(i, true);
 		}
 		
-		level.entityMap = entities;
-		level.time = time;
-		level.spawnX = spawnX;
-		level.spawnY = spawnY;
+		this.entityMap = entities;
+		this.time = time;
+		this.spawnX = spawnX;
+		this.spawnY = spawnY;
 		
 		if(levelMap.containsKey("players"))
 		{
@@ -556,19 +568,18 @@ public class Level
 			for(Tag playerTag : playerList)
 			{
 				EntityPlayer ent = (EntityPlayer) LevelRegistry.readEntityFromNBT((CompoundTag)playerTag);
-				ent.levelObj = level;
+				ent.levelObj = this;
 				players.put(ent.username, ent);
 			}
-			level.offlinePlayersMap = players;
+			this.offlinePlayersMap = players;
 		}
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) level.entitiesForRender = level.sortEntitiesByZLevel();
-		level.nodeMap.recreate(level);
-		
-		return level;
+		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.entitiesForRender = this.sortEntitiesByZLevel();
+		this.nodeMap.recreate(this);
 	}
 	
-	public CompoundTag writeToNBT(boolean send)
+	@Override
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args)
 	{
 		IntTag widthTag = new IntTag("width", width);
 		IntTag heightTag = new IntTag("height", height);
@@ -614,7 +625,7 @@ public class Level
 			entityList.add(enitiyTag);
 		}
 		
-		if(send)
+		if(args[0] != null && args[0] == Boolean.TRUE)
 		{
 			for(EntityPlayer e : onlinePlayersMap.values())
 			{
@@ -653,7 +664,7 @@ public class Level
 		levelMap.put("spawnY", spawnYTag);
 		levelMap.put("tiles", tileListTag);
 		levelMap.put("entities", entityListTag);
-		
+
 		return new CompoundTag("level", levelMap);
 	}
 	
@@ -661,7 +672,7 @@ public class Level
 	{
 		try {
 			NBTOutputStream out = new NBTOutputStream(new FileOutputStream(file));
-			out.writeTag(writeToNBT(false));
+			out.writeTag(writeToNBT(null, false));
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -672,7 +683,8 @@ public class Level
 	{
 		try {
 			NBTInputStream in = new NBTInputStream(new FileInputStream(file));
-			Level level = readFromNBT((CompoundTag) in.readTag());
+			Level level = new Level();
+			level.readFromNBT((CompoundTag) in.readTag());
 			in.close();
 			return level;
 		} catch (Exception e) {

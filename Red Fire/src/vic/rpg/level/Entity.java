@@ -15,7 +15,7 @@ import vic.rpg.render.LightSource;
 import vic.rpg.server.packet.Packet11EntityInteraction;
 import vic.rpg.utils.Utils;
 
-public class Entity extends Drawable implements Cloneable
+public class Entity extends Drawable implements Cloneable, INBTReadWrite
 {
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
@@ -53,9 +53,10 @@ public class Entity extends Drawable implements Cloneable
 
 	public void tick() {}
 	
-	public void readFromNBT(CompoundTag tag) {}
+	@Override public void readFromNBT(CompoundTag tag, Object... args) {}
 	
-	public CompoundTag writeToNBT(CompoundTag tag) 
+	@Override
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		return tag;
 	}

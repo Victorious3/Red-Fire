@@ -86,7 +86,7 @@ public class EntityLiving extends Entity
 	}
 	
 	@Override
-	public void readFromNBT(CompoundTag tag) 
+	public void readFromNBT(CompoundTag tag, Object... args) 
 	{
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
@@ -95,7 +95,7 @@ public class EntityLiving extends Entity
 	}
 
 	@Override
-	public CompoundTag writeToNBT(CompoundTag tag) 
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		tag = super.writeToNBT(tag);
 		IntTag rotation = new IntTag("rotation", this.rotation);

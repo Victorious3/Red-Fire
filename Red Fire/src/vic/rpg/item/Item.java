@@ -4,11 +4,12 @@ import java.awt.Color;
 
 import org.jnbt.CompoundTag;
 
+import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 
-public class Item extends Drawable implements Cloneable
+public class Item extends Drawable implements Cloneable, INBTReadWrite
 {
 	protected String image; 
 	
@@ -53,12 +54,14 @@ public class Item extends Drawable implements Cloneable
 		
 	}
 	
-	public CompoundTag writeToNBT(CompoundTag tag)
+	@Override
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args)
 	{
 		return tag;
 	}
 	
-	public void readFromNBT(CompoundTag tag)
+	@Override
+	public void readFromNBT(CompoundTag tag, Object... args)
 	{
 		
 	}

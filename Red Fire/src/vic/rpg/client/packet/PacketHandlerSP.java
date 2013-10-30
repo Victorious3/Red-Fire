@@ -52,7 +52,8 @@ public class PacketHandlerSP extends Thread
 		}
 		else if(p.id == 6)
 		{
-			Game.level = Level.readFromNBT(((Packet6World)p).getData());		 
+			Game.level = new Level(); 
+			Game.level.readFromNBT(((Packet6World)p).getData());		 
 		}
 		else if(p.id == 7)
 		{
