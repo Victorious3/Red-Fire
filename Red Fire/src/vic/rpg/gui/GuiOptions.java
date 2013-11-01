@@ -22,12 +22,9 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	private GSwitcher switcherCR;
 	private GSwitcher switcherIP;
 	
-	private Gui gui;
-	
-	public GuiOptions(Gui gui) 
+	public GuiOptions() 
 	{
 		super(true, true);
-		this.gui = gui;
 	}
 	
 	@Override
@@ -54,7 +51,7 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	{
 		if(keyCode == KeyEvent.VK_ESCAPE)
 		{
-			Gui.currentGui = gui;
+			Gui.setGui(new GuiMain());
 		}
 	}
 
@@ -101,7 +98,7 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	{
 		if(name.equalsIgnoreCase("Cancel"))
 		{
-			Gui.currentGui = gui;
+			Gui.setGui(new GuiMain());
 		}
 		else if(name.equalsIgnoreCase("Apply"))
 		{
@@ -129,7 +126,7 @@ public class GuiOptions extends Gui implements GButton.IGButton
 			}
 			
 			Options.safe();
-			Gui.currentGui = gui;
+			Gui.setGui(new GuiMain());
 		}
 	}
 }

@@ -61,8 +61,8 @@ public class GuiConnect extends Gui implements IGButton
 		super.initGui();
 		controlsList.add(server);
 		controlsList.add(username);
-		controlsList.add(new GButton(Game.WIDTH / 2 - 125, Game.HEIGHT / 2 + 60, 120, 30, this, "Connect"));
-		controlsList.add(new GButton(Game.WIDTH / 2 + 5, Game.HEIGHT / 2 + 60, 120, 30, this, "Cancel"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 125, Game.HEIGHT / 2 + 60, 120, 30, this, "Connect", "Connect"));
+		controlsList.add(new GButton(Game.WIDTH / 2 + 5, Game.HEIGHT / 2 + 60, 120, 30, this, "Cancel", "Cancel"));
 	}
 
 	@Override

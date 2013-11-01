@@ -11,12 +11,14 @@ import vic.rpg.render.DrawUtils.GradientAnimator;
 public class GButton extends GControl {
 
 	public IGButton handler;
+	public String text;
 	public String name;
 	
-	public GButton(int xCoord, int yCoord, int width, int height, IGButton handler, String name) 
+	public GButton(int xCoord, int yCoord, int width, int height, IGButton handler, String text, String name) 
 	{
 		super(xCoord, yCoord, width, height);
 		this.handler = handler;
+		this.text = text;
 		this.name = name;
 	}
 
@@ -50,9 +52,9 @@ public class GButton extends GControl {
 		DrawUtils.setLineWidth(oldThickness);
 		
 		DrawUtils.setFont(RenderRegistry.RPGFont);		
-		int sWidth = (int) DrawUtils.getTextRenderer().getBounds(name).getWidth();
-		int sHeight = (int) DrawUtils.getTextRenderer().getBounds(name).getHeight() / 2;
-		DrawUtils.drawString(xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2, name, Color.white);
+		int sWidth = (int) DrawUtils.getTextRenderer().getBounds(text).getWidth();
+		int sHeight = (int) DrawUtils.getTextRenderer().getBounds(text).getHeight() / 2;
+		DrawUtils.drawString(xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2, text, Color.white);
 	}
 
 	@Override

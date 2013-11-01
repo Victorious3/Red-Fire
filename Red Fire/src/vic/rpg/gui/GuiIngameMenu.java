@@ -52,11 +52,11 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 		xOffset = (Game.WIDTH - 544)/2;
 		yOffset = (Game.HEIGHT - 268)/2 - 40;
 		
-		this.controlsList.add(new GButton(16 + xOffset, yOffset + 15, width, 30, this, "Options"));
-		this.controlsList.add(new GButton(16 + xOffset + 1*(width + 10), yOffset + 15, width, 30, this, "Save"));
-		this.controlsList.add(new GButton(16 + xOffset + 2*(width + 10), yOffset + 15, width, 30, this, "Load"));
-		this.controlsList.add(new GButton(16 + xOffset + 3*(width + 10), yOffset + 15, width, 30, this, "Quit to Title"));
-		this.controlsList.add(new GButton(16 + xOffset, yOffset + 222, width, 30, this, "Continue"));
+		this.controlsList.add(new GButton(16 + xOffset, yOffset + 15, width, 30, this, "Options", "Options"));
+		this.controlsList.add(new GButton(16 + xOffset + 1*(width + 10), yOffset + 15, width, 30, this, "Save", "Save"));
+		this.controlsList.add(new GButton(16 + xOffset + 2*(width + 10), yOffset + 15, width, 30, this, "Load", "Load"));
+		this.controlsList.add(new GButton(16 + xOffset + 3*(width + 10), yOffset + 15, width, 30, this, "Quit to Title", "Quit to Title"));
+		this.controlsList.add(new GButton(16 + xOffset, yOffset + 222, width, 30, this, "Continue", "Continue"));
 
 		super.initGui();
 	}
@@ -71,7 +71,7 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 	{
 		if(name.equalsIgnoreCase("Options"))
 		{
-			Gui.setGui(new GuiOptions(this));
+//			Gui.setGui(new GuiOptions(this));
 		}
 		if(name.equalsIgnoreCase("Quit to Title"))
 		{
