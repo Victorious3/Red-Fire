@@ -228,7 +228,6 @@ public class DrawUtils
 		public String getName();
 	}
 	
-	
 	public static void drawString(int x, int y, String string, Color color) 
 	{		
 		if(string.contains("&"))

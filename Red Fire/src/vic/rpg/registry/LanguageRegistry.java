@@ -2,6 +2,8 @@ package vic.rpg.registry;
 
 import java.util.HashMap;
 
+import vic.rpg.config.Options;
+
 public class LanguageRegistry 
 {
 	public static String de_DE = "de_DE";
@@ -9,7 +11,6 @@ public class LanguageRegistry
 	public static String fr_FR = "fr_FR";
 	
 	private static HashMap<String, HashMap<String, String>> translations = new HashMap<String, HashMap<String, String>>();
-	private static String currentLanguage = en_GB;
 	
 	static
 	{
@@ -30,9 +31,9 @@ public class LanguageRegistry
 	
 	public static String getTranslation(String id)
 	{
-		if(translations.get(currentLanguage).containsKey(id))
+		if(translations.get(Options.LANGUAGE).containsKey(id))
 		{
-			return translations.get(currentLanguage).get(id);
+			return translations.get(Options.LANGUAGE).get(id);
 		}
 		else return id;
 	}

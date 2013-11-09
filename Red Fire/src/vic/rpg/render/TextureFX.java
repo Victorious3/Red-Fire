@@ -19,7 +19,7 @@ public class TextureFX implements Cloneable
 	private Texture[] data;
 	private float framerate;
 	private boolean isPlaying = true;
-	private boolean hasFinished = false;
+	private boolean isFinished = false;
 	private boolean isRepeating = true;
 	private int imgPointer = 0;
 	
@@ -46,6 +46,40 @@ public class TextureFX implements Cloneable
 	    	texFrames.add(TextureLoader.requestTexture(img));
 	    }
 	    data = texFrames.toArray(new Texture[texFrames.size()]);
+	}
+	
+	public TextureFX(BufferedImage img, int width, int height, int repeatX, int xOff, int yOff, int framerate)
+	{
+		this.framerate = framerate;
+		if(width * repeatX + xOff > img.getWidth() || height + yOff > img.getHeight())
+		{
+			throw new IllegalArgumentException("impossible parameters");
+		}
+		
+		ArrayList<Texture> texFrames = new ArrayList<Texture>();
+		for(int x = 0; x < repeatX; x++)
+		{
+			texFrames.add(TextureLoader.requestTexture(img.getSubimage(x * width + xOff, yOff, width, height)));
+		}
+		data = texFrames.toArray(new Texture[texFrames.size()]);
+	}
+	
+	public TextureFX(String pngURL, int width, int height, int repeatX, int xOff, int yOff, int framerate)
+	{
+		this(Utils.readImageFromJar(pngURL), width, height, repeatX, xOff, yOff, framerate);
+	}
+	
+	public static TextureFX[] createTextureFXArray(String pngURL, int width, int height, int repeatX, int repeatY, int xOff, int yOff, int framerate)
+	{
+		ArrayList<TextureFX> texFrames = new ArrayList<TextureFX>();
+		BufferedImage img = Utils.readImageFromJar(pngURL);
+		if(height * repeatY + yOff > img.getHeight()) throw new IllegalArgumentException("impossible parameters");
+		
+		for(int y = 0; y < repeatY; y++)
+		{
+			texFrames.add(new TextureFX(img, width, height, repeatX, xOff, y * height + yOff, framerate));
+		}
+		return texFrames.toArray(new TextureFX[texFrames.size()]);
 	}
 	
 	private TextureFX(float framerate)
@@ -76,7 +110,7 @@ public class TextureFX implements Cloneable
 	
 	public boolean hasFinished()
 	{
-		return hasFinished;
+		return isFinished;
 	}
 	
 	public void start()
@@ -87,6 +121,11 @@ public class TextureFX implements Cloneable
 	public void stop()
 	{
 		this.isPlaying = false;
+	}
+	
+	public void setRepeating(boolean repeat)
+	{
+		this.isRepeating = repeat;
 	}
 	
 	private int getNextFrame()

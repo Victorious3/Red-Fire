@@ -27,10 +27,10 @@ public class EntityPlayer extends EntityLiving
 	@Editable public String username = "NO_USERNAME";
 	public boolean isWalkingBlocked = false;
 	
-	public static TextureFX[] sprites = new TextureFX[]{new TextureFX("/vic/rpg/resources/character/player_main_4.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_3.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_2.gif", 10), new TextureFX("/vic/rpg/resources/character/player_main_1.gif", 10)};	
+	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 32, 48, 3, 4, 0, 0, 10);	
 	public EntityPlayer() 
 	{
-		super(33, 32);
+		super(32, 48);
 		this.zLevel = -1;
 		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
 	}

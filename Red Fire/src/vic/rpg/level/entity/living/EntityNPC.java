@@ -8,6 +8,8 @@ public class EntityNPC extends EntityLiving
 {
 	public int step = 0;
 	
+	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/npc_1.png", 32, 48, 3, 4, 0, 0, 10);
+	
 	public EntityNPC() 
 	{
 		super(33, 32);
@@ -39,7 +41,7 @@ public class EntityNPC extends EntityLiving
 
 	public void initRender() 
 	{
-		this.rotatedSprites = Utils.cloneArray(EntityPlayer.sprites, TextureFX.class);
+		this.rotatedSprites = sprites;
 		this.setRotation(0);
 	}
 }

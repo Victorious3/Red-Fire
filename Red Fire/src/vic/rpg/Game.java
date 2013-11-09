@@ -47,7 +47,7 @@ public class Game extends GLCanvas implements Runnable
 	public static PacketHandlerSP packetHandler = new PacketHandlerSP();
 	public static Game game;	
 	public Screen screen;
-		
+	
 	private Thread thread;
 	public Animator GL_ANIMATOR;
 	public boolean isRunning = false;
@@ -157,6 +157,7 @@ public class Game extends GLCanvas implements Runnable
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
 		
         game = new Game(glcapabilities);
+        System.out.println(glcapabilities.toString());
         game.setSize(WIDTH, HEIGHT);
         game.addGLEventListener(new GLEventListener() 
         {		
@@ -230,12 +231,10 @@ public class Game extends GLCanvas implements Runnable
 	@Override
 	public void run() 
 	{	
-		frames = 0;
 		double unprocessedSeconds = 0;
 		long previousTime = System.nanoTime();
 		double secondsPerTick = 1 / 60.0;
 		int tickCount = 0;
-		boolean ticked = false;
 		
 		while(isRunning)
 		{
@@ -248,19 +247,12 @@ public class Game extends GLCanvas implements Runnable
 			{
 				tick();
 				unprocessedSeconds -= secondsPerTick;
-				ticked = true;
 				tickCount++;
 				if(tickCount % 60 == 0)
 				{
 					previousTime += 1000;
-					frames = 0;
 				}
 			}
-			if(ticked)
-			{
-				frames++;
-			}
-			frames++;
 		}		
 	}
 }

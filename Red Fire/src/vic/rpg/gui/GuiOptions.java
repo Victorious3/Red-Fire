@@ -39,11 +39,6 @@ public class GuiOptions extends Gui implements GButton.IGButton
 		gl2.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
 		gl2.drawString("Options", Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 180);
 		gl2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
-		
-		gl2.drawString("Render Passes:", Game.WIDTH / 2 - 176, Game.HEIGHT / 2 - 95);
-		gl2.drawString("Antialasing:", Game.WIDTH / 2 - 148, Game.HEIGHT / 2 - 50);
-		gl2.drawString("Color Render:", Game.WIDTH / 2 - 164, Game.HEIGHT / 2 - 10);
-		gl2.drawString("Interpolation:", Game.WIDTH / 2 - 157, Game.HEIGHT / 2 + 30);
 	}
 
 	@Override
