@@ -27,7 +27,7 @@ public class PacketHandlerMP extends Thread
 	}
 	public void addPacketToSendingQueue(Packet p)
 	{
-		sendingQueue.add(p);
+		if(con.STATE == Connection.RUNNING) sendingQueue.add(p);
 	}
 	
 	public void handlePacket(Packet p)
@@ -35,8 +35,9 @@ public class PacketHandlerMP extends Thread
 		try {
 			if(p.id == 0)
 			{
-				if(((Packet0Update)p).data == -1) addPacketToSendingQueue(p);
-				else if(((Packet0Update)p).data == 0) Server.server.delConnection(con, new RuntimeException("Disconnect quitting"));
+				con.STATE = ((Packet0StateUpdate)p).data;
+				if(con.STATE == Connection.RUNNING) addPacketToSendingQueue(p);
+				else if(con.STATE == Connection.QUIT) Server.server.delConnection(con, "Disconnect quitting");
 			}
 			else if(p.id == 8)
 			{
@@ -90,7 +91,7 @@ public class PacketHandlerMP extends Thread
 				packet.writeData(con.out);
 				con.out.flush();
 			} catch (IOException e) {
-				Server.server.delConnection(con, e);
+				Server.server.delConnection(con, e.getMessage());
 			}
 		}
 	}
@@ -102,13 +103,21 @@ public class PacketHandlerMP extends Thread
 		{
 			if(packetQueue.size() != 0)
 			{
-				if(packetQueue.get(0) == null) continue;
+				if(packetQueue.get(0) == null) 
+				{
+					packetQueue.remove(0);
+					continue;
+				}
 				handlePacket(packetQueue.get(0));
 				packetQueue.remove(0);
 			}
 			if(sendingQueue.size() != 0)
 			{
-				if(sendingQueue.get(0) == null) continue;
+				if(sendingQueue.get(0) == null) 
+				{
+					packetQueue.remove(0);
+					continue;
+				}
 				sendPacket(sendingQueue.get(0));
 				sendingQueue.remove(0);
 			}

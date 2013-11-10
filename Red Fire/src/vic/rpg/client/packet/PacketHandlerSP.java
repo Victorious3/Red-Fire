@@ -13,7 +13,9 @@ import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.Screen;
+import vic.rpg.server.io.Connection;
 import vic.rpg.server.packet.Packet;
+import vic.rpg.server.packet.Packet0StateUpdate;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.server.packet.Packet1ConnectionRefused;
 import vic.rpg.server.packet.Packet20Chat;
@@ -33,8 +35,8 @@ public class PacketHandlerSP extends Thread
 	}
 	
 	public void addPacketToQueue(Packet p)
-	{		
-		packetQueue.add(p);
+	{
+		if(Game.netHandler.STATE == Connection.RUNNING) packetQueue.add(p);
 	}
 	
 	public void addPacketToSendingQueue(Packet p)
@@ -53,7 +55,9 @@ public class PacketHandlerSP extends Thread
 		else if(p.id == 6)
 		{
 			Game.level = new Level(); 
-			Game.level.readFromNBT(((Packet6World)p).getData());		 
+			Game.level.readFromNBT(((Packet6World)p).getData());
+			Game.netHandler.STATE = Connection.RUNNING;
+			sendPacket(new Packet0StateUpdate(Game.netHandler.STATE));
 		}
 		else if(p.id == 7)
 		{
@@ -135,13 +139,21 @@ public class PacketHandlerSP extends Thread
 			{
 				if(packetQueue.size() != 0)
 				{
-					if(packetQueue.get(0) == null) continue;
+					if(packetQueue.get(0) == null) 
+					{
+						packetQueue.remove(0);
+						continue;
+					}
 					handlePacket(packetQueue.get(0));
 					packetQueue.remove(0);
 				}
 				if(sendingQueue.size() != 0)
 				{
-					if(sendingQueue.get(0) == null) continue;
+					if(sendingQueue.get(0) == null) 
+					{
+						packetQueue.remove(0);
+						continue;
+					}
 					sendPacket(sendingQueue.get(0));
 					sendingQueue.remove(0);
 				}		

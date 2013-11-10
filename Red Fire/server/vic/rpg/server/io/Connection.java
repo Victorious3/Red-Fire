@@ -13,12 +13,18 @@ import vic.rpg.server.packet.PacketHandlerMP;
 
 public class Connection extends Thread
 {   
+	public static final int RUNNING = 0;
+	public static final int LOADING = 1;
+	public static final int QUIT = -1;
+	
 	public Socket socket;
     public DataInputStream in;
     public DataOutputStream out;    
     public long time;       
     public boolean connected = true;
     public PacketHandlerMP packetHandler;
+    
+    public int STATE = RUNNING;
     
     public String username;
     
@@ -56,7 +62,7 @@ public class Connection extends Thread
 				e.printStackTrace();
 			}
 		}
-		Server.server.delConnection(this, new Exception(exc));
+		Server.server.delConnection(this, exc);
 	}
 	
 	@Override
@@ -71,7 +77,7 @@ public class Connection extends Thread
 
 	public boolean isTimeout() 
 	{	    
-	    if (new Date().getTime() > (time + 10000)) 
+	    if(new Date().getTime() > (time + 10000)) 
 	    {	    	    	
 	    	return true;
 	    }
@@ -103,7 +109,7 @@ public class Connection extends Thread
 	    }
 	    catch (IOException e)
 	    {
-	    	Server.server.delConnection(this, e);
+	    	Server.server.delConnection(this, e.getMessage());
 	    }
 	}
   

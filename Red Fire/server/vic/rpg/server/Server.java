@@ -156,7 +156,7 @@ public class Server extends Thread
 				}
 			}				
 		};
-		thr.setName("Server MainThread");
+		thr.setName("Server StartThread");
 		thr.start();
 	}
 	
@@ -194,9 +194,10 @@ public class Server extends Thread
 		    		ServerLoop.level.addPlayer(playerEntity, player);
 		    	}	    	
 		    	else ServerLoop.level.createPlayer(playerEntity, player, ServerLoop.level.spawnX, ServerLoop.level.spawnY);
-		    	
-		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));
+		    		
+		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));    	
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
+		    	con.STATE = Connection.LOADING;
 		    	
 		    	System.out.println("Player " + player + " connected to the Server.");
 	    	}
@@ -254,20 +255,20 @@ public class Server extends Thread
 		}	
 	}
 
-	public synchronized void delConnection(Connection c, Exception e) 
+	public synchronized void delConnection(Connection c, String reason) 
 	{		
 	    try {
 	    	if(!connections.containsValue(c)) return;
 	    	actConnections--;	    	
 	    	c.connected = false;
-	    	System.out.println("Disconnecting player " + c.username + " Reason: " + e.getMessage());
+	    	System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
 	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersMap.get(c.username), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
 	    	ServerLoop.level.offlinePlayersMap.put(c.username, ServerLoop.level.onlinePlayersMap.remove(c.username));
 
 		} catch (IOException e2) {
-			e.printStackTrace();
+			e2.printStackTrace();
 		} catch (Exception e2){}	    
 	}
 	

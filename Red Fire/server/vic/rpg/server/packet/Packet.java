@@ -32,7 +32,7 @@ public abstract class Packet implements Cloneable {
 
 	static
 	{
-		packetRegistry.put(0, new Packet0Update());
+		packetRegistry.put(0, new Packet0StateUpdate());
 		packetRegistry.put(1, new Packet1ConnectionRefused());
 		packetRegistry.put(20, new Packet20Chat());
 		packetRegistry.put(6, new Packet6World());

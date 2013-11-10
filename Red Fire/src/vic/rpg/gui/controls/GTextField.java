@@ -51,7 +51,7 @@ public class GTextField extends GControl
 		wdt = (int) DrawUtils.getTextRenderer().getBounds(text).getWidth();
 		wdt1 = (int) DrawUtils.getTextRenderer().getBounds(" ").getWidth();
 		
-		DrawUtils.drawString(xCoord + 5, yCoord + height - 6, text, Color.white);
+		DrawUtils.drawUnformattedString(xCoord + 5, yCoord + height - 6, text, Color.white);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class GuiIngame extends Gui
 	public GTextField chatField = new GTextField(10, Game.HEIGHT - 60, Game.WIDTH - 35, 20, 120, false);
 	
 	private ArrayList<String> chatValues = new ArrayList<String>();
-	private int MAX_CHATLINES = 10;
+	private final int MAX_CHATLINES = 10;
 	
 	public static GuiIngame gui = new GuiIngame();
 	public static EntityLiving focusedEntity = null;
@@ -60,6 +60,8 @@ public class GuiIngame extends Gui
 		}
 	}
 	
+	private final int MAX_CHATSIZE = 400;
+	
 	@Override
 	public void render(GL2 gl2) 
 	{
@@ -67,6 +69,8 @@ public class GuiIngame extends Gui
 		DrawUtils.setGL(gl2);
 		DrawUtils.setFont(new Font("Veranda", 0, 20));
 		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
+		
+		DrawUtils.fillRect(0, 50 - 14, MAX_CHATSIZE, 12 * MAX_CHATLINES, new Color(0, 0, 0, 120));
 		
 		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 14));
 		
