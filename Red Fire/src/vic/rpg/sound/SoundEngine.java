@@ -1,5 +1,6 @@
 package vic.rpg.sound;
 
+import java.io.BufferedInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -25,7 +26,7 @@ public class SoundEngine
 		Clip clip;
 		
 		try {
-			as1 = AudioSystem.getAudioInputStream(Utils.getStreamFromJar(path));		
+			as1 = AudioSystem.getAudioInputStream(new BufferedInputStream(Utils.getStreamFromJar(path)));		
 
 	        clip = AudioSystem.getClip();
         	clip.open(as1);
