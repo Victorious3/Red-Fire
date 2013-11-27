@@ -14,6 +14,7 @@ public abstract class Command
 		commands.put("say", new CommandSay());
 		commands.put("stop", new CommandStop());
 		commands.put("time", new CommandTime());
+		commands.put("heal", new CommandHeal());
 	}
 	
 	public static void getHelp()

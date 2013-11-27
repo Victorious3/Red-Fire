@@ -7,13 +7,14 @@ import vic.rpg.level.EntityStatic;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class EntityTree extends EntityStatic 
 {
 	public EntityTree() 
 	{
 		super(100, 225);
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_TREE));
+		if(Utils.getSide() == Side.CLIENT) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_TREE));
 	}
 	
 	@Override

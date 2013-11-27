@@ -3,6 +3,7 @@ package vic.rpg.level.entity.living;
 import vic.rpg.render.TextureFX;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class EntityNPC extends EntityLiving 
 {
@@ -16,7 +17,7 @@ public class EntityNPC extends EntityLiving
 		this.zLevel = -1;
 		this.speed = 2;
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
+		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
 	int tickCounter = 0;
 		
@@ -25,7 +26,7 @@ public class EntityNPC extends EntityLiving
 	{
 		super.tick();
 		
-		if(!isWalking() && !walk && Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(!isWalking() && !walk && Utils.getSide() == Side.SERVER)
 		{
 			EntityPlayer[] player = new EntityPlayer[ServerLoop.level.onlinePlayersMap.values().size()];
 			player = ServerLoop.level.onlinePlayersMap.values().toArray(player);		

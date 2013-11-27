@@ -72,9 +72,9 @@ public class GuiMain extends Gui implements IGButton
 	@Override
 	public void initGui() 
 	{
-		SoundEngine.loadClip("/vic/rpg/resources/sounds/fire.wav", "GuiMain.fireBg");
-		SoundEngine.stopAll();
-		SoundEngine.playClip("GuiMain.fireBg", true);
+		SoundEngine.loadClip("/vic/rpg/resources/sounds/Horst Theme.wav", "GuiMain.bg");
+		SoundEngine.stopAll("GuiMain.bg");
+		SoundEngine.playClip("GuiMain.bg", true);
 		
 		super.initGui();
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, LanguageRegistry.getTranslation("guimain.singleplayer"), "Singleplayer"));

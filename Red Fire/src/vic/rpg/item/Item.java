@@ -8,6 +8,7 @@ import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class Item extends Drawable implements Cloneable, INBTReadWrite
 {
@@ -38,7 +39,7 @@ public class Item extends Drawable implements Cloneable, INBTReadWrite
 		this.gridWidth = (int)(width / 30);
 		this.gridHeight = (int)(height / 30);
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		if(Utils.getSide() == Side.CLIENT)
 		{
 			this.setTexture(Utils.readImageFromJar(image));
 		}

@@ -2,8 +2,11 @@ package vic.rpg.server.packet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 import vic.rpg.level.Entity;
+import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
@@ -64,8 +67,21 @@ public class PacketHandlerMP extends Thread
 			}
 			else if(p.id == 20)
 			{
-				System.out.println("[" + con.username + "]: " + ((Packet20Chat)p).message);
-				Server.server.broadcast(p);
+				String message = ((Packet20Chat)p).message;
+				if(message.startsWith("/"))
+				{
+					String[] args = message.split(" ");
+					String command = args[0];
+					command = command.replace("/", "");
+					LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
+					args2.remove(0);
+					Server.server.inputHandler.handleCommand(command, args2);
+				}
+				else
+				{
+					System.out.println("[" + con.username + "]: " + message);
+					Server.server.broadcast(p);
+				}
 			}
 			else if(p.id == 11)
 			{
@@ -76,6 +92,11 @@ public class PacketHandlerMP extends Thread
 				{
 					entity.onMouseClicked(packet.data[0], packet.data[1], player, packet.data[2]);
 				}
+			}
+			else if(p.id == 12)
+			{
+				EntityEvent eev = ((Packet12Event)p).eev;
+				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).onEventReceived(eev);	
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -101,27 +122,30 @@ public class PacketHandlerMP extends Thread
 	{
 		while(con.connected)
 		{
-			if(packetQueue.size() != 0)
+			if(packetQueue.size() > 0)
 			{
 				if(packetQueue.get(0) == null) 
 				{
 					packetQueue.remove(0);
-					continue;
 				}
-				handlePacket(packetQueue.get(0));
-				packetQueue.remove(0);
+				else
+				{
+					handlePacket(packetQueue.get(0));
+					packetQueue.remove(0);
+				}
 			}
-			if(sendingQueue.size() != 0)
+			if(sendingQueue.size() > 0)
 			{
 				if(sendingQueue.get(0) == null) 
 				{
 					packetQueue.remove(0);
-					continue;
 				}
-				sendPacket(sendingQueue.get(0));
-				sendingQueue.remove(0);
-			}
-			
+				else
+				{
+					sendPacket(sendingQueue.get(0));
+					sendingQueue.remove(0);
+				}
+			}		
 			if(sendingQueue.size() < 50 && packetQueue.size() < 50)
 			{
 				try {

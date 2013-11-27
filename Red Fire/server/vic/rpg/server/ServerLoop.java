@@ -4,7 +4,7 @@ import java.io.File;
 
 import vic.rpg.level.Level;
 import vic.rpg.level.path.PathServer;
-import vic.rpg.server.gui.StatisticPanel;
+import vic.rpg.server.gui.ServerGui;
 
 public class ServerLoop implements Runnable
 {		
@@ -24,7 +24,7 @@ public class ServerLoop implements Runnable
 	private void tick() 
 	{
 		level.tick();
-		StatisticPanel.instance.updateUI();
+		ServerGui.tick();		
 	}
 	
     public void start()

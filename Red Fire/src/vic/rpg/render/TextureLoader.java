@@ -1,7 +1,7 @@
 package vic.rpg.render;
 
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -16,8 +16,8 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class TextureLoader {
 
-	private static HashMap<String, Texture> bufferedTextures = new HashMap<String, Texture>();
-	private static HashMap<Texture, BufferedImage> requestedTextures = new HashMap<Texture, BufferedImage>();
+	private static ConcurrentHashMap<String, Texture> bufferedTextures = new ConcurrentHashMap<String, Texture>();
+	private static ConcurrentHashMap<Texture, BufferedImage> requestedTextures = new ConcurrentHashMap<Texture, BufferedImage>();
 	
 	public static void storeTexture(String name, String filePath)
 	{
@@ -25,7 +25,7 @@ public class TextureLoader {
 		bufferedTextures.put(name, requestTexture(img));
 	}
 	
-	private static synchronized HashMap<Texture, BufferedImage> getRequestedTextures()
+	private static synchronized ConcurrentHashMap<Texture, BufferedImage> getRequestedTextures()
 	{
 		return requestedTextures;
 	}

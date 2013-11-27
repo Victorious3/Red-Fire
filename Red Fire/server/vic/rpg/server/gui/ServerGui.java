@@ -86,7 +86,7 @@ public class ServerGui
 		grid.weighty = 1;
 		grid.gridheight = 2;
 		players = new JPanel();
-		players.setBorder(BorderFactory.createTitledBorder("Players (" + 0 + "/" + Server.MAX_CONNECTIONS + ")"));
+		players.setBorder(BorderFactory.createTitledBorder("Players (" + Server.actConnections + "/" + Server.MAX_CONNECTIONS + ")"));
 		frame.add(players, grid);
 		
 		frame.setSize(800, 600);
@@ -348,5 +348,12 @@ public class ServerGui
 		});
 
 		frame.setVisible(true);
+	}
+
+	public static void tick() 
+	{
+		StatisticPanel.instance.updateUI();
+		
+		
 	}
 }

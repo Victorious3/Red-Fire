@@ -12,6 +12,8 @@ import org.jnbt.Tag;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
+import vic.rpg.level.entity.EntityEvent;
+import vic.rpg.level.entity.living.EntityController.HealthChangeEvent;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.Path;
 import vic.rpg.render.TextureFX;
@@ -19,6 +21,7 @@ import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -27,6 +30,9 @@ public class EntityLiving extends Entity
 	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png"));
 	
 	@Editable public int rotation = 0;
+	@Editable public int lp = 100;
+	@Editable public int max_lp = 100;
+	
 	public TextureFX sprite;
 	public TextureFX[] rotatedSprites;
 	
@@ -59,16 +65,16 @@ public class EntityLiving extends Entity
 
 	public void walkTo(int x, int y, double maxCost) 
 	{
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) return;
+		if(Utils.getSide() == Side.CLIENT) return;
 		Node begin = Node.fromPoint(new Point(this.xCoord, this.yCoord));
 		Node end = Node.fromPoint(new Point(x, y));
 		this.curPath = Server.server.serverLoop.pathServer.create(this.levelObj.nodeMap, begin, end, maxCost);
-		this.walk = true;
+		this.walk = true;		
 	}
 	
 	public void setWalking(boolean isWalking)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(Utils.getSide() == Side.SERVER)
 		{		
 			Server.server.broadcast(new Packet9EntityMoving(this));
 		}
@@ -91,6 +97,8 @@ public class EntityLiving extends Entity
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
 		this.rotation = (Integer) map.get("rotation").getValue();
+		this.lp = (Integer) map.get("lp").getValue();
+		this.max_lp = (Integer) map.get("max_lp").getValue();
 		inventory.readFromNBT(tag);
 	}
 
@@ -99,10 +107,14 @@ public class EntityLiving extends Entity
 	{
 		tag = super.writeToNBT(tag);
 		IntTag rotation = new IntTag("rotation", this.rotation);
+		IntTag lp = new IntTag("lp", this.lp);
+		IntTag max_lp = new IntTag("max_lp", this.max_lp);
 		Map<String, Tag> map = tag.getValue();
 		Map<String, Tag> map2 = new HashMap<String, Tag>();
 		map2.putAll(map);		
 		map2.put("rotation", rotation);
+		map2.put("lp", lp);
+		map2.put("max_lp", max_lp);
 		
 		tag = new CompoundTag(tag.getName(), map2);
 		tag = inventory.writeToNBT(tag);
@@ -125,7 +137,7 @@ public class EntityLiving extends Entity
 	
 	public void setRotation(int rotation)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setSprite(rotatedSprites[rotation]);
+		if(Utils.getSide() == Side.CLIENT) this.setSprite(rotatedSprites[rotation]);
 		this.rotation = rotation;
 	}
 	
@@ -146,7 +158,7 @@ public class EntityLiving extends Entity
 			}
 		}
 		
-		if(walkNow && Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(walkNow && Utils.getSide() == Side.SERVER)
 		{	
 			isWalking = true;
 			
@@ -169,7 +181,7 @@ public class EntityLiving extends Entity
 			Server.server.broadcast(new Packet9EntityMoving(this));
 		}
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		if(Utils.getSide() == Side.CLIENT)
 		{
 			if(isWalking())
 			{
@@ -188,5 +200,17 @@ public class EntityLiving extends Entity
 	public Texture getShortcutImage()
 	{
 		return sprite_unknown;
+	}
+	
+	@Override
+	public void onEventReceived(EntityEvent e) 
+	{
+		if(e instanceof HealthChangeEvent)
+		{
+			int lp = (int) e.getData("health");
+			this.lp = lp < 0 ? 0 : lp > this.max_lp ? this.max_lp : lp;
+		}
+		
+		super.onEventReceived(e);
 	}
 }

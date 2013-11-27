@@ -7,13 +7,14 @@ import vic.rpg.level.EntityStatic;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class EntityHouse extends EntityStatic
 {
 	public EntityHouse()
 	{
 		super(300, 340);
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_HOUSE));
+		if(Utils.getSide() == Side.CLIENT) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_HOUSE));
 	}
 
 	@Override

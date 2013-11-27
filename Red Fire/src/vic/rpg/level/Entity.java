@@ -4,18 +4,25 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 
 import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
+import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.listener.EntityEventListener;
 import vic.rpg.render.Drawable;
 import vic.rpg.render.LightSource;
+import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet11EntityInteraction;
+import vic.rpg.server.packet.Packet12Event;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
-public class Entity extends Drawable implements Cloneable, INBTReadWrite
+public class Entity extends Drawable implements Cloneable, INBTReadWrite, EntityEventListener
 {
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
@@ -26,6 +33,38 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite
 	
 	public ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
 	public Level levelObj;
+	public ArrayList<EntityEventListener> entityListeners = new ArrayList<EntityEventListener>(Arrays.asList(new EntityEventListener[]{this}));
+	
+	public void postEvent(EntityEvent eev)
+	{
+		if(Utils.getSide() == eev.side || eev.side == Side.BOTH)
+		{
+			for(EntityEventListener el : entityListeners) el.onEventPosted(eev);
+			for(EntityEventListener el : entityListeners) el.onEventReceived(eev);
+		}
+		if(Utils.getSide() != eev.side || eev.side == Side.BOTH)
+		{
+			if(Utils.getSide() == Side.CLIENT)
+			{
+				Game.packetHandler.addPacketToSendingQueue(new Packet12Event(eev, UUID));
+			}
+			if(Utils.getSide() == Side.SERVER)
+			{
+				Server.server.broadcast(new Packet12Event(eev, UUID));
+			}
+		}	
+	}
+	
+	public void processEvent(EntityEvent eev)
+	{
+		for(EntityEventListener el : entityListeners) el.onEventReceived(eev);
+	}
+	
+	public void addEventListener(EntityEventListener eel)
+	{
+		entityListeners.add(eel);
+		Collections.sort(entityListeners, Priority.entityEventListenerComperator);
+	}
 	
 	@Override
 	public Entity clone()
@@ -70,7 +109,7 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite
 	
 	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		if(Utils.getSide() == Side.CLIENT)
 		{
 			Game.packetHandler.addPacketToSendingQueue(new Packet11EntityInteraction(this, Packet11EntityInteraction.MODE_ONCLICK, x, y, mouseEvent));
 		}
@@ -139,5 +178,17 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite
 	public String getName()
 	{
 		return "Entity";
+	}
+
+	@Override
+	public void onEventReceived(EntityEvent e) {}
+
+	@Override
+	public void onEventPosted(EntityEvent e) {}
+
+	@Override
+	public Priority getPriority() 
+	{
+		return Priority.PRIORITY_LEAST;
 	}
 }

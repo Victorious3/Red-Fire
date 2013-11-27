@@ -18,6 +18,7 @@ import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -32,7 +33,7 @@ public class EntityPlayer extends EntityLiving
 	{
 		super(32, 48);
 		this.zLevel = -1;
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.initRender();
+		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
 	
 	@Override
@@ -85,7 +86,7 @@ public class EntityPlayer extends EntityLiving
 	
 	public void sendChatMessage(String message, String username)
 	{
-		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(Utils.getSide() == Side.SERVER)
 		{
 			Server.connections.get(this.username).packetHandler.addPacketToSendingQueue(new Packet20Chat(message, username));
 		}

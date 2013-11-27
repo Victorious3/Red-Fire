@@ -546,7 +546,7 @@ public class EntityEditor implements WindowListener
 		"\tpublic " + fieldName.getText() + "()" + n +
 		"\t{" + n +
 		"\t\tsuper(" + fieldDimensionX.getText() + ", " + fieldDimensionY.getText() +");" + n +
-		"\t\tif(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\"))));" + n +
+		"\t\tif(Utils.getSide() == Side.CLIENT) this.setTexture(TextureLoader.requestTexture(ImageIO.read(new File(Utils.getAppdata() + \"" + fieldImageURL.getText() + "\"))));" + n +
 		"\t}" + n +
 		n +
 		"\tpublic int getSuggestedID()" + n +

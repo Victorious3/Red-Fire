@@ -19,6 +19,7 @@ import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.packet.Packet8PlayerUpdate;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 //TODO Messy code!!!
 public class Inventory 
@@ -95,7 +96,7 @@ public class Inventory
 		addItem(id, item);
 		if(this.parentEntity != null)
 		{
-			if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+			if(Utils.getSide() == Side.CLIENT)
 			{
 				System.out.println("Sending Slot " + id + " with item " + item);
 				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));
@@ -110,7 +111,7 @@ public class Inventory
 		addItemGrid(id, items);
 		if(this.parentEntity != null)
 		{
-			if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+			if(Utils.getSide() == Side.CLIENT)
 			{
 				System.out.println("Sending SlotGrid " + id);
 				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));

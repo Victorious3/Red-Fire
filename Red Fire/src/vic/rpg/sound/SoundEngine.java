@@ -1,5 +1,6 @@
 package vic.rpg.sound;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioInputStream;
@@ -94,19 +95,19 @@ public class SoundEngine
 		balanceClip(name, balanceX);
 	}
 	
-	public static void stopAll()
+	public static void stopAll(String... except)
 	{
 		for(String name : clips.keySet())
 		{
-			stopClip(name);
+			if(!Arrays.asList(except).contains(name)) stopClip(name);
 		}
 	}
 	
-	public static void closeAll()
+	public static void closeAll(String... except)
 	{
 		for(String name : clips.keySet())
 		{
-			closeClip(name);
+			if(!Arrays.asList(except).contains(name)) closeClip(name);
 		}
 	}
 	

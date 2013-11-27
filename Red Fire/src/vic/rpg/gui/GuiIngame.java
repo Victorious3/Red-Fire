@@ -88,6 +88,11 @@ public class GuiIngame extends Gui
 			DrawUtils.drawString(200, 10, focusedEntity.getName(), Color.white);
 		}
 		
+		if(Game.thePlayer != null)
+		{			
+			DrawUtils.fillRect(100, 500, (int)(200 * ((float) Game.thePlayer.lp / (float)Game.thePlayer.max_lp)), 15, Color.green);
+			DrawUtils.drawRect(100, 500, 200, 15, Color.black);
+		}
 	}
 	
 	public void addChatMessage(String s, String playername)

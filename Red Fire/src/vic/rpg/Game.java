@@ -27,6 +27,7 @@ import vic.rpg.render.Screen;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.Animator;
 
@@ -70,7 +71,7 @@ public class Game extends GLCanvas implements Runnable
     	System.err.println("STOPPING!");
     	Options.safe();
     	
-    	if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+    	if(Utils.getSide() == Side.CLIENT)
 		{
 			RenderRegistry.stop();
 		}

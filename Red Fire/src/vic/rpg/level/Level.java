@@ -39,6 +39,7 @@ import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class Level implements INBTReadWrite
 {
@@ -264,7 +265,7 @@ public class Level implements INBTReadWrite
 	
 	public void tick()
 	{	
-		/*if(Utils.getSide().equals(Utils.SIDE_CLIENT))
+		/*if(Utils.getSide() == Side.CLIENT)
 		{
 			SoundEngine.adjustClipRelativeToPlayer("Level.MainLoop", 400, 400, 2F);
 		}*/
@@ -291,7 +292,7 @@ public class Level implements INBTReadWrite
 			e.tick();
 		}
 		
-		if(Utils.getSide().equals(Utils.SIDE_SERVER))
+		if(Utils.getSide() == Side.SERVER)
 		{
 			for(EntityPlayer player : onlinePlayersMap.values())
 			{
@@ -574,7 +575,7 @@ public class Level implements INBTReadWrite
 			this.offlinePlayersMap = players;
 		}
 		
-		if(Utils.getSide().equals(Utils.SIDE_CLIENT)) this.entitiesForRender = this.sortEntitiesByZLevel();
+		if(Utils.getSide() == Side.CLIENT) this.entitiesForRender = this.sortEntitiesByZLevel();
 		this.nodeMap.recreate(this);
 	}
 	

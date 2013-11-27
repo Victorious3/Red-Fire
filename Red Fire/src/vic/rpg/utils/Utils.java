@@ -35,6 +35,11 @@ public class Utils
 	public static GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
 	public static GraphicsConfiguration gConfig = defaultScreen.getDefaultConfiguration();
 	
+	public static enum Side
+	{
+		CLIENT, SERVER, BOTH
+	}
+	
 	public static InputStream getStreamFromJar(String s)
 	{
 		return Game.class.getResourceAsStream(s);		
@@ -103,17 +108,14 @@ public class Utils
 		return file;
 	}
 	
-	public static final String SIDE_SERVER = "server";
-	public static final String SIDE_CLIENT = "client";
-	
-	public static String getSide()
+	public static Side getSide()
 	{
 		Thread thr = Thread.currentThread();
 		if(thr.getName().contains("Server"))
 		{
-			return SIDE_SERVER;
+			return Side.SERVER;
 		}
-		return SIDE_CLIENT;
+		return Side.CLIENT;
 	}
 	
 	public static BufferedImage readImageFromJar(String s)
@@ -273,7 +275,7 @@ public class Utils
 		return 0;
 	}
 	
-	//TODO Not used everywhere
+	//TODO Not used everywhere (Actually used nowhere)
 	public static CompoundTag combineTags(CompoundTag a, CompoundTag b)
 	{
 		Map<String, Tag> ma = a.getValue();
