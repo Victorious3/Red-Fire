@@ -49,7 +49,21 @@ public class EntityPlayer extends EntityLiving
 		inventory.add(7);
 		inventory.add(8);
 		
+		//Quickbar
+		inventory.add(9);
+		inventory.add(10);
+		inventory.add(11);
+		inventory.add(12);
+		inventory.add(13);
+		inventory.add(14);
+		inventory.add(15);
+		inventory.add(16);
+		inventory.add(17);
+		inventory.add(18);
+		
 		inventory.addItem(2, new ItemApple());
+		inventory.addItem(9, new ItemApple());
+		
 		inventory.addToInventory(new ItemSword());
 		inventory.addToInventory(new ItemSword());
 		inventory.addToInventory(new ItemSword());

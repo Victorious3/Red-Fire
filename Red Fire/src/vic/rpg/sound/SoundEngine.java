@@ -80,8 +80,8 @@ public class SoundEngine
 		Clip clip = clips.get(name);
 		if(clip == null) throw new NullPointerException("Clip " + name + " does not exist!");
 		
-		float diffX = Game.thePlayer.xCoord - x;
-		float diffY = Game.thePlayer.yCoord - y;
+		float diffX = Game.getPlayer().xCoord - x;
+		float diffY = Game.getPlayer().yCoord - y;
 
 		float maxDiffX = Game.WIDTH / 2;
 		float maxDiffY = Game.WIDTH / 2;

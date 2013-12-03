@@ -55,8 +55,17 @@ public class Game extends GLCanvas implements Runnable
 	public static int frames = 0;
 	
 	//Game Objects
-	public static EntityPlayer thePlayer;
+	public static String playerUUID;
 	public static Level level;
+	
+	public static EntityPlayer getPlayer()
+	{
+		if(Game.level != null && playerUUID != null)
+		{
+			return (EntityPlayer) Game.level.entityMap.get(playerUUID);
+		}
+		return null;
+	}
 	
     public Game(GLCapabilities glcapabilities)
     {

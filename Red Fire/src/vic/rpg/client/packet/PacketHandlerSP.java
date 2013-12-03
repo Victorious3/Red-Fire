@@ -78,8 +78,8 @@ public class PacketHandlerSP extends Thread
 					{
 						if(((EntityPlayer)e).username.equals(Game.USERNAME))
 						{
-							Game.thePlayer = (EntityPlayer) e;
-							Game.thePlayer.setRotation(Game.thePlayer.rotation);
+							Game.playerUUID = e.UUID;
+							Game.getPlayer().setRotation(Game.getPlayer().rotation);
 							Screen.xOffset = -e.xCoord + (Game.WIDTH - e.getWidth()) / 2;
 							Screen.yOffset = -e.yCoord + (Game.HEIGHT - e.getHeight()) / 2;
 							if(Gui.currentGui instanceof GuiPlayer)
@@ -108,11 +108,11 @@ public class PacketHandlerSP extends Thread
 		}
 		else if(p.id == 9)
 		{
-			if(Game.level != null && Game.thePlayer != null)
+			if(Game.level != null && Game.getPlayer() != null)
 			{
 				EntityLiving e = (EntityLiving) Game.level.entityMap.get(((Packet9EntityMoving)p).uniqueUUID);
 				
-				if(e.UUID != Game.thePlayer.UUID)
+				if(e.UUID != Game.getPlayer().UUID)
 				{
 					e.xCoord = ((Packet9EntityMoving)p).xCoord;
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;

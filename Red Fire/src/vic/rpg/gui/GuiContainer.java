@@ -18,14 +18,14 @@ public class GuiContainer extends Gui
 	@Override
 	public void render(GL2 gl2) 
 	{		
-		if(currentSlot != null) Game.frame.setCursor(GameRegistry.CURSOR_DRAG);
+		if(inventory != null && currentSlot != null && inventory.getItem(currentSlot.id) != null) Game.frame.setCursor(GameRegistry.CURSOR_DRAG);
 		else if(isSlotHovered) Game.frame.setCursor(GameRegistry.CURSOR_DROP);	
 		else Game.frame.setCursor(Cursor.getDefaultCursor());
 		isSlotHovered = false;
 		
 		DrawUtils.setGL(gl2);
 		super.render(gl2);
-		if(currentSlot != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, currentSlot.item.getTexture());
+		if(inventory != null && currentSlot != null && inventory.getItem(currentSlot.id) != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, inventory.getItem(currentSlot.id).getTexture());
 	}
 	
 	public GuiContainer(boolean pauseGame, boolean overridesEsc) 
@@ -41,8 +41,9 @@ public class GuiContainer extends Gui
 	public void setInventory(Inventory inventory)
 	{
 		this.inventory = inventory;
+		this.inventory.add(-1);
+		currentSlot = new Slot(0, 0, -1, this);
 	}
 	
 	public Slot currentSlot;
-
 }

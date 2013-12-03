@@ -11,7 +11,6 @@ import vic.rpg.render.DrawUtils;
 public class Slot extends GControl implements Cloneable
 {		
 	public GuiContainer gui;
-	public Item item = null;
 	public int sWidth = 1;
 	public int sHeight = 1;
 	public ItemFilter filter;
@@ -41,12 +40,10 @@ public class Slot extends GControl implements Cloneable
 		this.sHeight = sHeight;
 		this.acceptOtherSizes = acceptOtherSizes;
 		this.id = id;
-		this.item = gui.inventory.getItem(id);
 	}
 	
 	public Slot setItem(Item item)
 	{
-		this.item = item;
 		gui.inventory.setItem(id, item);
 		return this;
 	}
@@ -60,35 +57,35 @@ public class Slot extends GControl implements Cloneable
 	@Override
 	public void render(GL2 gl2, int x, int y) 
 	{
-		if(item != null)
+		if(gui.inventory.getItem(id) != null)
 		{
-			item.render(gl2);
+			gui.inventory.getItem(id).render(gl2);
 		}
 		DrawUtils.setGL(gl2);
 		
-		if(item == null) DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(112, 112, 112, 180));
-		else DrawUtils.fillRect(xCoord, yCoord, width, height, item.getBgColor());
+		if(gui.inventory.getItem(id) == null) DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(112, 112, 112, 180));
+		else DrawUtils.fillRect(xCoord, yCoord, width, height, gui.inventory.getItem(id).getBgColor());
 		
 		if(this.mouseHovered)
 		{
 			if(gui.currentSlot != null)
 			{
-				if(canBePlacedIn(gui.currentSlot.item))
+				if(canBePlacedIn(gui.currentSlot.gui.inventory.getItem(id)))
 				{
 					DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 				}
 			}
-			else if(this.item != null)
+			else if(this.gui.inventory.getItem(id) != null)
 			{
 				DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 			}
 		}
 		
-		if(item != null) DrawUtils.drawTexture(xCoord + (width - item.getWidth()) / 2, yCoord + (height - item.getHeight()) / 2, item.getTexture());
+		if(gui.inventory.getItem(id) != null) DrawUtils.drawTexture(xCoord + (width - gui.inventory.getItem(id).getWidth()) / 2, yCoord + (height - gui.inventory.getItem(id).getHeight()) / 2, gui.inventory.getItem(id).getTexture());
 	
 		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		
-		if(mouseHovered && item != null)
+		if(mouseHovered && gui.inventory.getItem(id) != null)
 		{		
 			gui.isSlotHovered = true;
 		}
@@ -97,7 +94,7 @@ public class Slot extends GControl implements Cloneable
 	@Override
 	public void tick() 
 	{
-		if(item != null) item.tick();
+		if(gui.inventory.getItem(id) != null) gui.inventory.getItem(id).tick();
 	}
 	
 	@Override
@@ -105,32 +102,33 @@ public class Slot extends GControl implements Cloneable
 	{
 		super.onClickStart(x, y);
 		
-		if(gui.currentSlot == null && item != null)
+		if(gui.currentSlot == null && gui.inventory.getItem(id) != null)
 		{
-			gui.currentSlot = this.clone();
+			gui.inventory.addItem(gui.currentSlot.id, this.gui.inventory.getItem(id));
 			setItem(null);
 		}
-		else if(item == null && gui.currentSlot != null)
+		else if(gui.inventory.getItem(id) == null && gui.currentSlot != null)
 		{									
-			if(canBePlacedIn(gui.currentSlot.item))
+			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 			{
-				setItem(gui.currentSlot.item);
+				setItem(gui.inventory.getItem(gui.currentSlot.id));
 				gui.currentSlot = null;
 			}				 
 		}
-		else if(item != null && gui.currentSlot != null)
+		else if(gui.inventory.getItem(id) != null && gui.currentSlot != null)
 		{
-			if(canBePlacedIn(gui.currentSlot.item))
+			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 			{	
-				Item item = this.item;
-				setItem(gui.currentSlot.item);
-				gui.currentSlot.setItem(item);
+				Item item = gui.inventory.getItem(gui.currentSlot.id);
+				setItem(gui.inventory.getItem(gui.currentSlot.id));
+				gui.inventory.addItem(gui.currentSlot.id, item);
 			}
 		}
 	}
 	
 	public boolean canBePlacedIn(Item item)
 	{
+		if(item == null) return true;
 		if(((item.gridWidth == this.sWidth && item.gridHeight == this.sHeight) && !acceptOtherSizes) || ((item.gridWidth <= this.sWidth && item.gridHeight <= this.sHeight) && acceptOtherSizes))
 		{	
 			if(filter != null){if(!filter.isItemValid(item)) return false;}

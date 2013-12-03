@@ -13,7 +13,6 @@ import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.item.Item;
-import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet7Entity;
@@ -74,63 +73,133 @@ public class Inventory
 		return slots.get(id);
 	}
 	
-	public boolean setItem(int id, Item item, int xCoord, int yCoord)
+	public Item overlapsWith(Item[][] grid, Item item, int x, int y)
+	{
+		if(item == null) return null;
+		return overlapsWith(grid, item.gridWidth, item.gridHeight, x, y);
+	}
+	
+	public Item overlapsWith(Item[][] grid, int width, int height, int x, int y)
+	{
+		for(int i = 0; i < grid.length; i++)
+		{
+			for(int j = 0; j < grid[0].length; j++)
+			{
+				if(grid[i][j] != null)
+				{
+					if(overlapsWith(grid[i][j].gridWidth, grid[i][j].gridHeight, i, j, width, height, x, y))
+					{
+						Item item = grid[i][j];
+						item.xCoord = i;
+						item.yCoord = j;
+						return item;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	private boolean overlapsWith(int width1, int height1, int x1, int y1, int width2, int height2, int x2, int y2)
+	{			
+		for(int x = 0; x < width1; x++)
+		{
+			for(int y = 0; y < height1; y++)
+			{
+				int x3 = x + x1; int y3 = y + y1;
+				
+				for(int x4 = 0; x4 < width2; x4++)
+				{
+					for(int y4 = 0; y4 < height2; y4++)
+					{
+						if(x4 + x2 == x3 && y4 + y2 == y3)
+						{							
+							return true;
+						}				
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean overlapsWith(Item item1, int x1, int y1, Item item2, int x2, int y2)
+	{
+		if(item1 == null || item2 == null) return false;
+		return overlapsWith(item1.gridWidth, item1.gridHeight, x1, y1, item2.gridWidth, item2.gridHeight, x2, y2);
+	}
+	
+	public boolean canBePlacedAt(Item[][] grid, int x, int y, Item item)
+	{
+		if(item == null) return true;
+		if(x + item.gridWidth > grid.length || y + item.gridHeight > grid[0].length || x < 0 || y < 0)
+		{
+			return false;
+		}
+		return overlapsWith(grid, item, x, y) == null;
+	}
+	
+	public boolean setItemGrid(int id, Item item, int xCoord, int yCoord)
 	{
 		Item[][] grid = getItemGrid(id);
-		
-		SlotGrid temp = new SlotGrid(grid, 0, 0, -2, null);
-		
-		if(temp.setItemAndConfirm(xCoord, yCoord, item))
+
+		if(canBePlacedAt(grid, xCoord, yCoord, item))
 		{		
-			setItemGrid(id, temp.items.clone());
-			temp = null;
+			setItemGrid(id, this.getItemGrid(id).clone());
 			return true;
 		}
-		setItemGrid(id, temp.items.clone());
-		temp = null;
 		return false;
 	}
 	
 	public boolean setItem(int id, Item item)
 	{		
 		addItem(id, item);
-		if(this.parentEntity != null)
+
+		if(Utils.getSide() == Side.CLIENT)
 		{
-			if(Utils.getSide() == Side.CLIENT)
-			{
-				System.out.println("Sending Slot " + id + " with item " + item);
-				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));
-			}
-			else Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+			System.out.println("Sending Slot " + id + " with item " + item);
+			Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate(Game.getPlayer(), Packet7Entity.MODE_UPDATE));
 		}
+		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+
 		return true;
 	}
 	
 	public void setItemGrid(int id, Item[][] items) 
 	{
 		addItemGrid(id, items);
-		if(this.parentEntity != null)
+		
+		if(Utils.getSide() == Side.CLIENT)
 		{
-			if(Utils.getSide() == Side.CLIENT)
-			{
-				System.out.println("Sending SlotGrid " + id);
-				Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate((EntityPlayer)this.parentEntity, Packet7Entity.MODE_UPDATE));
-			}
-			else Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+			System.out.println("Sending SlotGrid " + id);
+			Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate(Game.getPlayer(), Packet7Entity.MODE_UPDATE));
 		}
+		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+	}
+	
+	public boolean addItemToGrid(int id, Item item)
+	{
+		for(int i = 0; i < getItemGrid(id).length; i++)
+		{
+			for(int j = 0; j < getItemGrid(id)[0].length; j++)
+			{
+				if(setItemGrid(id, item, i, j)) return true;
+			}
+		}
+		return false;
 	}
 	
 	public boolean addToInventory(Item item)
 	{	
 		for(int id : slotGrids.keySet())
 		{
-			SlotGrid temp = new SlotGrid(slotGrids.get(id), 0, 0, -2, null);
-			if(temp.addItemToGrid(item))
+			if(addItemToGrid(id, item))
 			{
-				setItemGrid(id, temp.items);
 				return true;
 			}
 		}
+		
 		for(int id : slots.keySet())
 		{
 			if(setItem(id, item))

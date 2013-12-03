@@ -115,7 +115,7 @@ public class NetHandler extends Thread
 				Server.server.inputHandler.handleCommand("stop", null);
 			}
 			
-			Game.thePlayer = null;
+			Game.playerUUID = null;
 			Game.level = null;
 			
 		} catch (Exception e) {

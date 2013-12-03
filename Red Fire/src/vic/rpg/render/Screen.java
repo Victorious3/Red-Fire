@@ -30,77 +30,77 @@ public class Screen extends Drawable
 	int tickCounter = 0;
 	public void tick()
 	{
-		if(Game.thePlayer != null && !Game.thePlayer.isWalkingBlocked)
+		if(Game.getPlayer() != null && !Game.getPlayer().isWalkingBlocked)
 		{						
 			if(!Gui.currentGui.pauseGame)
 			{
 				if(GameRegistry.key.APressed) 
 				{				
-					Game.thePlayer.xCoord -= 2;
-					if(!Game.thePlayer.collides(Game.level))
+					Game.getPlayer().xCoord -= 2;
+					if(!Game.getPlayer().collides(Game.level))
 					{						
-						Game.thePlayer.setWalking(true);
+						Game.getPlayer().setWalking(true);
 						Screen.xOffset += 2;
-						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.getPlayer()));
 					}
-					else Game.thePlayer.xCoord += 2; 
+					else Game.getPlayer().xCoord += 2; 
 				}
 				if(GameRegistry.key.WPressed) 
 				{			
-					Game.thePlayer.yCoord -= 2;
-					if(!Game.thePlayer.collides(Game.level))
+					Game.getPlayer().yCoord -= 2;
+					if(!Game.getPlayer().collides(Game.level))
 					{
-						Game.thePlayer.setWalking(true);
+						Game.getPlayer().setWalking(true);
 						Screen.yOffset += 2;
-						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.getPlayer()));
 					}
-					else Game.thePlayer.yCoord += 2; 
+					else Game.getPlayer().yCoord += 2; 
 				}
 				if(GameRegistry.key.SPressed) 
 				{				
-					Game.thePlayer.yCoord += 2;
-					if(!Game.thePlayer.collides(Game.level))
+					Game.getPlayer().yCoord += 2;
+					if(!Game.getPlayer().collides(Game.level))
 					{
-						Game.thePlayer.setWalking(true);
+						Game.getPlayer().setWalking(true);
 						Screen.yOffset -= 2;
-						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.getPlayer()));
 					}
-					else Game.thePlayer.yCoord -= 2; 
+					else Game.getPlayer().yCoord -= 2; 
 				}
 				if(GameRegistry.key.DPressed) 
 				{					
-					Game.thePlayer.xCoord += 2;
-					if(!Game.thePlayer.collides(Game.level))
+					Game.getPlayer().xCoord += 2;
+					if(!Game.getPlayer().collides(Game.level))
 					{				
-						Game.thePlayer.setWalking(true);
+						Game.getPlayer().setWalking(true);
 						Screen.xOffset -= 2;
-						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.getPlayer()));
 					}
-					else Game.thePlayer.xCoord -= 2; 
+					else Game.getPlayer().xCoord -= 2; 
 				}
 				
 				if(GameRegistry.key.APressed) 
 				{
-					Game.thePlayer.setRotation(1);
+					Game.getPlayer().setRotation(1);
 				}
 				else if(GameRegistry.key.WPressed) 
 				{
-					Game.thePlayer.setRotation(3);
+					Game.getPlayer().setRotation(3);
 				}
 				else if(GameRegistry.key.SPressed) 
 				{
-					Game.thePlayer.setRotation(0);
+					Game.getPlayer().setRotation(0);
 				}
 				else if(GameRegistry.key.DPressed) 
 				{
-					Game.thePlayer.setRotation(2);
+					Game.getPlayer().setRotation(2);
 				}
 				else
 				{
-					if(Game.thePlayer.isWalking())
+					if(Game.getPlayer().isWalking())
 					{
-						Game.thePlayer.setWalking(false);
-						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.thePlayer));
+						Game.getPlayer().setWalking(false);
+						Game.packetHandler.addPacketToSendingQueue(new Packet9EntityMoving(Game.getPlayer()));
 					}
 				}
 			}

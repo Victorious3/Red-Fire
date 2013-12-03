@@ -58,10 +58,10 @@ public class GTextField extends GControl
 	public void onClickStart(int x, int y) 
 	{		
 		activate(true);		
-		if(Game.thePlayer != null)
+		if(Game.getPlayer() != null)
 		{
-			Game.thePlayer.isWalkingBlocked = true;
-			Game.thePlayer.setWalking(false);
+			Game.getPlayer().isWalkingBlocked = true;
+			Game.getPlayer().setWalking(false);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class GTextField extends GControl
 		{
 			activate(false);		
 		}			
-		if(Game.thePlayer != null) Game.thePlayer.isWalkingBlocked = false;		
+		if(Game.getPlayer() != null) Game.getPlayer().isWalkingBlocked = false;		
 	}
 	
 	public GTextField activate(boolean b) 

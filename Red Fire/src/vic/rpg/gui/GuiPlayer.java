@@ -42,7 +42,7 @@ public class GuiPlayer extends GuiContainer
 	@Override
 	public void initGui() 
 	{
-		setInventory(Game.thePlayer.getInventory());
+		setInventory(Game.getPlayer().getInventory());
 		
 		controlsList.clear();
 		controlsList.add(new Slot(620, 20, 1, this, 2, 2));

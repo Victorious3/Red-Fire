@@ -89,7 +89,7 @@ public class Level implements INBTReadWrite
 		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
 		if(ent != null)
 		{
-			ent.onMouseHovered(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.thePlayer);
+			ent.onMouseHovered(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.getPlayer());
 		}
 	}
 	
@@ -98,7 +98,7 @@ public class Level implements INBTReadWrite
 		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
 		if(ent != null)
 		{
-			ent.onMouseClicked(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.thePlayer, mouseEvent);
+			ent.onMouseClicked(x - Screen.xOffset - ent.xCoord, y - Screen.yOffset - ent.yCoord, Game.getPlayer(), mouseEvent);
 		}
 	}
 	
