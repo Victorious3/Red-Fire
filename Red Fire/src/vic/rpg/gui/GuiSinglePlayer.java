@@ -20,6 +20,9 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ *  this is SPARTA!!!
+ */
 public class GuiSinglePlayer extends Gui implements IGList
 {
 	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
