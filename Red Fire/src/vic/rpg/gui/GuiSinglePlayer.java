@@ -21,7 +21,7 @@ import vic.rpg.utils.Utils;
 import com.jogamp.opengl.util.texture.Texture;
 
 /**
- *  this is SPARTA!!!
+ *  this is SPARTA!!!!
  */
 public class GuiSinglePlayer extends Gui implements IGList
 {
