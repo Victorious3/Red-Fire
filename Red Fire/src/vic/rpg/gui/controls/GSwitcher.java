@@ -7,7 +7,10 @@ import java.awt.Stroke;
 
 import javax.media.opengl.GL2;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
 
 public class GSwitcher extends GControl 
 {
@@ -30,27 +33,24 @@ public class GSwitcher extends GControl
 	@Override
 	public void render(GL2 gl2, int x, int y) 
 	{
-		if(this.mouseDown)gl2.setColor(new Color(158, 31, 74));
-		else if(this.mouseHovered)gl2.setColor(new Color(130, 91, 213));
-		else gl2.setColor(new Color(68, 21, 150));
+		DrawUtils.setGL(gl2);
+		if(this.mouseDown)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(158, 31, 74));
+		else if(this.mouseHovered)DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(130, 91, 213));
+		else DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(68, 21, 150));
 		
-		gl2.fillRect(xCoord, yCoord, width, height);
-		
-		gl2.setColor(new Color(120, 31, 0));		
 		float thickness = 3;
-		Stroke oldStroke = gl2.getStroke();
-		gl2.setStroke(new BasicStroke(thickness));		
-		gl2.drawRect(xCoord, yCoord, width, height);
-		gl2.setStroke(oldStroke);
+		float oldThickness = DrawUtils.getLineWidth();
+		DrawUtils.setLineWidth(thickness);		
+		DrawUtils.drawRect(xCoord, yCoord, width, height, new Color(120, 31, 0));
+		DrawUtils.setLineWidth(oldThickness);
 		
-		gl2.setColor(Color.white);
-		gl2.setFont(RenderRegistry.RPGFont);
+		DrawUtils.setFont(RenderRegistry.RPGFont);
 		
-		FontMetrics fm = gl2.getFontMetrics();		
-		int sWidth = fm.stringWidth(currMode);
-		int sHeight = fm.getHeight() / 2;
+		TextRenderer tr = DrawUtils.getTextRenderer();		
+		int sWidth = (int) tr.getBounds(currMode).getWidth();
+		int sHeight = (int) (tr.getBounds(currMode).getHeight() / 2);
 		
-		gl2.drawString(currMode, xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2);
+		DrawUtils.drawUnformattedString(xCoord + (width - sWidth)/2, yCoord + (height + sHeight)/2, currMode, Color.white);
 		
 		super.render(gl2, x, y);
 	}
