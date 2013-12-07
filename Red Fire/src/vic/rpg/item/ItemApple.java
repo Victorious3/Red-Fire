@@ -6,4 +6,10 @@ public class ItemApple extends Item {
 	{
 		super("/vic/rpg/resources/item/apple.png", 1);
 	}
+
+	@Override
+	public String getItemName() 
+	{
+		return "Apple";
+	}
 }

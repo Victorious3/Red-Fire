@@ -274,6 +274,7 @@ public class DrawUtils
 						{
 						case "b" : setFont(getFont().deriveFont(Font.BOLD)); break;
 						case "i" : setFont(getFont().deriveFont(Font.ITALIC)); break;
+						case "p" : setFont(getFont().deriveFont(Font.PLAIN)); break;
 						case "0" : color = Color.black; break;
 						case "1" : color = Color.white; break;
 						case "2" : color = Color.blue; break;
@@ -296,6 +297,31 @@ public class DrawUtils
 			}
 		}
 		else drawUnformattedString(x, y, string, color);
+	}
+	
+	public static String removeFormatation(String s)
+	{
+		if(!s.contains("&")) return s;
+		String[] subStrings = s.split("&");
+		String out = "";
+		
+		for(int i = 0; i < subStrings.length; i++)
+		{
+			String s2 = subStrings[i];
+			if(s2.length() > 0)
+			{
+				if(s2.contains("#"))
+				{
+					s2 = s2.split("#")[1];
+				}
+				else if(i != 0)
+				{
+					s2 = s2.substring(1, s2.length());
+				}
+				out += s2;
+			}
+		}
+		return out;
 	}
 	
 	public static void startClip(int x, int y, int width, int height)

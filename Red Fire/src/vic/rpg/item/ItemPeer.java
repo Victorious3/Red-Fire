@@ -6,4 +6,10 @@ public class ItemPeer extends Item {
 	{
 		super("/vic/rpg/resources/item/peer.png", 2);
 	}
+	
+	@Override
+	public String getItemName() 
+	{
+		return "Peer";
+	}
 }

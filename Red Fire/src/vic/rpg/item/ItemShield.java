@@ -14,4 +14,23 @@ public class ItemShield extends Item {
 	{
 		return new Color(158, 31, 74, 180);
 	}
+	
+	@Override
+	public String getItemName() 
+	{
+		return "&5Shield of Infinity";
+	}
+
+	@Override
+	public String[] getItemDescription() 
+	{
+		return new String[]
+		{
+			"&iThis Shield was",
+			"&icreated by long forgotten",
+			"&igods",
+			"",
+			"&p&3+5 Healing Power"
+		};
+	}
 }

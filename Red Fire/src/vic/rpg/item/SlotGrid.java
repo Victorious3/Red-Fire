@@ -8,7 +8,6 @@ import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.render.DrawUtils;
 
-//TODO Clean that mess up -_-
 public class SlotGrid extends GControl
 {	
 	public GuiContainer gui;
@@ -100,6 +99,7 @@ public class SlotGrid extends GControl
 			{
 				gui.isSlotHovered = true;
 				DrawUtils.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30, new Color(0, 0, 0, 50));
+				it.renderItemInformation(gl2, x, y);
 			}
 		}		
 	}

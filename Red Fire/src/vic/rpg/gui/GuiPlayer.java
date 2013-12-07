@@ -23,7 +23,6 @@ public class GuiPlayer extends GuiContainer
 	@Override
 	public void render(GL2 gl2) 
 	{						
-		super.render(gl2);
 		DrawUtils.setGL(gl2);
 		
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(36F));
@@ -36,7 +35,8 @@ public class GuiPlayer extends GuiContainer
 		DrawUtils.drawString(530, 100, "right Hand", Color.white);
 		DrawUtils.drawString(620, 100, "Armor", Color.white);
 		DrawUtils.drawString(700, 100, "left Hand", Color.white);
-		DrawUtils.drawString(620, 210, "Boots", Color.white);		
+		DrawUtils.drawString(620, 210, "Boots", Color.white);
+		super.render(gl2);
 	}
 
 	@Override

@@ -67,6 +67,10 @@ public class Slot extends GControl implements Cloneable
 		if(gui.inventory.getItem(id) == null) DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(112, 112, 112, 180));
 		else DrawUtils.fillRect(xCoord, yCoord, width, height, gui.inventory.getItem(id).getBgColor());
 		
+		if(gui.inventory.getItem(id) != null) DrawUtils.drawTexture(xCoord + (width - gui.inventory.getItem(id).getWidth()) / 2, yCoord + (height - gui.inventory.getItem(id).getHeight()) / 2, gui.inventory.getItem(id).getTexture());
+	
+		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
+		
 		if(this.mouseHovered)
 		{
 			if(gui.inventory.getItem(gui.currentSlot.id) != null)
@@ -79,12 +83,9 @@ public class Slot extends GControl implements Cloneable
 			else if(this.gui.inventory.getItem(id) != null)
 			{
 				DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
+				gui.inventory.getItem(id).renderItemInformation(gl2, x, y);
 			}
 		}
-		
-		if(gui.inventory.getItem(id) != null) DrawUtils.drawTexture(xCoord + (width - gui.inventory.getItem(id).getWidth()) / 2, yCoord + (height - gui.inventory.getItem(id).getHeight()) / 2, gui.inventory.getItem(id).getTexture());
-	
-		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		
 		if(mouseHovered && gui.inventory.getItem(id) != null)
 		{		

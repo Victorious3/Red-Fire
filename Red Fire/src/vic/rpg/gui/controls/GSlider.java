@@ -34,6 +34,7 @@ public class GSlider extends GControl {
 		this.xScroll = xScroll; 
 	}
 
+	//FIXME Update to OpenGl
 	@Override
 	public void render(GL2 gl2, int x, int y) 
 	{

@@ -80,7 +80,7 @@ public class GuiOptions extends Gui implements GButton.IGButton
 		}
 		else if(name.equalsIgnoreCase("Apply"))
 		{
-			//TODO: adjust the options
+			//TODO Adjust the options
 			Options.safe();
 			Gui.setGui(new GuiMain());
 		}
