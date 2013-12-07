@@ -120,14 +120,14 @@ public class SlotGrid extends GControl
 	{
 		Item item = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, x, y);
 		
-		if(gui.currentSlot == null && item != null)
+		if(gui.inventory.getItem(gui.currentSlot.id) == null && item != null)
 		{
 			gui.inventory.addItem(gui.currentSlot.id, item);
 			setItem(item.xCoord, item.yCoord, null);
 		}
-		else if(gui.currentSlot != null)
+		else if(gui.inventory.getItem(gui.currentSlot.id) != null)
 		{
-			if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x, y, gui.inventory.getItem(gui.currentSlot.id)));
+			if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x, y, gui.inventory.getItem(gui.currentSlot.id)))
 			{
 				setItem(x, y, gui.inventory.getItem(gui.currentSlot.id));
 				gui.inventory.addItem(gui.currentSlot.id, null);

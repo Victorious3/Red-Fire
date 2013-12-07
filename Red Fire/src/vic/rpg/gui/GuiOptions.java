@@ -59,12 +59,10 @@ public class GuiOptions extends Gui implements GButton.IGButton
 		int xOffset = (Game.WIDTH)/2;
 		int yOffset = (Game.HEIGHT)/2 - 100;
 		
-		//TODO: Fix NullPointer
 		switcherAA = new GSwitcher(xOffset - 60, yOffset + 30, 120, 30, new String[]{"default", "ON", "OFF"}, ANTIALASING);
 		switcherCR = new GSwitcher(xOffset - 60, yOffset + 70, 120, 30, new String[]{"default", "speed", "quality"}, COLOR_RENDER);
 		switcherIP = new GSwitcher(xOffset - 60, yOffset + 110, 120, 30, new String[]{"Next Neighbor", "bilinear", "bicubic"}, INTERPOLATION);
 		
-		this.controlsList.add(slider1);		
 		this.controlsList.add(switcherAA);
 		this.controlsList.add(switcherCR);
 		this.controlsList.add(switcherIP);

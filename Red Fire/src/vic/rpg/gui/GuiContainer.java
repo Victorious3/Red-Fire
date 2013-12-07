@@ -41,7 +41,6 @@ public class GuiContainer extends Gui
 	public void setInventory(Inventory inventory)
 	{
 		this.inventory = inventory;
-		this.inventory.add(-1);
 		currentSlot = new Slot(0, 0, -1, this);
 	}
 	

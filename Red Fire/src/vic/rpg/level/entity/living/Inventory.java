@@ -13,15 +13,16 @@ import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.item.Item;
+import vic.rpg.level.INBTReadWrite;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.server.Server;
+import vic.rpg.server.packet.Packet13InventoryUpdate;
 import vic.rpg.server.packet.Packet7Entity;
-import vic.rpg.server.packet.Packet8PlayerUpdate;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
 //TODO Messy code!!!
-public class Inventory 
+public class Inventory implements INBTReadWrite
 {
 	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();
 	private HashMap<Integer, Item> slots = new HashMap<Integer, Item>();
@@ -146,7 +147,8 @@ public class Inventory
 
 		if(canBePlacedAt(grid, xCoord, yCoord, item))
 		{		
-			setItemGrid(id, this.getItemGrid(id).clone());
+			grid[xCoord][yCoord] = item;
+			setItemGrid(id, grid);
 			return true;
 		}
 		return false;
@@ -158,8 +160,7 @@ public class Inventory
 
 		if(Utils.getSide() == Side.CLIENT)
 		{
-			System.out.println("Sending Slot " + id + " with item " + item);
-			Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate(Game.getPlayer(), Packet7Entity.MODE_UPDATE));
+			Game.packetHandler.addPacketToSendingQueue(new Packet13InventoryUpdate(this));
 		}
 		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
 
@@ -172,8 +173,7 @@ public class Inventory
 		
 		if(Utils.getSide() == Side.CLIENT)
 		{
-			System.out.println("Sending SlotGrid " + id);
-			Game.packetHandler.addPacketToSendingQueue(new Packet8PlayerUpdate(Game.getPlayer(), Packet7Entity.MODE_UPDATE));
+			Game.packetHandler.addPacketToSendingQueue(new Packet13InventoryUpdate(this));
 		}
 		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
 	}
@@ -211,7 +211,8 @@ public class Inventory
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void readFromNBT(CompoundTag tag)
+	@Override
+	public void readFromNBT(CompoundTag tag, Object... args)
 	{	
 		Map<String, Tag> tagMap = tag.getValue();
 		Map<String, Tag> inventoryMap = (Map<String, Tag>) tagMap.get("inventory").getValue();
@@ -257,7 +258,8 @@ public class Inventory
 		}
 	}
 	
-	public CompoundTag writeToNBT(CompoundTag tag)
+	@Override
+	public CompoundTag writeToNBT(CompoundTag tag, Object... args)
 	{
 		HashMap<String, Tag> tagMap = new HashMap<String, Tag>();
 		tagMap.putAll(tag.getValue());
@@ -321,5 +323,5 @@ public class Inventory
 		tagMap.put("inventory", inventoryTag);
 		
 		return new CompoundTag(tag.getName(), tagMap);	
-	}		
+	}	
 }

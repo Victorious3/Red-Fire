@@ -10,6 +10,7 @@ import vic.rpg.render.DrawUtils;
 
 public class Slot extends GControl implements Cloneable
 {		
+	//TODO Add method which does all the "gui.inventory.getItem(id)" e.g "getItem()". Makes life easier...
 	public GuiContainer gui;
 	public int sWidth = 1;
 	public int sHeight = 1;
@@ -68,9 +69,9 @@ public class Slot extends GControl implements Cloneable
 		
 		if(this.mouseHovered)
 		{
-			if(gui.currentSlot != null)
+			if(gui.inventory.getItem(gui.currentSlot.id) != null)
 			{
-				if(canBePlacedIn(gui.currentSlot.gui.inventory.getItem(id)))
+				if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 				{
 					DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 				}
@@ -102,24 +103,24 @@ public class Slot extends GControl implements Cloneable
 	{
 		super.onClickStart(x, y);
 		
-		if(gui.currentSlot == null && gui.inventory.getItem(id) != null)
+		if(gui.inventory.getItem(gui.currentSlot.id) != null && gui.inventory.getItem(id) == null)
 		{
-			gui.inventory.addItem(gui.currentSlot.id, this.gui.inventory.getItem(id));
-			setItem(null);
-		}
-		else if(gui.inventory.getItem(id) == null && gui.currentSlot != null)
-		{									
 			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 			{
 				setItem(gui.inventory.getItem(gui.currentSlot.id));
-				gui.currentSlot = null;
-			}				 
+				gui.inventory.addItem(gui.currentSlot.id, null);
+			}
 		}
-		else if(gui.inventory.getItem(id) != null && gui.currentSlot != null)
+		else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) == null)
+		{									
+			gui.inventory.addItem(gui.currentSlot.id, gui.inventory.getItem(id));
+			setItem(null); 
+		}
+		else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) != null)
 		{
 			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 			{	
-				Item item = gui.inventory.getItem(gui.currentSlot.id);
+				Item item = gui.inventory.getItem(id);
 				setItem(gui.inventory.getItem(gui.currentSlot.id));
 				gui.inventory.addItem(gui.currentSlot.id, item);
 			}

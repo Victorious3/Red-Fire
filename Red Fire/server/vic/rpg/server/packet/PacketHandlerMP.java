@@ -46,7 +46,7 @@ public class PacketHandlerMP extends Thread
 			{
 				p.id = 7;
 				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
-				ServerLoop.level.onlinePlayersMap.put(player.username, player);
+				ServerLoop.level.onlinePlayersMap.put(con.username, player);
 				Server.server.broadcast(p);
 			}
 			else if(p.id == 9)
@@ -97,6 +97,13 @@ public class PacketHandlerMP extends Thread
 			{
 				EntityEvent eev = ((Packet12Event)p).eev;
 				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).onEventReceived(eev);	
+			}
+			else if(p.id == 13)
+			{
+				//TODO This allows cheaters to modify their Inventory in every way they like. They could even add more size to it... Think of some verifying algorithm.
+				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
+				packet.inventory.parentEntity = ServerLoop.level.onlinePlayersMap.get(con.username);
+				ServerLoop.level.onlinePlayersMap.get(con.username).inventory = packet.inventory;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

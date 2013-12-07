@@ -42,6 +42,7 @@ public abstract class Packet implements Cloneable {
 		packetRegistry.put(10, new Packet10TimePacket());
 		packetRegistry.put(11, new Packet11EntityInteraction());
 		packetRegistry.put(12, new Packet12Event());
+		packetRegistry.put(13, new Packet13InventoryUpdate());
 	}
 	
 	public static Packet getPacket(int id)
