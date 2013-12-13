@@ -48,6 +48,10 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		{
 			Game.level.onMouseClicked(xCoord, yCoord, arg0.getButton());
 		}
+		if(Gui.currentGui != null && arg0.getClickCount() > 1)
+		{
+			Gui.currentGui.onDoubleClick(this.xCoord, this.yCoord, arg0.getButton());
+		}
 	}
 
 	@Override
@@ -72,7 +76,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		case MouseEvent.BUTTON2 : isMiddleDown = true; break;
 		}
 		
-		if(Gui.currentGui != null)Gui.currentGui.onMouseClickStart(this.xCoord, this.yCoord, arg0.getButton());
+		if(Gui.currentGui != null && arg0.getClickCount() == 1) Gui.currentGui.onMouseClickStart(this.xCoord, this.yCoord, arg0.getButton());
 	}
 
 	@Override
@@ -85,7 +89,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		case MouseEvent.BUTTON2 : isMiddleDown = false; break;
 		}
 		
-		if(Gui.currentGui != null)Gui.currentGui.onMouseClickEnd(this.xCoord, this.yCoord, arg0.getButton());
+		if(Gui.currentGui != null && arg0.getClickCount() == 1) Gui.currentGui.onMouseClickEnd(this.xCoord, this.yCoord, arg0.getButton());
 	}
 
 	@Override

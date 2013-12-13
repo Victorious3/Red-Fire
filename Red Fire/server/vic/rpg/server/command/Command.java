@@ -3,11 +3,15 @@ package vic.rpg.server.command;
 import java.util.HashMap;
 import java.util.List;
 
+import vic.rpg.Init;
+import vic.rpg.utils.Utils.Side;
+
 public abstract class Command 
 {
 	public static HashMap<String, Command> commands = new HashMap<String, Command>();
 	
-	static
+	@Init(side = Side.SERVER)
+	public static void init()
 	{
 		commands.put("help", new CommandHelp());
 		commands.put("online", new CommandOnline());

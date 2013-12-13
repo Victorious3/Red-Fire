@@ -5,6 +5,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.Arrays;
@@ -12,6 +15,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import vic.rpg.ClassFinder;
+import vic.rpg.Init;
+import vic.rpg.PostInit;
 import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
@@ -24,6 +30,7 @@ import vic.rpg.server.packet.Packet1ConnectionRefused;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 
 public class Server extends Thread 
 {	
@@ -147,6 +154,10 @@ public class Server extends Thread
 					
 					System.out.println("Starting Thread: GameLoop");
 					server.serverLoop.start();
+					
+					System.out.println("Performing init operations...");
+					server.init();
+					System.out.println("done!");
 				}
 				catch(BindException e) {
 					System.err.println("Server port is already in use! Please choose an other one.");
@@ -158,6 +169,54 @@ public class Server extends Thread
 		};
 		thr.setName("Server StartThread");
 		thr.start();
+	}
+	
+	private void init()
+	{
+		List<Class<?>> cls;
+		try {
+			cls = ClassFinder.getClasses("vic.rpg", (String)null);
+			for(Class<?> c : cls)
+			{
+				for(Method m : c.getMethods())
+				{
+					if(m.getAnnotation(Init.class) != null && Modifier.isStatic(m.getModifiers()))
+					{
+						Init init = m.getAnnotation(Init.class);
+						if(init.side() == Side.SERVER || (init.side() == Side.BOTH && !isSinglePlayer))
+						{
+							m.setAccessible(true);
+							try {
+								m.invoke(null, (Object[])null);
+							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+			for(Class<?> c : cls)
+			{
+				for(Method m : c.getMethods())
+				{
+					if(m.getAnnotation(PostInit.class) != null && Modifier.isStatic(m.getModifiers()))
+					{
+						PostInit init = m.getAnnotation(PostInit.class);
+						if(init.side() == Side.SERVER || (init.side() == Side.BOTH && !isSinglePlayer))
+						{
+							m.setAccessible(true);
+							try {
+								m.invoke(null, (Object[])null);
+							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Server()

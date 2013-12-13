@@ -4,6 +4,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.HashMap;
 
+import vic.rpg.Init;
+import vic.rpg.utils.Utils.Side;
+
 public abstract class Packet implements Cloneable {
 	
 	public int id = 0;
@@ -30,7 +33,8 @@ public abstract class Packet implements Cloneable {
 	
 	private static HashMap<Integer, Packet> packetRegistry = new HashMap<Integer, Packet>(); 
 
-	static
+	@Init(side = Side.BOTH)
+	public static void init()
 	{
 		packetRegistry.put(0, new Packet0StateUpdate());
 		packetRegistry.put(1, new Packet1ConnectionRefused());

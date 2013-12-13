@@ -46,11 +46,11 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		{
 			if(Utils.getSide() == Side.CLIENT)
 			{
-				Game.packetHandler.addPacketToSendingQueue(new Packet12Event(eev, UUID));
+				Game.packetHandler.addPacketToSendingQueue(new Packet12Event(eev, this));
 			}
 			if(Utils.getSide() == Side.SERVER)
 			{
-				Server.server.broadcast(new Packet12Event(eev, UUID));
+				Server.server.broadcast(new Packet12Event(eev, this));
 			}
 		}	
 	}

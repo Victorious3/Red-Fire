@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.PostInit;
 import vic.rpg.editor.Editor;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
@@ -14,6 +15,7 @@ import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.GradientAnimator;
 import vic.rpg.render.TextureFX;
 import vic.rpg.sound.SoundEngine;
+import vic.rpg.utils.Utils.Side;
 
 
 public class GuiMain extends Gui implements IGButton 
@@ -28,7 +30,8 @@ public class GuiMain extends Gui implements IGButton
 	GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
 //	SlopeAnimator fadeRight = DrawUtils.createSlopeAnimator(1000, -500, 0, 0, 1, 20);
 	
-	static
+	@PostInit(side = Side.CLIENT)
+	public static void init()
 	{
 		LanguageRegistry.addTranslation(LanguageRegistry.en_GB, "guimain.singleplayer", "Singleplayer");
 		LanguageRegistry.addTranslation(LanguageRegistry.de_DE, "guimain.singleplayer", "Einzelspieler");

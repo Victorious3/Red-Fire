@@ -2,7 +2,9 @@ package vic.rpg.registry;
 
 import java.util.HashMap;
 
+import vic.rpg.Init;
 import vic.rpg.config.Options;
+import vic.rpg.utils.Utils.Side;
 
 public class LanguageRegistry 
 {
@@ -10,9 +12,10 @@ public class LanguageRegistry
 	public static String en_GB = "en_GB";
 	public static String fr_FR = "fr_FR";
 	
-	private static HashMap<String, HashMap<String, String>> translations = new HashMap<String, HashMap<String, String>>();
+	public static HashMap<String, HashMap<String, String>> translations = new HashMap<String, HashMap<String, String>>();
 	
-	static
+	@Init(side = Side.BOTH)
+	public static void init()
 	{
 		addLanguage(de_DE);
 		addLanguage(en_GB);

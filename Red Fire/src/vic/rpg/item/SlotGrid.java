@@ -1,6 +1,7 @@
 package vic.rpg.item;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 
 import javax.media.opengl.GL2;
 
@@ -105,15 +106,22 @@ public class SlotGrid extends GControl
 	}
 
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{
-		super.onClickStart(x, y);
+		super.onClickStart(x, y, mouseButton);
 		
 		x -= xCoord;
 		y -= yCoord;
 		
-		onClickedAtCoord(x / 30, y / 30);
-		
+		if(mouseButton == MouseEvent.BUTTON1) onClickedAtCoord(x / 30, y / 30);
+		else if(mouseButton == MouseEvent.BUTTON3)
+		{
+			Item item = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, x / 30, y / 30);
+			if(item != null)
+			{
+				gui.inventory.onItemUse(id, x / 30, y / 30, x, y);
+			}
+		}		
 	}
 	
 	private void onClickedAtCoord(int x, int y)

@@ -1,11 +1,13 @@
 package vic.rpg.level.entity.living;
 
+import vic.rpg.Init;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.utils.Utils.Side;
 
 public class EntityController 
 {
-	static
+	@Init(side = Side.BOTH)
+	public static void init()
 	{
 		EntityEvent.registerEntityEvent(new HealthChangeEvent());
 	}

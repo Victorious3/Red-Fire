@@ -55,7 +55,7 @@ public class GTextField extends GControl
 	}
 
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{		
 		activate(true);		
 		if(Game.getPlayer() != null)

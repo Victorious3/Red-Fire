@@ -20,23 +20,28 @@ import org.jnbt.ShortTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
+import vic.rpg.level.Entity;
 import vic.rpg.level.entity.EntityEvent;
+import vic.rpg.level.entity.living.EntityPlayer;
 
 public class Packet12Event extends Packet
 {
 	public EntityEvent eev;
 	public String UUID;
+	public String username;
 	
 	public Packet12Event()
 	{
 		super(12);
 	}
 	
-	public Packet12Event(EntityEvent eev, String UUID)
+	public Packet12Event(EntityEvent eev, Entity entity)
 	{
 		super(12);
 		this.eev = eev;
-		this.UUID = UUID;
+		this.UUID = entity.UUID;
+		if(entity instanceof EntityPlayer) this.username = ((EntityPlayer)entity).username;
+		else this.username = "";
 	}
 
 	@Override
@@ -45,6 +50,7 @@ public class Packet12Event extends Packet
 		try {
 			int eventID = stream.readInt();
 			UUID = stream.readUTF();
+			username = stream.readUTF();
 			int objectLength = stream.readInt();
 			
 			eev = EntityEvent.getEntityEvent(eventID).clone();
@@ -70,6 +76,7 @@ public class Packet12Event extends Packet
 		try {
 			stream.writeInt(eev.id);
 			stream.writeUTF(UUID);
+			stream.writeUTF(username);
 			stream.writeInt(eev.data.size());
 			
 			ByteArrayOutputStream bOut = new ByteArrayOutputStream();

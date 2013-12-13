@@ -12,8 +12,11 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Game;
+import vic.rpg.Init;
 import vic.rpg.item.Item;
 import vic.rpg.level.INBTReadWrite;
+import vic.rpg.level.entity.EntityEvent;
+import vic.rpg.listener.EntityEventListener;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet13InventoryUpdate;
@@ -22,16 +25,23 @@ import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
 //TODO Messy code!!!
-public class Inventory implements INBTReadWrite
+public class Inventory implements INBTReadWrite, EntityEventListener
 {
 	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();
 	private HashMap<Integer, Item> slots = new HashMap<Integer, Item>();
 
 	public EntityLiving parentEntity;
 	
+	@Init(side = Side.BOTH)
+	public static void init()
+	{
+		EntityEvent.registerEntityEvent(new InventoryEvent());
+	}
+	
 	public Inventory(EntityLiving parentEntity)
 	{
 		this.parentEntity = parentEntity;
+		if(parentEntity != null) this.parentEntity.addEventListener(this);
 	}
 	
 	public void add(int id, int width, int height)
@@ -323,5 +333,53 @@ public class Inventory implements INBTReadWrite
 		tagMap.put("inventory", inventoryTag);
 		
 		return new CompoundTag(tag.getName(), tagMap);	
-	}	
+	}
+	
+	//Inventory event
+	public static class InventoryEvent extends EntityEvent
+	{
+		public InventoryEvent(int mode, int id, int sType, int gx, int gy) 
+		{
+			super(Side.SERVER, 2);
+			this.putData("mode", mode);
+		}
+
+		public InventoryEvent() 
+		{
+			super(Side.SERVER, 2);
+		}
+	}
+
+	public void onItemUse(int id, int x, int y)
+	{
+		getItem(id).onItemUse(parentEntity, this, x, y);
+		parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
+	}
+	
+	public void onItemUse(int id, int gx, int gy, int x, int y)
+	{
+		overlapsWith(getItemGrid(id), 1, 1, gx, gy).onItemUse(parentEntity, this, x, y);
+		parentEntity.postEvent(new InventoryEvent(0, id, 1, gx, gy));
+	}
+
+	@Override
+	public void onEventReceived(EntityEvent e) 
+	{
+		if(e instanceof InventoryEvent)
+		{
+			if((Integer)e.getData("mode") == 0)
+			{
+				if((Integer)e.getData("sType") == 0) onItemUse((Integer)e.getData("id"), 0, 0);
+				if((Integer)e.getData("sType") == 1) onItemUse((Integer)e.getData("id"), (Integer)e.getData("gx"), (Integer)e.getData("gy"), 0, 0);
+			}
+		}
+	}
+
+	@Override public void onEventPosted(EntityEvent e) {}
+
+	@Override
+	public Priority getPriority() 
+	{
+		return Priority.PRIORITY_MEDIUM;
+	}
 }

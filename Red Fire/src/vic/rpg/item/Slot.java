@@ -1,6 +1,7 @@
 package vic.rpg.item;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
 
 import javax.media.opengl.GL2;
 
@@ -100,34 +101,41 @@ public class Slot extends GControl implements Cloneable
 	}
 	
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{
-		super.onClickStart(x, y);
+		super.onClickStart(x, y, mouseButton);
 		
-		if(gui.inventory.getItem(gui.currentSlot.id) != null && gui.inventory.getItem(id) == null)
+		if(mouseButton == MouseEvent.BUTTON1)
 		{
-			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
+			if(gui.inventory.getItem(gui.currentSlot.id) != null && gui.inventory.getItem(id) == null)
 			{
-				setItem(gui.inventory.getItem(gui.currentSlot.id));
-				gui.inventory.addItem(gui.currentSlot.id, null);
+				if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
+				{
+					setItem(gui.inventory.getItem(gui.currentSlot.id));
+					gui.inventory.addItem(gui.currentSlot.id, null);
+				}
+			}
+			else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) == null)
+			{									
+				gui.inventory.addItem(gui.currentSlot.id, gui.inventory.getItem(id));
+				setItem(null); 
+			}
+			else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) != null)
+			{
+				if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
+				{	
+					Item item = gui.inventory.getItem(id);
+					setItem(gui.inventory.getItem(gui.currentSlot.id));
+					gui.inventory.addItem(gui.currentSlot.id, item);
+				}
 			}
 		}
-		else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) == null)
-		{									
-			gui.inventory.addItem(gui.currentSlot.id, gui.inventory.getItem(id));
-			setItem(null); 
-		}
-		else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) != null)
+		else if(mouseButton == MouseEvent.BUTTON3)
 		{
-			if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
-			{	
-				Item item = gui.inventory.getItem(id);
-				setItem(gui.inventory.getItem(gui.currentSlot.id));
-				gui.inventory.addItem(gui.currentSlot.id, item);
-			}
+			if(gui.inventory.getItem(id) != null) gui.inventory.onItemUse(id, x, y);
 		}
 	}
-	
+
 	public boolean canBePlacedIn(Item item)
 	{
 		if(item == null) return true;

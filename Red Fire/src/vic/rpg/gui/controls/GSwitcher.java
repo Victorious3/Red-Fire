@@ -56,13 +56,13 @@ public class GSwitcher extends GControl
 	}
 
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{
-		super.onClickStart(x, y);
+		super.onClickStart(x, y, mouseButton);
 	}
 
 	@Override
-	public void onClickReleased(int x, int y) 
+	public void onClickReleased(int x, int y, int mouseButton) 
 	{	
 		modePointer++;	
 		if (modePointer >= maxMode) modePointer = 0;

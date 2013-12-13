@@ -10,7 +10,9 @@ import javax.media.opengl.GL2;
 import org.apache.commons.lang3.StringUtils;
 
 import vic.rpg.Game;
+import vic.rpg.Init;
 import vic.rpg.registry.LanguageRegistry;
+import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
@@ -23,7 +25,8 @@ public class DrawUtils
 	private static HashMap<Font, TextRenderer> textRenderers = new HashMap<Font, TextRenderer>();
 	private static HashMap<String, StringControl> stringControls = new HashMap<String, StringControl>();
 
-	static
+	@Init(side = Side.CLIENT)
+	public static void init()
 	{
 		registerStringControl(new StringControl() 
 		{		

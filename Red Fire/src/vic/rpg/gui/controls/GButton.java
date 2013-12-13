@@ -58,13 +58,13 @@ public class GButton extends GControl {
 	}
 
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{
 
 	}
 
 	@Override
-	public void onClickReleased(int x, int y) 
+	public void onClickReleased(int x, int y, int mouseButton) 
 	{
 		if(this.mouseHovered) handler.onButtonPressed(name);
 	}

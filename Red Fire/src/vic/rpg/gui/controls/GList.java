@@ -80,23 +80,26 @@ public class GList extends GControl
 		DrawUtils.setLineWidth(oldThickness);		
 	}
 
-	long lastClickTime = System.currentTimeMillis();
-	
 	@Override
-	public void onClickReleased(int x, int y) 
+	public void onDoubleClick(int x, int y, int mouseButton) 
 	{
-		long time = System.currentTimeMillis();
-		
 		if(x >= xCoord + 20 && x <= xCoord + 20 + width - 80)
 		{
 			int offset = (int) (scrollPos * maxOffset);
 			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
-			
-			if(time - lastClickTime < 500 && this.selectedPos >= 0 && this.selectedPos < data.size())
-			{				
-				handler.onElementDoubleClick(this, data.get(this.selectedPos));
-			}
-			lastClickTime = time;
+			handler.onElementDoubleClick(this, data.get(this.selectedPos));
+		}
+		
+		this.isScrolling = false;
+	}
+	
+	@Override
+	public void onClickStart(int x, int y, int mouseButton) 
+	{
+		if(x >= xCoord + 20 && x <= xCoord + 20 + width - 80)
+		{
+			int offset = (int) (scrollPos * maxOffset);
+			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
 		}
 		
 		this.isScrolling = false;

@@ -2,6 +2,10 @@ package vic.rpg;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Random;
 
 import javax.media.opengl.GL2;
@@ -87,9 +91,59 @@ public class Game extends GLCanvas implements Runnable
     	
     	System.exit(0);
     }
+    
+    private void init()
+    {   	
+		List<Class<?>> cls;
+		try {
+			cls = ClassFinder.getClasses("vic.rpg", (String)null);
+			for(Class<?> c : cls)
+			{
+				for(Method m : c.getMethods())
+				{
+					if(m.getAnnotation(Init.class) != null && Modifier.isStatic(m.getModifiers()))
+					{
+						Init init = m.getAnnotation(Init.class);
+						if(init.side() == Side.CLIENT || init.side() == Side.BOTH)
+						{
+							m.setAccessible(true);
+							try {
+								m.invoke(null, (Object[])null);
+							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+			for(Class<?> c : cls)
+			{
+				for(Method m : c.getMethods())
+				{
+					if(m.getAnnotation(PostInit.class) != null && Modifier.isStatic(m.getModifiers()))
+					{
+						PostInit init = m.getAnnotation(PostInit.class);
+						if(init.side() == Side.CLIENT || init.side() == Side.BOTH)
+						{
+							m.setAccessible(true);
+							try {
+								m.invoke(null, (Object[])null);
+							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}	
+    }
   
     private void init(GL2 gl2)
     {
+    	init();
+    	
     	gl2.glEnable(GL2.GL_ALPHA_TEST);
     	gl2.glAlphaFunc(GL2.GL_GREATER, 0.1F);
     	gl2.glEnable(GL2.GL_BLEND);

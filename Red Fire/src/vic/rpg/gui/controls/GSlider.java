@@ -81,13 +81,13 @@ public class GSlider extends GControl {
 	}
 
 	@Override
-	public void onClickStart(int x, int y) 
+	public void onClickStart(int x, int y, int mouseButton) 
 	{
 		this.isScrolling = true;
 	}
 
 	@Override
-	public void onClickReleased(int x, int y) 
+	public void onClickReleased(int x, int y, int mouseButton) 
 	{
 		this.isScrolling = false;
 	}

@@ -65,7 +65,7 @@ public class Gui
 			{
 				if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
 				{
-					gc.onClickStart(x, y);
+					gc.onClickStart(x, y, mouseButton);
 					gc.mouseDown = true;
 				}
 				else
@@ -82,8 +82,19 @@ public class Gui
 		{
 			if(gc.isVisible && gc.mouseDown)
 			{
-				gc.onClickReleased(x, y);
+				gc.onClickReleased(x, y, mouseButton);
 				gc.mouseDown = false;
+			}
+		}
+	}
+	
+	public void onDoubleClick(int x, int y, int mouseButton)
+	{
+		for(GControl gc : controlsList)
+		{
+			if(gc.isVisible)
+			{
+				gc.onDoubleClick(x, y, mouseButton);
 			}
 		}
 	}

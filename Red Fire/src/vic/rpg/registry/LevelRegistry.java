@@ -10,6 +10,7 @@ import org.jnbt.IntTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
+import vic.rpg.Init;
 import vic.rpg.item.Item;
 import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemPeer;
@@ -28,6 +29,7 @@ import vic.rpg.level.tiles.TilePlaceHolder;
 import vic.rpg.level.tiles.TileTerrain;
 import vic.rpg.level.tiles.TileVoid;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Utils.Side;
 import bsh.Interpreter;
 
 public class LevelRegistry 
@@ -52,7 +54,8 @@ public class LevelRegistry
 	public static final Item ITEM_SWORD = new ItemSword();
 	public static final Item ITEM_SHIELD = new ItemShield();
 	
-	static
+	@Init(side = Side.BOTH)
+	public static void init()
 	{		
 		register(TILE_PLACEHOLDER, -1);
 		register(TILE_TERRAIN, 1);

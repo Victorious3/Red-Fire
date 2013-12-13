@@ -10,6 +10,7 @@ import org.jnbt.CompoundTag;
 import vic.rpg.Game;
 import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.entity.living.EntityLiving;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
@@ -79,19 +80,19 @@ public abstract class Item extends Drawable implements Cloneable, INBTReadWrite
 		return null;
 	}
 	
-	public boolean onItemUse(EntityLiving entity, int x, int y)
+	public void onItemUse(EntityLiving entity, Inventory i, int x, int y)
 	{
-		return false;
+		
 	}
 	
-	public boolean onItemCast(EntityLiving entity, int x, int y)
+	public void onItemCast(EntityLiving entity, Inventory i, int x, int y)
 	{
-		return false;
+		
 	}
 	
-	public boolean onItemDrop(EntityLiving entity, int x, int y)
+	public void onItemDrop(EntityLiving entity, Inventory i, int x, int y)
 	{
-		return true;
+		
 	}
 	
 	public void onItemSlotChange(){}
