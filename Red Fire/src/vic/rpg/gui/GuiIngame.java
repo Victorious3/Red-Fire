@@ -13,6 +13,7 @@ import vic.rpg.item.Slot;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.render.DrawUtils.LinearAnimator;
 import vic.rpg.server.packet.Packet20Chat;
 
 public class GuiIngame extends GuiContainer 
@@ -22,6 +23,8 @@ public class GuiIngame extends GuiContainer
 	private boolean init = false;
 	private ArrayList<String> chatValues = new ArrayList<String>();
 	private final int MAX_CHATLINES = 10;
+	private int lp;
+	private LinearAnimator lpAnim;
 	
 	public static GuiIngame gui = new GuiIngame();
 	public static EntityLiving focusedEntity = null;
@@ -44,22 +47,33 @@ public class GuiIngame extends GuiContainer
 	@Override
 	public void updateGui() 
 	{
-		if(Game.getPlayer() != null && !init)
+		if(Game.getPlayer() != null)
 		{
-			setInventory(Game.getPlayer().getInventory());
-			
-			controlsList.add(new Slot(50, 500, 9, this, 2, 2, true));
-			controlsList.add(new Slot(120, 500, 10, this, 2, 2, true));
-			controlsList.add(new Slot(190, 500, 11, this, 2, 2, true));
-			controlsList.add(new Slot(260, 500, 12, this, 2, 2, true));
-			controlsList.add(new Slot(340, 500, 13, this, 2, 2, true));
-			controlsList.add(new Slot(410, 500, 14, this, 2, 2, true));
-			controlsList.add(new Slot(480, 500, 15, this, 2, 2, true));
-			controlsList.add(new Slot(550, 500, 16, this, 2, 2, true));
-			controlsList.add(new Slot(620, 500, 17, this, 2, 2, true));
-			controlsList.add(new Slot(690, 500, 18, this, 2, 2, true));
-			
-			init = true;
+			if(!init)
+			{
+				setInventory(Game.getPlayer().getInventory());
+				
+				controlsList.add(new Slot(50, 500, 9, this, 2, 2, true));
+				controlsList.add(new Slot(120, 500, 10, this, 2, 2, true));
+				controlsList.add(new Slot(190, 500, 11, this, 2, 2, true));
+				controlsList.add(new Slot(260, 500, 12, this, 2, 2, true));
+				controlsList.add(new Slot(340, 500, 13, this, 2, 2, true));
+				controlsList.add(new Slot(410, 500, 14, this, 2, 2, true));
+				controlsList.add(new Slot(480, 500, 15, this, 2, 2, true));
+				controlsList.add(new Slot(550, 500, 16, this, 2, 2, true));
+				controlsList.add(new Slot(620, 500, 17, this, 2, 2, true));
+				controlsList.add(new Slot(690, 500, 18, this, 2, 2, true));
+				
+				lp = Game.getPlayer().lp;
+				lpAnim = DrawUtils.createLinearAnimator(500, lp, lp);
+				
+				init = true;
+			}
+			if(lp != Game.getPlayer().lp)
+			{
+				lpAnim = DrawUtils.createLinearAnimator(500, lp, Game.getPlayer().lp);
+				lp = Game.getPlayer().lp;
+			}
 		}
 		super.updateGui();
 	}
@@ -120,7 +134,8 @@ public class GuiIngame extends GuiContainer
 		
 		if(Game.getPlayer() != null)
 		{
-			DrawUtils.fillRect(50, 470, (int)(200 * ((float) Game.getPlayer().lp / (float)Game.getPlayer().max_lp)), 15, Color.green);
+			lpAnim.animate();
+			DrawUtils.fillRect(50, 470, (int)(200 * ((float)lpAnim.getValue() / (float)Game.getPlayer().max_lp)), 15, Color.green);
 			DrawUtils.drawRect(50, 470, 200, 15, Color.black);
 			DrawUtils.drawString(52, 483, "LP", Color.black);
 		}

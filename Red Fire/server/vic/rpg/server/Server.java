@@ -131,6 +131,10 @@ public class Server extends Thread
 					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
 					System.out.println("________________________________________________");
 
+					System.out.println("Performing init operations...");
+					server.init();
+					System.out.println("done!");
+					
 					server.serverSocket = new ServerSocket(port);
 					server.listener = new Listener(new Server());
 					server.inputHandler = new InputHandler();
@@ -154,10 +158,6 @@ public class Server extends Thread
 					
 					System.out.println("Starting Thread: GameLoop");
 					server.serverLoop.start();
-					
-					System.out.println("Performing init operations...");
-					server.init();
-					System.out.println("done!");
 				}
 				catch(BindException e) {
 					System.err.println("Server port is already in use! Please choose an other one.");
@@ -178,7 +178,7 @@ public class Server extends Thread
 			cls = ClassFinder.getClasses("vic.rpg", (String)null);
 			for(Class<?> c : cls)
 			{
-				for(Method m : c.getMethods())
+				for(Method m : c.getDeclaredMethods())
 				{
 					if(m.getAnnotation(Init.class) != null && Modifier.isStatic(m.getModifiers()))
 					{
@@ -188,6 +188,7 @@ public class Server extends Thread
 							m.setAccessible(true);
 							try {
 								m.invoke(null, (Object[])null);
+								System.out.println("init: " + c.getName() + "." + m.getName() + "()");
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -197,7 +198,7 @@ public class Server extends Thread
 			}
 			for(Class<?> c : cls)
 			{
-				for(Method m : c.getMethods())
+				for(Method m : c.getDeclaredMethods())
 				{
 					if(m.getAnnotation(PostInit.class) != null && Modifier.isStatic(m.getModifiers()))
 					{
@@ -207,6 +208,7 @@ public class Server extends Thread
 							m.setAccessible(true);
 							try {
 								m.invoke(null, (Object[])null);
+								System.out.println("postinit: " + c.getName() + "." + m.getName() + "()");
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}

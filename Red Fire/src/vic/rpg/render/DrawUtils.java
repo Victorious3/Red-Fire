@@ -391,9 +391,9 @@ public class DrawUtils
 		return new GradientAnimator(timeMillis, start, end);
 	}
 	
-	public static SlopeAnimator createSlopeAnimator(int timeMillis, long start, long end, int fadeInTime, int fadeOutTime)
+	public static LinearAnimator createLinearAnimator(int timeMillis, long start, long end)
 	{
-		return new SlopeAnimator(timeMillis, start, end, fadeInTime, fadeOutTime);
+		return new LinearAnimator(timeMillis, start, end);
 	}
 	
 	public static interface Animator
@@ -529,25 +529,23 @@ public class DrawUtils
 		}
 	}
 
-	//TODO This is NOT working
-	public static class SlopeAnimator implements Animator
+	public static class LinearAnimator implements Animator
 	{	
 		private final double end;
-		private final boolean fadeIN;
-		private final boolean fadeOut;
-		
-		private double acc;
+			
+		private double step;
 		private double value;
 		
 		private static final double FPS = 30D;
 		
-		private SlopeAnimator(int timeMillis, long start, long end, int fadeInTime, int fadeOutTime)
+		private LinearAnimator(int timeMillis, long start, long end)
 		{
-			this.acc = 1;
 			this.end = end;
 			this.value = start;
-			fadeIN = fadeInTime > 0;
-			fadeOut = fadeOutTime > 0;
+			
+			double timePerFrame = 0.001 * (double)FPS;	
+			step = (end - value) / (timePerFrame * (double)timeMillis);
+			
 		}
 		
 		private FPSAnimator animator = new FPSAnimator(FPS);
@@ -556,8 +554,17 @@ public class DrawUtils
 		{
 			if(animator.animate())
 			{
-				double newVal = value + acc;
-				if((acc < 0 && newVal >= end) || (acc > 0 && newVal <= end)) value = newVal;
+				double newVal = value + step;
+				if(step < 0)
+				{
+					if(newVal >= end) value = newVal;
+					else value = end;
+				}
+				if(step > 0)
+				{
+					if(newVal <= end) value = newVal;
+					else value = end;
+				}
 			}
 			return true;
 		}

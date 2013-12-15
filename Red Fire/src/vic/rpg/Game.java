@@ -2,6 +2,7 @@ package vic.rpg;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -81,7 +82,7 @@ public class Game extends GLCanvas implements Runnable
     
     public void stopGame()
     {
-    	System.err.println("STOPPING!");
+    	System.err.println("Stopping client ...");
     	Options.safe();
     	
     	if(Utils.getSide() == Side.CLIENT)
@@ -99,7 +100,7 @@ public class Game extends GLCanvas implements Runnable
 			cls = ClassFinder.getClasses("vic.rpg", (String)null);
 			for(Class<?> c : cls)
 			{
-				for(Method m : c.getMethods())
+				for(Method m : c.getDeclaredMethods())
 				{
 					if(m.getAnnotation(Init.class) != null && Modifier.isStatic(m.getModifiers()))
 					{
@@ -109,6 +110,7 @@ public class Game extends GLCanvas implements Runnable
 							m.setAccessible(true);
 							try {
 								m.invoke(null, (Object[])null);
+								System.out.println("init: " + c.getName() + "." + m.getName() + "()");
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -118,7 +120,7 @@ public class Game extends GLCanvas implements Runnable
 			}
 			for(Class<?> c : cls)
 			{
-				for(Method m : c.getMethods())
+				for(Method m : c.getDeclaredMethods())
 				{
 					if(m.getAnnotation(PostInit.class) != null && Modifier.isStatic(m.getModifiers()))
 					{
@@ -128,6 +130,7 @@ public class Game extends GLCanvas implements Runnable
 							m.setAccessible(true);
 							try {
 								m.invoke(null, (Object[])null);
+								System.out.println("postinit: " + c.getName() + "." + m.getName() + "()");
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -216,6 +219,34 @@ public class Game extends GLCanvas implements Runnable
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		System.setOut(new PrintStream(System.out)
+		{
+			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:");}
+			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString());}
+			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
+		});
+		
+		System.setErr(new PrintStream(System.err)
+		{
+			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:");}
+			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString());}
+			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
+			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
+		});
 		
 		GL_PROFILE = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
