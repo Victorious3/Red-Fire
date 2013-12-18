@@ -7,16 +7,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Date;
 
+import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.PacketHandlerMP;
 
 public class Connection extends Thread
-{   
-	public static final int RUNNING = 0;
-	public static final int LOADING = 1;
-	public static final int QUIT = -1;
-	
+{   	
 	public Socket socket;
     public DataInputStream in;
     public DataOutputStream out;    
@@ -24,7 +21,7 @@ public class Connection extends Thread
     public boolean connected = true;
     public PacketHandlerMP packetHandler;
     
-    public int STATE = RUNNING;
+    public int STATE = GameState.RUNNING;
     
     public String username;
     

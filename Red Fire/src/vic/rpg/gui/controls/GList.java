@@ -15,7 +15,7 @@ public class GList extends GControl
 	private boolean isScrolling = false;
 	private float scrollPos = 0.0F;
 	private boolean isScrollingEnabled;
-	private int selectedPos;
+	public int selectedPos;
 	private IGList handler;
 	private int maxOffset = 0;
 	
@@ -48,6 +48,7 @@ public class GList extends GControl
 			
 			Object o = data.get(i);
 			if(this.selectedPos == i) DrawUtils.fillRect(xCoord + 20, i2, width - 80, elementHeight, new Color(158, 31, 74));
+			else if(x >= xCoord + 20 && x <= xCoord + 20 + width - 80 && y >= i2 && y <= i2 + elementHeight) DrawUtils.fillRect(xCoord + 20, i2, width - 80, elementHeight, new Color(130, 91, 213));
 			else DrawUtils.fillRect(xCoord + 20, i2, width - 80, elementHeight, new Color(68, 21, 150));
 
 			DrawUtils.drawRect(xCoord + 20, i2, width - 80, elementHeight, new Color(120, 31, 0));
@@ -87,7 +88,7 @@ public class GList extends GControl
 		{
 			int offset = (int) (scrollPos * maxOffset);
 			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
-			handler.onElementDoubleClick(this, data.get(this.selectedPos));
+			handler.onElementDoubleClick(this, data.get(this.selectedPos), this.selectedPos);
 		}
 		
 		this.isScrolling = false;
@@ -117,6 +118,6 @@ public class GList extends GControl
 	
 	public static interface IGList
 	{
-		public void onElementDoubleClick(GList glist, Object element);
+		public void onElementDoubleClick(GList glist, Object element, int pos);
 	}
 }

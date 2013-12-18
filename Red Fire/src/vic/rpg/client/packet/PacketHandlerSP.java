@@ -14,7 +14,7 @@ import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.Screen;
-import vic.rpg.server.io.Connection;
+import vic.rpg.server.GameState;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet0StateUpdate;
 import vic.rpg.server.packet.Packet10TimePacket;
@@ -38,7 +38,7 @@ public class PacketHandlerSP extends Thread
 	
 	public void addPacketToQueue(Packet p)
 	{
-		if(Game.netHandler.STATE == Connection.RUNNING) packetQueue.add(p);
+		if(Game.netHandler.STATE == GameState.RUNNING) packetQueue.add(p);
 	}
 	
 	public void addPacketToSendingQueue(Packet p)
@@ -58,7 +58,7 @@ public class PacketHandlerSP extends Thread
 		{
 			Game.level = new Level(); 
 			Game.level.readFromNBT(((Packet6World)p).getData());
-			Game.netHandler.STATE = Connection.RUNNING;
+			Game.netHandler.STATE = GameState.RUNNING;
 			sendPacket(new Packet0StateUpdate(Game.netHandler.STATE));
 		}
 		else if(p.id == 7)

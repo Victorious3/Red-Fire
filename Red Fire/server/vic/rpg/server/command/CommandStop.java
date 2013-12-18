@@ -14,10 +14,9 @@ public class CommandStop extends Command
 	@Override
 	public void cast(List<String> args) 
 	{
-		System.out.println("________________________________________________");
 		System.err.println("Stopping Server ...");
-		System.out.println("done!");
 		Server.server.stopServer();	
+		System.out.println("done!");
 	}
 
 	@Override

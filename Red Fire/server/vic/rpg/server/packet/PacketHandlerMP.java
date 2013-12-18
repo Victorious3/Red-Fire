@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import vic.rpg.level.Entity;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.server.io.Connection;
@@ -30,7 +31,7 @@ public class PacketHandlerMP extends Thread
 	}
 	public void addPacketToSendingQueue(Packet p)
 	{
-		if(con.STATE == Connection.RUNNING) sendingQueue.add(p);
+		if(con.STATE == GameState.RUNNING) sendingQueue.add(p);
 	}
 	
 	public void handlePacket(Packet p)
@@ -39,8 +40,8 @@ public class PacketHandlerMP extends Thread
 			if(p.id == 0)
 			{
 				con.STATE = ((Packet0StateUpdate)p).data;
-				if(con.STATE == Connection.RUNNING) addPacketToSendingQueue(p);
-				else if(con.STATE == Connection.QUIT) Server.server.delConnection(con, "Disconnect quitting");
+				if(con.STATE == GameState.RUNNING) addPacketToSendingQueue(p);
+				else if(con.STATE == GameState.QUIT) Server.server.delConnection(con, "Disconnect quitting");
 			}
 			else if(p.id == 8)
 			{

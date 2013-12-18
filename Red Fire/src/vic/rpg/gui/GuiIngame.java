@@ -24,6 +24,7 @@ public class GuiIngame extends GuiContainer
 	private ArrayList<String> chatValues = new ArrayList<String>();
 	private final int MAX_CHATLINES = 10;
 	private int lp;
+	//TODO Struggles with quick health changes.
 	private LinearAnimator lpAnim;
 	
 	public static GuiIngame gui = new GuiIngame();

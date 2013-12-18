@@ -46,6 +46,8 @@ public class Server extends Thread
 	public static int actConnections = 0;
 	public static HashMap<String, Connection> connections = new LinkedHashMap<String, Connection>();
 	public static boolean isSinglePlayer = false;
+
+	public static int STATE = GameState.LOADING;
 	
 	static boolean nogui = false;
 	
@@ -82,7 +84,7 @@ public class Server extends Thread
 			}
 			catch(Exception e)
 			{
-				System.err.println("File " + file + "in not valid!");
+				System.err.println("File " + file + "is not valid!");
 				return;
 			}
 		}
@@ -129,8 +131,6 @@ public class Server extends Thread
 					if(nogui) ServerGui.setup();
 					
 					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
-					System.out.println("________________________________________________");
-
 					System.out.println("Performing init operations...");
 					server.init();
 					System.out.println("done!");
@@ -158,6 +158,8 @@ public class Server extends Thread
 					
 					System.out.println("Starting Thread: GameLoop");
 					server.serverLoop.start();
+					STATE = GameState.RUNNING;
+					System.out.println("done!");
 				}
 				catch(BindException e) {
 					System.err.println("Server port is already in use! Please choose an other one.");
@@ -256,9 +258,9 @@ public class Server extends Thread
 		    	}	    	
 		    	else ServerLoop.level.createPlayer(playerEntity, player, ServerLoop.level.spawnX, ServerLoop.level.spawnY);
 		    		
-		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));    	
+		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
-		    	con.STATE = Connection.LOADING;
+		    	con.STATE = GameState.LOADING;
 		    	
 		    	System.out.println("Player " + player + " connected to the Server.");
 	    	}

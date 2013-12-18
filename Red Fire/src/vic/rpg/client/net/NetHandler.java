@@ -9,8 +9,8 @@ import java.net.Socket;
 import vic.rpg.Game;
 import vic.rpg.client.packet.PacketHandlerSP;
 import vic.rpg.registry.GameRegistry;
+import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
-import vic.rpg.server.io.Connection;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet0StateUpdate;
 
@@ -23,7 +23,7 @@ public class NetHandler extends Thread
 	public boolean IS_SINGLEPLAYER = false;
 	public String lastError = "";
 	
-	public int STATE = Connection.RUNNING; 
+	public int STATE = GameState.RUNNING; 
 	
 	public NetHandler()
 	{
@@ -41,7 +41,7 @@ public class NetHandler extends Thread
 			out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 			out.writeUTF(Game.USERNAME);
 			out.writeUTF(GameRegistry.VERSION);
-			out.flush();		
+			out.flush();
 			this.start();
 			Game.packetHandler = new PacketHandlerSP();
 			System.out.println("Succsessfully connected to: " + adress + ":" + port + " as player " + username);
@@ -76,9 +76,7 @@ public class NetHandler extends Thread
 	
 				if(in.available() > 1) 
 				{		    			    			
-//					String s = String.valueOf(in.available());	
 					int id = in.readByte();
-//					System.out.println(id + ":" + s);
 					Packet packet = Packet.getPacket(id);
 					packet.readData(in);
 					
@@ -102,7 +100,7 @@ public class NetHandler extends Thread
 			{
 				if(this.socket.isConnected())
 				{
-					STATE = Connection.QUIT;
+					STATE = GameState.QUIT;
 					Game.packetHandler.addPacketToSendingQueue(new Packet0StateUpdate(STATE));				
 				}
 				this.socket.close();

@@ -234,7 +234,8 @@ public class Game extends GLCanvas implements Runnable
 			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
 		});
 		
-		System.setErr(new PrintStream(System.err)
+		//TODO destroys error messages :3
+		/*System.setErr(new PrintStream(System.err)
 		{
 			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:");}
 			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
@@ -246,7 +247,7 @@ public class Game extends GLCanvas implements Runnable
 			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
 			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
 			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
-		});
+		});*/
 		
 		GL_PROFILE = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);

@@ -66,9 +66,7 @@ public class Packet7Entity extends Packet
 			NBTInputStream in;
 			ArrayList<Entity> list = new ArrayList<Entity>();	
 		
-			byte[] b2 = new byte[b.length - 1];
-			System.arraycopy(b, 1, b2, 0, b2.length);
-			in = new NBTInputStream(new DataInputStream(new ByteArrayInputStream(b2)));
+			in = new NBTInputStream(new ByteArrayInputStream(b));
 			CompoundTag tag = (CompoundTag)in.readTag();
 			in.close();
 			Map<String, Tag> map = tag.getValue();
@@ -101,23 +99,17 @@ public class Packet7Entity extends Packet
 				map.put("entity", LevelRegistry.writeEntityToNBT(e));
 			}
 			
-			CompoundTag tag = new CompoundTag("entities", map);
-			
+			CompoundTag tag = new CompoundTag("entities", map);			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			NBTOutputStream out;
 			try {
-				out = new NBTOutputStream(new DataOutputStream(baos));
+				out = new NBTOutputStream(baos);
 				out.writeTag(tag);
 				out.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}				
-			byte[] data = baos.toByteArray();
-			byte[] data2 = new byte[data.length + 1];
-			System.arraycopy(data, 0, data2, 1, data.length);
-			data2[0] = (byte)mode;
-			
-			stream.write(data2);
+			stream.write(baos.toByteArray());
 		
 		} catch (IOException e1) {
 			e1.printStackTrace();

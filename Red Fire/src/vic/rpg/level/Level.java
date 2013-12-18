@@ -446,17 +446,17 @@ public class Level implements INBTReadWrite
 	}
 	
 	public void createPlayer(EntityPlayer player, String username, int x, int y)
-	{
-		UUID uuid = UUID.randomUUID();
-		player.xCoord = x;
-		player.yCoord = y;
-		player.username = username;
-		player.UUID = uuid.toString();
-		player.levelObj = this;
-		player.formatInventory();
-		onlinePlayersMap.put(username, player);		
-	}
-
+    {
+        UUID uuid = UUID.randomUUID();
+        player.xCoord = x;
+        player.yCoord = y;
+        player.username = username;
+        player.UUID = uuid.toString();
+        player.levelObj = this;
+        player.formatInventory();
+        onlinePlayersMap.put(username, player);                
+    }
+	
 	public ArrayList<Entity> sortEntitiesByZLevel()
 	{
 		ArrayList<Entity> ent2 = new ArrayList<Entity>(entityMap.values());

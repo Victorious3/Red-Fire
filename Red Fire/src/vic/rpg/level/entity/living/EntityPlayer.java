@@ -10,8 +10,6 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.item.ItemApple;
-import vic.rpg.item.ItemShield;
-import vic.rpg.item.ItemSword;
 import vic.rpg.level.Editable;
 import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
@@ -61,13 +59,9 @@ public class EntityPlayer extends EntityLiving
 		inventory.add(17);
 		inventory.add(18);
 		
+		//TODO addToInventory sends Entity!
 		inventory.addItem(2, new ItemApple());
 		inventory.addItem(9, new ItemApple());
-		
-		inventory.addToInventory(new ItemSword());
-		inventory.addToInventory(new ItemSword());
-		inventory.addToInventory(new ItemSword());
-		inventory.addToInventory(new ItemShield());
 	}
 
 	@Override
