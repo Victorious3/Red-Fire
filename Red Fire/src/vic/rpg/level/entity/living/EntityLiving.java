@@ -45,11 +45,12 @@ public class EntityLiving extends Entity
 	private int nextX;
 	private int nextY;
 	
-	public Inventory inventory = new Inventory(this);
+	public Inventory inventory;
 	
 	public EntityLiving(int width, int height) 
 	{
 		super(width, height);
+		inventory = new Inventory(this);
 	}
 
 	public void setX(int x)
@@ -122,7 +123,10 @@ public class EntityLiving extends Entity
 		return tag;
 	}
 	
-	public void formatInventory(){};
+	public void formatInventory()
+	{
+		inventory = new Inventory(this);
+	};
 
 	public void setY(int y)
 	{

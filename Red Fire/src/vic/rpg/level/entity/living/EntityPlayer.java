@@ -37,6 +37,8 @@ public class EntityPlayer extends EntityLiving
 	@Override
 	public void formatInventory() 
 	{
+		inventory = new Inventory(this);
+		
 		inventory.add(0, 12, 8);
 		inventory.add(1);
 		inventory.add(2);

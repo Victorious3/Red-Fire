@@ -106,7 +106,7 @@ public class PacketHandlerMP extends Thread
 				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
 				packet.inventory.parentEntity = ServerLoop.level.onlinePlayersMap.get(con.username);
 				packet.inventory.parentEntity.addEventListener(packet.inventory);
-				ServerLoop.level.onlinePlayersMap.get(con.username).inventory = packet.inventory;
+				packet.inventory.parentEntity.inventory = packet.inventory;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

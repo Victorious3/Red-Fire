@@ -147,7 +147,6 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 			if(collides) return true;
 		}
 		
-		//TODO A little bit onto a single point
 		int x = (int)((double)(xCoord + (getWidth() / 2D)) / (double)Level.CELL_SIZE);
 		int y = (int)((double)(yCoord + (getHeight() / 2D)) / (double)Level.CELL_SIZE);
 		
