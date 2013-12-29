@@ -28,6 +28,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -51,7 +52,7 @@ import vic.rpg.utils.Utils;
 
 public class EntityEditor implements WindowListener
 {
-	public JFrame frame;
+	public JDialog frame;
 	public JTextArea editor;
 	public PanelEntity pArea;
 	public JSplitPane splitPane;
@@ -107,11 +108,12 @@ public class EntityEditor implements WindowListener
 		gbConstraints.weightx = 1;
 		gbConstraints.weighty = 1;
 			
-		frame = new JFrame();	
+		frame = new JDialog();	
 		
 		Editor.instance.frame.setEnabled(false);
 		
 		frame.setSize(800, 600);
+		frame.setModal(true);
 		frame.setLocationRelativeTo(Editor.instance.frame);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.setTitle("Entity Editor");

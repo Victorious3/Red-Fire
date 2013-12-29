@@ -248,8 +248,10 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		
 		if(Editor.instance.buttonMove.isSelected())
 		{
-			int x = Editor.instance.labelLevel.xOffset + (xCoord - preX);
-			int y = Editor.instance.labelLevel.yOffset + (yCoord - preY);
+			Point p = Utils.convIsoToCart(new Point(xCoord - preX, yCoord - preY));
+
+			int x = Editor.instance.labelLevel.xOffset + p.x;
+			int y = Editor.instance.labelLevel.yOffset + p.y;
 			
 			Editor.instance.labelLevel.xOffset = x;
 			Editor.instance.labelLevel.yOffset = y;
@@ -369,7 +371,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		
 		if(x2 >= 0 && y2 >= 0 && x2 < Editor.instance.level.height && y2 < Editor.instance.level.width) 
 		{
-			Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 16D);
+			Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 10D);
 			
 			if(Arrays.asList(inner.getSubMaterials().get(outer.getName())).contains(op) || Arrays.asList(outer.getSubMaterials().get(inner.getName())).contains(op))
 			{

@@ -20,8 +20,7 @@ public class EntityHouse extends EntityStatic
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord, yCoord + 21, 175, 215)));
-		area.add(new Area(new Rectangle(xCoord + 175, yCoord, 127, 320)));
+		area.add(new Area(new Rectangle(xCoord + 110, yCoord + 32, 128, 128)));
 		return area;
 	}
 

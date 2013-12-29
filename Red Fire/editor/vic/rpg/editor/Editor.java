@@ -613,6 +613,17 @@ public class Editor
 			e.printStackTrace();
 		}
 		
+		Game.init();
+		
+		for(Integer i : LevelRegistry.entityRegistry.keySet())
+		{
+			TableListener.entities.put(i, LevelRegistry.entityRegistry.get(i).clone());
+		}
+		for(Integer i : LevelRegistry.tileRegistry.keySet())
+		{
+			TableListener.tiles.put(i, LevelRegistry.tileRegistry.get(i).data);
+		}
+		
 		RenderRegistry.bufferImages();
 		RenderRegistry.setup();
 		

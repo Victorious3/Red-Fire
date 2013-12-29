@@ -18,6 +18,6 @@ public class TileTerrain extends Tile
 	@Override
 	public Point getTextureCoord(int x, int y, int data) 
 	{
-		return Utils.conv1Dto2DPoint(data, 16D);
+		return Utils.conv1Dto2DPoint(data, 10D);
 	}	
 }

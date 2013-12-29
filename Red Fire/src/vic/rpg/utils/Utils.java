@@ -275,6 +275,16 @@ public class Utils
 		return 0;
 	}
 	
+	public static Point convIsoToCart(Point p)
+	{
+		return new Point((2 * p.y + p.x) / 2, (2 * p.y - p.x) / 2);
+	}
+	
+	public static Point convCartToIso(Point p)
+	{
+		return new Point(p.x - p.y, (p.x + p.y) / 2);
+	}
+	
 	//TODO Not used everywhere (Actually used nowhere)
 	public static CompoundTag combineTags(CompoundTag a, CompoundTag b)
 	{

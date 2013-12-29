@@ -15,25 +15,12 @@ import vic.rpg.editor.Editor;
 import vic.rpg.level.Editable;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Tile;
-import vic.rpg.registry.LevelRegistry;
 import vic.rpg.utils.Utils;
 
 public class TableListener implements TableModelListener
 {
 	public static HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
 	public static HashMap<Integer, Integer> tiles = new HashMap<Integer, Integer>();
-	
-	static
-	{
-		for(Integer i : LevelRegistry.entityRegistry.keySet())
-		{
-			entities.put(i, LevelRegistry.entityRegistry.get(i).clone());
-		}
-		for(Integer i : LevelRegistry.tileRegistry.keySet())
-		{
-			tiles.put(i, LevelRegistry.tileRegistry.get(i).data);
-		}
-	}
 	
 	@Override
 	public void tableChanged(TableModelEvent e) 

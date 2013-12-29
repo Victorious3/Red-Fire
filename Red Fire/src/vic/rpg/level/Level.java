@@ -55,13 +55,13 @@ public class Level implements INBTReadWrite
 	
 	public NodeMap nodeMap = new NodeMap(this);
 	
-	// Gameplay
+	//Gameplay
 	@Editable public int time = 5000;
 	@Editable public String name = "NO_NAME";
 	@Editable public int spawnX = 0;
 	@Editable public int spawnY = 0;
 	
-	// Client stuff
+	//Client stuff
 	public ArrayList<Entity> entitiesForRender;
 	
 	public Level(int width, int height, String name) 
@@ -239,11 +239,11 @@ public class Level implements INBTReadWrite
 						if(tile != null)
 						{
 							Dimension tileDim = tile.getDimension(x, y, data);
-							if(x * CELL_SIZE >= xOffset - CELL_SIZE * tileDim.getWidth() && x * CELL_SIZE <= xOffset + width && y * CELL_SIZE >= yOffset - CELL_SIZE * tileDim.getHeight() && y * CELL_SIZE <= yOffset + height)
+							Point tilePos = Utils.convCartToIso(new Point(x * CELL_SIZE / 2 - xOffset, y * CELL_SIZE / 2 - yOffset));		
+							if(tilePos.x + CELL_SIZE > 0 && tilePos.y + CELL_SIZE > 0 && tilePos.x < width && tilePos.y < height)
 							{
-								tile.setWorldObj(this);
 								Point texPos = tile.getTextureCoord(x, y, data);
-								DrawUtils.drawTextureWithOffset(x * CELL_SIZE - xOffset, y * CELL_SIZE - yOffset, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));			
+								DrawUtils.drawTextureWithOffset(tilePos.x, tilePos.y, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));			
 							}
 						}					
 					}
@@ -253,10 +253,11 @@ public class Level implements INBTReadWrite
 		
 		for(Entity e : sortEntitiesByZLevel())
 		{
-			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
+//			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
 			{
 				e.render(gl2);
-				DrawUtils.drawTexture(e.xCoord - xOffset, e.yCoord - yOffset, e.getTexture());
+				Point entPos = Utils.convCartToIso(new Point(e.xCoord - xOffset, e.yCoord - yOffset));
+				DrawUtils.drawTexture(entPos.x, entPos.y, e.getTexture());
 			}
 		}
 	}
@@ -314,7 +315,7 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
-	public static final int CELL_SIZE = 32;	
+	public static final int CELL_SIZE = 64;	
 	
 	private int currentLayer = 0;
 	

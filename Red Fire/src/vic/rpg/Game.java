@@ -93,7 +93,7 @@ public class Game extends GLCanvas implements Runnable
     	System.exit(0);
     }
     
-    private void init()
+    public static void init()
     {   	
 		List<Class<?>> cls;
 		try {
