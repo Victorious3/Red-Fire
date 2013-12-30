@@ -29,6 +29,7 @@ import vic.rpg.level.path.Node;
 import vic.rpg.level.path.NodeMap;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
+import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.Animator;
 
@@ -101,7 +102,8 @@ public class PanelLevel extends GLJPanel
 		AffineTransform oldTransform = g2d.getTransform();
 		AffineTransform transform = new AffineTransform();
 		transform.scale(scale, scale);
-		transform.translate(xOffset / scale, yOffset / scale);
+		Point p1 = Utils.convCartToIso(new Point(xOffset, yOffset));
+		transform.translate(p1.x / scale, p1.y / scale);
 		g2d.transform(transform);
 		
 		if(Editor.instance == null) return;
@@ -119,12 +121,17 @@ public class PanelLevel extends GLJPanel
 		}
 		if(Mouse.selectedTiles != null)
 		{
-			for(Point p : Mouse.selectedTiles)
+			for(Point p2 : Mouse.selectedTiles)
 			{
 				g2d.setColor(Color.yellow);
 				Stroke stroke = g2d.getStroke();
 				g2d.setStroke(new BasicStroke(5));
-				g2d.drawRect(p.x * Level.CELL_SIZE, p.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+				Point p3 = Utils.convCartToIso(new Point((p2.x + 1) * (Level.CELL_SIZE / 2), (p2.y + 1) * (Level.CELL_SIZE / 2)));
+				g2d.drawLine(p3.x, p3.y + Level.CELL_SIZE / 4, p3.x + Level.CELL_SIZE / 2, p3.y);
+				g2d.drawLine(p3.x, p3.y + Level.CELL_SIZE / 4, p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 2);
+				g2d.drawLine(p3.x + Level.CELL_SIZE / 2, p3.y, p3.x + Level.CELL_SIZE, p3.y + Level.CELL_SIZE / 4);
+				g2d.drawLine(p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 2, p3.x + Level.CELL_SIZE, p3.y + Level.CELL_SIZE / 4);
+//				g2d.drawRect(p2.x, p2.y, Level.CELL_SIZE, Level.CELL_SIZE);
 				g2d.setStroke(stroke);
 			}
 		}		

@@ -613,6 +613,8 @@ public class Editor
 			e.printStackTrace();
 		}
 		
+		RenderRegistry.bufferImages();
+		RenderRegistry.setup();
 		Game.init();
 		
 		for(Integer i : LevelRegistry.entityRegistry.keySet())
@@ -623,9 +625,6 @@ public class Editor
 		{
 			TableListener.tiles.put(i, LevelRegistry.tileRegistry.get(i).data);
 		}
-		
-		RenderRegistry.bufferImages();
-		RenderRegistry.setup();
 		
 		instance = new Editor();
 		

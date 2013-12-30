@@ -103,21 +103,10 @@ public class PopupMenu implements ActionListener
 			else if(((JPopupMenu)((JMenuItem)arg0.getSource()).getParent()).getInvoker() == menuTile)
 			{
 				int id =  Integer.parseInt(((JMenuItem)arg0.getSource()).getText().split(":")[0]);
-				
-				int minX = Editor.instance.level.width;
-				int minY = Editor.instance.level.height;
-				int maxX = 0;
-				int maxY = 0;
-				
 				if(Mouse.selectedTiles.size() != 0)
 				{
 					for(Point p : Mouse.selectedTiles)
 					{
-						if(p.x < minX) minX = p.x;
-						if(p.y < minY) minY = p.y;
-						if(p.x > maxX) maxX = p.x;
-						if(p.y > maxY) maxY = p.y;
-						
 						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id), Editor.layerID);			
 					}
 					Editor.instance.labelLevel.updateUI();

@@ -55,29 +55,13 @@ public class Clipboard
 	 * Copies the currently selected Tiles and Entities.
 	 */
 	public static void copy()
-	{
-		int minX = Editor.instance.level.getWidth();
-		int minY = Editor.instance.level.getHeight();
-		
+	{		
 		entities.clear();
 		for(Entity e : Mouse.selectedEntities)
 		{
 			entities.add(e.clone());
 		}		
-		for(Entity e : entities)
-		{
-			if(e.xCoord < minX) minX = e.xCoord;
-			if(e.yCoord < minY) minY = e.yCoord;
-		}
-		for(Entity e : entities)
-		{
-			e.xCoord -= minX;
-			e.yCoord -= minY;
-		}
-		
-		minX = Editor.instance.level.width;
-		minY = Editor.instance.level.height;
-		
+
 		tiles.clear();
 		tilesID.clear();
 		
@@ -87,16 +71,7 @@ public class Clipboard
 		}
 		for(Point p : tiles)
 		{
-			if(p.x < minX) minX = p.x;
-			if(p.y < minY) minY = p.y;
-		}
-		for(Point p : tiles)
-		{
 			Integer[] values = new Integer[]{Editor.instance.level.getTileAt(p.x, p.y, Editor.layerID).id, Editor.instance.level.getTileDataAt(p.x, p.y, Editor.layerID)};
-			
-			p.x -= minX;
-			p.y -= minY;
-			
 			tilesID.put(p, values);
 		}
 	}
