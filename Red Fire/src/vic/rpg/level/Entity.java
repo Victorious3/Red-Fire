@@ -147,8 +147,13 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 			if(collides) return true;
 		}
 		
-		int x = (int)((double)(xCoord + (getWidth() / 2D)) / (double)Level.CELL_SIZE);
-		int y = (int)((double)(yCoord + (getHeight() / 2D)) / (double)Level.CELL_SIZE);
+		//TODO Not quite precise, this is using a single point rather than using an area.
+		Point p = Utils.convCartToIso(new Point(this.xCoord, this.yCoord));
+		p.x += this.getWidth() / 2;
+		p.y += this.getHeight();
+		Point p2 = Utils.convIsoToCart(p);
+		int x = (int)((float)(p2.x) / (float)Level.CELL_SIZE * 2);
+		int y = (int)((float)(p2.y) / (float)Level.CELL_SIZE * 2);
 		
 		if(x < 0 || y < 0 || x >= level.width || y >= level.height) return true;
 		

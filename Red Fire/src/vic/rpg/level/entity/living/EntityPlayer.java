@@ -1,5 +1,6 @@
 package vic.rpg.level.entity.living;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
+import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
@@ -26,10 +28,10 @@ public class EntityPlayer extends EntityLiving
 	@Editable public String username = "NO_USERNAME";
 	public boolean isWalkingBlocked = false;
 	
-	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 32, 48, 3, 4, 0, 0, 10);	
+	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 70, 70, 8, 8, 0, 0, 10);	
 	public EntityPlayer() 
 	{
-		super(32, 48);
+		super(70, 70);
 		this.zLevel = -1;
 		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
@@ -69,7 +71,8 @@ public class EntityPlayer extends EntityLiving
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord, yCoord, getWidth(), getHeight())));
+		Point p = Utils.convCartToIso(new Point(xCoord, yCoord));
+		area.add(new Area(new Rectangle(p.x + 27, p.y + 53, 16, 15)));
 		return area;
 	}
 
@@ -113,7 +116,7 @@ public class EntityPlayer extends EntityLiving
 	public void initRender() 
 	{
 		super.rotatedSprites = Utils.cloneArray(EntityPlayer.sprites, TextureFX.class);
-		this.setRotation(0);
+		this.setRotation(Direction.NORTH);
 	}
 
 	@Override

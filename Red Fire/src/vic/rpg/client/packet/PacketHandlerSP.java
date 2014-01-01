@@ -1,5 +1,6 @@
 package vic.rpg.client.packet;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
@@ -24,6 +25,7 @@ import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.packet.Packet9EntityMoving;
+import vic.rpg.utils.Utils;
 
 public class PacketHandlerSP extends Thread
 {	
@@ -80,8 +82,12 @@ public class PacketHandlerSP extends Thread
 						{
 							Game.playerUUID = e.UUID;
 							Game.getPlayer().setRotation(Game.getPlayer().rotation);
-							Screen.xOffset = -e.xCoord + (Game.WIDTH - e.getWidth()) / 2;
-							Screen.yOffset = -e.yCoord + (Game.HEIGHT - e.getHeight()) / 2;
+							Point p1 = Utils.convCartToIso(new Point(-e.xCoord, -e.yCoord));
+							p1.x += (Game.WIDTH - e.getWidth()) / 2;
+							p1.y += (Game.HEIGHT - e.getHeight()) / 2;
+							p1 = Utils.convIsoToCart(p1);
+							Screen.xOffset = p1.x;
+							Screen.yOffset = p1.y;
 							if(Gui.currentGui instanceof GuiPlayer)
 							{
 								Gui.currentGui.initGui();
@@ -103,8 +109,6 @@ public class PacketHandlerSP extends Thread
 					}
 				}			
 			}
-			
-			if(Game.level != null) Game.level.entitiesForRender = Game.level.sortEntitiesByZLevel();
 		}
 		else if(p.id == 9)
 		{

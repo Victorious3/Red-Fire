@@ -34,13 +34,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -52,8 +50,6 @@ import vic.rpg.Game;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
 import vic.rpg.editor.gui.PanelLevel;
-import vic.rpg.editor.gui.PanelTexture;
-import vic.rpg.editor.listener.BrushFrameListener;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.LayerFrameListener;
@@ -161,13 +157,14 @@ public class Editor
 	public JButton buttonNewLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
 	public JButton buttonRemoveLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
 	
+	/*
 	//Brush Frame
 	public JDockableFrame frameBrush;
 	public JSlider sliderBrushSize = new JSlider(SwingConstants.VERTICAL, 0, 20, 1);
 	public PanelTexture panelTexture1 = new PanelTexture(NO_TEXTURE);
 	public PanelTexture panelTexture2 = new PanelTexture(NO_TEXTURE);
 	public JButton buttonEditBrush = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
-	
+	*/
 	public Level level;
 	
 	public Editor()
@@ -359,6 +356,7 @@ public class Editor
 		
 		desktop.add(frameLayers);
 		
+		/*
 		//Brush Frame
 		frameBrush = new JDockableFrame("Brush Settings", true, false);
 		frameBrush.setFrameIcon(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/windows.png")));
@@ -411,7 +409,7 @@ public class Editor
 		frameBrush.add(p2, frameBrushConstraints);
 		
 		desktop.add(frameBrush);
-		
+		*/
 		labelLevel.add(desktop, BorderLayout.CENTER);
 		
 		GridBagConstraints panelEastConstraints = new GridBagConstraints();

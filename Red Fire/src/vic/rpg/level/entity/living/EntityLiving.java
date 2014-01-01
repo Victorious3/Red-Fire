@@ -20,6 +20,7 @@ import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet9EntityMoving;
+import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
@@ -29,7 +30,8 @@ public class EntityLiving extends Entity
 {
 	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png"));
 	
-	@Editable public int rotation = 0;
+	public Direction rotation = Direction.NORTH;
+	
 	@Editable public int lp = 100;
 	@Editable public int max_lp = 100;
 	
@@ -97,7 +99,7 @@ public class EntityLiving extends Entity
 	{
 		super.readFromNBT(tag);
 		Map<String, Tag> map = tag.getValue();
-		this.rotation = (Integer) map.get("rotation").getValue();
+		this.rotation = Direction.getDirection((Integer) map.get("rotation").getValue());
 		this.lp = (Integer) map.get("lp").getValue();
 		this.max_lp = (Integer) map.get("max_lp").getValue();
 		inventory.readFromNBT(tag);
@@ -107,7 +109,7 @@ public class EntityLiving extends Entity
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		tag = super.writeToNBT(tag);
-		IntTag rotation = new IntTag("rotation", this.rotation);
+		IntTag rotation = new IntTag("rotation", this.rotation.getID());
 		IntTag lp = new IntTag("lp", this.lp);
 		IntTag max_lp = new IntTag("max_lp", this.max_lp);
 		Map<String, Tag> map = tag.getValue();
@@ -139,9 +141,9 @@ public class EntityLiving extends Entity
 		this.setTexture(fx);
 	}
 	
-	public void setRotation(int rotation)
+	public void setRotation(Direction rotation)
 	{
-		if(Utils.getSide() == Side.CLIENT) this.setSprite(rotatedSprites[rotation]);
+		if(Utils.getSide() == Side.CLIENT) this.setSprite(rotatedSprites[rotation.getID()]);
 		this.rotation = rotation;
 	}
 	
@@ -171,10 +173,14 @@ public class EntityLiving extends Entity
 			if(nextY < yCoord) setY((int)(yCoord - speed));
 			if(nextY > yCoord) setY((int)(yCoord + speed));
 			
-			if(nextX < xCoord) setRotation(1);
-			else if(nextX > xCoord) setRotation(2);
-			else if(nextY < yCoord) setRotation(3);
-			else if(nextY > yCoord) setRotation(0);
+			if(nextX < xCoord && nextY < yCoord) setRotation(Direction.NORTH);
+			else if(nextX < xCoord && nextY > yCoord) setRotation(Direction.WEST);
+			else if(nextX > xCoord && nextY < yCoord) setRotation(Direction.EAST);
+			else if(nextX > xCoord && nextY > yCoord) setRotation(Direction.SOUTH);
+			else if(nextX < xCoord) setRotation(Direction.NORTH_WEST);
+			else if(nextX > xCoord) setRotation(Direction.SOUTH_EAST);
+			else if(nextY < yCoord) setRotation(Direction.NORTH_EAST);
+			else if(nextY > yCoord) setRotation(Direction.SOUTH_WEST);
 
 			if(nextX > xCoord - speed && nextX < xCoord + speed && nextY > yCoord - speed && nextY < yCoord + speed)
 			{

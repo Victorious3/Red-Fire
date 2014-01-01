@@ -1,6 +1,5 @@
 package vic.rpg.level;
 
-import java.awt.Dimension;
 import java.awt.Point;
 
 import vic.rpg.render.TextureLoader;
@@ -30,15 +29,16 @@ public class Tile
 		return new Point(0, 0);
 	}
 	
-	public Dimension getDimension(int x, int y, int data)
+	public int getHeight(int x, int y, int data)
 	{
-		return new Dimension(1, 1);
+		return 1;
 	}
 	
 	public void tick(int x, int y, int data){};
 	
 	//Editor stuff
 	public String getDescription(){return "MISSING_DESCRIPTION";}
+	public String getName(){return "MISSING_NAME";}
 	
 	public double getMovementCost(){return 0;}
 	public boolean isWalkingPermitted(){return true;}

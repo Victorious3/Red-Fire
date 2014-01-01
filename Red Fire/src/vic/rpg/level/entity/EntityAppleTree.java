@@ -49,7 +49,8 @@ public class EntityAppleTree extends EntityStatic
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord + 3, yCoord + 56, 65, 31)));
+		Point p = Utils.convCartToIso(new Point(xCoord, yCoord));
+		area.add(new Area(new Rectangle(p.x + 3, p.y + 56, 65, 31)));
 		return area;
 	}
 }

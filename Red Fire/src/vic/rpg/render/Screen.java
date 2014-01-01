@@ -6,6 +6,7 @@ import vic.rpg.Game;
 import vic.rpg.gui.Gui;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.packet.Packet9EntityMoving;
+import vic.rpg.utils.Direction;
 
 public class Screen extends Drawable 
 {	
@@ -79,21 +80,37 @@ public class Screen extends Drawable
 					else Game.getPlayer().xCoord -= 2; 
 				}
 				
-				if(GameRegistry.key.APressed) 
+				if(GameRegistry.key.APressed && GameRegistry.key.WPressed) 
 				{
-					Game.getPlayer().setRotation(1);
+					Game.getPlayer().setRotation(Direction.NORTH);
+				}
+				else if(GameRegistry.key.WPressed && GameRegistry.key.DPressed) 
+				{
+					Game.getPlayer().setRotation(Direction.EAST);
+				}
+				else if(GameRegistry.key.DPressed && GameRegistry.key.SPressed) 
+				{
+					Game.getPlayer().setRotation(Direction.SOUTH);
+				}
+				else if(GameRegistry.key.SPressed && GameRegistry.key.APressed) 
+				{
+					Game.getPlayer().setRotation(Direction.WEST);
+				}
+				else if(GameRegistry.key.APressed) 
+				{
+					Game.getPlayer().setRotation(Direction.NORTH_WEST);
 				}
 				else if(GameRegistry.key.WPressed) 
 				{
-					Game.getPlayer().setRotation(3);
+					Game.getPlayer().setRotation(Direction.NORTH_EAST);
 				}
 				else if(GameRegistry.key.SPressed) 
 				{
-					Game.getPlayer().setRotation(0);
+					Game.getPlayer().setRotation(Direction.SOUTH_WEST);
 				}
 				else if(GameRegistry.key.DPressed) 
 				{
-					Game.getPlayer().setRotation(2);
+					Game.getPlayer().setRotation(Direction.SOUTH_EAST);
 				}
 				else
 				{

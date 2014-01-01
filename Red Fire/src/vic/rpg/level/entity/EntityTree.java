@@ -1,5 +1,6 @@
 package vic.rpg.level.entity;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
@@ -20,7 +21,8 @@ public class EntityTree extends EntityStatic
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord + 30, yCoord + 195, 35, 28)));
+		Point p = Utils.convCartToIso(new Point(xCoord, yCoord));
+		area.add(new Area(new Rectangle(p.x + 30, p.y + 195, 35, 28)));
 		return area;
 	}
 }

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
@@ -27,6 +28,7 @@ import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.NodeMap;
+import vic.rpg.level.path.Path;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
@@ -115,7 +117,8 @@ public class PanelLevel extends GLJPanel
 				g2d.setColor(Color.yellow);
 				Stroke stroke = g2d.getStroke();
 				g2d.setStroke(new BasicStroke(5));
-				g2d.drawRect(e.xCoord, e.yCoord, e.getWidth(), e.getHeight());
+				Point p = Utils.convCartToIso(new Point(e.xCoord, e.yCoord));
+				g2d.drawRect(p.x, p.y, e.getWidth(), e.getHeight());
 				g2d.setStroke(stroke);
 			}
 		}
@@ -126,12 +129,11 @@ public class PanelLevel extends GLJPanel
 				g2d.setColor(Color.yellow);
 				Stroke stroke = g2d.getStroke();
 				g2d.setStroke(new BasicStroke(5));
-				Point p3 = Utils.convCartToIso(new Point((p2.x + 1) * (Level.CELL_SIZE / 2), (p2.y + 1) * (Level.CELL_SIZE / 2)));
-				g2d.drawLine(p3.x, p3.y + Level.CELL_SIZE / 4, p3.x + Level.CELL_SIZE / 2, p3.y);
-				g2d.drawLine(p3.x, p3.y + Level.CELL_SIZE / 4, p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 2);
-				g2d.drawLine(p3.x + Level.CELL_SIZE / 2, p3.y, p3.x + Level.CELL_SIZE, p3.y + Level.CELL_SIZE / 4);
-				g2d.drawLine(p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 2, p3.x + Level.CELL_SIZE, p3.y + Level.CELL_SIZE / 4);
-//				g2d.drawRect(p2.x, p2.y, Level.CELL_SIZE, Level.CELL_SIZE);
+				Point p3 = Utils.convCartToIso(new Point(p2.x * (Level.CELL_SIZE / 2), p2.y * (Level.CELL_SIZE / 2)));
+				g2d.drawLine(p3.x - Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 4, p3.x, p3.y);
+				g2d.drawLine(p3.x - Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 4, p3.x, p3.y + Level.CELL_SIZE / 2);
+				g2d.drawLine(p3.x, p3.y, p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 4);
+				g2d.drawLine(p3.x, p3.y + Level.CELL_SIZE / 2, p3.x + Level.CELL_SIZE / 2, p3.y + Level.CELL_SIZE / 4);
 				g2d.setStroke(stroke);
 			}
 		}		
@@ -155,10 +157,11 @@ public class PanelLevel extends GLJPanel
 				{
 					for(Node n : n2)
 					{
-						if(n.isBlocked)
+						if(Path.isNodeBlocked(n, Editor.instance.level.nodeMap))
 						{
-							Point p = n.toPoint();					
-							g2d.fillRect(p.x, p.y, Level.CELL_SIZE, Level.CELL_SIZE);
+							Point p = Utils.convCartToIso(new Point(n.x * (Level.CELL_SIZE / 2), n.y * (Level.CELL_SIZE / 2)));
+							Polygon poly = new Polygon(new int[]{p.x - Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2}, new int[]{p.y + Level.CELL_SIZE / 4, p.y, p.y + Level.CELL_SIZE / 4, p.y + Level.CELL_SIZE / 2, p.y + Level.CELL_SIZE / 4}, 4);
+							g2d.fill(poly);
 						}
 					}
 				}
@@ -170,17 +173,30 @@ public class PanelLevel extends GLJPanel
 				}
 				
 				g2d.setColor(new Color(0, 255, 0, 120));
-				if(Mouse.start != null) g2d.fillRect(Mouse.start.x * Level.CELL_SIZE, Mouse.start.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
-				g2d.setColor(new Color(0, 255, 255, 120));
-				if(Mouse.end != null) g2d.fillRect(Mouse.end.x * Level.CELL_SIZE, Mouse.end.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
-				g2d.setColor(new Color(0, 0, 255, 120));
+				if(Mouse.start != null) 
+				{
+					Point p = Utils.convCartToIso(new Point(Mouse.start.x * (Level.CELL_SIZE / 2), Mouse.start.y * (Level.CELL_SIZE / 2)));
+					Polygon poly = new Polygon(new int[]{p.x - Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2}, new int[]{p.y + Level.CELL_SIZE / 4, p.y, p.y + Level.CELL_SIZE / 4, p.y + Level.CELL_SIZE / 2, p.y + Level.CELL_SIZE / 4}, 4);
+					g2d.fill(poly);
+				}
 				
+				g2d.setColor(new Color(0, 255, 255, 120));
+				if(Mouse.end != null)
+				{
+					Point p = Utils.convCartToIso(new Point(Mouse.end.x * (Level.CELL_SIZE / 2), Mouse.end.y * (Level.CELL_SIZE / 2)));
+					Polygon poly = new Polygon(new int[]{p.x - Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2}, new int[]{p.y + Level.CELL_SIZE / 4, p.y, p.y + Level.CELL_SIZE / 4, p.y + Level.CELL_SIZE / 2, p.y + Level.CELL_SIZE / 4}, 4);
+					g2d.fill(poly);
+				}
+				
+				g2d.setColor(new Color(0, 0, 255, 120));		
 				if(Mouse.path != null)
 				{
 					while(Mouse.path.hasNext())
 					{
 						Node n = Mouse.path.next();
-						g2d.fillRect(n.x * Level.CELL_SIZE, n.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+						Point p = Utils.convCartToIso(new Point(n.x * (Level.CELL_SIZE / 2), n.y * (Level.CELL_SIZE / 2)));
+						Polygon poly = new Polygon(new int[]{p.x - Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2, p.x, p.x + Level.CELL_SIZE / 2}, new int[]{p.y + Level.CELL_SIZE / 4, p.y, p.y + Level.CELL_SIZE / 4, p.y + Level.CELL_SIZE / 2, p.y + Level.CELL_SIZE / 4}, 4);
+						g2d.fill(poly);
 					}
 					Mouse.path.revert();
 				}

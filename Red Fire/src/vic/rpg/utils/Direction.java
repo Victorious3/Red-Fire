@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public enum Direction 
 {
-	NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7), CENTER(8);
+	NORTH(0), NORTH_EAST(1), EAST(2), SOUTH_EAST(3), SOUTH(4), SOUTH_WEST(5), WEST(6), NORTH_WEST(7), CENTER(8);
 	
 	private final int id;
 	

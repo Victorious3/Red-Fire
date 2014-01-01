@@ -53,7 +53,7 @@ public class Path
 	{
 		NodeMap map = nodeMap.clone();
 		
-		if(end.isBlocked || begin.isBlocked) return false;
+		if(isNodeBlocked(end, map) || isNodeBlocked(begin, map)) return false;
 		
 		ArrayList<Node> openList = new ArrayList<Node>();
 		ArrayList<Node> closedList = new ArrayList<Node>();
@@ -189,7 +189,7 @@ public class Path
 		return neighbors;
 	}
 	
-	private static boolean isNodeBlocked(Node n, NodeMap map)
+	public static boolean isNodeBlocked(Node n, NodeMap map)
 	{
 		if(n.isBlocked) return true;
 		if(!isWalkingPermitted(n.x, n.y, map)) return true;

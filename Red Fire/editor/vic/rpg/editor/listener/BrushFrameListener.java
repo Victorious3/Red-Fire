@@ -1,5 +1,6 @@
 package vic.rpg.editor.listener;
 
+/*
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -34,9 +35,12 @@ import vic.rpg.level.TexturePath;
 import vic.rpg.level.tiles.TileTerrain;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
+*/
 
-public class BrushFrameListener implements MouseListener, ActionListener, TreeSelectionListener
+@Deprecated
+public class BrushFrameListener /*implements MouseListener, ActionListener, TreeSelectionListener */
 {
+	/*
 	public static BrushFrameListener instance = new BrushFrameListener();
 	public static BufferedImage terrainImg = Utils.readImageFromJar(TileTerrain.class.getAnnotation(TexturePath.class).path());
 	
@@ -274,4 +278,5 @@ public class BrushFrameListener implements MouseListener, ActionListener, TreeSe
 			else labelEditMaterials.clear();
 		}
 	}
+	*/
 }

@@ -1,6 +1,5 @@
 package vic.rpg.level;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -10,7 +9,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,10 +58,7 @@ public class Level implements INBTReadWrite
 	@Editable public String name = "NO_NAME";
 	@Editable public int spawnX = 0;
 	@Editable public int spawnY = 0;
-	
-	//Client stuff
-	public ArrayList<Entity> entitiesForRender;
-	
+
 	public Level(int width, int height, String name) 
 	{	
 		this.width = width;
@@ -192,8 +187,7 @@ public class Level implements INBTReadWrite
 	
 	public Tile getTileAt(int x, int y, int layerID)
 	{
-		this.setLayer(layerID);
-		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
+		Tile t = LevelRegistry.tileRegistry.get(layers.get(layerID)[x][y][0]);
 		if(t != null) t.setWorldObj(this);
 		else if(t instanceof TilePlaceHolder) return null;
 		return t;
@@ -211,8 +205,7 @@ public class Level implements INBTReadWrite
 	
 	public Integer getTileDataAt(int x, int y, int layerID)
 	{
-		this.setLayer(layerID);
-		return layers.get(getLayer())[x][y][1];
+		return layers.get(layerID)[x][y][1];
 	}
 	
 	public int getLayerAmount()
@@ -223,41 +216,40 @@ public class Level implements INBTReadWrite
 	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height)
 	{
 		DrawUtils.setGL(gl2);
+		HashMap<Point, ArrayList<Entity>> entitiesForRender = sortEntitiesByZLevel();
 		
-		for(int l = 0; l < layers.size(); l++)
+		for(int x = 0; x < this.width; x++)
 		{
-			Integer[][][] layer = layers.get(l);
-			this.setLayer(l);		
-			if(isLayerVisible(l))
-			{
-				for(int x = 0; x < this.width; x++)
+			for(int y = 0; y < this.height; y++)
+			{				
+				for(int i = 0; i < getLayerAmount(); i++)
 				{
-					for(int y = 0; y < this.height; y++)
-					{				
-						Integer data = layer[x][y][1];
-						Tile tile = LevelRegistry.tileRegistry.get(layer[x][y][0]);
-						if(tile != null)
+					Integer data = getTileDataAt(x, y, i);
+					Tile tile = getTileAt(x, y, i);
+					if(tile != null)
+					{
+						int tileHeight = tile.getHeight(x, y, data);
+						Point tilePos = Utils.convCartToIso(new Point(x * CELL_SIZE / 2 - xOffset, y * CELL_SIZE / 2 - yOffset));		
+						
+						if(tilePos.x + CELL_SIZE > 0 && tilePos.y + CELL_SIZE > 0 && tilePos.x < width + CELL_SIZE && tilePos.y < height + CELL_SIZE * tileHeight)
 						{
-							Dimension tileDim = tile.getDimension(x, y, data);
-							Point tilePos = Utils.convCartToIso(new Point(x * CELL_SIZE / 2 - xOffset, y * CELL_SIZE / 2 - yOffset));		
-							if(tilePos.x + CELL_SIZE > 0 && tilePos.y + CELL_SIZE > 0 && tilePos.x < width && tilePos.y < height)
+							Point texPos = tile.getTextureCoord(x, y, data);
+							if(isLayerVisible(i)) DrawUtils.drawTextureWithOffset(tilePos.x - Level.CELL_SIZE / 2, tilePos.y - ((Level.CELL_SIZE / 2) * (tileHeight - 1) * 2) - Level.CELL_SIZE / 2, texPos.x * Level.CELL_SIZE, (texPos.y - tileHeight + 1) * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE * tileHeight, tile.getTexture(x, y, data));			
+							if(i == 0)
 							{
-								Point texPos = tile.getTextureCoord(x, y, data);
-								DrawUtils.drawTextureWithOffset(tilePos.x, tilePos.y, texPos.x * Level.CELL_SIZE, texPos.y * Level.CELL_SIZE, Level.CELL_SIZE * (int)tileDim.getWidth(), Level.CELL_SIZE * (int)tileDim.getHeight(), tile.getTexture(x, y, data));			
+								if(entitiesForRender.get(new Point(x,y)) != null)
+								{
+									for(Entity e : entitiesForRender.get(new Point(x,y)))
+									{
+										Point entPos = Utils.convCartToIso(new Point(e.xCoord - xOffset, e.yCoord - yOffset));
+										e.render(gl2);
+										DrawUtils.drawTexture(entPos.x, entPos.y, e.getTexture());
+									}
+								}
 							}
-						}					
+						}							
 					}
 				}
-			}
-		}
-		
-		for(Entity e : sortEntitiesByZLevel())
-		{
-//			if(e.xCoord + e.getWidth() >= xOffset && e.xCoord <= xOffset + width && e.yCoord + e.getHeight() >= yOffset && e.yCoord <= yOffset + height)
-			{
-				e.render(gl2);
-				Point entPos = Utils.convCartToIso(new Point(e.xCoord - xOffset, e.yCoord - yOffset));
-				DrawUtils.drawTexture(entPos.x, entPos.y, e.getTexture());
 			}
 		}
 	}
@@ -373,7 +365,8 @@ public class Level implements INBTReadWrite
 		this.setLayer(layerID);
 		Integer[][][] layer = layers.get(getLayer());
 		
-		if(layer[x][y][0] != null && layer[x][y][0] == LevelRegistry.TILE_PLACEHOLDER.id)
+		//TODO No support for bigger tile sizes yet!
+		/*if(layer[x][y][0] != null && layer[x][y][0] == LevelRegistry.TILE_PLACEHOLDER.id)
 		{
 			int loc = getTileDataAt(x, y, layerID);
 			Point p = Utils.conv1Dto2DPoint(loc, width);
@@ -390,9 +383,9 @@ public class Level implements INBTReadWrite
 					}
 				}
 			}
-		}
+		}*/
 		
-		Tile t = LevelRegistry.tileRegistry.get(id);
+		/*Tile t = LevelRegistry.tileRegistry.get(id);
 		if(t != null)
 		{
 			Dimension dim = t.getDimension(x, y, data);
@@ -408,7 +401,7 @@ public class Level implements INBTReadWrite
 					}
 				}
 			}
-		}	
+		}*/	
 		layer[x][y][0] = id;
 		layer[x][y][1] = data;
 	}
@@ -458,18 +451,35 @@ public class Level implements INBTReadWrite
         onlinePlayersMap.put(username, player);                
     }
 	
-	public ArrayList<Entity> sortEntitiesByZLevel()
+	public HashMap<Point, ArrayList<Entity>> sortEntitiesByZLevel()
 	{
-		ArrayList<Entity> ent2 = new ArrayList<Entity>(entityMap.values());
-		Collections.sort(ent2, new Entity.EntityComperator());
+		HashMap<Point, ArrayList<Entity>> ent2 = new HashMap<Point, ArrayList<Entity>>();
+		for(Entity e : entityMap.values())
+		{
+			Point p = Utils.convCartToIso(new Point(e.xCoord, e.yCoord));
+			p.x += e.getWidth() / 2;
+			p.y += e.getHeight();
+			Point p2 = Utils.convIsoToCart(p);
+			int x = (int)((float)(p2.x) / (float)Level.CELL_SIZE * 2);
+			int y = (int)((float)(p2.y) / (float)Level.CELL_SIZE * 2);
+			Point pnt = new Point(x, y);
+			if(ent2.get(pnt) == null) ent2.put(pnt, new ArrayList<Entity>());
+			ent2.get(pnt).add(e);
+		}
 		return ent2;
 	}
 	
+	/**
+	 * This method returns an Entity given two isometric coordinates.<br>
+	 * If no entity can be found, null is returned.
+	 * @return Entity
+	 */
 	public Entity intersectOnRender(int x, int y)
 	{
 		for(Entity ent : entityMap.values())
 		{
-			if(x >= ent.xCoord && x <= ent.xCoord + ent.getWidth() && y >= ent.yCoord && y <= ent.yCoord + ent.getHeight())
+			Point p = Utils.convCartToIso(new Point(ent.xCoord, ent.yCoord));
+			if(x >= p.x && x <= p.x + ent.getWidth() && y >= p.y && y <= p.y + ent.getHeight())
 			{
 				return ent;
 			}
@@ -477,6 +487,11 @@ public class Level implements INBTReadWrite
 		return null;
 	}
 	
+	/**
+	 * This method returns an array of all entities that intersect with a given shape in isometric coordinates.<br>
+	 * If no entity can be found, an empty list is returned.
+	 * @return ArrayList&lt;Entity&gt;
+	 */
 	public ArrayList<Entity> intersectOnRender(Shape shape)
 	{
 		Area a1 = new Area(shape);
@@ -484,7 +499,8 @@ public class Level implements INBTReadWrite
 		
 		for(Entity ent : entityMap.values())
 		{
-			Area a2 = new Area(new Rectangle(ent.xCoord, ent.yCoord, ent.getWidth(), ent.getHeight()));
+			Point p = Utils.convCartToIso(new Point(ent.xCoord, ent.yCoord));
+			Area a2 = new Area(new Rectangle(p.x, p.y, ent.getWidth(), ent.getHeight()));
 			a2.intersect(a1);
 			if(!a2.isEmpty())
 			{
@@ -576,7 +592,6 @@ public class Level implements INBTReadWrite
 			this.offlinePlayersMap = players;
 		}
 		
-		if(Utils.getSide() == Side.CLIENT) this.entitiesForRender = this.sortEntitiesByZLevel();
 		this.nodeMap.recreate(this);
 	}
 	

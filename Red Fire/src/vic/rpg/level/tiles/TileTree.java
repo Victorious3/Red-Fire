@@ -4,12 +4,12 @@ import java.awt.Point;
 
 import vic.rpg.level.Tile;
 
-public class TileVoid extends Tile
-{	
+public class TileTree extends Tile
+{
 	@Override
 	public String getDescription() 
 	{
-		return "The impassable void. It's black. And dark.";
+		return "A tree.";
 	}
 
 	@Override
@@ -20,7 +20,13 @@ public class TileVoid extends Tile
 
 	@Override
 	public Point getTextureCoord(int x, int y, int data) 
-	{	
-		return new Point(4, 5);
+	{
+		return new Point(0, 15);
 	}
+
+	@Override
+	public int getHeight(int x, int y, int data) 
+	{
+		return 3;
+	}	
 }

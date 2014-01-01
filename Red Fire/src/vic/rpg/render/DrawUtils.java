@@ -231,6 +231,7 @@ public class DrawUtils
 		public String getName();
 	}
 	
+	//FIXME Having problems with the right spacing & offset.
 	public static void drawString(int x, int y, String string, Color color) 
 	{		
 		if(string.contains("&"))

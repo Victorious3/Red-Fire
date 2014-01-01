@@ -1,6 +1,7 @@
 package vic.rpg.level.entity;
 
-import java.awt.Rectangle;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.geom.Area;
 
 import vic.rpg.level.EntityStatic;
@@ -13,14 +14,15 @@ public class EntityHouse extends EntityStatic
 {
 	public EntityHouse()
 	{
-		super(300, 340);
+		super(192, 224);
 		if(Utils.getSide() == Side.CLIENT) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_HOUSE));
 	}
 
 	@Override
 	public Area getCollisionBoxes(Area area) 
 	{
-		area.add(new Area(new Rectangle(xCoord + 110, yCoord + 32, 128, 128)));
+		Point p = Utils.convCartToIso(new Point(xCoord, yCoord));
+		area.add(new Area(new Polygon(new int[]{p.x + 3, p.x + 97, p.x + 192, p.x + 95}, new int[]{p.y + 177, p.y + 117, p.y + 177, p.y + 224}, 4)));
 		return area;
 	}
 

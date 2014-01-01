@@ -2,6 +2,7 @@ package vic.rpg.level.entity.living;
 
 import vic.rpg.render.TextureFX;
 import vic.rpg.server.ServerLoop;
+import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
@@ -9,11 +10,11 @@ public class EntityNPC extends EntityLiving
 {
 	public int step = 0;
 	
-	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/npc_1.png", 32, 48, 3, 4, 0, 0, 10);
+	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 70, 70, 8, 8, 0, 0, 10);	
 	
 	public EntityNPC() 
 	{
-		super(33, 32);
+		super(70, 70);
 		this.zLevel = -1;
 		this.speed = 2;
 		
@@ -43,6 +44,6 @@ public class EntityNPC extends EntityLiving
 	public void initRender() 
 	{
 		this.rotatedSprites = sprites;
-		this.setRotation(0);
+		this.setRotation(Direction.NORTH);
 	}
 }

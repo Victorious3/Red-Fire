@@ -1,5 +1,7 @@
 package vic.rpg.level.path;
 
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
@@ -33,21 +35,25 @@ public class NodeMap implements Cloneable
 			}
 		}
 		
-		int size = Level.CELL_SIZE;
+		int size = Level.CELL_SIZE / 2;
 		
 		for(Entity e : level.entityMap.values())
 		{
 			Area a = e.getCollisionBoxes(new Area());
 			Rectangle r = a.getBounds();
-
-			for(int i = Utils.rnd(r.x, size); i < r.x + r.width; i += size)
+			
+			for(int i = r.x; i <= r.x + r.width; i += size / 2)
 			{				
-				for(int j = Utils.rnd(r.y, size); j < r.y + r.height; j += size)
+				for(int j = r.y; j <= r.y + r.height; j += size / 2)
 				{
-					if(a.intersects(new Rectangle(i, j, size, size)))
+					a = e.getCollisionBoxes(new Area());
+					Area a2 = new Area(new Polygon(new int[]{i - Level.CELL_SIZE / 2, i, i + Level.CELL_SIZE / 2, i, i + Level.CELL_SIZE / 2}, new int[]{j + Level.CELL_SIZE / 4, j, j + Level.CELL_SIZE / 4, j + Level.CELL_SIZE / 2, j + Level.CELL_SIZE / 4}, 4));
+					a.intersect(a2);
+					if(!a.isEmpty())
 					{						
-						int x = i / size;
-						int y = j / size;
+						Point p2 = Utils.convIsoToCart(new Point(i, j));
+						int x = p2.x / size;
+						int y = p2.y / size;
 						
 						if(x > 0 && x < width && y > 0 && y < height)
 						{

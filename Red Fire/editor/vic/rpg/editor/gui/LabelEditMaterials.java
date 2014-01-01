@@ -1,23 +1,13 @@
 package vic.rpg.editor.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
+/*import java.awt.event.MouseListener;*/
 
 import javax.swing.JLabel;
 
-import vic.rpg.editor.listener.BrushFrameListener;
-import vic.rpg.editor.tiles.TileMaterial;
-import vic.rpg.level.Level;
-import vic.rpg.utils.Direction;
-
-public class LabelEditMaterials extends JLabel implements MouseListener
+@Deprecated
+public class LabelEditMaterials extends JLabel /*implements MouseListener*/
 {
+	/*
 	private boolean[][] sites;
 	private TileMaterial material;
 	private TileMaterial subMaterial;
@@ -162,5 +152,6 @@ public class LabelEditMaterials extends JLabel implements MouseListener
 		this.updateUI();
 	}
 	
-	@Override public void mouseReleased(MouseEvent e) {}	
+	@Override public void mouseReleased(MouseEvent e) {}
+	*/	
 }
