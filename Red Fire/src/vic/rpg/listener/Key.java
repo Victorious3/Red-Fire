@@ -62,6 +62,10 @@ public class Key implements KeyListener {
 				Gui.setGui(new GuiDebug());
 			}			
 		}
+		else if(arg0.getKeyCode() == KeyEvent.VK_F2)
+		{
+			Game.TAKE_SCREENSHOT = true;
+		}
 		else if(arg0.getKeyCode() == KeyEvent.VK_I)
 		{
 			if(Gui.currentGui != null)

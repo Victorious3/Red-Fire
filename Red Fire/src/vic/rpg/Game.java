@@ -2,13 +2,19 @@ package vic.rpg;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
@@ -22,6 +28,7 @@ import vic.rpg.client.net.NetHandler;
 import vic.rpg.client.packet.PacketHandlerSP;
 import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
+import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiMain;
 import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
@@ -35,6 +42,7 @@ import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.awt.Screenshot;
 
 public class Game extends GLCanvas implements Runnable 
 {
@@ -58,6 +66,8 @@ public class Game extends GLCanvas implements Runnable
 	public Animator GL_ANIMATOR;
 	public boolean isRunning = false;
 	public static int frames = 0;
+	
+	public static boolean TAKE_SCREENSHOT = false;
 	
 	//Game Objects
 	public static String playerUUID;
@@ -271,6 +281,25 @@ public class Game extends GLCanvas implements Runnable
 			public void display(GLAutoDrawable drawable) 
 			{
 				TextureLoader.setupTextures(drawable.getGL().getGL2());
+				if(TAKE_SCREENSHOT)
+				{
+					BufferedImage screenshot = Screenshot.readToBufferedImage(Game.RES_WIDTH, Game.RES_HEIGHT);
+					Date date = new Date();
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-d_HH.mm.ss");
+					File file = Utils.getOrCreateFile(Utils.getAppdata() + "/screenshots/" + df.format(date) + ".jpg");
+					
+					try {
+						ImageIO.write(screenshot, "jpg", file);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					if(Gui.currentGui instanceof GuiIngame)
+					{
+						((GuiIngame) Gui.currentGui).addChatMessage("Screenshot saved to " + file.getName(), "CLIENT");
+					}
+					TAKE_SCREENSHOT = false;
+				}
 				game.render(drawable.getGL().getGL2());
 			}
 		});
