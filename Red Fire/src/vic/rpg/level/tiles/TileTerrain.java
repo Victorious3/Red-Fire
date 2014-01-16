@@ -12,7 +12,7 @@ public class TileTerrain extends Tile
 	@Override
 	public String getDescription() 
 	{
-		return "Standart Terrain Tile";
+		return "Standard Terrain Tile";
 	}
 
 	@Override

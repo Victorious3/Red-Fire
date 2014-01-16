@@ -7,8 +7,6 @@ import java.util.NoSuchElementException;
 
 import javax.media.opengl.GL2;
 
-import org.apache.commons.lang3.StringUtils;
-
 import vic.rpg.Game;
 import vic.rpg.Init;
 import vic.rpg.registry.LanguageRegistry;
@@ -231,12 +229,12 @@ public class DrawUtils
 		public String getName();
 	}
 	
-	//FIXME Having problems with the right spacing & offset.
 	public static void drawString(int x, int y, String string, Color color) 
 	{		
 		if(string.contains("&"))
 		{
 			String[] subStrings = string.split("&");	
+			int i = 0;
 			for(String subString : subStrings)
 			{
 				if(subString.length() > 0)
@@ -252,28 +250,29 @@ public class DrawUtils
 							String controlName = control.split("=")[0];
 							String argument = control.split("=")[1];
 							StringControl sControl = stringControls.get(controlName);
-							if(sControl == null) throw new IllegalArgumentException("Advanced string control with name \"" + controlName + "\" does not exist!");
-							color = sControl.format(argument, rString, color, x, y);
+							if(sControl == null) continue;
+							try {
+								color = sControl.format(argument, rString, color, x, y);
+							} catch (Exception e) {
+								
+							}
 						}
-						else if(control.contains("."))
+						else
 						{
 							drawUnformattedString(x, y, LanguageRegistry.getTranslation(control), color);
-							x += getTextRenderer().getBounds(LanguageRegistry.getTranslation(control).replaceAll(" ", "")).getWidth();
-							x += getTextRenderer().getCharWidth(" ".charAt(0)) * StringUtils.countMatches(LanguageRegistry.getTranslation(control), " ");
+							x += FONT.getStringBounds(LanguageRegistry.getTranslation(control), getTextRenderer().getFontRenderContext()).getWidth();
 						}
-						else throw new IllegalArgumentException("Advanced string controls need to be formatted like: &control=value#");
 					
 						if(rString.length() > 0)
 						{
 							drawUnformattedString(x, y, rString, color);
-							x += getTextRenderer().getBounds(rString.replaceAll(" ", "")).getWidth();
-							x += getTextRenderer().getCharWidth(" ".charAt(0)) * StringUtils.countMatches(rString, " ");
+							x += FONT.getStringBounds(rString, getTextRenderer().getFontRenderContext()).getWidth();				
 						}
 					}
 					else
 					{
 						String control = subString.substring(0, 1);
-						String rString = subString.substring(1, subString.length());
+						String rString = subString.substring((i != 0 ? 1 : 0), subString.length());
 						switch(control)
 						{
 						case "b" : setFont(getFont().deriveFont(Font.BOLD)); break;
@@ -293,12 +292,13 @@ public class DrawUtils
 						if(rString.length() > 0)
 						{
 							drawUnformattedString(x, y, rString, color);
-							x += getTextRenderer().getBounds(rString.replaceAll(" ", "")).getWidth();
-							x += getTextRenderer().getCharWidth(" ".charAt(0)) * StringUtils.countMatches(rString, " ");
+							x += FONT.getStringBounds(rString, getTextRenderer().getFontRenderContext()).getWidth();
 						}
 					}
 				}
+				i++;
 			}
+			setFont(getFont().deriveFont(Font.PLAIN));
 		}
 		else drawUnformattedString(x, y, string, color);
 	}

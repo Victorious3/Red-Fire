@@ -76,7 +76,7 @@ public class PacketHandlerMP extends Thread
 					command = command.replace("/", "");
 					LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
 					args2.remove(0);
-					Server.server.inputHandler.handleCommand(command, args2);
+					Server.server.inputHandler.handleCommand(command, args2, con);
 				}
 				else
 				{
@@ -134,28 +134,22 @@ public class PacketHandlerMP extends Thread
 		{
 			if(packetQueue.size() > 0)
 			{
-				if(packetQueue.get(0) == null) 
-				{
-					packetQueue.remove(0);
-				}
-				else
+				if(packetQueue.get(0) != null) 
 				{
 					handlePacket(packetQueue.get(0));
 					packetQueue.remove(0);
 				}
+				else packetQueue.remove(0);
 			}
 			if(sendingQueue.size() > 0)
 			{
-				if(sendingQueue.get(0) == null) 
-				{
-					packetQueue.remove(0);
-				}
-				else
+				if(sendingQueue.get(0) != null) 
 				{
 					sendPacket(sendingQueue.get(0));
 					sendingQueue.remove(0);
 				}
-			}		
+				else sendingQueue.remove(0);
+			}			
 			if(sendingQueue.size() < 50 && packetQueue.size() < 50)
 			{
 				try {

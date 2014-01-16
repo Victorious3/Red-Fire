@@ -22,6 +22,7 @@ import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.LevelRegistry;
+import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.gui.ServerGui;
 import vic.rpg.server.io.Connection;
 import vic.rpg.server.io.Listener;
@@ -32,7 +33,7 @@ import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
-public class Server extends Thread 
+public class Server extends Thread implements CommandSender
 {	
 	public static Server server;
 	
@@ -79,7 +80,6 @@ public class Server extends Thread
 			}
 			try
 			{
-				ServerLoop.level = Level.readFromFile(f);
 				ServerLoop.file = f;
 			}
 			catch(Exception e)
@@ -139,11 +139,16 @@ public class Server extends Thread
 					server.listener = new Listener(new Server());
 					server.inputHandler = new InputHandler();
 					server.serverLoop = new ServerLoop();
+					
+					System.out.println("Loading level...");
+					if(ServerLoop.file != null) ServerLoop.level = Level.readFromFile(ServerLoop.file);
+					
 					if(ServerLoop.level == null)
 					{
 						ServerLoop.level = new Level(100, 100, "New Level");
 						ServerLoop.level.populate();
 					}
+					System.out.println("done!");
 					
 					System.out.println("Starting Thread: Server");
 					server.listener.start();
@@ -346,5 +351,11 @@ public class Server extends Thread
 				e.printStackTrace();
 			}  		
 	    }		
+	}
+
+	@Override
+	public void print(String string) 
+	{
+		System.out.println(string);
 	}
 }

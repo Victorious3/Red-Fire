@@ -8,7 +8,7 @@ import vic.rpg.server.gui.ServerGui;
 
 public class ServerLoop implements Runnable
 {		
-	private Thread thread;
+	public Thread thread;
 	public boolean isRunning = false;
 	public static Level level;
 	public static File file;

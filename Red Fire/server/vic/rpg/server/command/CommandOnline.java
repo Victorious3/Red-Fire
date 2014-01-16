@@ -13,7 +13,7 @@ public class CommandOnline extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		String out = "";
 		out += "Online Players: " + Server.actConnections + " (";
@@ -24,7 +24,7 @@ public class CommandOnline extends Command
 		}
 		
 		out += ")";
-		System.out.println(out);
+		commandSender.print(out);
 	}
 
 	@Override

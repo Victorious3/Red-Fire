@@ -9,10 +9,12 @@ import java.util.Date;
 
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
+import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.packet.Packet;
+import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.PacketHandlerMP;
 
-public class Connection extends Thread
+public class Connection extends Thread implements CommandSender
 {   	
 	public Socket socket;
     public DataInputStream in;
@@ -122,4 +124,10 @@ public class Connection extends Thread
     		e.printStackTrace();
     	}
     }
+
+	@Override
+	public void print(String string) 
+	{
+		packetHandler.addPacketToSendingQueue(new Packet20Chat(string, "SERVER"));
+	}
 }

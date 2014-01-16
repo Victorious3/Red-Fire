@@ -13,7 +13,7 @@ public class CommandHeal extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		if(args.size() > 0)
 		{
@@ -23,10 +23,10 @@ public class CommandHeal extends Command
 			}
 			else
 			{
-				System.out.println("No player named \"" + args.get(0) + "\" online!");
+				commandSender.print("No player named \"" + args.get(0) + "\" online!");
 			}
 		}
-		else Command.getHelp(); 
+		else Command.getHelp(commandSender); 
 	}
 
 	@Override

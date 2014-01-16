@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import vic.rpg.server.command.Command;
+import vic.rpg.server.command.CommandSender;
 
 public class InputHandler extends Thread 
 {
@@ -24,19 +25,19 @@ public class InputHandler extends Thread
 			command = command.replace("/", "");
 			LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
 			args2.remove(0);
-			handleCommand(command, args2);
+			handleCommand(command, args2, Server.server);
 		}
 	}
 	
-	public void handleCommand(String command, List<String> args)
+	public void handleCommand(String command, List<String> args, CommandSender commandSender)
 	{
 		Command c = Command.commands.get(command);
 		if(c == null)
 		{
 			System.err.println("No command named \"" + command + "\"!");
-			Command.commands.get("help").cast(new ArrayList<String>());
+			Command.commands.get("help").cast(new ArrayList<String>(), commandSender);
 		}
-		else c.cast(args);
+		else c.cast(args, commandSender);
 	}
 		
 	@Override

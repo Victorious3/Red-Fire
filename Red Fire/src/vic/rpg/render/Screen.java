@@ -140,6 +140,6 @@ public class Screen extends Drawable
 				}
 			}
 		}*/
-		if(Gui.currentGui != null) Gui.currentGui.render(gl2);    
+    	if(Gui.currentGui != null) Gui.currentGui.render(gl2);
 	}
 }

@@ -9,6 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -50,6 +52,7 @@ import vic.rpg.Game;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
 import vic.rpg.editor.gui.PanelLevel;
+import vic.rpg.editor.gui.TileTextureSelector;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.LayerFrameListener;
@@ -60,6 +63,7 @@ import vic.rpg.editor.script.Script;
 import vic.rpg.editor.tiles.TileMaterial;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.TexturePath;
 import vic.rpg.level.Tile;
 import vic.rpg.level.entity.EntityCustom;
 import vic.rpg.registry.LevelRegistry;
@@ -148,6 +152,9 @@ public class Editor
 		}
 	};
 	public JLabel labelTiles = new JLabel();
+	public TileTextureSelector selectTileTexture = new TileTextureSelector("/vic/rpg/resources/editor/no_texture.png");
+	public JScrollPane tableTilesScrollPane = new JScrollPane(tableTiles);
+	public JScrollPane selectTileTextureScrollPane = new JScrollPane(selectTileTexture);
 	
 	public JDesktopPane desktop;
 	
@@ -508,9 +515,28 @@ public class Editor
 		tableTiles.getModel().addTableModelListener(new TableListener());
 		tableTiles.setColumnSelectionAllowed(true);
 		
-		JScrollPane sp1 = new JScrollPane(tableTiles);
-		sp1.setPreferredSize(new Dimension(200, 0));
-		panelTiles.add(sp1, panelTilesConstraints);
+		tableTilesScrollPane.setPreferredSize(new Dimension(200, 0));
+		panelTiles.add(tableTilesScrollPane, panelTilesConstraints);
+		
+		panelTilesConstraints.gridy = 4;
+		
+		selectTileTexture.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				tableTiles.setValueAt(selectTileTexture.getSelectedTexture(), 0, 2);
+			}
+			
+			@Override public void mousePressed(MouseEvent e) {}	
+			@Override public void mouseExited(MouseEvent e) {}	
+			@Override public void mouseEntered(MouseEvent e) {}	
+			@Override public void mouseClicked(MouseEvent e) {}
+		});
+		
+		selectTileTextureScrollPane.setBorder(null);
+		selectTileTextureScrollPane.setVisible(false);
+		panelTiles.add(selectTileTextureScrollPane, panelTilesConstraints);
 		
 		//Panel Entities
 		
@@ -585,6 +611,22 @@ public class Editor
 		frame.add(menubar, BorderLayout.NORTH);
 		frame.add(panelMain);
 		frame.setVisible(true);
+	}
+	
+	public void updateTileTextureSelector(Tile t)
+	{
+		if(t.getClass().getAnnotation(TexturePath.class) != null)
+		{
+			TexturePath texPath = t.getClass().getAnnotation(TexturePath.class);
+			tableTilesScrollPane.setVisible(false);
+			selectTileTextureScrollPane.setVisible(true);
+			selectTileTexture.setImagePath(texPath.path());
+		}
+		else
+		{
+			selectTileTextureScrollPane.setVisible(false);
+			tableTilesScrollPane.setVisible(true);
+		}
 	}
 	
 	public void updateTilesAndEntites() 

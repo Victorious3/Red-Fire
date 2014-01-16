@@ -150,27 +150,21 @@ public class PacketHandlerSP extends Thread
 			{
 				if(packetQueue.size() > 0)
 				{
-					if(packetQueue.get(0) == null) 
-					{
-						packetQueue.remove(0);
-					}
-					else
+					if(packetQueue.get(0) != null) 
 					{
 						handlePacket(packetQueue.get(0));
 						packetQueue.remove(0);
 					}
+					else packetQueue.remove(0);
 				}
 				if(sendingQueue.size() > 0)
 				{
-					if(sendingQueue.get(0) == null) 
-					{
-						packetQueue.remove(0);
-					}
-					else
+					if(sendingQueue.get(0) != null) 
 					{
 						sendPacket(sendingQueue.get(0));
 						sendingQueue.remove(0);
 					}
+					else sendingQueue.remove(0);
 				}		
 				if(sendingQueue.size() < 50 && packetQueue.size() < 50)
 				{

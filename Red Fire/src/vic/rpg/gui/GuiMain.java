@@ -6,7 +6,6 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.PostInit;
-import vic.rpg.editor.Editor;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.registry.LanguageRegistry;
@@ -49,9 +48,9 @@ public class GuiMain extends Gui implements IGButton
 		LanguageRegistry.addTranslation(LanguageRegistry.de_DE, "guimain.singleplayer", "Einzelspieler");
 		LanguageRegistry.addTranslation(LanguageRegistry.fr_FR, "guimain.singleplayer", "Jeu Solo");
 		
-		LanguageRegistry.addTranslation(LanguageRegistry.en_GB, "guimain.editor", "Editor");
-		LanguageRegistry.addTranslation(LanguageRegistry.de_DE, "guimain.editor", "Editor");
-		LanguageRegistry.addTranslation(LanguageRegistry.fr_FR, "guimain.editor", "Editeur");
+		LanguageRegistry.addTranslation(LanguageRegistry.en_GB, "guimain.credits", "Credits");
+		LanguageRegistry.addTranslation(LanguageRegistry.de_DE, "guimain.credits", "Mitwirkende");
+		LanguageRegistry.addTranslation(LanguageRegistry.fr_FR, "guimain.credits", "Contributors");
 		
 		LanguageRegistry.addTranslation(LanguageRegistry.en_GB, "guimain.quit", "Quit");
 		LanguageRegistry.addTranslation(LanguageRegistry.de_DE, "guimain.quit", "Verlassen");
@@ -83,7 +82,7 @@ public class GuiMain extends Gui implements IGButton
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, LanguageRegistry.getTranslation("guimain.singleplayer"), "Singleplayer"));
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 10, 240, 40, this, LanguageRegistry.getTranslation("guimain.multiplayer"), "Multiplayer"));
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 60, 240, 40, this, LanguageRegistry.getTranslation("guimain.options"), "Options"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 110, 240, 40, this, LanguageRegistry.getTranslation("guimain.editor"), "Editor"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 110, 240, 40, this, LanguageRegistry.getTranslation("guimain.credits"), "Credits"));
 		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 160, 240, 40, this, LanguageRegistry.getTranslation("guimain.quit"), "Quit"));
 	}
 
@@ -102,9 +101,9 @@ public class GuiMain extends Gui implements IGButton
 		{
 			Gui.setGui(new GuiOptions());
 		}
-		else if(name.equalsIgnoreCase("Editor"))
+		else if(name.equalsIgnoreCase("Credits"))
 		{
-			Editor.main(new String[]{"internal"});
+			
 		}
 		else if(name.equalsIgnoreCase("Quit"))
 		{

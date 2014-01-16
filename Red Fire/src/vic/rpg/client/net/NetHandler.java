@@ -110,7 +110,7 @@ public class NetHandler extends Thread
 			
 			if(IS_SINGLEPLAYER)
 			{
-				Server.server.inputHandler.handleCommand("stop", null);
+				Server.server.inputHandler.handleCommand("stop", null, Server.server);
 			}
 			
 			Game.playerUUID = null;

@@ -12,7 +12,7 @@ public class CommandTime extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		if(args.size() > 0 && args.get(0).equals("set"))
 		{
@@ -22,17 +22,17 @@ public class CommandTime extends Command
 				try {
 					int t2 = Integer.parseInt(time);
 					ServerLoop.level.time = t2;
-					System.out.println("Time set to " + t2);
+					commandSender.print("Time set to " + t2);
 				} catch (NumberFormatException e) {
-					System.err.println("Time has to be numeric!");
+					commandSender.print("Time has to be numeric!");
 				}				
 			}
 			else
 			{
-				help();
+				help(null);
 			}
 		}
-		else System.out.println("The current game time is " + ServerLoop.level.time);
+		else commandSender.print("The current game time is " + ServerLoop.level.time);
 	}
 
 	@Override

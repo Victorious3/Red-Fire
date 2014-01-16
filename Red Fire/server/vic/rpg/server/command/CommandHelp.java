@@ -10,21 +10,21 @@ public class CommandHelp extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		if(args.size() > 0)
 		{
 			if(Command.commands.get(args.get(0)) != null)
 			{
-				Command.commands.get(args.get(0)).help();
+				Command.commands.get(args.get(0)).help(commandSender);
 			}
 			else 
 			{
-				System.err.println("No command named \"" + args.get(0) + "\"! Try /help");
+				commandSender.print("&4No command named \"" + args.get(0) + "\"! Try /help");
 				return;
 			}
 		}
-		else Command.getHelp(); 
+		else Command.getHelp(commandSender); 
 	}
 
 	@Override

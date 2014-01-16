@@ -94,6 +94,8 @@ public class TableListener implements TableModelListener
 		Editor.instance.dropdownTiles.setSelectedItem(t.id + ": " + t.getClass().getSimpleName());
 		Editor.instance.labelTiles.setText("<html>" + t.getDescription() + "</html>");
 		
+		Editor.instance.updateTileTextureSelector(t);
+		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableTiles.getModel();
 		tableModel.setRowCount(0);
 		

@@ -101,7 +101,7 @@ public class ServerGui
 			@Override
 			public void windowClosing(WindowEvent e) 
 			{
-				if(Server.server.inputHandler != null) Server.server.inputHandler.handleCommand("stop", null);
+				if(Server.server.inputHandler != null) Server.server.inputHandler.handleCommand("stop", null, Server.server);
 				else System.exit(0);
 			}
 

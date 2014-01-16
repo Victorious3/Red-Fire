@@ -12,7 +12,7 @@ public class CommandStop extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		System.err.println("Stopping Server ...");
 		Server.server.stopServer();	

@@ -165,8 +165,8 @@ public class Game extends GLCanvas implements Runnable
     	
     	gl2.glMatrixMode(GL2.GL_PROJECTION);
     	gl2.glLoadIdentity();
-    	gl2.glViewport(0, 0, Game.WIDTH, Game.HEIGHT);
-    	gl2.glOrtho(0, Game.WIDTH, Game.HEIGHT, 0, -1, 1);
+    	gl2.glViewport(0, 0, WIDTH, HEIGHT);
+    	gl2.glOrtho(0, WIDTH, HEIGHT, 0, -1, 1);
     	gl2.glMatrixMode(GL2.GL_MODELVIEW);
     	
     	screen = new Screen(WIDTH, HEIGHT);
@@ -323,7 +323,7 @@ public class Game extends GLCanvas implements Runnable
 			@Override
 			public void windowClosing(WindowEvent e) 
 			{
-				if(netHandler.IS_SINGLEPLAYER) Server.server.inputHandler.handleCommand("stop", null);				
+				if(netHandler.IS_SINGLEPLAYER) Server.server.inputHandler.handleCommand("stop", null, Server.server);				
 				Game.game.stopGame();
 			}
 

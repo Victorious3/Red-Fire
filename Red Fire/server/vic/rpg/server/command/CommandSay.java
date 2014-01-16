@@ -13,7 +13,7 @@ public class CommandSay extends Command
 	}
 
 	@Override
-	public void cast(List<String> args) 
+	public void cast(List<String> args, CommandSender commandSender) 
 	{
 		if(args.size() > 0)
 		{		
@@ -24,9 +24,9 @@ public class CommandSay extends Command
 				s += " " + s2;
 			}
 			System.out.println("{SERVER}: " + s);
-			Server.server.broadcast(new Packet20Chat(s, "server"));
+			Server.server.broadcast(new Packet20Chat(s, "SERVER"));
 		}
-		else help();
+		else help(null);
 	}
 
 	@Override

@@ -118,7 +118,7 @@ public class GuiIngame extends GuiContainer
 		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 14));
 		
 		int stringHeight = 0;
-		for(int i = chatValues.size() - 1; i >= 0; i--)
+		for(int i = 0; i < chatValues.size(); i++)
 		{
 			String s = chatValues.get(i) != null ? chatValues.get(i): " ";
 			DrawUtils.drawString(0, (int)(50 + stringHeight * DrawUtils.getTextRenderer().getBounds("X").getHeight()), s, Color.white);

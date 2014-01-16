@@ -21,15 +21,15 @@ public abstract class Command
 		commands.put("heal", new CommandHeal());
 	}
 	
-	public static void getHelp()
+	public static void getHelp(CommandSender commandSender)
 	{
-		System.out.println("---- Help: -----------");
+		commandSender.print("---- Help: -----------");
 		for(String s : commands.keySet())
 		{
 			Command c = commands.get(s);
-			System.out.println(s + ": " + c.getUsage());
+			commandSender.print(s + ": " + c.getUsage());
 		}
-		System.out.println("----------------------");
+		commandSender.print("----------------------");
 	}
 	
 	private String name;
@@ -39,13 +39,13 @@ public abstract class Command
 		this.name = name;
 	}
 	
-	public void help()
+	public void help(CommandSender commandSender)
 	{
-		System.err.println("/" + name + ":");
-		System.err.println("Usage: " + getUsage());
+		commandSender.print("&4/" + name + ":");
+		commandSender.print("&4Usage: " + getUsage());
 	}
 	
-	public abstract void cast(List<String> args);
+	public abstract void cast(List<String> args, CommandSender commandSender);
 	
 	public abstract String getUsage();
 }
