@@ -2,12 +2,8 @@ package vic.rpg.level.entity.living;
 
 import java.awt.Point;
 import java.awt.geom.Area;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jnbt.CompoundTag;
-import org.jnbt.IntTag;
-import org.jnbt.Tag;
 
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.level.Editable;
@@ -98,10 +94,9 @@ public class EntityLiving extends Entity
 	public void readFromNBT(CompoundTag tag, Object... args) 
 	{
 		super.readFromNBT(tag);
-		Map<String, Tag> map = tag.getValue();
-		this.rotation = Direction.getDirection((Integer) map.get("rotation").getValue());
-		this.lp = (Integer) map.get("lp").getValue();
-		this.max_lp = (Integer) map.get("max_lp").getValue();
+		this.rotation = Direction.getDirection((Integer) tag.getInt("rotation", 0));
+		this.lp = tag.getInt("lp", lp);
+		this.max_lp = tag.getInt("max_lp", max_lp);
 		inventory.readFromNBT(tag);
 	}
 
@@ -109,17 +104,11 @@ public class EntityLiving extends Entity
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		tag = super.writeToNBT(tag);
-		IntTag rotation = new IntTag("rotation", this.rotation.getID());
-		IntTag lp = new IntTag("lp", this.lp);
-		IntTag max_lp = new IntTag("max_lp", this.max_lp);
-		Map<String, Tag> map = tag.getValue();
-		Map<String, Tag> map2 = new HashMap<String, Tag>();
-		map2.putAll(map);		
-		map2.put("rotation", rotation);
-		map2.put("lp", lp);
-		map2.put("max_lp", max_lp);
 		
-		tag = new CompoundTag(tag.getName(), map2);
+		tag.putInt("rotation", this.rotation.getID());
+		tag.putInt("lp", this.lp);
+		tag.putInt("max_lp", this.max_lp);
+
 		tag = inventory.writeToNBT(tag);
 		
 		return tag;

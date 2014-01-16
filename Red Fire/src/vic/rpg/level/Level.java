@@ -515,17 +515,15 @@ public class Level implements INBTReadWrite
 	@SuppressWarnings("unchecked")
 	public void readFromNBT(CompoundTag tag, Object... args)
 	{
-		Map<String, Tag> levelMap = tag.getValue();
+		int width = tag.getInt("width", 0);
+		int height = tag.getInt("height", 0);
+		int time = tag.getInt("time", 0);
+		int spawnX = tag.getInt("spawnX", 0);
+		int spawnY = tag.getInt("spawnY", 0);
+		String name = tag.getString("name", "NO_NAME");
 		
-		int width = (int)levelMap.get("width").getValue();
-		int height = (int)levelMap.get("height").getValue();
-		int time = (int)levelMap.get("time").getValue();
-		int spawnX = (int)levelMap.get("spawnX").getValue();
-		int spawnY = (int)levelMap.get("spawnY").getValue();
-		String name = (String)levelMap.get("name").getValue();
-		
-		List<Tag> entityList = (List<Tag>)levelMap.get("entities").getValue();
-		List<Tag> layerList = (List<Tag>)levelMap.get("layers").getValue();
+		List<Tag> entityList = (List<Tag>)tag.getTag("entities").getValue();
+		List<Tag> layerList = (List<Tag>)tag.getTag("layers").getValue();
 		
 		this.width = width;
 		this.height = height;
@@ -579,9 +577,9 @@ public class Level implements INBTReadWrite
 		this.spawnX = spawnX;
 		this.spawnY = spawnY;
 		
-		if(levelMap.containsKey("players"))
+		if(tag.getValue().containsKey("players"))
 		{
-			List<Tag> playerList = (List<Tag>)levelMap.get("players").getValue();
+			List<Tag> playerList = (List<Tag>)tag.getTag("players").getValue();
 			LinkedHashMap<String, EntityPlayer> players = new LinkedHashMap<String, EntityPlayer>();
 			for(Tag playerTag : playerList)
 			{

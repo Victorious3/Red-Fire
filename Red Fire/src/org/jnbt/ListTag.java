@@ -33,7 +33,6 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,10 +63,11 @@ public final class ListTag extends Tag {
      * @param value
      *            The value.
      */
-    public ListTag(String name, Class<? extends Tag> type, List<? extends Tag> value) {
+    @SuppressWarnings("unchecked")
+	public ListTag(String name, Class<? extends Tag> type, List<? extends Tag> value) {
         super(name);
         this.type = type;
-        this.value = Collections.unmodifiableList(value);
+        this.value = (List<Tag>) value; //pussy
     }
 
     /**
@@ -103,4 +103,25 @@ public final class ListTag extends Tag {
         return bldr.toString();
     }
 
+    public ListTag addTag(Tag t)
+    {
+    	value.add(t);
+    	return this;
+    }
+    
+    public ListTag addAll(List<Tag> t)
+    {
+    	value.addAll(t);
+    	return this;
+    }
+    
+	public Tag getTag(int id)
+    {
+    	return value.size() > id ? value.get(id) : null; 
+    }
+    
+	public List<Tag> getAll()
+    {
+    	return value;
+    }
 }

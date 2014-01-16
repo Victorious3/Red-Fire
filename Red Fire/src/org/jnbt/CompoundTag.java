@@ -33,7 +33,6 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -59,7 +58,7 @@ public final class CompoundTag extends Tag {
      */
     public CompoundTag(String name, Map<String, Tag> value) {
         super(name);
-        this.value = Collections.unmodifiableMap(value);
+        this.value = value; //unmodifiable is for pussies!
     }
 
     @Override
@@ -85,5 +84,106 @@ public final class CompoundTag extends Tag {
         bldr.append("}");
         return bldr.toString();
     }
-
+    
+    //Some custom methods
+    //FIXME I have used some ugly constructs in the methods readFromNBT and writeToNBT in the past.
+    public CompoundTag putTag(Tag tag)
+    {
+    	value.put(tag.getName(), tag);
+		return this;
+    }
+    
+    public CompoundTag putString(String name, String string)
+    {
+    	value.put(name, new StringTag(name, string));
+		return this;
+    }
+    
+    public CompoundTag putInt(String name, int ainteger)
+    {
+    	value.put(name, new IntTag(name, ainteger));
+		return this;
+    }
+    
+    public CompoundTag putIntArray(String name, int[] aintArray)
+    {
+    	value.put(name, new IntArrayTag(name, aintArray));
+		return this;
+    }
+    
+    public CompoundTag putByte(String name, byte abyte)
+    {
+    	value.put(name, new ByteTag(name, abyte));
+		return this;
+    }
+    
+    public CompoundTag putByteArray(String name, byte[] abyteArray)
+    {
+    	value.put(name, new ByteArrayTag(name, abyteArray));
+		return this;
+    }
+    
+    public CompoundTag putDouble(String name, double adouble)
+    {
+    	value.put(name, new DoubleTag(name, adouble));
+		return this;
+    }
+    
+    public CompoundTag putLong(String name, long along)
+    {
+    	value.put(name, new LongTag(name, along));
+		return this;
+    }
+    
+    public CompoundTag putShort(String name, short ashort)
+    {
+    	value.put(name, new ShortTag(name, ashort));
+		return this;
+    }
+    
+    //Same for getters
+    public Tag getTag(String name)
+    {
+    	return value.get(name);
+    }
+    
+    public String getString(String name, String def)
+    {
+    	return value.containsKey(name) ? (String) value.get(name).getValue() : def;
+    }
+    
+    public int getInt(String name, int def)
+    {
+    	return value.containsKey(name) ? (int) value.get(name).getValue() : def;
+    }
+    
+    public int[] getIntArray(String name, int[] def)
+    {
+    	return value.containsKey(name) ? (int[]) value.get(name).getValue() : def;
+    }
+    
+    public byte getByte(String name, byte def)
+    {
+    	return value.containsKey(name) ? (byte) value.get(name).getValue() : def;
+    }
+    
+    public byte[] getByteArray(String name, byte[] def)
+    {
+    	return value.containsKey(name) ? (byte[]) value.get(name).getValue() : def;
+    }
+    
+    public double getDouble(String name, double def)
+    {
+    	return value.containsKey(name) ? (double) value.get(name).getValue() : def;
+    }
+    
+    public long getLong(String name, long def)
+    {
+    	return value.containsKey(name) ? (long) value.get(name).getValue() : def;
+    }
+    
+    public short getShort(String name, short def)
+    {
+    	return value.containsKey(name) ? (short) value.get(name).getValue() : def;
+    }
 }

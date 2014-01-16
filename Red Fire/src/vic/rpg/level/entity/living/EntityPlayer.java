@@ -3,12 +3,8 @@ package vic.rpg.level.entity.living;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.jnbt.CompoundTag;
-import org.jnbt.StringTag;
-import org.jnbt.Tag;
 
 import vic.rpg.item.ItemApple;
 import vic.rpg.level.Editable;
@@ -109,8 +105,7 @@ public class EntityPlayer extends EntityLiving
 	public void readFromNBT(CompoundTag tag, Object... args) 
 	{
 		super.readFromNBT(tag);
-		Map<String, Tag> map = tag.getValue();
-		this.username = (String) map.get("username").getValue();
+		this.username = tag.getString("username", this.username);
 	}
 
 	public void initRender() 
@@ -122,15 +117,8 @@ public class EntityPlayer extends EntityLiving
 	@Override
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
-		tag = super.writeToNBT(tag);
-		
-		StringTag username = new StringTag("username", this.username);
-		Map<String, Tag> map = tag.getValue();
-		Map<String, Tag> map2 = new HashMap<String, Tag>();
-		map2.putAll(map);		
-		map2.put("username", username);
-		
-		tag = new CompoundTag(tag.getName(), map2);	
+		tag = super.writeToNBT(tag);	
+		tag.putString("username", username);	
 		return tag;
 	}	
 }

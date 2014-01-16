@@ -92,6 +92,7 @@ public class TileMaterial
 		materials.put(material.getName(), material);
 	}
 	
+	@Deprecated
 	public static void saveMaterials()
 	{
 		try {
@@ -135,6 +136,7 @@ public class TileMaterial
 		}
 	}
 	
+	@Deprecated
 	public static void loadMaterials()
 	{
 		try {

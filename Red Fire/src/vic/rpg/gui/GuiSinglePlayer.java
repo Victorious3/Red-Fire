@@ -64,8 +64,7 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 			try {
 				NBTInputStream in = new NBTInputStream(new FileInputStream(f));
 				CompoundTag tag = (CompoundTag)in.readTag();
-				String name = (String)tag.getValue().get("name").getValue();
-				nameList.add(name);
+				nameList.add(tag.getString("name", "NO_NAME"));
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
