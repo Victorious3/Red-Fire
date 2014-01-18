@@ -141,6 +141,12 @@ public final class CompoundTag extends Tag {
 		return this;
     }
     
+    public CompoundTag putBoolean(String name, boolean aboolean)
+    {
+    	value.put(name, new ByteTag(name, (byte)(aboolean ? 1 : 0)));
+		return this;
+    } 
+    
     //Same for getters
     public Tag getTag(String name)
     {
@@ -185,5 +191,11 @@ public final class CompoundTag extends Tag {
     public short getShort(String name, short def)
     {
     	return value.containsKey(name) ? (short) value.get(name).getValue() : def;
+    }
+    
+    //I can't get why booleans are not supported.
+    public boolean getBoolean(String name, boolean def)
+    {
+    	return value.containsKey(name) ? ((byte) value.get(name).getValue()) == 1: def;
     }
 }

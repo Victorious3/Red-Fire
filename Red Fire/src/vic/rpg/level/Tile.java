@@ -2,6 +2,7 @@ package vic.rpg.level;
 
 import java.awt.Point;
 
+import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
@@ -32,6 +33,21 @@ public class Tile
 	public int getHeight(int x, int y, int data)
 	{
 		return 1;
+	}
+	
+	public boolean emitsLight(int x, int y, int data)
+	{
+		return false;
+	}
+	
+	public LightSource getLightSource(int x, int y, int data)
+	{
+		return null;
+	}
+	
+	public Point getLightPosition(int x, int y, int data)
+	{
+		return new Point(x * Level.CELL_SIZE / 2 - Level.CELL_SIZE / 4, y * Level.CELL_SIZE / 2 - Level.CELL_SIZE / 4);
 	}
 	
 	public void tick(int x, int y, int data){};

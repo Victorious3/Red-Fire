@@ -1,12 +1,19 @@
 package vic.rpg.render;
 
+import java.awt.Color;
+import java.awt.Point;
+
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.Gui;
+import vic.rpg.level.Entity;
+import vic.rpg.level.Tile;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Direction;
+import vic.rpg.utils.Utils;
 
 public class Screen extends Drawable 
 {	
@@ -22,8 +29,7 @@ public class Screen extends Drawable
 	public void render(GL2 gl2) 
 	{
 		if(Game.level != null)
-		{			
-			resetTexture();		
+		{				
 			Game.level.render(gl2);			
 		}
 	}
@@ -123,23 +129,101 @@ public class Screen extends Drawable
 			}
 		}
 	}
+	
+	private Color getAmbientLight()
+	{
+		if(Game.level.isAmbientLighting)
+		{			
+			float time = Game.level.time;
+			if(time > 5000) time = 10000 - time;
+			return new Color((int)((255F / 5000F) * time), (int)((255F / 5000F) * time), (int)((255F / 5000F) * time));
+		}
+		else return Color.white;
+	}
 
 	public void postRender(GL2 gl2)
 	{
-		/*if(Game.level != null)
-		{						
+		if(Game.level != null)
+		{
+			DrawUtils.setGL(gl2);
+			
+			int[] params1 = new int[1];
+			gl2.glGenTextures(1, params1, 0);
+			int textureID = params1[0];
+			gl2.glBindTexture(GL.GL_TEXTURE_2D, textureID);
+			gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+			gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			gl2.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, Game.RES_WIDTH, Game.RES_HEIGHT, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);
+			
+			int[] params2 = new int[1];
+			gl2.glGenFramebuffers(1, params2, 0);
+			int frameBufferID = params2[0];
+			gl2.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, frameBufferID);
+			gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
+			gl2.glFramebufferTexture2D(GL2.GL_DRAW_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, textureID, 0);
+			
+			DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, getAmbientLight()); 
+			
+			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_DST_ALPHA);	
+									
 			for(Entity e : Game.level.entityMap.values())
 			{
 				for(LightSource s : e.lightSources)
 				{
-					Point p = e.getLightPosition(s);
-					if(p.x + s.width >= -xOffset && p.x <= -xOffset + Game.WIDTH && p.y + s.width >= -yOffset && p.y <= -yOffset + Game.HEIGHT)
-					{	
-						s.draw(gl2, p.x + xOffset - s.width / 2, p.y + yOffset - s.width / 2);				
-					}
+					Point p1 = e.getLightPosition(s);
+					Point p2 = Utils.convCartToIso(new Point(p1.x + xOffset, p1.y + yOffset));
+					s.draw(gl2, p2.x, Game.HEIGHT - p2.y);				
 				}
 			}
-		}*/
+			
+			for(int x = 0; x < Game.level.width; x++)
+			{
+				for(int y = 0; y < Game.level.height; y++)
+				{				
+					for(int i = 0; i < Game.level.getLayerAmount(); i++)
+					{
+						Integer data = Game.level.getTileDataAt(x, y, i);
+						Tile tile = Game.level.getTileAt(x, y, i);
+						if(tile != null)
+						{
+							if(tile.emitsLight(x, y, data))
+							{
+								LightSource ls = tile.getLightSource(x, y, data);
+								Point p1 = tile.getLightPosition(x, y, data);
+								Point p2 = Utils.convCartToIso(new Point(p1.x + xOffset, p1.y + yOffset));
+								ls.draw(gl2, p2.x, Game.HEIGHT - p2.y);
+							}
+						}
+					}
+				}		
+			}
+			
+			gl2.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0);
+			gl2.glBlendFunc(GL2.GL_DST_COLOR, GL2.GL_ONE_MINUS_SRC_ALPHA);
+			
+			gl2.glEnable(GL2.GL_TEXTURE_2D);
+			gl2.glPushMatrix();
+			gl2.glColor3f(1.0F, 1.0F, 1.0F);
+			gl2.glBindTexture(GL2.GL_TEXTURE_2D, textureID);
+			gl2.glBegin(GL2.GL_QUADS);
+			gl2.glNormal3i(0, 0, 1);
+	        gl2.glTexCoord2i(0, 0);
+	        gl2.glVertex2i(0, 0);
+	        gl2.glTexCoord2i(1, 0);
+	        gl2.glVertex2i(0 + Game.WIDTH, 0);
+	        gl2.glTexCoord2i(1, 1);
+	        gl2.glVertex2i(Game.WIDTH, Game.HEIGHT);
+	        gl2.glTexCoord2i(0, 1);
+	        gl2.glVertex2i(0, Game.HEIGHT);
+	        gl2.glEnd();
+			gl2.glPopMatrix();
+			gl2.glDisable(GL2.GL_TEXTURE_2D);
+			
+			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+			
+			gl2.glDeleteTextures(1, params1, 0);
+			gl2.glDeleteFramebuffers(1, params2, 0);		
+		}
     	if(Gui.currentGui != null) Gui.currentGui.render(gl2);
 	}
 }

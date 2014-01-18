@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import javax.media.opengl.GL2;
 
+import org.jnbt.ByteTag;
 import org.jnbt.CompoundTag;
 import org.jnbt.IntTag;
 import org.jnbt.ListTag;
@@ -55,6 +56,7 @@ public class Level implements INBTReadWrite
 	
 	//Gameplay
 	@Editable public int time = 5000;
+	@Editable public boolean isAmbientLighting = true;
 	@Editable public String name = "NO_NAME";
 	@Editable public int spawnX = 0;
 	@Editable public int spawnY = 0;
@@ -237,9 +239,9 @@ public class Level implements INBTReadWrite
 							if(isLayerVisible(i)) DrawUtils.drawTextureWithOffset(tilePos.x - Level.CELL_SIZE / 2, tilePos.y - ((Level.CELL_SIZE / 2) * (tileHeight - 1) * 2) - Level.CELL_SIZE / 2, texPos.x * Level.CELL_SIZE, (texPos.y - tileHeight + 1) * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE * tileHeight, tile.getTexture(x, y, data));			
 							if(i == 0)
 							{
-								if(entitiesForRender.get(new Point(x,y)) != null)
+								if(entitiesForRender.get(new Point(x, y)) != null)
 								{
-									for(Entity e : entitiesForRender.get(new Point(x,y)))
+									for(Entity e : entitiesForRender.get(new Point(x, y)))
 									{
 										Point entPos = Utils.convCartToIso(new Point(e.xCoord - xOffset, e.yCoord - yOffset));
 										e.render(gl2);
@@ -297,7 +299,7 @@ public class Level implements INBTReadWrite
 			if(tickCounter == 10)
 			{
 				time++;
-				if(time == 10000)
+				if(time >= 10000)
 				{
 					time = 0;
 				}
@@ -518,6 +520,7 @@ public class Level implements INBTReadWrite
 		int width = tag.getInt("width", 0);
 		int height = tag.getInt("height", 0);
 		int time = tag.getInt("time", 0);
+		boolean isAmbientLighting = tag.getBoolean("isAmbeintLighting", true);
 		int spawnX = tag.getInt("spawnX", 0);
 		int spawnY = tag.getInt("spawnY", 0);
 		String name = tag.getString("name", "NO_NAME");
@@ -576,6 +579,7 @@ public class Level implements INBTReadWrite
 		this.time = time;
 		this.spawnX = spawnX;
 		this.spawnY = spawnY;
+		this.isAmbientLighting = isAmbientLighting;
 		
 		if(tag.getValue().containsKey("players"))
 		{
@@ -599,6 +603,7 @@ public class Level implements INBTReadWrite
 		IntTag widthTag = new IntTag("width", width);
 		IntTag heightTag = new IntTag("height", height);
 		IntTag timeTag = new IntTag("time", time);
+		ByteTag ambientTag = new ByteTag("isAmbientLighting", (byte)(isAmbientLighting ? 1 : 0));
 		IntTag spawnXTag = new IntTag("spawnX", spawnX);
 		IntTag spawnYTag = new IntTag("spawnY", spawnY);
 		StringTag nameTag = new StringTag("name", name);
@@ -674,11 +679,12 @@ public class Level implements INBTReadWrite
 		levelMap.put("width", widthTag);
 		levelMap.put("height", heightTag);
 		levelMap.put("time", timeTag);
+		levelMap.put("isAmbientLighting", ambientTag);
 		levelMap.put("name", nameTag);
 		levelMap.put("spawnX", spawnXTag);
 		levelMap.put("spawnY", spawnYTag);
 		levelMap.put("tiles", tileListTag);
-		levelMap.put("entities", entityListTag);
+		levelMap.put("entities", entityListTag);	
 
 		return new CompoundTag("level", levelMap);
 	}

@@ -15,7 +15,10 @@ public class EntityTree extends EntityStatic
 	public EntityTree() 
 	{
 		super(100, 225);
-		if(Utils.getSide() == Side.CLIENT) this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_TREE));
+		if(Utils.getSide() == Side.CLIENT) 
+		{
+			this.setTexture(TextureLoader.loadTexture(RenderRegistry.IMG_ENTITY_STATIC_TREE));
+		}
 	}
 	
 	@Override

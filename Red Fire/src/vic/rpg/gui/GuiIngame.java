@@ -21,7 +21,7 @@ public class GuiIngame extends GuiContainer
 	public GTextField chatField = new GTextField(10, Game.HEIGHT - 25, Game.WIDTH - 35, 20, 120, false);
 	
 	private boolean init = false;
-	private ArrayList<String> chatValues = new ArrayList<String>();
+	private ArrayList<Object[]> chatValues = new ArrayList<Object[]>();
 	private final int MAX_CHATLINES = 10;
 	private int lp = 0;
 	//TODO Struggles with quick health changes.
@@ -113,16 +113,21 @@ public class GuiIngame extends GuiContainer
 		DrawUtils.setFont(new Font("Veranda", 0, 20));
 		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
 		
-		DrawUtils.fillRect(0, 50 - 14, MAX_CHATSIZE, 12 * MAX_CHATLINES, new Color(0, 0, 0, 120));
-		
 		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 14));
 		
-		int stringHeight = 0;
+		int i2 = 0;
 		for(int i = 0; i < chatValues.size(); i++)
 		{
-			String s = chatValues.get(i) != null ? chatValues.get(i): " ";
-			DrawUtils.drawString(0, (int)(50 + stringHeight * DrawUtils.getTextRenderer().getBounds("X").getHeight()), s, Color.white);
-			stringHeight += 1;
+			if(chatValues.get(i) != null)
+			{		
+				Object[] clog = chatValues.get(i);
+				if(System.currentTimeMillis() < (long)clog[1] + 20000L || chatField.isVisible)
+				{
+					DrawUtils.fillRect(0, (int)(39 + i2 * DrawUtils.getFont().getSize()), MAX_CHATSIZE, DrawUtils.getFont().getSize(), new Color(0, 0, 0, 120));
+					DrawUtils.drawString(0, (int)(50 + i2 * DrawUtils.getFont().getSize()), (String)clog[0], Color.white);
+					i2++;
+				}
+			}
 		}
 		
 		if(focusedEntity != null)
@@ -144,13 +149,13 @@ public class GuiIngame extends GuiContainer
 	
 	public void addChatMessage(String s, String playername)
 	{		
-		if(playername.equals("server"))
+		if(playername.equals("SERVER"))
 		{
-			s = "{SERVER}: " + s;
+			s = "[&color=178,0,255#SERVER&1]: " + s;
 		}
 		else s = "[" + playername + "]: " + s;
 		
 		if(chatValues.size() + 1 > MAX_CHATLINES) chatValues.remove(0);
-		chatValues.add(s);
+		chatValues.add(new Object[]{s, System.currentTimeMillis()});
 	}
 }

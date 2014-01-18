@@ -1,5 +1,6 @@
 package vic.rpg.level.entity.living;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
@@ -8,6 +9,7 @@ import org.jnbt.CompoundTag;
 
 import vic.rpg.item.ItemApple;
 import vic.rpg.level.Editable;
+import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
@@ -110,8 +112,19 @@ public class EntityPlayer extends EntityLiving
 
 	public void initRender() 
 	{
+		this.lightSources.add(new LightSource(500, 1.0F, Color.orange, true));
 		super.rotatedSprites = Utils.cloneArray(EntityPlayer.sprites, TextureFX.class);
 		this.setRotation(Direction.NORTH);
+	}
+
+	@Override
+	public Point getLightPosition(LightSource l) 
+	{
+		if(l == lightSources.get(0))
+		{
+			return new Point(this.xCoord + getWidth() / 2, this.yCoord);
+		}
+		return null;
 	}
 
 	@Override
