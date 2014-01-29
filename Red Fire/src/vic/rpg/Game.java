@@ -156,6 +156,7 @@ public class Game extends GLCanvas implements Runnable
     private void init(GL2 gl2)
     {
     	init();
+    	
     	gl2.glEnable(GL2.GL_ALPHA_TEST);
     	gl2.glAlphaFunc(GL2.GL_GREATER, 0.1F);
     	gl2.glEnable(GL2.GL_BLEND);
@@ -170,46 +171,20 @@ public class Game extends GLCanvas implements Runnable
     	
     	screen = new Screen(WIDTH, HEIGHT);
 		Gui.setGui(new GuiMain());
+		start();
 		
 		GL_ANIMATOR = new Animator();
 		GL_ANIMATOR.add(this);
-		GL_ANIMATOR.setUpdateFPSFrames(10, null);
+		GL_ANIMATOR.setUpdateFPSFrames(3, null);
 		GL_ANIMATOR.start();
-		
-		start();
     }
     
-    double unprocessedSeconds = 0;
-	long previousTime = System.nanoTime();
-	double secondsPerTick = 1 / 60.0;
-	int tickCount = 0;
-	
     private void render(GL2 gl2)
     {
     	gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	DrawUtils.setGL(gl2);
     	screen.render(gl2);
     	screen.postRender(gl2);
-
-		if(isRunning)
-		{
-			long currentTime = System.nanoTime();
-			long passedTime = currentTime - previousTime;
-			previousTime = currentTime;
-			unprocessedSeconds += passedTime / 1000000000.0;
-			
-			while(unprocessedSeconds > secondsPerTick)
-			{
-				tick();
-				unprocessedSeconds -= secondsPerTick;
-				tickCount++;
-				if(tickCount % 60 == 0)
-				{
-					previousTime += 1000;
-				}
-			}
-		}
-    	
     	gl2.glFlush();
     }
     
@@ -381,6 +356,28 @@ public class Game extends GLCanvas implements Runnable
 	@Override
 	public void run() 
 	{	
+		double unprocessedSeconds = 0;
+		long previousTime = System.nanoTime();
+		double secondsPerTick = 1 / 60.0;
+		int tickCount = 0;
 		
+		while(isRunning)
+		{
+			long currentTime = System.nanoTime();
+			long passedTime = currentTime - previousTime;
+			previousTime = currentTime;
+			unprocessedSeconds += passedTime / 1000000000.0;
+			
+			while(unprocessedSeconds > secondsPerTick)
+			{
+				tick();
+				unprocessedSeconds -= secondsPerTick;
+				tickCount++;
+				if(tickCount % 60 == 0)
+				{
+					previousTime += 1000;
+				}
+			}
+		}		
 	}
 }
