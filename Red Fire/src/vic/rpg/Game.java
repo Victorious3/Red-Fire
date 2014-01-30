@@ -65,9 +65,9 @@ public class Game extends GLCanvas implements Runnable
 	private Thread thread;
 	public Animator GL_ANIMATOR;
 	public boolean isRunning = false;
-	public static int frames = 0;
 	
 	public static boolean TAKE_SCREENSHOT = false;
+	private static boolean isUpdating = false;
 	
 	//Game Objects
 	public static String playerUUID;
@@ -90,7 +90,7 @@ public class Game extends GLCanvas implements Runnable
         Options.load();	 	
     }
     
-    public void stopGame()
+    public synchronized void stopGame()
     {
     	System.err.println("Stopping client ...");
     	Options.safe();
@@ -179,17 +179,29 @@ public class Game extends GLCanvas implements Runnable
 		GL_ANIMATOR.start();
     }
     
-    private void render(GL2 gl2)
+    private synchronized void render(GL2 gl2)
     {
+    	if(isUpdating)
+    	{
+    		try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
     	gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
     	DrawUtils.setGL(gl2);
     	screen.render(gl2);
     	screen.postRender(gl2);
     	gl2.glFlush();
+    	
+    	notify();
     }
     
-	private void tick() 
+	private synchronized void tick() 
 	{
+		isUpdating = true;
 		screen.tick();
 		
 		if(Gui.currentGui != null)
@@ -200,6 +212,7 @@ public class Game extends GLCanvas implements Runnable
 		{
 			level.tick();
 		}	
+		isUpdating = false;
 	}
 	
     public void start()

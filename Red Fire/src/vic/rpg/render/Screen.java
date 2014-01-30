@@ -34,7 +34,6 @@ public class Screen extends Drawable
 		}
 	}
 	
-	int tickCounter = 0;
 	public void tick()
 	{
 		if(Game.getPlayer() != null && !Game.getPlayer().isWalkingBlocked)
