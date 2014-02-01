@@ -8,15 +8,21 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GIconButton;
 import vic.rpg.gui.controls.GTextField;
 import vic.rpg.item.Slot;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.LinearAnimator;
+import vic.rpg.render.TextureLoader;
 import vic.rpg.server.packet.Packet20Chat;
+import vic.rpg.utils.Utils;
 
-public class GuiIngame extends GuiContainer 
+import com.jogamp.opengl.util.texture.Texture;
+
+public class GuiIngame extends GuiContainer implements IGButton
 {
 	public GTextField chatField = new GTextField(10, Game.HEIGHT - 25, Game.WIDTH - 35, 20, 120, false);
 	
@@ -24,6 +30,20 @@ public class GuiIngame extends GuiContainer
 	private ArrayList<Object[]> chatValues = new ArrayList<Object[]>();
 	private final int MAX_CHATLINES = 10;
 	private int lp = 0;
+	
+	private Texture tNormal = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange.png"));
+	private Texture tHover = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_hover.png"));
+	private Texture tClick = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_click.png"));
+	
+	private GIconButton buttonSlot3;
+	private GIconButton buttonSlot4;
+	private GIconButton buttonSlot5;
+	private GIconButton buttonSlot6;
+	private GIconButton buttonSlot7;
+	private GIconButton buttonSlot8;
+	private GIconButton buttonSlot9;
+	private GIconButton buttonSlot0;
+	
 	//TODO Struggles with quick health changes.
 	private LinearAnimator lpAnim = DrawUtils.createLinearAnimator(500, lp, lp);
 	
@@ -54,16 +74,34 @@ public class GuiIngame extends GuiContainer
 			{
 				setInventory(Game.getPlayer().getInventory());
 				
-				controlsList.add(new Slot(50, 500, 9, this, 2, 2, true));
-				controlsList.add(new Slot(120, 500, 10, this, 2, 2, true));
-				controlsList.add(new Slot(190, 500, 11, this, 2, 2, true));
-				controlsList.add(new Slot(260, 500, 12, this, 2, 2, true));
-				controlsList.add(new Slot(340, 500, 13, this, 2, 2, true));
-				controlsList.add(new Slot(410, 500, 14, this, 2, 2, true));
-				controlsList.add(new Slot(480, 500, 15, this, 2, 2, true));
-				controlsList.add(new Slot(550, 500, 16, this, 2, 2, true));
-				controlsList.add(new Slot(620, 500, 17, this, 2, 2, true));
-				controlsList.add(new Slot(690, 500, 18, this, 2, 2, true));
+				controlsList.add(new Slot(50, 505, 9, this, 2, 2, true));
+				controlsList.add(new Slot(120, 505, 10, this, 2, 2, true));
+				controlsList.add(new Slot(190, 505, 11, this, 2, 2, true));
+				controlsList.add(new Slot(260, 505, 12, this, 2, 2, true));
+				controlsList.add(new Slot(340, 505, 13, this, 2, 2, true));
+				controlsList.add(new Slot(410, 505, 14, this, 2, 2, true));
+				controlsList.add(new Slot(480, 505, 15, this, 2, 2, true));
+				controlsList.add(new Slot(550, 505, 16, this, 2, 2, true));
+				controlsList.add(new Slot(620, 505, 17, this, 2, 2, true));
+				controlsList.add(new Slot(690, 505, 18, this, 2, 2, true));
+				
+				buttonSlot3 = new GIconButton(190, 495, 60, 10, "buttonSlot3", tNormal, tHover, tClick, this);
+				buttonSlot4 = new GIconButton(260, 495, 60, 10, "buttonSlot4", tNormal, tHover, tClick, this);;
+				buttonSlot5 = new GIconButton(340, 495, 60, 10, "buttonSlot5", tNormal, tHover, tClick, this);;
+				buttonSlot6 = new GIconButton(410, 495, 60, 10, "buttonSlot6", tNormal, tHover, tClick, this);;
+				buttonSlot7 = new GIconButton(480, 495, 60, 10, "buttonSlot7", tNormal, tHover, tClick, this);;
+				buttonSlot8 = new GIconButton(550, 495, 60, 10, "buttonSlot8", tNormal, tHover, tClick, this);;
+				buttonSlot9 = new GIconButton(620, 495, 60, 10, "buttonSlot9", tNormal, tHover, tClick, this);;
+				buttonSlot0 = new GIconButton(690, 495, 60, 10, "buttonSlot0", tNormal, tHover, tClick, this);;
+				
+				controlsList.add(buttonSlot3);
+				controlsList.add(buttonSlot4);
+				controlsList.add(buttonSlot5);
+				controlsList.add(buttonSlot6);
+				controlsList.add(buttonSlot7);
+				controlsList.add(buttonSlot8);
+				controlsList.add(buttonSlot9);
+				controlsList.add(buttonSlot0);
 				
 				lp = Game.getPlayer().lp;
 				lpAnim = DrawUtils.createLinearAnimator(500, lp, lp);
@@ -157,5 +195,11 @@ public class GuiIngame extends GuiContainer
 		
 		if(chatValues.size() + 1 > MAX_CHATLINES) chatValues.remove(0);
 		chatValues.add(new Object[]{s, System.currentTimeMillis()});
+	}
+
+	@Override
+	public void onButtonPressed(String name) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,20 +1,17 @@
 package vic.rpg.gui.controls;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Stroke;
 
 import javax.media.opengl.GL2;
-
-import com.jogamp.opengl.util.awt.TextRenderer;
 
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+
 public class GSwitcher extends GControl 
 {
-	private String[] modes;
+	public String[] modes;
 	private int maxMode;
 	
 	public String currMode;
@@ -56,16 +53,10 @@ public class GSwitcher extends GControl
 	}
 
 	@Override
-	public void onClickStart(int x, int y, int mouseButton) 
-	{
-		super.onClickStart(x, y, mouseButton);
-	}
-
-	@Override
 	public void onClickReleased(int x, int y, int mouseButton) 
-	{	
+	{
 		modePointer++;	
 		if (modePointer >= maxMode) modePointer = 0;
-		currMode = modes[modePointer];
+		currMode = modes[modePointer];	
 	}
 }

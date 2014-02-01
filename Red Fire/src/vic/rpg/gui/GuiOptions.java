@@ -9,22 +9,19 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.config.Options;
 import vic.rpg.gui.controls.GButton;
-import vic.rpg.gui.controls.GSlider;
 import vic.rpg.gui.controls.GSwitcher;
+import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 
 public class GuiOptions extends Gui implements GButton.IGButton 
-{
-	private GSlider slider1;
-	
-	private GSwitcher switcherAA;
-	private GSwitcher switcherCR;
-	private GSwitcher switcherIP;
+{	
+	private GSwitcher switcherLighting;
+	private GSwitcher switcherLanguage;
 	
 	public GuiOptions() 
 	{
-		super(true, true);
+		super(true, false);
 	}
 	
 	@Override
@@ -38,6 +35,8 @@ public class GuiOptions extends Gui implements GButton.IGButton
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
 		DrawUtils.drawUnformattedString(Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 180, "Options", Color.white);
 		DrawUtils.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+		DrawUtils.drawUnformattedString(Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 85, "Enable experimental lighting:", Color.white);
+		DrawUtils.drawUnformattedString(Game.WIDTH / 2 - 90, Game.HEIGHT / 2 - 15, "Language:", Color.white);
 	}
 
 	@Override
@@ -52,23 +51,17 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	@Override
 	public void initGui() 
 	{
-		int ANTIALASING = 0;
-		int COLOR_RENDER = 0;
-		int INTERPOLATION = 0;
-		
 		int xOffset = (Game.WIDTH)/2;
 		int yOffset = (Game.HEIGHT)/2 - 100;
 		
-		switcherAA = new GSwitcher(xOffset - 60, yOffset + 30, 120, 30, new String[]{"default", "ON", "OFF"}, ANTIALASING);
-		switcherCR = new GSwitcher(xOffset - 60, yOffset + 70, 120, 30, new String[]{"default", "speed", "quality"}, COLOR_RENDER);
-		switcherIP = new GSwitcher(xOffset - 60, yOffset + 110, 120, 30, new String[]{"Next Neighbor", "bilinear", "bicubic"}, INTERPOLATION);
+		switcherLighting = new GSwitcher(xOffset - 60, yOffset + 30, 120, 30, new String[]{"ON", "OFF"}, Options.LIGHTING ? 0 : 1);
+		switcherLanguage = new GSwitcher(xOffset - 60, yOffset + 100, 120, 30, LanguageRegistry.getLanguages().toArray(new String[LanguageRegistry.getLanguages().size()]), LanguageRegistry.getLanguages().indexOf(Options.LANGUAGE));
+
+		this.controlsList.add(switcherLighting);
+		this.controlsList.add(switcherLanguage);
 		
-		this.controlsList.add(switcherAA);
-		this.controlsList.add(switcherCR);
-		this.controlsList.add(switcherIP);
-		
-		this.controlsList.add(new GButton(xOffset - 100, yOffset + 170, 100, 30, this, "Apply", "Apply"));
-		this.controlsList.add(new GButton(xOffset + 10, yOffset + 170, 100, 30, this, "Cancel", "Cancel"));
+		this.controlsList.add(new GButton(xOffset - 100, yOffset + 200, 100, 30, this, "Apply", "Apply"));
+		this.controlsList.add(new GButton(xOffset + 10, yOffset + 200, 100, 30, this, "Cancel", "Cancel"));
 	}
 
 	@Override
@@ -80,7 +73,9 @@ public class GuiOptions extends Gui implements GButton.IGButton
 		}
 		else if(name.equalsIgnoreCase("Apply"))
 		{
-			//TODO Adjust the options
+			Options.LIGHTING = switcherLighting.modePointer == 0 ? true : false;
+			Options.LANGUAGE = switcherLanguage.modes[switcherLanguage.modePointer];
+			
 			Options.safe();
 			Gui.setGui(new GuiMain());
 		}

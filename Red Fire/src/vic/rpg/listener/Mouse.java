@@ -89,7 +89,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		case MouseEvent.BUTTON2 : isMiddleDown = false; break;
 		}
 		
-		if(Gui.currentGui != null && arg0.getClickCount() == 1) Gui.currentGui.onMouseClickEnd(this.xCoord, this.yCoord, arg0.getButton());
+		Gui.currentGui.onMouseClickEnd(this.xCoord, this.yCoord, arg0.getButton());
 	}
 
 	@Override

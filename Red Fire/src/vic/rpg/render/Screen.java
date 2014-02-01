@@ -7,6 +7,7 @@ import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
 import vic.rpg.level.Entity;
 import vic.rpg.level.Tile;
@@ -139,26 +140,36 @@ public class Screen extends Drawable
 		}
 		else return Color.white;
 	}
+	
+	private int textureID = 0;
+	private int frameBufferID = 0;
+	
+	public void init(GL2 gl2)
+	{
+		int[] params1 = new int[1];
+		gl2.glGenTextures(1, params1, 0);
+		textureID = params1[0];
+		gl2.glBindTexture(GL.GL_TEXTURE_2D, textureID);
+		gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		gl2.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, Game.RES_WIDTH, Game.RES_HEIGHT, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);
+		
+		int[] params2 = new int[1];
+		gl2.glGenFramebuffers(1, params2, 0);
+		frameBufferID = params2[0];
+		gl2.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, frameBufferID);
+		gl2.glFramebufferTexture2D(GL2.GL_DRAW_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, textureID, 0);
+		
+		gl2.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
+	}
 
 	public void postRender(GL2 gl2)
 	{
-		if(Game.level != null)
+		if(Game.level != null && Options.LIGHTING)
 		{
 			DrawUtils.setGL(gl2);
 			
-			int[] params1 = new int[1];
-			gl2.glGenTextures(1, params1, 0);
-			int textureID = params1[0];
-			gl2.glBindTexture(GL.GL_TEXTURE_2D, textureID);
-			gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-			gl2.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-			gl2.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, Game.RES_WIDTH, Game.RES_HEIGHT, 0, GL.GL_BGRA, GL.GL_UNSIGNED_BYTE, null);
-			
-			int[] params2 = new int[1];
-			gl2.glGenFramebuffers(1, params2, 0);
-			int frameBufferID = params2[0];
 			gl2.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, frameBufferID);
-			gl2.glClear(GL.GL_COLOR_BUFFER_BIT);
 			gl2.glFramebufferTexture2D(GL2.GL_DRAW_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, textureID, 0);
 			
 			DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, getAmbientLight()); 
@@ -218,10 +229,7 @@ public class Screen extends Drawable
 			gl2.glPopMatrix();
 			gl2.glDisable(GL2.GL_TEXTURE_2D);
 			
-			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
-			
-			gl2.glDeleteTextures(1, params1, 0);
-			gl2.glDeleteFramebuffers(1, params2, 0);		
+			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);		
 		}
     	if(Gui.currentGui != null) Gui.currentGui.render(gl2);
 	}

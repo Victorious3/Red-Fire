@@ -112,13 +112,15 @@ public class Slot extends GControl implements Cloneable
 				if(canBePlacedIn(gui.inventory.getItem(gui.currentSlot.id)))
 				{
 					setItem(gui.inventory.getItem(gui.currentSlot.id));
-					gui.inventory.addItem(gui.currentSlot.id, null);
+					gui.inventory.setItem(gui.currentSlot.id, null);
+					gui.inventory.updateInventory();
 				}
 			}
 			else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) == null)
 			{									
-				gui.inventory.addItem(gui.currentSlot.id, gui.inventory.getItem(id));
-				setItem(null); 
+				gui.inventory.setItem(gui.currentSlot.id, gui.inventory.getItem(id));
+				setItem(null);
+				gui.inventory.updateInventory();
 			}
 			else if(gui.inventory.getItem(id) != null && gui.inventory.getItem(gui.currentSlot.id) != null)
 			{
@@ -126,7 +128,8 @@ public class Slot extends GControl implements Cloneable
 				{	
 					Item item = gui.inventory.getItem(id);
 					setItem(gui.inventory.getItem(gui.currentSlot.id));
-					gui.inventory.addItem(gui.currentSlot.id, item);
+					gui.inventory.setItem(gui.currentSlot.id, item);
+					gui.inventory.updateInventory();
 				}
 			}
 		}

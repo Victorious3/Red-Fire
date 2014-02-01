@@ -170,6 +170,7 @@ public class Game extends GLCanvas implements Runnable
     	gl2.glMatrixMode(GL2.GL_MODELVIEW);
     	
     	screen = new Screen(WIDTH, HEIGHT);
+    	screen.init(gl2);
 		Gui.setGui(new GuiMain());
 		start();
 		

@@ -11,6 +11,7 @@ import vic.rpg.utils.Utils;
 public class Options 
 {
 	public static String LANGUAGE = LanguageRegistry.en_GB;
+	public static boolean LIGHTING = true;
 	
 	public static void load() 
 	{
@@ -18,9 +19,9 @@ public class Options
 		Properties prop = new Properties();	
 		
 		try {
-			prop.load(new FileInputStream(file));
-			
-		
+			prop.load(new FileInputStream(file));		
+			LANGUAGE = prop.getProperty("lang", LanguageRegistry.en_GB);
+			LIGHTING = Boolean.parseBoolean(prop.getProperty("lighting", String.valueOf(true)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,7 +33,8 @@ public class Options
 		Properties prop = new Properties();	
 		
 		try {	
-			
+			prop.setProperty("lang", LANGUAGE);
+			prop.setProperty("lighting", String.valueOf(LIGHTING));
 			prop.store(new FileOutputStream(file), "Options");			
 		} catch (Exception e) {
 			e.printStackTrace();

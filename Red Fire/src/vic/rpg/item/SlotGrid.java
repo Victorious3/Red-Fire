@@ -130,15 +130,17 @@ public class SlotGrid extends GControl
 		
 		if(gui.inventory.getItem(gui.currentSlot.id) == null && item != null)
 		{
-			gui.inventory.addItem(gui.currentSlot.id, item);
+			gui.inventory.setItem(gui.currentSlot.id, item);
 			setItem(item.xCoord, item.yCoord, null);
+			gui.inventory.updateInventory();
 		}
 		else if(gui.inventory.getItem(gui.currentSlot.id) != null)
 		{
 			if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x, y, gui.inventory.getItem(gui.currentSlot.id)))
 			{
 				setItem(x, y, gui.inventory.getItem(gui.currentSlot.id));
-				gui.inventory.addItem(gui.currentSlot.id, null);
+				gui.inventory.setItem(gui.currentSlot.id, null);
+				gui.inventory.updateInventory();
 			}			
 		}	
 	}

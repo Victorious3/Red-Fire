@@ -8,6 +8,8 @@ import java.awt.geom.Area;
 import org.jnbt.CompoundTag;
 
 import vic.rpg.item.ItemApple;
+import vic.rpg.item.ItemShield;
+import vic.rpg.item.ItemSword;
 import vic.rpg.level.Editable;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureFX;
@@ -61,9 +63,10 @@ public class EntityPlayer extends EntityLiving
 		inventory.add(17);
 		inventory.add(18);
 		
-		//TODO addToInventory sends Entity!
-		inventory.addItem(2, new ItemApple());
-		inventory.addItem(9, new ItemApple());
+		inventory.setItem(2, new ItemApple());
+		inventory.setItem(9, new ItemApple());
+		inventory.addToInventory(new ItemShield());
+		inventory.addToInventory(new ItemSword());
 	}
 
 	@Override

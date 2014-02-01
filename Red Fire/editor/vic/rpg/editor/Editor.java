@@ -846,7 +846,7 @@ public class Editor
 	 */
 	public static void openLevel()
 	{
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
 		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter( 
 	            "Plaintext: lvl", "lvl"); 
 	    chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
@@ -888,7 +888,7 @@ public class Editor
 	 */
 	public static void saveLevel()
 	{
-		JFileChooser chooser = new JFileChooser();
+		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
 		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter( 
                 "Plaintext: lvl", "lvl"); 
         chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 

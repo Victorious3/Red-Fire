@@ -17,13 +17,32 @@ public class CommandHeal extends Command
 	{
 		if(args.size() > 0)
 		{
-			if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+			if(args.size() > 1)
 			{
-				EntityController.setHealth(ServerLoop.level.onlinePlayersMap.get(args.get(0)), 1F);
+				try {
+					float amount = Float.parseFloat(args.get(1));
+					if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+					{
+						EntityController.setHealth(ServerLoop.level.onlinePlayersMap.get(args.get(0)), amount);
+					}
+					else
+					{
+						commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+					}
+				} catch (Exception e) {
+					commandSender.print("&4Health has to be a float from 0.0 to 1.0!");
+				}
 			}
-			else
+			else 
 			{
-				commandSender.print("No player named \"" + args.get(0) + "\" online!");
+				if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+				{
+					EntityController.setHealth(ServerLoop.level.onlinePlayersMap.get(args.get(0)), 1F);
+				}
+				else
+				{
+					commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+				}
 			}
 		}
 		else Command.getHelp(commandSender); 
@@ -32,6 +51,6 @@ public class CommandHeal extends Command
 	@Override
 	public String getUsage() 
 	{
-		return "/heal [<player>]";
+		return "/heal <player> [<health>]";
 	}
 }

@@ -54,12 +54,12 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		slots.put(id, null);
 	}
 	
-	public void addItemGrid(int id, Item[][] items)
+	public void setItemGrid(int id, Item[][] items)
 	{
 		slotGrids.put(id, items);
 	}
 	
-	public void addItem(int id, Item item)
+	public void setItem(int id, Item item)
 	{
 		slots.put(id, item);
 	}
@@ -164,23 +164,8 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return false;
 	}
 	
-	public boolean setItem(int id, Item item)
-	{		
-		addItem(id, item);
-
-		if(Utils.getSide() == Side.CLIENT)
-		{
-			Game.packetHandler.addPacketToSendingQueue(new Packet13InventoryUpdate(this));
-		}
-		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
-
-		return true;
-	}
-	
-	public void setItemGrid(int id, Item[][] items) 
+	public void updateInventory()
 	{
-		addItemGrid(id, items);
-		
 		if(Utils.getSide() == Side.CLIENT)
 		{
 			Game.packetHandler.addPacketToSendingQueue(new Packet13InventoryUpdate(this));
@@ -212,8 +197,9 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		
 		for(int id : slots.keySet())
 		{
-			if(setItem(id, item))
+			if(getItem(id) == null)
 			{
+				setItem(id, item);
 				return true;
 			}
 		}

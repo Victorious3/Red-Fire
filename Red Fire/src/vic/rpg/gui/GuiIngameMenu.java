@@ -71,7 +71,8 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 	{
 		if(name.equalsIgnoreCase("Options"))
 		{
-//			Gui.setGui(new GuiOptions(this));
+//			TODO: This doesn't work because escape will redirect to GuiMain.
+//			Gui.setGui(new GuiOptions());
 		}
 		if(name.equalsIgnoreCase("Quit to Title"))
 		{
