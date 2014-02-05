@@ -28,6 +28,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	
 	private boolean init = false;
 	private ArrayList<Object[]> chatValues = new ArrayList<Object[]>();
+	private String lastChat = "";
 	private final int MAX_CHATLINES = 10;
 	private int lp = 0;
 	
@@ -127,7 +128,8 @@ public class GuiIngame extends GuiContainer implements IGButton
 			if(chatField.isVisible)
 			{
 				chatField.isVisible = false;
-				if(chatField.plaintext.length() > 0)Game.packetHandler.addPacketToSendingQueue(new Packet20Chat(chatField.plaintext, Game.USERNAME));
+				if(chatField.plaintext.length() > 0) Game.packetHandler.addPacketToSendingQueue(new Packet20Chat(chatField.plaintext, Game.USERNAME));
+				lastChat = chatField.plaintext;
 				Game.getPlayer().isWalkingBlocked = false;
 				chatField.clear();
 			}
@@ -137,6 +139,10 @@ public class GuiIngame extends GuiContainer implements IGButton
 				Game.getPlayer().isWalkingBlocked = true;
 				Game.getPlayer().setWalking(false);
 			}
+		}
+		if(keyCode == KeyEvent.VK_UP && chatField.isVisible && lastChat.length() > 0)
+		{
+			chatField.setText(lastChat);
 		}
 	}
 	

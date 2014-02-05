@@ -16,7 +16,7 @@ public class GTextField extends GControl
 	public String plaintext = "";
 	public int maxLenght = 0;
 	public boolean returnPressed = false;
-	public boolean loosesFocus = true;
+	private boolean loosesFocus = true;
 	
 	private int wdt = 0;
 	private int wdt1 = 0;
@@ -49,7 +49,7 @@ public class GTextField extends GControl
 		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
 		
 		wdt = (int) DrawUtils.getTextRenderer().getBounds(text).getWidth();
-		wdt1 = (int) DrawUtils.getTextRenderer().getBounds(" ").getWidth();
+		wdt1 = (int) DrawUtils.getTextRenderer().getBounds("_").getWidth();
 		
 		DrawUtils.drawUnformattedString(xCoord + 5, yCoord + height - 6, text, Color.white);
 	}

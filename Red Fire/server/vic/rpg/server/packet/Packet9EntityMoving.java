@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.utils.Direction;
 
 public class Packet9EntityMoving extends Packet 
@@ -14,9 +13,7 @@ public class Packet9EntityMoving extends Packet
 	public int yCoord;
 	public Direction rotation;
 	public boolean isWalking;
-	public String uniqueUUID;
-	public boolean isPlayer = false;
-	public String playerName;
+	public String UUID;
 	
 	public Packet9EntityMoving(EntityLiving entity) 
 	{
@@ -26,13 +23,7 @@ public class Packet9EntityMoving extends Packet
 		this.yCoord = entity.yCoord;
 		this.rotation = entity.rotation;
 		this.isWalking = entity.isWalking();
-		this.uniqueUUID = entity.UUID;
-		
-		if(entity instanceof EntityPlayer) 
-		{
-			isPlayer = true;
-			playerName = ((EntityPlayer)entity).username;
-		}
+		this.UUID = entity.UUID;
 	}
 	
 	public Packet9EntityMoving()
@@ -44,16 +35,11 @@ public class Packet9EntityMoving extends Packet
 	public void readData(DataInputStream stream) 
 	{
 		try {
-			uniqueUUID = stream.readUTF();
+			UUID = stream.readUTF();
 			xCoord = stream.readInt();
 			yCoord = stream.readInt();
 			rotation = Direction.getDirection(stream.readInt());
 			isWalking = stream.readBoolean();
-			isPlayer = stream.readBoolean();
-			if(isPlayer)
-			{
-				playerName = stream.readUTF();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
@@ -63,16 +49,11 @@ public class Packet9EntityMoving extends Packet
 	public void writeData(DataOutputStream stream) 
 	{
 		try {
-			stream.writeUTF(uniqueUUID);
+			stream.writeUTF(UUID);
 			stream.writeInt(xCoord);
 			stream.writeInt(yCoord);
 			stream.writeInt(rotation.getID());
 			stream.writeBoolean(isWalking);
-			stream.writeBoolean(isPlayer);
-			if(isPlayer)
-			{
-				stream.writeUTF(playerName);
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	

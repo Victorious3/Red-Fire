@@ -47,22 +47,19 @@ public class PacketHandlerMP extends Thread
 			{
 				p.id = 7;
 				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
-				ServerLoop.level.onlinePlayersMap.put(con.username, player);
+				ServerLoop.level.entityMap.put(ServerLoop.level.onlinePlayersMap.get(con.username), player);
 				Server.server.broadcast(p);
 			}
 			else if(p.id == 9)
 			{
 				Packet9EntityMoving p9entitymoving = (Packet9EntityMoving) p;
 				
-				Entity e;
-				if(p9entitymoving.isPlayer) e = ServerLoop.level.onlinePlayersMap.get(p9entitymoving.playerName);
-				else e = ServerLoop.level.entityMap.get(p9entitymoving.uniqueUUID);
+				Entity e = ServerLoop.level.entityMap.get(p9entitymoving.UUID);
 				
 				e.xCoord = p9entitymoving.xCoord;
 				e.yCoord = p9entitymoving.yCoord;
 				
-				if(p9entitymoving.isPlayer) ServerLoop.level.onlinePlayersMap.put(p9entitymoving.playerName, (EntityPlayer)e);
-				else  ServerLoop.level.entityMap.put(e.UUID, e);
+				ServerLoop.level.entityMap.put(e.UUID, e);
 				
 				Server.server.broadcast(p);
 			}
@@ -88,7 +85,7 @@ public class PacketHandlerMP extends Thread
 			{
 				Packet11EntityInteraction packet = (Packet11EntityInteraction) p;
 				Entity entity = ServerLoop.level.entityMap.get(packet.UUID);
-				EntityPlayer player = ServerLoop.level.onlinePlayersMap.get(con.username);
+				EntityPlayer player = ServerLoop.level.getPlayer(con.username);
 				if(packet.mode == Packet11EntityInteraction.MODE_ONCLICK)
 				{
 					entity.onMouseClicked(packet.data[0], packet.data[1], player, packet.data[2]);
@@ -97,14 +94,13 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 12)
 			{
 				EntityEvent eev = ((Packet12Event)p).eev;
-				if(((Packet12Event)p).username.length() > 0) ServerLoop.level.onlinePlayersMap.get(((Packet12Event)p).username).onEventReceived(eev);
-				else ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).onEventReceived(eev);	
+				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).onEventReceived(eev);	
 			}
 			else if(p.id == 13)
 			{
 				//TODO This allows cheaters to modify their Inventory in every way they like. They could even add more size to it... Think of some verifying algorithm.
 				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
-				packet.inventory.parentEntity = ServerLoop.level.onlinePlayersMap.get(con.username);
+				packet.inventory.parentEntity = ServerLoop.level.getPlayer(con.username);
 				packet.inventory.parentEntity.addEventListener(packet.inventory);
 				packet.inventory.parentEntity.inventory = packet.inventory;
 			}

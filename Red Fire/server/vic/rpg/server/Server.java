@@ -259,7 +259,8 @@ public class Server extends Thread implements CommandSender
 		    	if(ServerLoop.level.offlinePlayersMap.containsKey(player))
 		    	{
 		    		playerEntity = ServerLoop.level.offlinePlayersMap.remove(player);	    		
-		    		ServerLoop.level.addPlayer(playerEntity, player);
+		    		ServerLoop.level.onlinePlayersMap.put(playerEntity.username, playerEntity.UUID);
+		    		ServerLoop.level.entityMap.put(playerEntity.UUID, playerEntity);
 		    	}	    	
 		    	else ServerLoop.level.createPlayer(playerEntity, player, ServerLoop.level.spawnX, ServerLoop.level.spawnY);
 		    		
@@ -291,10 +292,11 @@ public class Server extends Thread implements CommandSender
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-	    }	    
+	    }
+	    cleanup();
 	}
 	
-	public synchronized void stopServer()
+	private void cleanup()
 	{
 		try {
 			serverSocket.close();
@@ -305,8 +307,30 @@ public class Server extends Thread implements CommandSender
 		for(Connection c : connections.values())
 		{
 			c.finalize();
+		}	
+		
+		System.out.println("Waiting on active connections...");
+		
+		while(true)
+		{
+			boolean brk = true;
+			for(Connection c : connections.values())
+			{
+				if(c.isAlive()) brk = false;
+			}
+			if(brk) break;
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		this.isRunning = false;
+		
+		System.out.println("done!");
+		
+		System.out.println("Saving to file...");
+		serverLoop.stop();
+		
 		if(ServerLoop.file != null)
 		{
 			ServerLoop.level.writeToFile(ServerLoop.file);
@@ -316,11 +340,17 @@ public class Server extends Thread implements CommandSender
 			ServerLoop.level.writeToFile(Utils.getOrCreateFile(Utils.getAppdata() + "/saves/" + ServerLoop.level.name + ".lvl"));
 		}
 		
-		if(ServerGui.frame != null)
-		{
-			ServerGui.frame.setEnabled(false);
-			ServerGui.frame.dispose();
-		}	
+		System.out.println("done!");
+		
+		STATE = GameState.QUIT;
+		
+		//FIXME without this line, the awt-enventqueue gets stuck at Usafe.park.
+		if(!Server.isSinglePlayer) System.exit(0);
+	}
+	
+	public synchronized void stopServer()
+	{
+		this.isRunning = false;
 	}
 
 	public synchronized void delConnection(Connection c, String reason) 
@@ -329,11 +359,11 @@ public class Server extends Thread implements CommandSender
 	    	if(!connections.containsValue(c)) return;
 	    	actConnections--;	    	
 	    	c.connected = false;
-	    	System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
-	    	broadcast(new Packet7Entity(ServerLoop.level.onlinePlayersMap.get(c.username), Packet7Entity.MODE_DELETE), c.username);
+	    	if(reason.length() > 0) System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
+	    	broadcast(new Packet7Entity(ServerLoop.level.entityMap.get(ServerLoop.level.onlinePlayersMap.get(c.username)), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
-	    	ServerLoop.level.offlinePlayersMap.put(c.username, ServerLoop.level.onlinePlayersMap.remove(c.username));
+	    	ServerLoop.level.offlinePlayersMap.put(c.username, (EntityPlayer)ServerLoop.level.entityMap.remove(ServerLoop.level.onlinePlayersMap.remove(c.username)));
 
 		} catch (IOException e2) {
 			e2.printStackTrace();

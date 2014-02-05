@@ -114,7 +114,7 @@ public class PacketHandlerSP extends Thread
 		{
 			if(Game.level != null && Game.getPlayer() != null)
 			{
-				EntityLiving e = (EntityLiving) Game.level.entityMap.get(((Packet9EntityMoving)p).uniqueUUID);
+				EntityLiving e = (EntityLiving) Game.level.entityMap.get(((Packet9EntityMoving)p).UUID);
 				
 				if(e.UUID != Game.getPlayer().UUID)
 				{

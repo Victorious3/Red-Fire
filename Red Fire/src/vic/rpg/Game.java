@@ -92,7 +92,7 @@ public class Game extends GLCanvas implements Runnable
     
     public synchronized void stopGame()
     {
-    	System.err.println("Stopping client ...");
+    	System.out.println("Stopping client...");
     	Options.safe();
     	
     	if(Utils.getSide() == Side.CLIENT)
@@ -100,6 +100,7 @@ public class Game extends GLCanvas implements Runnable
 			RenderRegistry.stop();
 		}
     	
+    	System.out.println("Client Stopped! Thanks for using our software! (V3.inc)");
     	System.exit(0);
     }
     
@@ -221,6 +222,7 @@ public class Game extends GLCanvas implements Runnable
 		if(isRunning) return;
 		isRunning = true;
 		thread = new Thread(this);
+		thread.setName("Game");
 		thread.start();
 	}
 	
@@ -272,6 +274,10 @@ public class Game extends GLCanvas implements Runnable
 			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
 			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
 		});*/
+		
+		System.out.println("Welcome to the RedFire alpha! Feel free to redistribute this software in binary form.");
+		System.out.println("Please report bugs to our gitHub page at https://github.com/Victorious3/Red-Fire/");
+		System.out.println("WARNING: Threre is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
 		
 		GL_PROFILE = GLProfile.getDefault();
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);

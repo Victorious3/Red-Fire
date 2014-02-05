@@ -49,7 +49,8 @@ public class Level implements INBTReadWrite
 	public HashMap<Integer, Boolean> layerVisibility;
 	
 	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
-	public LinkedHashMap<String, EntityPlayer> onlinePlayersMap = new LinkedHashMap<String, EntityPlayer>();
+	
+	public LinkedHashMap<String, String> onlinePlayersMap = new LinkedHashMap<String, String>();
 	public LinkedHashMap<String, EntityPlayer> offlinePlayersMap = new LinkedHashMap<String, EntityPlayer>();
 	
 	public NodeMap nodeMap = new NodeMap(this);
@@ -289,11 +290,6 @@ public class Level implements INBTReadWrite
 		
 		if(Utils.getSide() == Side.SERVER)
 		{
-			for(EntityPlayer player : onlinePlayersMap.values())
-			{
-				player.tick();
-			}
-			
 			tickCounter++;
 			
 			if(tickCounter == 10)
@@ -434,13 +430,6 @@ public class Level implements INBTReadWrite
 		entityMap.put(uuid.toString(), ent);
 	}
 	
-	public void addPlayer(EntityPlayer player, String username)
-	{
-		player.username = username;
-		player.levelObj = this;
-		onlinePlayersMap.put(username, player);		
-	}
-	
 	public void createPlayer(EntityPlayer player, String username, int x, int y)
     {
         UUID uuid = UUID.randomUUID();
@@ -450,8 +439,14 @@ public class Level implements INBTReadWrite
         player.UUID = uuid.toString();
         player.levelObj = this;
         player.formatInventory();
-        onlinePlayersMap.put(username, player);                
+        entityMap.put(player.UUID, player);
+        onlinePlayersMap.put(username, player.UUID);                
     }
+	
+	public EntityPlayer getPlayer(String username)
+	{
+		return (EntityPlayer)entityMap.get(onlinePlayersMap.get(username));
+	}
 	
 	public HashMap<Point, ArrayList<Entity>> sortEntitiesByZLevel()
 	{
@@ -500,7 +495,7 @@ public class Level implements INBTReadWrite
 		ArrayList<Entity> retEnts = new ArrayList<Entity>();
 		
 		for(Entity ent : entityMap.values())
-		{
+		{		
 			Point p = Utils.convCartToIso(new Point(ent.xCoord, ent.yCoord));
 			Area a2 = new Area(new Rectangle(p.x, p.y, ent.getWidth(), ent.getHeight()));
 			a2.intersect(a1);
@@ -637,32 +632,13 @@ public class Level implements INBTReadWrite
 			}
 			ListTag layerTag = new ListTag("layer", CompoundTag.class, tileList);
 			layerList.add(layerTag);
-		}
+		}		
 		
-		for(Entity e : entityMap.values())
-		{
-			CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
-			entityList.add(enitiyTag);
-		}
-		
-		if(args[0] != null && args[0] == Boolean.TRUE)
-		{
-			for(EntityPlayer e : onlinePlayersMap.values())
-			{
-				CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
-				entityList.add(enitiyTag);
-			}
-		}
-		else
+		if(args[0] != null && args[0] == Boolean.FALSE)
 		{
 			//Player saves
 			ArrayList<CompoundTag> playerList = new ArrayList<CompoundTag>();
 			
-			for(EntityPlayer e : onlinePlayersMap.values())
-			{
-				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
-				playerList.add(entityTag);
-			}
 			for(EntityPlayer e : offlinePlayersMap.values())
 			{
 				CompoundTag entityTag = LevelRegistry.writeEntityToNBT(e);
@@ -671,6 +647,12 @@ public class Level implements INBTReadWrite
 			
 			ListTag playerListTag = new ListTag("players", CompoundTag.class, playerList);
 			levelMap.put("players", playerListTag);
+		}
+		
+		for(Entity e : entityMap.values())
+		{
+			CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
+			entityList.add(enitiyTag);
 		}
 		
 		ListTag tileListTag = new ListTag("layers", ListTag.class, layerList);

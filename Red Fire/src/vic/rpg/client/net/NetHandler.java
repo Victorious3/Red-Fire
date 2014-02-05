@@ -74,7 +74,7 @@ public class NetHandler extends Thread
 					unprocessedSeconds -= secondsPerTick;
 				}
 	
-				if(in.available() > 1) 
+				if(socket.isConnected() && in.available() > 1) 
 				{		    			    			
 					int id = in.readByte();
 					Packet packet = Packet.getPacket(id);
@@ -95,18 +95,25 @@ public class NetHandler extends Thread
 	public void close()
 	{
 		try {
+			System.out.println("Destroying Network Thread...");
+			this.connected = false;
+			
+			while(this.isAlive())
+			{
+				Thread.sleep(100);
+			}
 			
 			if(this.socket != null) 
 			{
 				if(this.socket.isConnected())
 				{
 					STATE = GameState.QUIT;
-					Game.packetHandler.addPacketToSendingQueue(new Packet0StateUpdate(STATE));				
+					Game.packetHandler.sendPacket(new Packet0StateUpdate(STATE));				
 				}
 				this.socket.close();
 			}
-			this.connected = false;
-			System.out.println("Destroying Network Thread");
+			
+			System.out.println("done!");
 			
 			if(IS_SINGLEPLAYER)
 			{

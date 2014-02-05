@@ -1,7 +1,7 @@
 package vic.rpg.level.entity.living;
 
+import vic.rpg.level.Entity;
 import vic.rpg.render.TextureFX;
-import vic.rpg.server.ServerLoop;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
@@ -21,7 +21,7 @@ public class EntityNPC extends EntityLiving
 		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
 	int tickCounter = 0;
-		
+	
 	@Override
 	public void tick() 
 	{
@@ -29,9 +29,13 @@ public class EntityNPC extends EntityLiving
 		
 		if(!isWalking() && !walk && Utils.getSide() == Side.SERVER)
 		{
-			EntityPlayer[] player = new EntityPlayer[ServerLoop.level.onlinePlayersMap.values().size()];
-			player = ServerLoop.level.onlinePlayersMap.values().toArray(player);		
-			if(player.length > 0) walkTo(player[0].xCoord - 70, player[0].yCoord, Double.MAX_VALUE);
+			String[] players = new String[levelObj.onlinePlayersMap.values().size()];
+			players = levelObj.onlinePlayersMap.values().toArray(players);
+			if(players.length > 0)
+			{
+				Entity player = levelObj.entityMap.get(players[0]);
+				walkTo(player.xCoord, player.yCoord, Double.MAX_VALUE);
+			}
 		}
 	}
 
