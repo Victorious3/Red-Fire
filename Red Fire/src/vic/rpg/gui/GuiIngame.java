@@ -204,8 +204,8 @@ public class GuiIngame extends GuiContainer implements IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) {
-		// TODO Auto-generated method stub
+	public void onButtonPressed(String name) 
+	{
 		
 	}
 }

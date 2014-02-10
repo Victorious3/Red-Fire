@@ -80,8 +80,12 @@ public class SlotGrid extends GControl
 			{
 				if(gui.inventory.getItemGrid(id)[i][j] != null) DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, gui.inventory.getItemGrid(id)[i][j].getTexture());
 			}
-		}
-		
+		}		
+	}
+
+	@Override
+	public void postRender(GL2 gl2, int x, int y) 
+	{
 		if(mouseHovered)
 		{
 			Item it = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, (x - xCoord) / 30, (y - yCoord) / 30);
@@ -102,7 +106,8 @@ public class SlotGrid extends GControl
 				DrawUtils.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30, new Color(0, 0, 0, 50));
 				it.renderItemInformation(gl2, x, y);
 			}
-		}		
+		}
+		super.postRender(gl2, x, y);
 	}
 
 	@Override

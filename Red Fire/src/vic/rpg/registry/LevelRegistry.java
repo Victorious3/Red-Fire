@@ -24,9 +24,9 @@ import vic.rpg.level.entity.EntityHouse;
 import vic.rpg.level.entity.EntityTree;
 import vic.rpg.level.entity.living.EntityNPC;
 import vic.rpg.level.entity.living.EntityPlayer;
-import vic.rpg.level.tiles.TileTree;
 import vic.rpg.level.tiles.TilePlaceHolder;
 import vic.rpg.level.tiles.TileTerrain;
+import vic.rpg.level.tiles.TileTree;
 import vic.rpg.level.tiles.TileVoid;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
@@ -133,7 +133,6 @@ public class LevelRegistry
 		int xCoord = (Integer)(map.get("xcoord")).getValue();
 		int yCoord = (Integer)(map.get("ycoord")).getValue();
 		int id = (Integer)(map.get("id")).getValue();
-		int zLevel = (Integer)(map.get("zLevel")).getValue(); 
 		
 		String uuid = (String)(map.get("uuid")).getValue();
 		
@@ -149,7 +148,6 @@ public class LevelRegistry
 				ent.yCoord = yCoord;
 				ent.UUID = uuid;
 				ent.id = id;
-				ent.zLevel = zLevel;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -171,7 +169,6 @@ public class LevelRegistry
 		map.put("id", new IntTag("id", id));		
 		map.put("xcoord", new IntTag("xcoord", ent.xCoord));
 		map.put("ycoord", new IntTag("ycoord", ent.yCoord));
-		map.put("zLevel", new IntTag("zLevel", ent.zLevel));
 		map.put("uuid", new StringTag("uuid", ent.UUID));
 		
 		CompoundTag tag = new CompoundTag("entity", map);		

@@ -57,6 +57,20 @@ public class Gui
 		}
 	}
 	
+	public void postRender(GL2 gl2)
+	{
+		synchronized(controlsList)
+		{
+			Iterator<GControl> i = controlsList.iterator();
+			
+			while(i.hasNext())
+			{
+				GControl gc = i.next();
+				if(gc.isVisible) gc.postRender(gl2, GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord);
+			}
+		}
+	}
+	
 	public void onMouseClickStart(int x, int y, int mouseButton)
 	{
 		for(GControl gc : controlsList)

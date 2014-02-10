@@ -51,6 +51,7 @@ public class Listener extends Thread
 		        	if(player.length() != 0 || version.length() != 0)
 		        	{
 		        		con.username = player;
+		        		con.ip = socket.getInetAddress();
 		        		con.start();
 			        	server.addConnection(con, player, version);
 		        	}

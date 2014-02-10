@@ -231,6 +231,10 @@ public class Screen extends Drawable
 			
 			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);		
 		}
-    	if(Gui.currentGui != null) Gui.currentGui.render(gl2);
+    	if(Gui.currentGui != null) 
+		{
+    		Gui.currentGui.render(gl2);
+    		Gui.currentGui.postRender(gl2);
+		}
 	}
 }

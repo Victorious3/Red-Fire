@@ -1,11 +1,16 @@
 package vic.rpg.server.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
@@ -13,15 +18,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -29,6 +39,7 @@ import javax.swing.text.StyleConstants;
 
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.Server;
+import vic.rpg.server.io.Connection;
 
 public class ServerGui 
 {
@@ -37,6 +48,7 @@ public class ServerGui
 	public static JScrollPane scrollPane;
 	public static JTextField textField;
 	public static JPanel players;
+	public static JTable tablePlayers;
 	
 	public static boolean returnPressed = false;
 	
@@ -63,7 +75,6 @@ public class ServerGui
 		grid.weightx = 1;
 		grid.weighty = 1;
 		grid.gridheight = 2;
-		grid.anchor = GridBagConstraints.WEST;
 		grid.fill = GridBagConstraints.BOTH;
 		frame.add(scrollPane, grid);
 		grid.gridheight = 1;
@@ -85,19 +96,112 @@ public class ServerGui
 		grid.weightx = 0;
 		grid.weighty = 1;
 		grid.gridheight = 2;
-		players = new JPanel();
+		
+		players = new JPanel(new BorderLayout());
 		players.setBorder(BorderFactory.createTitledBorder("Players (" + Server.actConnections + "/" + Server.MAX_CONNECTIONS + ")"));
+
+		tablePlayers = new JTable(new DefaultTableModel(new Object[][]{}, new String[]{"username", "ip", "in", "out"}))
+		{
+			@Override
+			public Dimension getPreferredScrollableViewportSize() 
+			{
+				Dimension dim = super.getPreferredSize();
+				dim.width = 300;
+				return dim;
+			}
+
+			@Override
+			public boolean isCellEditable(int row, int column) 
+			{
+				return false;
+			}				
+		};
+		updatePlayers();
+		
+		class TablePopupMenu extends JPopupMenu
+		{
+			public int row;
+		}
+		
+		final TablePopupMenu popup = new TablePopupMenu();
+		
+		final JMenuItem itemKick = new JMenuItem("kick");
+		final JMenuItem itemBan = new JMenuItem("ban");
+		final JMenuItem itemPermissions = new JMenuItem("permissions");
+
+		ActionListener popupMenuListener = new ActionListener() 
+		{		
+			@Override
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				JMenuItem it = (JMenuItem)arg0.getSource();
+				
+				if(it == itemKick)
+				{
+					String username = (String)tablePlayers.getValueAt(popup.row, 0);
+					Server.server.inputHandler.handleCommand("kick", Arrays.asList(new String[]{username}), Server.server);
+				}
+				else if(it == itemBan)
+				{
+					String username = (String)tablePlayers.getValueAt(popup.row, 0);
+					Server.server.inputHandler.handleCommand("ban", Arrays.asList(new String[]{username}), Server.server);
+				}
+				else if(it == itemPermissions)
+				{
+					String username = (String)tablePlayers.getValueAt(popup.row, 0);
+					changePermissions(username);
+				}
+			}
+		};
+		
+		itemKick.addActionListener(popupMenuListener);
+		itemBan.addActionListener(popupMenuListener);
+		itemPermissions.addActionListener(popupMenuListener);
+		
+		popup.add(itemKick);
+		popup.add(itemBan);
+		popup.add(itemPermissions);
+		
+		tablePlayers.addMouseListener(new MouseAdapter() 
+		{		
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				int r = tablePlayers.rowAtPoint(e.getPoint());
+				if(r >= 0 && r < tablePlayers.getRowCount()) 
+				{
+					tablePlayers.setRowSelectionInterval(r, r);
+				} 
+				else 
+				{
+					tablePlayers.clearSelection();
+				}
+
+				int rowindex = tablePlayers.getSelectedRow();
+				if (rowindex < 0) return;
+				if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) 
+				{
+					popup.row = rowindex;
+					popup.show(e.getComponent(), e.getX(), e.getY());
+				}
+			}
+		});
+		
+		tablePlayers.setRowHeight(20);
+		tablePlayers.getTableHeader().setReorderingAllowed(false);
+		tablePlayers.setColumnSelectionAllowed(false);
+		tablePlayers.setRowSelectionAllowed(false);
+		
+		JScrollPane sp1 = new JScrollPane(tablePlayers);
+		players.add(sp1, BorderLayout.CENTER);
 		frame.add(players, grid);
 		
 		frame.setSize(800, 600);
 		frame.addWindowListener(new WindowListener() 
 		{
-			@Override
-			public void windowActivated(WindowEvent e) {}
-
-			@Override
-			public void windowClosed(WindowEvent e) {}
-
+			@Override public void windowActivated(WindowEvent e) {}
+			@Override public void windowClosed(WindowEvent e) {}
+			
 			@Override
 			public void windowClosing(WindowEvent e) 
 			{
@@ -105,17 +209,10 @@ public class ServerGui
 				else System.exit(0);
 			}
 
-			@Override
-			public void windowDeactivated(WindowEvent e) {}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {}
-
-			@Override
-			public void windowIconified(WindowEvent e) {}
-
-			@Override
-			public void windowOpened(WindowEvent e) {}	      
+			@Override public void windowDeactivated(WindowEvent e) {}
+			@Override public void windowDeiconified(WindowEvent e) {}
+			@Override public void windowIconified(WindowEvent e) {}
+			@Override public void windowOpened(WindowEvent e) {}	      
 			
 		});
 		
@@ -350,10 +447,48 @@ public class ServerGui
 		frame.setVisible(true);
 	}
 
+	private static void changePermissions(String username) 
+	{
+		
+	}
+	
+	public static void updatePlayers()
+	{
+		synchronized(tablePlayers)
+		{
+			DefaultTableModel model = (DefaultTableModel) tablePlayers.getModel();
+		    model.setRowCount(0);
+		    for(Connection con : Server.connections.values())
+		    {
+		    	String username = con.username;
+		    	String ip = con.ip.toString();
+		    	model.addRow(new Object[]{username, ip, 0, 0});
+		    }
+		    model.fireTableDataChanged();
+		    
+		    
+		}
+	}
+	
 	public static void tick() 
 	{
-		StatisticPanel.instance.updateUI();
-		
-		
+		if(tablePlayers != null)
+		{
+			synchronized(tablePlayers)
+			{
+				StatisticPanel.instance.updateUI();
+				DefaultTableModel model = (DefaultTableModel) tablePlayers.getModel();
+				
+				int i = 0;
+				for(Connection con : Server.connections.values())
+			    {
+			    	model.setValueAt(con.packetHandler.getQueueLenght(), i, 2);
+			    	model.setValueAt(con.packetHandler.getSendingQueueLenght(), i, 3);
+					i++;
+			    }
+				model.fireTableDataChanged();
+				players.setBorder(BorderFactory.createTitledBorder("Players (" + Server.actConnections + "/" + Server.MAX_CONNECTIONS + ")"));
+			}
+		}
 	}
 }

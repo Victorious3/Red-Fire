@@ -847,22 +847,21 @@ public class Editor
 	public static void openLevel()
 	{
 		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
-		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter( 
-	            "Plaintext: lvl", "lvl"); 
-	    chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
-	    chooser.setFileFilter(plainFilter); 
-	    chooser.setDialogTitle("Open...");
-	    chooser.setVisible(true); 
-	
-	    int result = chooser.showOpenDialog(instance.frame);
-	    
-	    if (result == JFileChooser.APPROVE_OPTION) { 
-	
-	        String path = chooser.getSelectedFile().toString(); 
+		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter("Plaintext: lvl", "lvl"); 
+		chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
+		chooser.setFileFilter(plainFilter); 
+		chooser.setDialogTitle("Open...");
+		chooser.setVisible(true); 
+
+		int result = chooser.showOpenDialog(instance.frame);
+
+		if(result == JFileChooser.APPROVE_OPTION) 
+		{
+			String path = chooser.getSelectedFile().toString(); 
 	        File file = new File(path); 
 	        if (plainFilter.accept(file))
 	        {
-	            System.out.println(file + " selected for loading"); 
+	        	System.out.println(file + " selected for loading"); 
 	            try{
 	            	instance.labelLevel.setLevel(Level.readFromFile(file));       
 	            	instance.setLevelName(instance.level.name);

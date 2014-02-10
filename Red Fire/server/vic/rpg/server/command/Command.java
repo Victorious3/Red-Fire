@@ -19,6 +19,8 @@ public abstract class Command
 		commands.put("stop", new CommandStop());
 		commands.put("time", new CommandTime());
 		commands.put("heal", new CommandHeal());
+		commands.put("ban", new CommandBan());
+		commands.put("kick", new CommandKick());
 	}
 	
 	public static void getHelp(CommandSender commandSender)

@@ -23,6 +23,8 @@ public class GControl {
 	
 	public void render(GL2 gl2, int x, int y){}
 	
+	public void postRender(GL2 gl2, int x, int y){}
+	
 	public void onClickStart(int x, int y, int mouseButton){}
 	
 	public void onClickReleased(int x, int y, int mouseButton){}

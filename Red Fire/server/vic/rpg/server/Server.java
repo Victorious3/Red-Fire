@@ -50,14 +50,14 @@ public class Server extends Thread implements CommandSender
 
 	public static int STATE = GameState.LOADING;
 	
-	static boolean nogui = false;
+	public static boolean nogui = false;
 	
 	public static void main(final String[] args)
 	{			
 		List<String> argList = Arrays.asList(args);
 		if(!GraphicsEnvironment.isHeadless())
 		{		
-			if(!argList.contains("-nogui") && !argList.contains("-splayer"))
+			if(argList.contains("-nogui") || argList.contains("-splayer"))
 			{
 				nogui = true;
 			}
@@ -128,7 +128,7 @@ public class Server extends Thread implements CommandSender
 					System.setProperty("file.encoding", "UTF-8");
 					
 					server = new Server();			
-					if(nogui) ServerGui.setup();
+					if(!nogui) ServerGui.setup();
 					
 					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
 					System.out.println("Performing init operations...");
@@ -268,6 +268,7 @@ public class Server extends Thread implements CommandSender
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
 		    	con.STATE = GameState.LOADING;
 		    	
+		    	if(!nogui) ServerGui.updatePlayers();
 		    	System.out.println("Player " + player + " connected to the Server.");
 	    	}
 	    	else System.out.println("Disconnecting Player " + player + " Reason: Multiple Login");
@@ -345,7 +346,7 @@ public class Server extends Thread implements CommandSender
 		STATE = GameState.QUIT;
 		
 		//FIXME without this line, the awt-enventqueue gets stuck at Usafe.park.
-		if(!Server.isSinglePlayer) System.exit(0);
+		if(!isSinglePlayer) System.exit(0);
 	}
 	
 	public synchronized void stopServer()
@@ -364,7 +365,7 @@ public class Server extends Thread implements CommandSender
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
 	    	ServerLoop.level.offlinePlayersMap.put(c.username, (EntityPlayer)ServerLoop.level.entityMap.remove(ServerLoop.level.onlinePlayersMap.remove(c.username)));
-
+	    	if(!nogui) ServerGui.updatePlayers();
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		} catch (Exception e2){}	    

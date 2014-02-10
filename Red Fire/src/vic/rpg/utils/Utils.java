@@ -18,14 +18,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-
-import org.jnbt.CompoundTag;
-import org.jnbt.Tag;
 
 import vic.rpg.Game;
 
@@ -283,16 +278,5 @@ public class Utils
 	public static Point convCartToIso(Point p)
 	{
 		return new Point(p.x - p.y, (p.x + p.y) / 2);
-	}
-	
-	//TODO Not used everywhere (Actually used nowhere)
-	public static CompoundTag combineTags(CompoundTag a, CompoundTag b)
-	{
-		Map<String, Tag> ma = a.getValue();
-		Map<String, Tag> mb = a.getValue();
-		Map<String, Tag> mc = new HashMap<String, Tag>();
-		mc.putAll(ma);
-		mc.putAll(mb);
-		return new CompoundTag(a.getName(), mc);
 	}
 }

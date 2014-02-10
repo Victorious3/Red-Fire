@@ -15,7 +15,6 @@ public class EntityNPC extends EntityLiving
 	public EntityNPC() 
 	{
 		super(70, 70);
-		this.zLevel = -1;
 		this.speed = 2;
 		
 		if(Utils.getSide() == Side.CLIENT) this.initRender();

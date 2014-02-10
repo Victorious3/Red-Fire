@@ -29,9 +29,20 @@ public class PacketHandlerMP extends Thread
 	{
 		packetQueue.add(p);
 	}
+	
 	public void addPacketToSendingQueue(Packet p)
 	{
 		if(con.STATE == GameState.RUNNING) sendingQueue.add(p);
+	}
+	
+	public int getQueueLenght()
+	{
+		return packetQueue.size();
+	}
+	
+	public int getSendingQueueLenght()
+	{
+		return sendingQueue.size();
 	}
 	
 	public void handlePacket(Packet p)

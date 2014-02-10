@@ -11,7 +11,6 @@ import vic.rpg.render.DrawUtils;
 
 public class Slot extends GControl implements Cloneable
 {		
-	//TODO Add method which does all the "gui.inventory.getItem(id)" e.g "getItem()". Makes life easier...
 	public GuiContainer gui;
 	public int sWidth = 1;
 	public int sHeight = 1;
@@ -72,6 +71,15 @@ public class Slot extends GControl implements Cloneable
 	
 		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		
+		if(mouseHovered && gui.inventory.getItem(id) != null)
+		{		
+			gui.isSlotHovered = true;
+		}
+	}	
+
+	@Override
+	public void postRender(GL2 gl2, int x, int y) 
+	{
 		if(this.mouseHovered)
 		{
 			if(gui.inventory.getItem(gui.currentSlot.id) != null)
@@ -87,11 +95,7 @@ public class Slot extends GControl implements Cloneable
 				gui.inventory.getItem(id).renderItemInformation(gl2, x, y);
 			}
 		}
-		
-		if(mouseHovered && gui.inventory.getItem(id) != null)
-		{		
-			gui.isSlotHovered = true;
-		}
+		super.postRender(gl2, x, y);	
 	}
 
 	@Override

@@ -87,10 +87,13 @@ public class GList extends GControl
 		if(x >= xCoord + 20 && x <= xCoord + 20 + width - 80)
 		{
 			int offset = (int) (scrollPos * maxOffset);
-			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
-			handler.onElementDoubleClick(this, data.get(this.selectedPos), this.selectedPos);
-		}
-		
+			int newPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
+			if(newPos < data.size() && newPos >= 0) 
+			{
+				this.selectedPos = newPos;
+				handler.onElementDoubleClick(this, data.get(this.selectedPos), this.selectedPos);
+			}
+		}	
 		this.isScrolling = false;
 	}
 	
@@ -100,9 +103,9 @@ public class GList extends GControl
 		if(x >= xCoord + 20 && x <= xCoord + 20 + width - 80)
 		{
 			int offset = (int) (scrollPos * maxOffset);
-			this.selectedPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
-		}
-		
+			int newPos = (y - 20 - yCoord - offset) / (this.elementHeight + 5);
+			if(newPos < data.size() && newPos >= 0) this.selectedPos = newPos;
+		}	
 		this.isScrolling = false;
 	}
 

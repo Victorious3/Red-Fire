@@ -24,7 +24,6 @@ import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
-//TODO Messy code!!!
 public class Inventory implements INBTReadWrite, EntityEventListener
 {
 	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();

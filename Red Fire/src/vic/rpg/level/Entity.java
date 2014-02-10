@@ -6,7 +6,6 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 import org.jnbt.CompoundTag;
 
@@ -29,7 +28,6 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 	
 	@Editable public String UUID;
 	public int id = 0;
-	@Editable public int zLevel = 0;
 	
 	public ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
 	public Level levelObj;
@@ -165,18 +163,6 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		}
 		
 		return false;
-	}
-	
-	public static class EntityComperator implements Comparator<Entity>
-	{
-		@Override
-		public int compare(Entity arg0, Entity arg1) 
-		{
-			if(arg0.zLevel > arg1.zLevel) return  1;
-			if(arg0.zLevel < arg1.zLevel) return -1;
-			
-			return 0;
-		}		
 	}
 	
 	public String getName()

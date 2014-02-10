@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Date;
 
@@ -26,6 +27,7 @@ public class Connection extends Thread implements CommandSender
     public int STATE = GameState.RUNNING;
     
     public String username;
+	public InetAddress ip;
     
     public Connection(Socket socket) 
     {

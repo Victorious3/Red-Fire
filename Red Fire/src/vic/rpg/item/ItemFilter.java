@@ -12,7 +12,7 @@ public class ItemFilter
 		public Class<? extends Item> allowedItem;
 		
 		/**
-		 * Creates a simple filter that checks id the given item is an instance of the provided Class.
+		 * Creates a simple filter that checks if the given item is an instance of the provided Class.
 		 * @param Class<? extends Item> 
 		 * @return SimpleItemFilter
 		 */

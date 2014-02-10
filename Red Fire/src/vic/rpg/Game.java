@@ -177,7 +177,7 @@ public class Game extends GLCanvas implements Runnable
 		
 		GL_ANIMATOR = new Animator();
 		GL_ANIMATOR.add(this);
-		GL_ANIMATOR.setUpdateFPSFrames(3, null);
+		GL_ANIMATOR.setUpdateFPSFrames(10, null);
 		GL_ANIMATOR.start();
     }
     

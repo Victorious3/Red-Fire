@@ -32,7 +32,6 @@ public class EntityPlayer extends EntityLiving
 	public EntityPlayer() 
 	{
 		super(70, 70);
-		this.zLevel = -1;
 		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
 	
