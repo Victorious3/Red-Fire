@@ -13,8 +13,8 @@ import javax.swing.table.TableModel;
 
 import vic.rpg.editor.Editor;
 import vic.rpg.level.Editable;
-import vic.rpg.level.Entity;
-import vic.rpg.level.Tile;
+import vic.rpg.level.entity.Entity;
+import vic.rpg.level.tiles.Tile;
 import vic.rpg.utils.Utils;
 
 public class TableListener implements TableModelListener

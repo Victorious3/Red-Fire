@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vic.rpg.editor.listener.Mouse;
-import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.Entity;
 
 public class Clipboard 
 {

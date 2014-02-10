@@ -46,7 +46,7 @@ import javax.swing.text.PlainDocument;
 
 import vic.rpg.editor.gui.PanelEntity;
 import vic.rpg.editor.listener.TableListener;
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.utils.Utils;
 

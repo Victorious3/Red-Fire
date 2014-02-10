@@ -2,8 +2,6 @@ package vic.rpg.level.tiles;
 
 import java.awt.Point;
 
-import vic.rpg.level.Tile;
-
 public class TileVoid extends Tile
 {	
 	@Override

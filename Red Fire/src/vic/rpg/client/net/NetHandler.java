@@ -8,6 +8,9 @@ import java.net.Socket;
 
 import vic.rpg.Game;
 import vic.rpg.client.packet.PacketHandlerSP;
+import vic.rpg.gui.Gui;
+import vic.rpg.gui.GuiError;
+import vic.rpg.gui.GuiMain;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
@@ -48,8 +51,8 @@ public class NetHandler extends Thread
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			lastError = e.toString();
 			this.close();
-			lastError = e.getClass().getName() + ": " + e.getMessage();
 		}
 		return false;
 	}
@@ -87,6 +90,7 @@ public class NetHandler extends Thread
 		    catch (Exception e)
 		    {
 		    	e.printStackTrace();
+		    	lastError = e.toString();
 		    	this.close();
 		    }
 		}		
@@ -123,6 +127,11 @@ public class NetHandler extends Thread
 			Game.playerUUID = null;
 			Game.level = null;
 			
+			if(lastError.length() > 0)
+			{
+				Gui.setGui(new GuiError());
+			}
+			else Gui.setGui(new GuiMain());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

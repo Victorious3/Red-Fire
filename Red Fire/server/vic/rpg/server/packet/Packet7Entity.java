@@ -14,7 +14,7 @@ import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
 import org.jnbt.Tag;
 
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.registry.LevelRegistry;
 
 public class Packet7Entity extends Packet 

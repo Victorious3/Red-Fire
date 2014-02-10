@@ -1,7 +1,8 @@
-package vic.rpg.level;
+package vic.rpg.level.tiles;
 
 import java.awt.Point;
 
+import vic.rpg.level.Level;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;

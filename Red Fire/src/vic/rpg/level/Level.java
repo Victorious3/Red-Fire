@@ -28,9 +28,11 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Game;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.path.NodeMap;
+import vic.rpg.level.tiles.Tile;
 import vic.rpg.level.tiles.TilePlaceHolder;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.render.DrawUtils;

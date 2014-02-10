@@ -1,4 +1,4 @@
-package vic.rpg.level;
+package vic.rpg.level.entity;
 
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;

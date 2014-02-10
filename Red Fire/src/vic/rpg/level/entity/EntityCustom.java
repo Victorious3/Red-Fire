@@ -1,6 +1,5 @@
 package vic.rpg.level.entity;
 
-import vic.rpg.level.Entity;
 
 public abstract class EntityCustom extends Entity 
 {

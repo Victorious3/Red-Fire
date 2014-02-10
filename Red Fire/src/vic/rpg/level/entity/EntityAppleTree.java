@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Area;
 
 import vic.rpg.item.ItemApple;
-import vic.rpg.level.EntityStatic;
 import vic.rpg.level.entity.living.EntityController;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.RenderRegistry;

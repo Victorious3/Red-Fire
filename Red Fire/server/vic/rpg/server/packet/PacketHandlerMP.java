@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.server.GameState;

@@ -1,6 +1,6 @@
 package vic.rpg.level.entity.living;
 
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;

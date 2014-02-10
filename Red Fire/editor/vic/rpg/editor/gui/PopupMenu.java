@@ -13,8 +13,8 @@ import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
-import vic.rpg.level.Entity;
-import vic.rpg.level.Tile;
+import vic.rpg.level.entity.Entity;
+import vic.rpg.level.tiles.Tile;
 import vic.rpg.registry.LevelRegistry;
 
 public class PopupMenu implements ActionListener

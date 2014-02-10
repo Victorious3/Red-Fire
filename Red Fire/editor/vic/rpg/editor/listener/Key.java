@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.registry.GameRegistry;
 
 public class Key implements KeyListener

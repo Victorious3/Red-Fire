@@ -2,7 +2,7 @@ package vic.rpg.level.path;
 
 import java.util.ArrayList;
 
-import vic.rpg.level.Tile;
+import vic.rpg.level.tiles.Tile;
 
 public class Path
 {

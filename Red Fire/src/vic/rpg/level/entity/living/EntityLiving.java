@@ -7,7 +7,7 @@ import org.jnbt.CompoundTag;
 
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.level.Editable;
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityController.HealthChangeEvent;
 import vic.rpg.level.path.Node;

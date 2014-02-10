@@ -1,4 +1,4 @@
-package vic.rpg.level;
+package vic.rpg.level.entity;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -10,8 +10,11 @@ import java.util.Collections;
 import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
-import vic.rpg.level.entity.EntityEvent;
+import vic.rpg.level.Editable;
+import vic.rpg.level.INBTReadWrite;
+import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.level.tiles.Tile;
 import vic.rpg.listener.EntityEventListener;
 import vic.rpg.render.Drawable;
 import vic.rpg.render.LightSource;

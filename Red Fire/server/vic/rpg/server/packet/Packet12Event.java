@@ -20,7 +20,7 @@ import org.jnbt.ShortTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
-import vic.rpg.level.Entity;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
 
 public class Packet12Event extends Packet

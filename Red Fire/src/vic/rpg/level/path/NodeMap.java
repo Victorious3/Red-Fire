@@ -5,8 +5,8 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
-import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.utils.Utils;
 
 public class NodeMap implements Cloneable 

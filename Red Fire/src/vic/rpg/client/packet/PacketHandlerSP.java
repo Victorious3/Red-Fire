@@ -9,8 +9,8 @@ import vic.rpg.Game;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiPlayer;
-import vic.rpg.level.Entity;
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
@@ -54,6 +54,7 @@ public class PacketHandlerSP extends Thread
 		if(p.id == 1)
 		{
 			System.out.println(((Packet1ConnectionRefused)p).message);
+			Game.netHandler.lastError = ((Packet1ConnectionRefused)p).message;
 			Game.netHandler.close();
 		}
 		else if(p.id == 6)
@@ -188,7 +189,11 @@ public class PacketHandlerSP extends Thread
 			Game.netHandler.out.flush();
 		} catch (Exception e){
 			e.printStackTrace();
-			Game.netHandler.close();
+			if(Game.netHandler.connected) 
+			{
+				Game.netHandler.lastError = "Error while sending a packet. This might be caused by the server terminating.";
+				Game.netHandler.close();
+			}
 		}
 	}
 }

@@ -2,7 +2,6 @@ package vic.rpg.level.tiles;
 
 import java.awt.Point;
 
-import vic.rpg.level.Tile;
 import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
