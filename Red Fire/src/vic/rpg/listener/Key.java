@@ -20,6 +20,8 @@ public class Key implements KeyListener {
 	public boolean SPressed = false;
 	public boolean DPressed = false;
 	
+	public boolean shiftPressed = false;
+	
 	@Override
 	public void keyPressed(KeyEvent arg0) 
 	{
@@ -30,7 +32,9 @@ public class Key implements KeyListener {
 		if(arg0.getKeyCode() == KeyEvent.VK_W) WPressed = true;
 		if(arg0.getKeyCode() == KeyEvent.VK_S) SPressed = true;
 		if(arg0.getKeyCode() == KeyEvent.VK_D) DPressed = true;
-
+		if(arg0.getKeyCode() == KeyEvent.VK_SHIFT) shiftPressed = true;
+		
+		if(Gui.currentGui != null) Gui.currentGui.onKeyTyped(arg0.getKeyChar(), arg0.getKeyCode());
 	}
 
 	@Override
@@ -43,6 +47,7 @@ public class Key implements KeyListener {
 		if(arg0.getKeyCode() == KeyEvent.VK_W) WPressed = false;
 		if(arg0.getKeyCode() == KeyEvent.VK_S) SPressed = false;
 		if(arg0.getKeyCode() == KeyEvent.VK_D) DPressed = false;
+		if(arg0.getKeyCode() == KeyEvent.VK_SHIFT) shiftPressed = false;
 		
 		if(arg0.getKeyCode() == KeyEvent.VK_F3)
 		{
@@ -91,8 +96,6 @@ public class Key implements KeyListener {
 				Gui.setGui(null);
 			}			
 		}
-		
-		if(Gui.currentGui != null) Gui.currentGui.keyTyped(arg0.getKeyChar(), arg0.getKeyCode());
 	}
 
 	@Override

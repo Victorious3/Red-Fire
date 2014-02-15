@@ -115,11 +115,11 @@ public class Gui
 	
 	public void initGui(){}
 	
-	public void keyTyped(char k, int keyCode)
+	public void onKeyTyped(char k, int keyCode)
 	{
 		for(GControl gc : controlsList)
 		{
-			if(gc.isVisible) gc.onKeyPressed(k, keyCode);
+			if(gc.isVisible) gc.onKeyTyped(k, keyCode);
 		}
 	}
 	

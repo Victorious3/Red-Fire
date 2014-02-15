@@ -1,4 +1,4 @@
-package vic.rpg.item;
+package vic.rpg.combat;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -6,54 +6,38 @@ import java.awt.event.MouseEvent;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.Game;
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.item.ItemFilter;
+import vic.rpg.item.ItemStack;
+import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 
-public class Slot extends GControl implements Cloneable
-{		
-	public GuiContainer gui;
-	public int sWidth = 1;
-	public int sHeight = 1;
-	public ItemFilter filter;
-	public boolean acceptOtherSizes = false;
-	public int id;
+public class SlotSkill extends GControl
+{
+	private Integer itemID;
+	private Integer id;
+	private ItemFilter filter;
+	private GuiContainer gui;
 	
-	public Slot(int xCoord, int yCoord, int id, GuiContainer gui) 
+	public SlotSkill(int xCoord, int yCoord, Integer id, GuiContainer gui) 
 	{
-		this(xCoord, yCoord, id, gui, 1, 1, false);
+		this(xCoord, yCoord, id, null, gui);
 	}
 	
-	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, boolean acceptOtherSizes) 
+	public SlotSkill(int xCoord, int yCoord, Integer id, Integer itemID, GuiContainer gui) 
 	{
-		this(xCoord, yCoord, id, gui, 1, 1, acceptOtherSizes);
+		this(xCoord, yCoord, id, itemID, null, gui);
 	}
 	
-	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, int sWidth, int sHeight) 
+	public SlotSkill(int xCoord, int yCoord, Integer id, Integer itemID, ItemFilter filter, GuiContainer gui) 
 	{
-		this(xCoord, yCoord, id, gui, sWidth, sHeight, false);
-	}
-	
-	public Slot(int xCoord, int yCoord, int id, GuiContainer gui, int sWidth, int sHeight, boolean acceptOtherSizes) 
-	{
-		super(xCoord, yCoord, 30 * sWidth, 30 * sHeight);
-		this.gui = gui;
-		this.sWidth = sWidth;
-		this.sHeight = sHeight;
-		this.acceptOtherSizes = acceptOtherSizes;
+		super(xCoord, yCoord, 60, 60);
 		this.id = id;
-	}
-	
-	public Slot setItem(ItemStack stack)
-	{
-		gui.inventory.setItemStack(id, stack);
-		return this;
-	}
-	
-	public Slot addFilter(ItemFilter filter)
-	{
+		this.itemID = itemID;
 		this.filter = filter;
-		return this;
+		this.gui = gui;
 	}
 
 	@Override
@@ -71,17 +55,21 @@ public class Slot extends GControl implements Cloneable
 			DrawUtils.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
 			if(getItemStack().getStackSize() > 1) DrawUtils.drawString(xCoord + width - DrawUtils.getFormattedStringLenght(String.valueOf(getItemStack().getStackSize())) - 2, yCoord + height - 2, String.valueOf(getItemStack().getStackSize()), Color.black);
 		}
+		else if(getSkill() != null)
+		{
+			DrawUtils.drawTexture(xCoord, yCoord, getSkill().getTexture());
+		}
 	
 		DrawUtils.drawRect(xCoord, yCoord, width, height, Color.black);
 		
-		if(mouseHovered && !getItemStack().isEmpty())
+		if(mouseHovered && GameRegistry.key.shiftPressed && !getItemStack().isEmpty())
 		{		
 			gui.isSlotHovered = true;
 		}
-	}	
-
+	}
+	
 	@Override
-	public void postRender(GL2 gl2, int x, int y) 
+	public void postRender(GL2 gl2, int x, int y)
 	{
 		if(this.mouseHovered)
 		{
@@ -91,17 +79,17 @@ public class Slot extends GControl implements Cloneable
 			}
 			else if(!getItemStack().isEmpty())
 			{
-				DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
+				if(GameRegistry.key.shiftPressed) DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(0, 0, 0, 50));
 				getItemStack().getItem().renderItemInformation(gl2, x, y);
 			}
 		}
-		super.postRender(gl2, x, y);	
+		super.postRender(gl2, x, y);
 	}
-
+	
 	@Override
 	public void tick() 
 	{
-		if(!getItemStack().isEmpty() && getItemStack().getItem().isTicking) getItemStack().getItem().tick();
+		if(itemID != null && !getItemStack().isEmpty() && getItemStack().getItem().isTicking) getItemStack().getItem().tick();
 	}
 	
 	@Override
@@ -120,7 +108,7 @@ public class Slot extends GControl implements Cloneable
 					gui.inventory.updateInventory();
 				}
 			}
-			else if(!getItemStack().isEmpty() && getCurrentItemStack().isEmpty())
+			else if(!getItemStack().isEmpty() && getCurrentItemStack().isEmpty() && GameRegistry.key.shiftPressed)
 			{									
 				gui.inventory.setItemStack(gui.currentSlot.id, getItemStack());
 				setItem(new ItemStack());
@@ -136,6 +124,14 @@ public class Slot extends GControl implements Cloneable
 					gui.inventory.updateInventory();
 				}
 			}
+			else if(!getItemStack().isEmpty())
+			{
+				getItemStack().getItem().onItemCast(Game.getPlayer(), gui.inventory, x, y);
+			}
+			else if(getSkill() != null)
+			{
+				getSkill().onSkillCast(Game.getPlayer());
+			}
 		}
 		else if(mouseButton == MouseEvent.BUTTON3)
 		{
@@ -145,8 +141,9 @@ public class Slot extends GControl implements Cloneable
 
 	public boolean canBePlacedIn(ItemStack stack)
 	{
+		if(itemID == null) return false;
 		if(stack.isEmpty()) return true;
-		if(((stack.getItem().gridWidth == this.sWidth && stack.getItem().gridHeight == this.sHeight) && !acceptOtherSizes) || ((stack.getItem().gridWidth <= this.sWidth && stack.getItem().gridHeight <= this.sHeight) && acceptOtherSizes))
+		if(stack.getItem().gridWidth < 3 && stack.getItem().gridHeight < 3)
 		{	
 			if(filter != null){if(!filter.isItemValid(stack.getItem())) return false;}
 			return true;
@@ -161,17 +158,26 @@ public class Slot extends GControl implements Cloneable
 	
 	public ItemStack getItemStack()
 	{
-		return gui.inventory.getItemStack(id);
+		if(itemID == null) return new ItemStack();
+		else return gui.inventory.getItemStack(itemID);
 	}
 	
-	@Override
-	public Slot clone()
+	public Skill getSkill()
 	{
-		try {
-			return (Slot) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+		return gui.inventory.getSkill(id);
+	}
+
+	public void setSkill(Skill skill)
+	{
+		if(getItemStack().isEmpty()) gui.inventory.setSkill(id, skill);
+	}
+	
+	public void setItem(ItemStack stack)
+	{	
+		if(canBePlacedIn(stack)) 
+		{
+			setSkill(null);
+			gui.inventory.setItemStack(itemID, stack);		
 		}
-		return null;
 	}
 }

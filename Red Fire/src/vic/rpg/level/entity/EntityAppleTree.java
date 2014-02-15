@@ -4,9 +4,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
-import vic.rpg.item.ItemApple;
+import vic.rpg.item.ItemStack;
 import vic.rpg.level.entity.living.EntityController;
 import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
@@ -26,7 +27,7 @@ public class EntityAppleTree extends EntityStatic
 		super.onMouseClicked(x, y, entity, mouseEvent);
 		if(Utils.getSide() == Side.SERVER)
 		{
-			entity.inventory.addToInventory(new ItemApple());
+			entity.inventory.addToInventory(new ItemStack(LevelRegistry.ITEM_APPLE));
 			entity.sendChatMessage("You take a delicious apple but it has thorns and hurts you.", "Apple Tree");
 			EntityController.changeHealth(entity, -0.1F);
 		}

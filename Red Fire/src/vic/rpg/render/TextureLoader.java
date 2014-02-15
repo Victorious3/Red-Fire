@@ -19,6 +19,7 @@ public class TextureLoader {
 	private static ConcurrentHashMap<String, Texture> bufferedTextures = new ConcurrentHashMap<String, Texture>();
 	private static ConcurrentHashMap<Texture, BufferedImage> requestedTextures = new ConcurrentHashMap<Texture, BufferedImage>();
 	
+	@Deprecated
 	public static void storeTexture(String name, String filePath)
 	{
 		BufferedImage img = Utils.readImageFromJar(filePath);
@@ -30,6 +31,7 @@ public class TextureLoader {
 		return requestedTextures;
 	}
 	
+	@Deprecated
 	public static Texture loadTexture(String name)
 	{
 		return bufferedTextures.get(name);

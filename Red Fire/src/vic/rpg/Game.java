@@ -248,16 +248,16 @@ public class Game extends GLCanvas implements Runnable
 		
 		System.setOut(new PrintStream(System.out)
 		{
-			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:");}
-			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString());}
-			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
+			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:"); super.flush();}
+			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString()); super.flush();}
+			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
+			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}	
 		});
 		
 		//TODO destroys error messages :3

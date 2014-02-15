@@ -66,11 +66,11 @@ public class GButton extends GControl {
 	@Override
 	public void onClickReleased(int x, int y, int mouseButton) 
 	{
-		if(this.mouseHovered) handler.onButtonPressed(name);
+		if(this.mouseHovered) handler.onButtonPressed(this);
 	}
 	
 	public static interface IGButton
 	{
-		public void onButtonPressed(String name);
+		public void onButtonPressed(GControl button);
 	}
 }

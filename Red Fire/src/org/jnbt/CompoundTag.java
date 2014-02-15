@@ -33,6 +33,8 @@ package org.jnbt;
  * POSSIBILITY OF SUCH DAMAGE. 
  */
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -148,9 +150,14 @@ public final class CompoundTag extends Tag {
     } 
     
     //Same for getters
-    public Tag getTag(String name)
+    public CompoundTag getCompoundTag(String name)
     {
-    	return value.get(name);
+    	return value.containsKey(name) ? (CompoundTag) value.get(name) : new CompoundTag(name, new HashMap<String, Tag>());
+    }
+    
+    public ListTag getListTag(String name)
+    {
+    	return value.containsKey(name) ? (ListTag) value.get(name) : new ListTag(name, Tag.class, new ArrayList<Tag>());
     }
     
     public String getString(String name, String def)

@@ -1,6 +1,7 @@
 package vic.rpg.item;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 
 import javax.media.opengl.GL2;
@@ -27,14 +28,14 @@ public class SlotGrid extends GControl
 		this.id = id;
 	}
 	
-	public SlotGrid(Item[][] items, int xCoord, int yCoord, int id, GuiContainer gui)
+	public SlotGrid(ItemStack[][] items, int xCoord, int yCoord, int id, GuiContainer gui)
 	{
 		super(xCoord, yCoord, items.length * 30, items[0].length * 30);
 		
 		this.gridWidth = items.length;
 		this.gridHeight = items[0].length;
 		
-		gui.inventory.setItemGrid(id, items);
+		gui.inventory.setItemStackGrid(id, items);
 		this.gui = gui;
 		this.id = id;
 	}
@@ -43,11 +44,11 @@ public class SlotGrid extends GControl
 	public void render(GL2 gl2, int x, int y) 
 	{		
 		DrawUtils.setGL(gl2);
-		for(Item[] items : this.gui.inventory.getItemGrid(id))
+		for(ItemStack[] stacks : this.gui.inventory.getItemStackGrid(id))
 		{
-			for(Item item : items)
+			for(ItemStack stack : stacks)
 			{
-				if(item != null) item.render(gl2);
+				if(!stack.isEmpty()) stack.getItem().render(gl2);
 			}
 		}
 		
@@ -55,12 +56,12 @@ public class SlotGrid extends GControl
 		{
 			for(int j = 0; j < gridHeight; j++)
 			{
-				Item item = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, i, j);
-				if(gui.inventory.getItemGrid(id)[i][j] != null)
+				ItemStack stack = gui.inventory.overlapsWith(gui.inventory.getItemStackGrid(id), 1, 1, i, j);
+				if(!gui.inventory.getItemStackGrid(id)[i][j].isEmpty())
 				{
-					DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, gui.inventory.getItemGrid(id)[i][j].getBgColor());
+					DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, gui.inventory.getItemStackGrid(id)[i][j].getItem().getBgColor());
 				}
-				else if(item != null) DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, item.getBgColor());
+				else if(!stack.isEmpty()) DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, stack.getItem().getBgColor());
 				else DrawUtils.fillRect(xCoord + i * 30, yCoord + j * 30, 30, 30, new Color(112, 112, 112, 180));
 			}
 		}
@@ -78,7 +79,13 @@ public class SlotGrid extends GControl
 		{
 			for(int j = 0; j < gridHeight; j++)
 			{
-				if(gui.inventory.getItemGrid(id)[i][j] != null) DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, gui.inventory.getItemGrid(id)[i][j].getTexture());
+				if(!gui.inventory.getItemStackGrid(id)[i][j].isEmpty()) 
+				{
+					DrawUtils.drawTexture(xCoord + i * 30, yCoord + j * 30, gui.inventory.getItemStackGrid(id)[i][j].getItem().getTexture());
+					DrawUtils.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+					int stackSize = gui.inventory.getItemStackGrid(id)[i][j].getStackSize();
+					if(stackSize > 1) DrawUtils.drawString(xCoord + i * 30 + 30 - DrawUtils.getFormattedStringLenght(String.valueOf(stackSize)) - 2, yCoord + j * 30 + 28, String.valueOf(stackSize), Color.black);
+				}
 			}
 		}		
 	}
@@ -88,23 +95,23 @@ public class SlotGrid extends GControl
 	{
 		if(mouseHovered)
 		{
-			Item it = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, (x - xCoord) / 30, (y - yCoord) / 30);
+			ItemStack stack = gui.inventory.overlapsWith(getItemGrid(), 1, 1, (x - xCoord) / 30, (y - yCoord) / 30);
 			
-			if(gui.inventory.getItem(gui.currentSlot.id) != null)
+			if(!getCurrentStack().isEmpty())
 			{
 				int x1 = (x - xCoord) / 30;
 				int y1 = (y - yCoord) / 30;
 				
-				if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x1, y1, gui.inventory.getItem(gui.currentSlot.id)))
+				if(gui.inventory.canBePlacedAt(getItemGrid(), x1, y1, getCurrentStack()))
 				{
-					DrawUtils.fillRect(xCoord + x1 * 30, yCoord + y1 * 30,gui.inventory.getItem(gui.currentSlot.id).gridWidth * 30, gui.inventory.getItem(gui.currentSlot.id).gridHeight * 30, new Color(0, 0, 0, 50));
+					DrawUtils.fillRect(xCoord + x1 * 30, yCoord + y1 * 30, getCurrentStack().getItem().gridWidth * 30, getCurrentStack().getItem().gridHeight * 30, new Color(0, 0, 0, 50));
 				}
 			}
-			else if(it != null)
+			else if(!stack.isEmpty())
 			{
 				gui.isSlotHovered = true;
-				DrawUtils.fillRect(xCoord + it.xCoord * 30, yCoord + it.yCoord * 30, it.gridWidth * 30, it.gridHeight * 30, new Color(0, 0, 0, 50));
-				it.renderItemInformation(gl2, x, y);
+				DrawUtils.fillRect(xCoord + stack.xCoord * 30, yCoord + stack.yCoord * 30, stack.getItem().gridWidth * 30, stack.getItem().gridHeight * 30, new Color(0, 0, 0, 50));
+				stack.getItem().renderItemInformation(gl2, x, y);
 			}
 		}
 		super.postRender(gl2, x, y);
@@ -121,8 +128,8 @@ public class SlotGrid extends GControl
 		if(mouseButton == MouseEvent.BUTTON1) onClickedAtCoord(x / 30, y / 30);
 		else if(mouseButton == MouseEvent.BUTTON3)
 		{
-			Item item = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, x / 30, y / 30);
-			if(item != null)
+			ItemStack stack = gui.inventory.overlapsWith(gui.inventory.getItemStackGrid(id), 1, 1, x / 30, y / 30);
+			if(!stack.isEmpty())
 			{
 				gui.inventory.onItemUse(id, x / 30, y / 30, x, y);
 			}
@@ -131,34 +138,34 @@ public class SlotGrid extends GControl
 	
 	private void onClickedAtCoord(int x, int y)
 	{
-		Item item = gui.inventory.overlapsWith(gui.inventory.getItemGrid(id), 1, 1, x, y);
+		ItemStack stack = gui.inventory.overlapsWith(getItemGrid(), 1, 1, x, y);
 		
-		if(gui.inventory.getItem(gui.currentSlot.id) == null && item != null)
+		if(getCurrentStack().isEmpty() && !stack.isEmpty())
 		{
-			gui.inventory.setItem(gui.currentSlot.id, item);
-			setItem(item.xCoord, item.yCoord, null);
+			gui.inventory.setItemStack(gui.currentSlot.id, stack);
+			setItem(stack.xCoord, stack.yCoord, new ItemStack());
 			gui.inventory.updateInventory();
 		}
-		else if(gui.inventory.getItem(gui.currentSlot.id) != null)
+		else if(!getCurrentStack().isEmpty())
 		{
-			if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x, y, gui.inventory.getItem(gui.currentSlot.id)))
+			if(gui.inventory.canBePlacedAt(getItemGrid(), x, y, getCurrentStack()))
 			{
-				setItem(x, y, gui.inventory.getItem(gui.currentSlot.id));
-				gui.inventory.setItem(gui.currentSlot.id, null);
+				setItem(x, y, getCurrentStack());
+				gui.inventory.setItemStack(gui.currentSlot.id, new ItemStack());
 				gui.inventory.updateInventory();
 			}			
 		}	
 	}
 
-	public SlotGrid setItem(int x, int y, Item item) 
+	public SlotGrid setItem(int x, int y, ItemStack item) 
 	{
 		if(gui != null) gui.inventory.setItemGrid(id, item, x, y);
 		return this;
 	}
 	
-	public boolean setItemAndConfirm(int x, int y, Item item) 
+	public boolean setItemAndConfirm(int x, int y, ItemStack item) 
 	{
-		if(gui.inventory.canBePlacedAt(gui.inventory.getItemGrid(id), x, y, item))
+		if(gui.inventory.canBePlacedAt(gui.inventory.getItemStackGrid(id), x, y, item))
 		{
 			setItem(x, y, item);
 			return true;
@@ -166,22 +173,32 @@ public class SlotGrid extends GControl
 		return false;
 	}
 	
-	public SlotGrid setItems(Item[][] items) 
+	public SlotGrid setItems(ItemStack[][] items) 
 	{
-		gui.inventory.setItemGrid(id, items);
+		gui.inventory.setItemStackGrid(id, items);
 		return this;
+	}
+	
+	private ItemStack getCurrentStack()
+	{
+		return gui.inventory.getItemStack(gui.currentSlot.id);
+	}
+	
+	private ItemStack[][] getItemGrid()
+	{
+		return gui.inventory.getItemStackGrid(id);
 	}
 	
 	@Override
 	public void tick() 
 	{
-		for(Item[] items : this.gui.inventory.getItemGrid(id))
+		for(ItemStack[] stacks : this.gui.inventory.getItemStackGrid(id))
 		{
-			for(Item item : items)
+			for(ItemStack stack : stacks)
 			{
-				if(item != null)
+				if(!stack.isEmpty())
 				{
-					if(item.isTicking) item.tick();
+					if(stack.getItem().isTicking) stack.getItem().tick();
 				}			
 			}
 		}

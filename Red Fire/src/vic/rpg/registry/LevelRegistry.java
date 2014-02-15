@@ -11,6 +11,8 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Init;
+import vic.rpg.combat.Skill;
+import vic.rpg.combat.SkillHeal;
 import vic.rpg.item.Item;
 import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemPeer;
@@ -37,6 +39,7 @@ public class LevelRegistry
 	public static HashMap<Integer, Entity> entityRegistry = new HashMap<Integer, Entity>();
 	public static HashMap<Integer, Tile> tileRegistry = new HashMap<Integer, Tile>();
 	public static HashMap<Integer, Item> itemRegistry = new HashMap<Integer, Item>();
+	public static HashMap<Integer, Skill> skillRegistry = new HashMap<Integer, Skill>();
 	
 	public static final TileTerrain TILE_TERRAIN = new TileTerrain();
 	public static final TileVoid TILE_VOID = new TileVoid();
@@ -53,6 +56,8 @@ public class LevelRegistry
 	public static final Item ITEM_PEER = new ItemPeer();
 	public static final Item ITEM_SWORD = new ItemSword();
 	public static final Item ITEM_SHIELD = new ItemShield();
+	
+	public static final Skill SKILL_HEAL = new SkillHeal();
 	
 	@Init(side = Side.BOTH)
 	public static void init()
@@ -72,6 +77,8 @@ public class LevelRegistry
 		register(ITEM_PEER, 2);
 		register(ITEM_SWORD, 3);
 		register(ITEM_SHIELD, 4);
+		
+		register(SKILL_HEAL, 0);
 		
 		File f = Utils.getOrCreateFile(Utils.getAppdata() + "/resources/entities/");
 		
@@ -123,6 +130,12 @@ public class LevelRegistry
 	{
 		item.id = id;
 		itemRegistry.put(id, item);
+	}
+	
+	public static void register(Skill skill, int id)
+	{
+		skill.id = id;
+		skillRegistry.put(id, skill);
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

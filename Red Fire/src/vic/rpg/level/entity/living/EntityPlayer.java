@@ -7,10 +7,9 @@ import java.awt.geom.Area;
 
 import org.jnbt.CompoundTag;
 
-import vic.rpg.item.ItemApple;
-import vic.rpg.item.ItemShield;
-import vic.rpg.item.ItemSword;
+import vic.rpg.item.ItemStack;
 import vic.rpg.level.Editable;
+import vic.rpg.registry.LevelRegistry;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
@@ -28,7 +27,7 @@ public class EntityPlayer extends EntityLiving
 	@Editable public String username = "NO_USERNAME";
 	public boolean isWalkingBlocked = false;
 	
-	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 70, 70, 8, 8, 0, 0, 10);	
+	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 70, 70, 8, 8, 0, 0, 10);
 	public EntityPlayer() 
 	{
 		super(70, 70);
@@ -40,32 +39,41 @@ public class EntityPlayer extends EntityLiving
 	{
 		inventory = new Inventory(this);
 		
-		inventory.add(0, 12, 8);
-		inventory.add(1);
-		inventory.add(2);
-		inventory.add(3);
-		inventory.add(4);
-		inventory.add(5);
-		inventory.add(6);
-		inventory.add(7);
-		inventory.add(8);
+		inventory.addItemStackGrid(0, 12, 8);
+		inventory.addItemStack(1);
+		inventory.addItemStack(2);
+		inventory.addItemStack(3);
+		inventory.addItemStack(4);
+		inventory.addItemStack(5);
+		inventory.addItemStack(6);
+		inventory.addItemStack(7);
+		inventory.addItemStack(8);
 		
 		//Quickbar
-		inventory.add(9);
-		inventory.add(10);
-		inventory.add(11);
-		inventory.add(12);
-		inventory.add(13);
-		inventory.add(14);
-		inventory.add(15);
-		inventory.add(16);
-		inventory.add(17);
-		inventory.add(18);
+		inventory.addItemStack(11);
+		inventory.addItemStack(12);
+		inventory.addItemStack(13);
+		inventory.addItemStack(14);
+		inventory.addItemStack(15);
+		inventory.addItemStack(16);
+		inventory.addItemStack(17);
+		inventory.addItemStack(18);
 		
-		inventory.setItem(2, new ItemApple());
-		inventory.setItem(9, new ItemApple());
-		inventory.addToInventory(new ItemShield());
-		inventory.addToInventory(new ItemSword());
+		inventory.addSkill(0);
+		inventory.addSkill(1);
+		inventory.addSkill(2);
+		inventory.addSkill(3);
+		inventory.addSkill(4);
+		inventory.addSkill(5);
+		inventory.addSkill(6);
+		inventory.addSkill(7);
+		inventory.setSkill(8, LevelRegistry.SKILL_HEAL.clone());
+		inventory.setSkill(9, LevelRegistry.SKILL_HEAL.clone());
+		
+		inventory.setItemStack(2, new ItemStack(LevelRegistry.ITEM_APPLE, 16));
+		inventory.setItemStack(9, new ItemStack(LevelRegistry.ITEM_PEER));
+		inventory.addToInventory(new ItemStack(LevelRegistry.ITEM_SHIELD));
+		inventory.addToInventory(new ItemStack(LevelRegistry.ITEM_SWORD));
 	}
 
 	@Override

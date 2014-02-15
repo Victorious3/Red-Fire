@@ -10,6 +10,7 @@ import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GTextField;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
@@ -66,13 +67,14 @@ public class GuiConnect extends Gui implements IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
-		if(name.equalsIgnoreCase("Cancel"))
+		GButton b2 = (GButton) button;
+		if(b2.name.equalsIgnoreCase("Cancel"))
 		{
 			Gui.setGui(new GuiMain());
 		}
-		else if(name.equalsIgnoreCase("Connect"))
+		else if(b2.name.equalsIgnoreCase("Connect"))
 		{
 			String adress;
 			int port = 29598;
@@ -103,9 +105,9 @@ public class GuiConnect extends Gui implements IGButton
 	}
 
 	@Override
-	public void keyTyped(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{
-		super.keyTyped(k, keyCode);
+		super.onKeyTyped(k, keyCode);
 		
 		if(keyCode == KeyEvent.VK_ESCAPE)
 		{

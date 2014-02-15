@@ -45,7 +45,7 @@ public class CommandHeal extends Command
 				}
 			}
 		}
-		else Command.getHelp(commandSender); 
+		else commandSender.print(getUsage()); 
 	}
 
 	@Override

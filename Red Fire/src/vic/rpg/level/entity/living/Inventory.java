@@ -1,6 +1,7 @@
 package vic.rpg.level.entity.living;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,9 @@ import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.Init;
+import vic.rpg.combat.Skill;
 import vic.rpg.item.Item;
+import vic.rpg.item.ItemStack;
 import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.listener.EntityEventListener;
@@ -26,9 +29,10 @@ import vic.rpg.utils.Utils.Side;
 
 public class Inventory implements INBTReadWrite, EntityEventListener
 {
-	private HashMap<Integer, Item[][]> slotGrids = new HashMap<Integer, Item[][]>();
-	private HashMap<Integer, Item> slots = new HashMap<Integer, Item>();
-
+	private HashMap<Integer, ItemStack[][]> itemGrids = new HashMap<Integer, ItemStack[][]>();
+	private HashMap<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
+	private HashMap<Integer, Skill> skills = new HashMap<Integer, Skill>();
+	
 	public EntityLiving parentEntity;
 	
 	@Init(side = Side.BOTH)
@@ -43,63 +47,91 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		if(parentEntity != null) this.parentEntity.addEventListener(this);
 	}
 	
-	public void add(int id, int width, int height)
+	public ItemStack[][] createEmptyItemStackGrid(int width, int height)
 	{
-		slotGrids.put(id, new Item[width][height]);
+		ItemStack[][] grid = new ItemStack[width][height];
+		for(int i = 0; i < width; i++)
+		{
+			ItemStack[] row = new ItemStack[height];
+			Arrays.fill(row, new ItemStack());
+			grid[i] = row;
+		}
+		return grid;
 	}
 	
-	public void add(int id)
+	public void addSkill(int id)
 	{
-		slots.put(id, null);
+		skills.put(id, null);
 	}
 	
-	public void setItemGrid(int id, Item[][] items)
+	public void setSkill(int id, Skill skill)
 	{
-		slotGrids.put(id, items);
+		skills.put(id, skill);
 	}
 	
-	public void setItem(int id, Item item)
+	public void addItemStackGrid(int id, int width, int height)
 	{
-		slots.put(id, item);
+		itemGrids.put(id, createEmptyItemStackGrid(width, height));
+	}
+	
+	public void addItemStack(int id)
+	{
+		items.put(id, new ItemStack());
+	}
+	
+	public void setItemStackGrid(int id, ItemStack[][] items)
+	{
+		itemGrids.put(id, items);
+	}
+	
+	public void setItemStack(int id, ItemStack item)
+	{
+		if(item == null) throw new NullPointerException("An ItemStack cannot be null! Use an empty ItemStack instead!");
+		items.put(id, item);
 	}
 
-	public ArrayList<Item[][]> getAllItemGrids()
+	public ArrayList<ItemStack[][]> getAllItemStackGrids()
 	{
-		return new ArrayList<Item[][]>(slotGrids.values());
+		return new ArrayList<ItemStack[][]>(itemGrids.values());
 	}
 	
-	public ArrayList<Item> getAllItems()
+	public ArrayList<ItemStack> getAllItemStacks()
 	{
-		return new ArrayList<Item>(slots.values());
+		return new ArrayList<ItemStack>(items.values());
 	}
 	
-	public Item[][] getItemGrid(int id)
+	public ItemStack[][] getItemStackGrid(int id)
 	{
-		return slotGrids.get(id);
+		return itemGrids.get(id);
 	}
 	
-	public Item getItem(int id)
+	public ItemStack getItemStack(Integer id)
 	{
-		return slots.get(id);
+		return items.get(id);
 	}
 	
-	public Item overlapsWith(Item[][] grid, Item item, int x, int y)
+	public Skill getSkill(Integer id)
 	{
-		if(item == null) return null;
-		return overlapsWith(grid, item.gridWidth, item.gridHeight, x, y);
+		return skills.get(id);
 	}
 	
-	public Item overlapsWith(Item[][] grid, int width, int height, int x, int y)
+	public ItemStack overlapsWith(ItemStack[][] grid, ItemStack stack, int x, int y)
+	{
+		if(stack.isEmpty()) return new ItemStack();
+		return overlapsWith(grid, stack.getItem().gridWidth, stack.getItem().gridHeight, x, y);
+	}
+	
+	public ItemStack overlapsWith(ItemStack[][] grid, int width, int height, int x, int y)
 	{
 		for(int i = 0; i < grid.length; i++)
 		{
 			for(int j = 0; j < grid[0].length; j++)
 			{
-				if(grid[i][j] != null)
+				if(!grid[i][j].isEmpty())
 				{
-					if(overlapsWith(grid[i][j].gridWidth, grid[i][j].gridHeight, i, j, width, height, x, y))
+					if(overlapsWith(grid[i][j].getItem().gridWidth, grid[i][j].getItem().gridHeight, i, j, width, height, x, y))
 					{
-						Item item = grid[i][j];
+						ItemStack item = grid[i][j];
 						item.xCoord = i;
 						item.yCoord = j;
 						return item;
@@ -107,7 +139,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 				}
 			}
 		}
-		return null;
+		return new ItemStack();
 	}
 	
 	private boolean overlapsWith(int width1, int height1, int x1, int y1, int width2, int height2, int x2, int y2)
@@ -134,30 +166,31 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	}
 	
 	@SuppressWarnings("unused")
+	@Deprecated
 	private boolean overlapsWith(Item item1, int x1, int y1, Item item2, int x2, int y2)
 	{
 		if(item1 == null || item2 == null) return false;
 		return overlapsWith(item1.gridWidth, item1.gridHeight, x1, y1, item2.gridWidth, item2.gridHeight, x2, y2);
 	}
 	
-	public boolean canBePlacedAt(Item[][] grid, int x, int y, Item item)
+	public boolean canBePlacedAt(ItemStack[][] grid, int x, int y, ItemStack stack)
 	{
-		if(item == null) return true;
-		if(x + item.gridWidth > grid.length || y + item.gridHeight > grid[0].length || x < 0 || y < 0)
+		if(stack.isEmpty()) return true;
+		if(x + stack.getItem().gridWidth > grid.length || y + stack.getItem().gridHeight > grid[0].length || x < 0 || y < 0)
 		{
 			return false;
 		}
-		return overlapsWith(grid, item, x, y) == null;
+		return overlapsWith(grid, stack, x, y).isEmpty();
 	}
 	
-	public boolean setItemGrid(int id, Item item, int xCoord, int yCoord)
+	public boolean setItemGrid(int id, ItemStack item, int xCoord, int yCoord)
 	{
-		Item[][] grid = getItemGrid(id);
+		ItemStack[][] grid = getItemStackGrid(id);
 
 		if(canBePlacedAt(grid, xCoord, yCoord, item))
 		{		
 			grid[xCoord][yCoord] = item;
-			setItemGrid(id, grid);
+			setItemStackGrid(id, grid);
 			return true;
 		}
 		return false;
@@ -172,33 +205,33 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
 	}
 	
-	public boolean addItemToGrid(int id, Item item)
+	public boolean addItemToGrid(int id, ItemStack stack)
 	{
-		for(int i = 0; i < getItemGrid(id).length; i++)
+		for(int i = 0; i < getItemStackGrid(id).length; i++)
 		{
-			for(int j = 0; j < getItemGrid(id)[0].length; j++)
+			for(int j = 0; j < getItemStackGrid(id)[0].length; j++)
 			{
-				if(setItemGrid(id, item, i, j)) return true;
+				if(setItemGrid(id, stack, i, j)) return true;
 			}
 		}
 		return false;
 	}
 	
-	public boolean addToInventory(Item item)
+	public boolean addToInventory(ItemStack stack)
 	{	
-		for(int id : slotGrids.keySet())
+		for(int id : itemGrids.keySet())
 		{
-			if(addItemToGrid(id, item))
+			if(addItemToGrid(id, stack))
 			{
 				return true;
 			}
 		}
 		
-		for(int id : slots.keySet())
+		for(int id : items.keySet())
 		{
-			if(getItem(id) == null)
+			if(getItemStack(id).isEmpty())
 			{
-				setItem(id, item);
+				setItemStack(id, stack);
 				return true;
 			}
 		}
@@ -213,6 +246,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		Map<String, Tag> inventoryMap = (Map<String, Tag>) tagMap.get("inventory").getValue();
 		List<CompoundTag> slotList = (List<CompoundTag>) inventoryMap.get("slotListTag").getValue();	
 		List<CompoundTag> slotGridList = (List<CompoundTag>) inventoryMap.get("slotGridListTag").getValue();
+		List<CompoundTag> skillList = (List<CompoundTag>) inventoryMap.get("skillListTag").getValue();
 		
 		for(CompoundTag t : slotList)
 		{
@@ -223,18 +257,34 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 			if(idTag != null)
 			{
 				int id = (Integer)idTag.getValue();
-				Item i = LevelRegistry.itemRegistry.get(id).clone();
+				int stackSize = (Integer)tMap.get("stackSize").getValue();
+				Item i = LevelRegistry.itemRegistry.get(id);
 				i.readFromNBT((CompoundTag) tMap.get("data"));
-				slots.put(slotID, i);		
+				items.put(slotID, new ItemStack(i, stackSize));		
 			}
-			else slots.put(slotID, null);
+			else items.put(slotID, new ItemStack());
+		}
+		
+		for(CompoundTag t : skillList)
+		{
+			Map<String, Tag> tMap = t.getValue();
+			int slotID = (Integer)tMap.get("slotID").getValue();
+			Tag idTag = tMap.get("id");
+			
+			if(idTag != null)
+			{
+				int id = (Integer)idTag.getValue();
+				Skill s = LevelRegistry.skillRegistry.get(id).clone();
+				skills.put(slotID, s);		
+			}
+			else skills.put(slotID, null);
 		}
 		
 		for(CompoundTag t : slotGridList)
 		{
 			Map<String, Tag> tMap = t.getValue();
 			int slotID = (Integer)tMap.get("slotGridID").getValue();
-			Item[][] its = new Item[(Integer)tMap.get("width").getValue()][(Integer)tMap.get("height").getValue()];
+			ItemStack[][] its = createEmptyItemStackGrid((Integer)tMap.get("width").getValue(), (Integer)tMap.get("height").getValue());
 			
 			for(Tag t2 : (List<Tag>)tMap.get("itemList").getValue())
 			{
@@ -244,12 +294,13 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 				String coords = (String)itemMap.get("coords").getValue();
 				int x = Integer.parseInt(coords.split("-")[0]);
 				int y = Integer.parseInt(coords.split("-")[1]);
+				int stackSize = (Integer)itemMap.get("stackSize").getValue();
 				
-				Item it = LevelRegistry.itemRegistry.get((Integer)itemMap.get("id").getValue()).clone();
+				Item it = LevelRegistry.itemRegistry.get((Integer)itemMap.get("id").getValue());
 				it.readFromNBT((CompoundTag)itemMap.get("data"));
-				its[x][y] = it;
+				its[x][y] = new ItemStack(it, stackSize);
 			}
-			slotGrids.put(slotID, its);
+			itemGrids.put(slotID, its);
 		}
 	}
 	
@@ -260,18 +311,20 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		tagMap.putAll(tag.getValue());
 		
 		HashMap<String, Tag> inventoryMap = new HashMap<String, Tag>();
-		ArrayList<CompoundTag> slotList = new ArrayList<CompoundTag>();		
+		ArrayList<CompoundTag> slotList = new ArrayList<CompoundTag>();
+		ArrayList<CompoundTag> skillList = new ArrayList<CompoundTag>();
 		ArrayList<CompoundTag> slotGridList = new ArrayList<CompoundTag>();
 		
-		for(int id : slots.keySet())
+		for(int id : items.keySet())
 		{
 			HashMap<String, Tag> slotMap = new HashMap<String, Tag>();
-			Item it = slots.get(id);
+			Item it = items.get(id).getItem();
 			slotMap.put("slotID", new IntTag("slotID", id));
 			
 			if(it != null) 
 			{
 				slotMap.put("id", new IntTag("id", it.id));
+				slotMap.put("stackSize", new IntTag("stackSize", items.get(id).getStackSize()));
 				slotMap.put("data", it.writeToNBT(new CompoundTag("data", new HashMap<String, Tag>())));
 			}
 			
@@ -279,9 +332,24 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 			slotList.add(slotTag);
 		}
 		
-		for(int id : slotGrids.keySet())
+		for(int id : skills.keySet())
 		{
-			Item[][] its = slotGrids.get(id);
+			HashMap<String, Tag> skillMap = new HashMap<String, Tag>();
+			Skill s = skills.get(id);
+			skillMap.put("slotID", new IntTag("slotID", id));
+			
+			if(s != null) 
+			{
+				skillMap.put("id", new IntTag("id", s.id));
+			}
+			
+			CompoundTag skillTag = new CompoundTag("skillTag", skillMap);
+			skillList.add(skillTag);
+		}
+		
+		for(int id : itemGrids.keySet())
+		{
+			ItemStack[][] its = itemGrids.get(id);
 			HashMap<String, Tag> slotGridMap = new HashMap<String, Tag>();
 			slotGridMap.put("slotGridID", new IntTag("slotGridID", id));
 			slotGridMap.put("width", new IntTag("width", its.length));
@@ -293,11 +361,12 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 				for(int j = 0; j < its[0].length; j++)
 				{
 					HashMap<String, Tag> itemMap = new HashMap<String, Tag>();
-					Item it = its[i][j];
+					Item it = its[i][j].getItem();
 					if(it != null) 
 					{
 						itemMap.put("coords", new StringTag("coords", i + "-" + j));		
 						itemMap.put("id", new IntTag("id", it.id));
+						itemMap.put("stackSize", new IntTag("stackSize", its[i][j].getStackSize()));
 						itemMap.put("data", it.writeToNBT(new CompoundTag("data", new HashMap<String, Tag>())));
 						itemList.add(new CompoundTag("itemTag", itemMap));
 					}					
@@ -312,8 +381,10 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		
 		ListTag slotListTag = new ListTag("slotListTag", CompoundTag.class, slotList);
 		ListTag slotGridListTag = new ListTag("slotGridListTag", CompoundTag.class, slotGridList);
+		ListTag skillListTag = new ListTag("skillListTag", CompoundTag.class, skillList);
 		inventoryMap.put("slotListTag", slotListTag);
 		inventoryMap.put("slotGridListTag", slotGridListTag);
+		inventoryMap.put("skillListTag", skillListTag);
 		CompoundTag inventoryTag = new CompoundTag("inventory", inventoryMap);
 		tagMap.put("inventory", inventoryTag);
 		
@@ -337,13 +408,13 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 
 	public void onItemUse(int id, int x, int y)
 	{
-		getItem(id).onItemUse(parentEntity, this, x, y);
+		getItemStack(id).getItem().onItemUse(parentEntity, this, x, y);
 		parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
 	}
 	
 	public void onItemUse(int id, int gx, int gy, int x, int y)
 	{
-		overlapsWith(getItemGrid(id), 1, 1, gx, gy).onItemUse(parentEntity, this, x, y);
+		overlapsWith(getItemStackGrid(id), 1, 1, gx, gy).getItem().onItemUse(parentEntity, this, x, y);
 		parentEntity.postEvent(new InventoryEvent(0, id, 1, gx, gy));
 	}
 

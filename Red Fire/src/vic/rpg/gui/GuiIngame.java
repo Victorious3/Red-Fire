@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.combat.SlotSkill;
 import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GIconButton;
 import vic.rpg.gui.controls.GTextField;
-import vic.rpg.item.Slot;
 import vic.rpg.level.entity.living.EntityLiving;
+import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.LinearAnimator;
@@ -36,6 +38,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	private Texture tHover = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_hover.png"));
 	private Texture tClick = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_click.png"));
 	
+	private GIconButton buttonSlot2;
 	private GIconButton buttonSlot3;
 	private GIconButton buttonSlot4;
 	private GIconButton buttonSlot5;
@@ -43,7 +46,17 @@ public class GuiIngame extends GuiContainer implements IGButton
 	private GIconButton buttonSlot7;
 	private GIconButton buttonSlot8;
 	private GIconButton buttonSlot9;
-	private GIconButton buttonSlot0;
+	
+	private SlotSkill slotSkill0;
+	private SlotSkill slotSkill1;
+	private SlotSkill slotSkill2;
+	private SlotSkill slotSkill3;
+	private SlotSkill slotSkill4;
+	private SlotSkill slotSkill5;
+	private SlotSkill slotSkill6;
+	private SlotSkill slotSkill7;
+	private SlotSkill slotSkill8;
+	private SlotSkill slotSkill9;
 	
 	//TODO Struggles with quick health changes.
 	private LinearAnimator lpAnim = DrawUtils.createLinearAnimator(500, lp, lp);
@@ -75,26 +88,38 @@ public class GuiIngame extends GuiContainer implements IGButton
 			{
 				setInventory(Game.getPlayer().getInventory());
 				
-				controlsList.add(new Slot(50, 505, 9, this, 2, 2, true));
-				controlsList.add(new Slot(120, 505, 10, this, 2, 2, true));
-				controlsList.add(new Slot(190, 505, 11, this, 2, 2, true));
-				controlsList.add(new Slot(260, 505, 12, this, 2, 2, true));
-				controlsList.add(new Slot(340, 505, 13, this, 2, 2, true));
-				controlsList.add(new Slot(410, 505, 14, this, 2, 2, true));
-				controlsList.add(new Slot(480, 505, 15, this, 2, 2, true));
-				controlsList.add(new Slot(550, 505, 16, this, 2, 2, true));
-				controlsList.add(new Slot(620, 505, 17, this, 2, 2, true));
-				controlsList.add(new Slot(690, 505, 18, this, 2, 2, true));
+				slotSkill0 = new SlotSkill(50, 505, 0, this);
+				slotSkill1 = new SlotSkill(120, 505, 1, this);
+				slotSkill2 = new SlotSkill(190, 505, 2, this);
+				slotSkill3 = new SlotSkill(260, 505, 3, this);
+				slotSkill4 = new SlotSkill(340, 505, 4, 13, this);
+				slotSkill5 = new SlotSkill(410, 505, 5, 14, this);
+				slotSkill6 = new SlotSkill(480, 505, 6, 15, this);
+				slotSkill7 = new SlotSkill(550, 505, 7, 16, this);
+				slotSkill8 = new SlotSkill(620, 505, 8, 17, this);
+				slotSkill9 = new SlotSkill(690, 505, 9, 18, this);
 				
-				buttonSlot3 = new GIconButton(190, 495, 60, 10, "buttonSlot3", tNormal, tHover, tClick, this);
-				buttonSlot4 = new GIconButton(260, 495, 60, 10, "buttonSlot4", tNormal, tHover, tClick, this);;
-				buttonSlot5 = new GIconButton(340, 495, 60, 10, "buttonSlot5", tNormal, tHover, tClick, this);;
-				buttonSlot6 = new GIconButton(410, 495, 60, 10, "buttonSlot6", tNormal, tHover, tClick, this);;
-				buttonSlot7 = new GIconButton(480, 495, 60, 10, "buttonSlot7", tNormal, tHover, tClick, this);;
-				buttonSlot8 = new GIconButton(550, 495, 60, 10, "buttonSlot8", tNormal, tHover, tClick, this);;
-				buttonSlot9 = new GIconButton(620, 495, 60, 10, "buttonSlot9", tNormal, tHover, tClick, this);;
-				buttonSlot0 = new GIconButton(690, 495, 60, 10, "buttonSlot0", tNormal, tHover, tClick, this);;
+				controlsList.add(slotSkill0);
+				controlsList.add(slotSkill1);
+				controlsList.add(slotSkill2);
+				controlsList.add(slotSkill3);
+				controlsList.add(slotSkill4);
+				controlsList.add(slotSkill5);
+				controlsList.add(slotSkill6);
+				controlsList.add(slotSkill7);
+				controlsList.add(slotSkill8);
+				controlsList.add(slotSkill9);
 				
+				buttonSlot2 = new GIconButton(190, 495, 60, 10, "buttonSlot2", tNormal, tHover, tClick, this);
+				buttonSlot3 = new GIconButton(260, 495, 60, 10, "buttonSlot3", tNormal, tHover, tClick, this);;
+				buttonSlot4 = new GIconButton(340, 495, 60, 10, "buttonSlot4", tNormal, tHover, tClick, this);;
+				buttonSlot5 = new GIconButton(410, 495, 60, 10, "buttonSlot5", tNormal, tHover, tClick, this);;
+				buttonSlot6 = new GIconButton(480, 495, 60, 10, "buttonSlot6", tNormal, tHover, tClick, this);;
+				buttonSlot7 = new GIconButton(550, 495, 60, 10, "buttonSlot7", tNormal, tHover, tClick, this);;
+				buttonSlot8 = new GIconButton(620, 495, 60, 10, "buttonSlot8", tNormal, tHover, tClick, this);;
+				buttonSlot9 = new GIconButton(690, 495, 60, 10, "buttonSlot9", tNormal, tHover, tClick, this);;
+				
+				controlsList.add(buttonSlot2);
 				controlsList.add(buttonSlot3);
 				controlsList.add(buttonSlot4);
 				controlsList.add(buttonSlot5);
@@ -102,7 +127,6 @@ public class GuiIngame extends GuiContainer implements IGButton
 				controlsList.add(buttonSlot7);
 				controlsList.add(buttonSlot8);
 				controlsList.add(buttonSlot9);
-				controlsList.add(buttonSlot0);
 				
 				lp = Game.getPlayer().lp;
 				lpAnim = DrawUtils.createLinearAnimator(500, lp, lp);
@@ -119,9 +143,9 @@ public class GuiIngame extends GuiContainer implements IGButton
 	}
 
 	@Override
-	public void keyTyped(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{		
-		super.keyTyped(k, keyCode);
+		super.onKeyTyped(k, keyCode);
 		
 		if(keyCode == KeyEvent.VK_ENTER)
 		{
@@ -204,8 +228,17 @@ public class GuiIngame extends GuiContainer implements IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
+		if(button == buttonSlot2) slotSkill2.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot3) slotSkill3.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot4) slotSkill4.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot5) slotSkill5.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot6) slotSkill6.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot7) slotSkill7.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot8) slotSkill8.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot9) slotSkill9.setSkill(LevelRegistry.SKILL_HEAL.clone());
 		
+		gui.inventory.updateInventory();
 	}
 }

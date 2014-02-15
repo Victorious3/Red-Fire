@@ -14,7 +14,7 @@ public class GIconButton extends GControl
 	private final Texture tClick;
 	
 	private IGButton handler;
-	private String name;
+	public String name;
 	
 	public GIconButton(int xCoord, int yCoord, int width, int height, String name, Texture tNormal, Texture tHover, Texture tClick, IGButton handler) 
 	{
@@ -41,6 +41,6 @@ public class GIconButton extends GControl
 	@Override
 	public void onClickReleased(int x, int y, int mouseButton) 
 	{
-		if(this.mouseHovered) handler.onButtonPressed(name);
+		if(this.mouseHovered) handler.onButtonPressed(this);
 	}
 }

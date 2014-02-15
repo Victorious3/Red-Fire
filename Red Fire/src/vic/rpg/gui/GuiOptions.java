@@ -9,6 +9,7 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.config.Options;
 import vic.rpg.gui.controls.GButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GSwitcher;
 import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
@@ -40,7 +41,7 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	}
 
 	@Override
-	public void keyTyped(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{
 		if(keyCode == KeyEvent.VK_ESCAPE)
 		{
@@ -65,13 +66,14 @@ public class GuiOptions extends Gui implements GButton.IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name)
+	public void onButtonPressed(GControl button)
 	{
-		if(name.equalsIgnoreCase("Cancel"))
+		GButton b2 = (GButton)button;
+		if(b2.name.equalsIgnoreCase("Cancel"))
 		{
 			Gui.setGui(new GuiMain());
 		}
-		else if(name.equalsIgnoreCase("Apply"))
+		else if(b2.name.equalsIgnoreCase("Apply"))
 		{
 			Options.LIGHTING = switcherLighting.modePointer == 0 ? true : false;
 			Options.LANGUAGE = switcherLanguage.modes[switcherLanguage.modePointer];

@@ -1,10 +1,13 @@
 package vic.rpg.gui;
 
+import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.item.ItemStack;
 import vic.rpg.item.Slot;
 import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
@@ -20,12 +23,18 @@ public class GuiContainer extends Gui
 	@Override
 	public void render(GL2 gl2) 
 	{		
-		if(inventory != null && currentSlot != null && inventory.getItem(currentSlot.id) != null) Game.frame.setCursor(GameRegistry.CURSOR_DRAG);
+		if(inventory != null && currentSlot != null && !inventory.getItemStack(currentSlot.id).isEmpty()) Game.frame.setCursor(GameRegistry.CURSOR_DRAG);
 		else if(isSlotHovered) Game.frame.setCursor(GameRegistry.CURSOR_DROP);	
 		else Game.frame.setCursor(Cursor.getDefaultCursor());
 		isSlotHovered = false;
 		super.render(gl2);
-		if(inventory != null && currentSlot != null && inventory.getItem(currentSlot.id) != null) DrawUtils.drawTexture(GameRegistry.mouse.xCoord - 15, GameRegistry.mouse.yCoord - 15, inventory.getItem(currentSlot.id).getTexture());
+		if(inventory != null && currentSlot != null && !inventory.getItemStack(currentSlot.id).isEmpty()) 
+		{
+			ItemStack stack = inventory.getItemStack(currentSlot.id);
+			DrawUtils.drawTexture(GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord, stack.getItem().getTexture());
+			DrawUtils.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 15));
+			if(stack.getStackSize() > 1) DrawUtils.drawString(GameRegistry.mouse.xCoord + stack.getItem().gridWidth * 30 - DrawUtils.getFormattedStringLenght(String.valueOf(stack.getStackSize())) - 2, GameRegistry.mouse.yCoord + stack.getItem().gridHeight * 30 - 2, String.valueOf(stack.getStackSize()), Color.black);
+		}
 	}
 
 	public GuiContainer(boolean pauseGame, boolean overridesEsc) 
@@ -42,5 +51,6 @@ public class GuiContainer extends Gui
 	{
 		this.inventory = inventory;
 		currentSlot = new Slot(0, 0, -1, this);
+		if(currentSlot.getItemStack() == null) currentSlot.setItem(new ItemStack());	
 	}	
 }

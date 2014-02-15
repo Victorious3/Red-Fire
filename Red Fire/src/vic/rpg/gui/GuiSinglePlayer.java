@@ -16,6 +16,7 @@ import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GList;
 import vic.rpg.gui.controls.GList.IGList;
 import vic.rpg.registry.RenderRegistry;
@@ -80,9 +81,9 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	}
 	
 	@Override
-	public void keyTyped(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{
-		super.keyTyped(k, keyCode);
+		super.onKeyTyped(k, keyCode);
 		
 		if(keyCode == KeyEvent.VK_ESCAPE)
 		{
@@ -132,9 +133,10 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
-		if(name.equalsIgnoreCase("Cancel")) Gui.setGui(new GuiMain());
-		if(name.equalsIgnoreCase("Load")) loadGame(list.get(levelList.selectedPos));
+		GButton b2 = (GButton)button;
+		if(b2.name.equalsIgnoreCase("Cancel")) Gui.setGui(new GuiMain());
+		if(b2.name.equalsIgnoreCase("Load")) loadGame(list.get(levelList.selectedPos));
 	}	
 }

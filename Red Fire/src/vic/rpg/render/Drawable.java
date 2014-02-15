@@ -6,22 +6,11 @@ import javax.media.opengl.GL2;
 
 import com.jogamp.opengl.util.texture.Texture;
 
-public class Drawable 
+public class Drawable implements Cloneable
 {
 	private int width;
 	private int height;
 	
-	@Override
-	protected Drawable clone()
-	{
-		try {
-			return (Drawable) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	private Object texture;
 	
 	public Drawable(int width, int height)
@@ -37,6 +26,17 @@ public class Drawable
 		}
 	}
 	
+	@Override
+	public Drawable clone()
+	{
+		try {
+			return (Drawable) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public Object getTexture()
 	{
 		return texture;

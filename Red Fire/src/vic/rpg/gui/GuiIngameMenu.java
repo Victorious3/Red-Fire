@@ -7,6 +7,7 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.gui.controls.GButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
@@ -67,19 +68,20 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
-		if(name.equalsIgnoreCase("Options"))
+		GButton b2 = (GButton) button;
+		if(b2.name.equalsIgnoreCase("Options"))
 		{
 //			TODO This doesn't work because escape will redirect to GuiMain.
 //			Gui.setGui(new GuiOptions());
 		}
-		if(name.equalsIgnoreCase("Quit to Title"))
+		if(b2.name.equalsIgnoreCase("Quit to Title"))
 		{
 			Game.netHandler.close();		
 			Gui.setGui(new GuiMain());
 		}
-		if(name.equalsIgnoreCase("Continue"))
+		if(b2.name.equalsIgnoreCase("Continue"))
 		{
 			Gui.setGui(null);
 		}

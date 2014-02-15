@@ -8,6 +8,7 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
@@ -52,13 +53,13 @@ public class GuiError extends Gui implements IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
 		Gui.setGui(new GuiMain());;
 	}
 
 	@Override
-	public void keyTyped(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{
 		if(keyCode == KeyEvent.VK_ESCAPE) Gui.setGui(new GuiMain());
 	}	

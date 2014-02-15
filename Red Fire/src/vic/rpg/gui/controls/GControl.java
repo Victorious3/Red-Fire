@@ -29,7 +29,7 @@ public class GControl {
 	
 	public void onClickReleased(int x, int y, int mouseButton){}
 	
-	public void onKeyPressed(char k, int keyCode){}
+	public void onKeyTyped(char k, int keyCode){}
 
 	public void onClickEnd(int x, int y) {}
 	

@@ -8,6 +8,7 @@ import vic.rpg.Game;
 import vic.rpg.PostInit;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
+import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
@@ -87,25 +88,26 @@ public class GuiMain extends Gui implements IGButton
 	}
 
 	@Override
-	public void onButtonPressed(String name) 
+	public void onButtonPressed(GControl button) 
 	{
-		if(name.equalsIgnoreCase("Singleplayer"))
+		GButton b2 = (GButton)button;
+		if(b2.name.equalsIgnoreCase("Singleplayer"))
 		{
 			Gui.setGui(new GuiSinglePlayer());
 		}
-		else if(name.equalsIgnoreCase("Multiplayer"))
+		else if(b2.name.equalsIgnoreCase("Multiplayer"))
 		{
 			Gui.setGui(new GuiConnect());
 		}
-		else if(name.equalsIgnoreCase("Options"))
+		else if(b2.name.equalsIgnoreCase("Options"))
 		{
 			Gui.setGui(new GuiOptions());
 		}
-		else if(name.equalsIgnoreCase("Credits"))
+		else if(b2.name.equalsIgnoreCase("Credits"))
 		{
 			
 		}
-		else if(name.equalsIgnoreCase("Quit"))
+		else if(b2.name.equalsIgnoreCase("Quit"))
 		{
 			Game.game.stopGame();			
 		}

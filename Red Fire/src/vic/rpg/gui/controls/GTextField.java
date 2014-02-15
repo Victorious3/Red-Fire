@@ -11,7 +11,7 @@ import vic.rpg.render.DrawUtils;
 
 public class GTextField extends GControl
 {
-	public boolean activated = false;
+	public boolean isActivated = false;
 	public String text = "";
 	public String plaintext = "";
 	public int maxLenght = 0;
@@ -42,7 +42,7 @@ public class GTextField extends GControl
 		float oldThickness = DrawUtils.getLineWidth();
 		DrawUtils.setLineWidth(thickness);		
 		
-		if(this.activated) DrawUtils.drawRect(xCoord, yCoord, width, height, Color.white);
+		if(this.isActivated) DrawUtils.drawRect(xCoord, yCoord, width, height, Color.white);
 		else DrawUtils.drawRect(xCoord, yCoord, width, height, Color.LIGHT_GRAY); 
 		DrawUtils.setLineWidth(oldThickness);
 		
@@ -77,16 +77,16 @@ public class GTextField extends GControl
 	
 	public GTextField activate(boolean b) 
 	{
-		if(!activated && b) text += "_";
-		if(activated && !b) text = text.substring(0, text.length() - 1).intern();
-		activated = b;
+		if(!isActivated && b) text += "_";
+		if(isActivated && !b) text = text.substring(0, text.length() - 1).intern();
+		isActivated = b;
 		return this;
 	}
 
 	@Override
-	public void onKeyPressed(char k, int keyCode) 
+	public void onKeyTyped(char k, int keyCode) 
 	{
-		if(activated)
+		if(isActivated)
 		{					
 			text = text.substring(0, text.length() - 1).intern();
 			
@@ -149,6 +149,8 @@ public class GTextField extends GControl
 	{
 		this.text = text;
 		this.plaintext = text;
+		
+		if(isActivated) this.text += "_";
 		
 		return this;
 	}

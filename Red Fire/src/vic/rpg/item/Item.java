@@ -16,19 +16,20 @@ import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
-public abstract class Item extends Drawable implements Cloneable, INBTReadWrite
+public abstract class Item extends Drawable implements INBTReadWrite
 {
 	protected String image; 
 	
 	public int id = 0;
 	public int gridWidth = 1;
 	public int gridHeight = 1;
-	public int maxStackSize = 200;
+	public int maxStackSize = 16;
 	
 	public boolean isUsable = false;
 	public boolean isTakeable = true;
 	public boolean isCastable = false;
-
+	public boolean isStackable = false;
+	
 	public boolean isTicking = false;
 	public boolean hasUpdated = false;
 	
@@ -107,19 +108,12 @@ public abstract class Item extends Drawable implements Cloneable, INBTReadWrite
 		if(id == item.id) return true;
 		return false;
 	}
-	
-	@Override
-	public Item clone()
-	{
-		return (Item) super.clone();	
-	}
 
 	public Color getBgColor() 
 	{
 		return new Color(130, 91, 213, 180);
 	}
 	
-	//TODO This is rendered behind the other slots. Need to add something like "postRender()".
 	public void renderItemInformation(GL2 gl2, int x, int y)
 	{
 		DrawUtils.setGL(gl2);

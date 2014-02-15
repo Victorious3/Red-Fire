@@ -522,8 +522,8 @@ public class Level implements INBTReadWrite
 		int spawnY = tag.getInt("spawnY", 0);
 		String name = tag.getString("name", "NO_NAME");
 		
-		List<Tag> entityList = (List<Tag>)tag.getTag("entities").getValue();
-		List<Tag> layerList = (List<Tag>)tag.getTag("layers").getValue();
+		List<Tag> entityList = (List<Tag>)tag.getListTag("entities").getValue();
+		List<Tag> layerList = (List<Tag>)tag.getListTag("layers").getValue();
 		
 		this.width = width;
 		this.height = height;
@@ -580,7 +580,7 @@ public class Level implements INBTReadWrite
 		
 		if(tag.getValue().containsKey("players"))
 		{
-			List<Tag> playerList = (List<Tag>)tag.getTag("players").getValue();
+			List<Tag> playerList = (List<Tag>)tag.getListTag("players").getValue();
 			LinkedHashMap<String, EntityPlayer> players = new LinkedHashMap<String, EntityPlayer>();
 			for(Tag playerTag : playerList)
 			{
