@@ -77,6 +77,7 @@ public class PacketHandlerSP extends Thread
 			case Packet7Entity.MODE_UPDATE:
 				for (Entity e : entities)
 				{
+					if(Game.level != null) Game.level.entityMap.put(e.UUID, e);	
 					if(e instanceof EntityPlayer)
 					{
 						if(((EntityPlayer)e).username.equals(Game.USERNAME))
@@ -94,8 +95,7 @@ public class PacketHandlerSP extends Thread
 								Gui.currentGui.initGui();
 							}
 						}
-					}
-					if(Game.level != null) Game.level.entityMap.put(e.UUID, e);				
+					}			
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:

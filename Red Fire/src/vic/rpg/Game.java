@@ -106,7 +106,7 @@ public class Game extends GLCanvas implements Runnable
     
     public static void init()
     {   	
-		List<Class<?>> cls;
+    	List<Class<?>> cls;
 		try {
 			cls = ClassFinder.getClasses("vic.rpg", (String)null);
 			for(Class<?> c : cls)
@@ -151,7 +151,7 @@ public class Game extends GLCanvas implements Runnable
 			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}	
+		}
     }
   
     private void init(GL2 gl2)
