@@ -1,12 +1,5 @@
 package vic.rpg.gui.controls;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Stroke;
-
-import javax.media.opengl.GL2;
 
 public class GSlider extends GControl {
 
@@ -35,7 +28,7 @@ public class GSlider extends GControl {
 	}
 
 	//FIXME Update to OpenGl - Too lazy
-	@Override
+	/*@Override
 	public void render(GL2 gl2, int x, int y) 
 	{
 		gl2.setColor(new Color(97, 74, 119, 190));
@@ -96,5 +89,5 @@ public class GSlider extends GControl {
 	{
 		return (maxS - xScroll)* xScroll + minS;
 	}
-	
+	*/
 }

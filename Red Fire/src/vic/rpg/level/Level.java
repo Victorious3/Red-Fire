@@ -424,14 +424,18 @@ public class Level implements INBTReadWrite
 	public void addEntity(Entity ent, int x, int y)
 	{	
 		if(x > getWidth() || x < 0 || y > getHeight() || y < 0) return;
-		UUID uuid = UUID.randomUUID(); 
+		if(ent instanceof EntityLiving)
+		{
+			((EntityLiving)ent).formatInventory();
+		}
+		UUID uuid = UUID.randomUUID();
 		ent.xCoord = x;
 		ent.yCoord = y;
 		ent.UUID = uuid.toString();
 		ent.levelObj = this;
 		entityMap.put(uuid.toString(), ent);
 	}
-	
+
 	public void createPlayer(EntityPlayer player, String username, int x, int y)
     {
         UUID uuid = UUID.randomUUID();
@@ -653,6 +657,7 @@ public class Level implements INBTReadWrite
 		
 		for(Entity e : entityMap.values())
 		{
+			if(e instanceof EntityPlayer) continue;
 			CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
 			entityList.add(enitiyTag);
 		}

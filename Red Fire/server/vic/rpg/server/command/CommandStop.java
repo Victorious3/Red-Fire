@@ -15,7 +15,7 @@ public class CommandStop extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
-		System.out.println("Stopping Server ...");
+		System.out.println("Stopping Server...");
 		Server.server.stopServer();
 		while(Server.STATE != GameState.QUIT)
 		{

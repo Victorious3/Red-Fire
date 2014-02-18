@@ -131,7 +131,7 @@ public class SlotGrid extends GControl
 			ItemStack stack = gui.inventory.overlapsWith(gui.inventory.getItemStackGrid(id), 1, 1, x / 30, y / 30);
 			if(!stack.isEmpty())
 			{
-				gui.inventory.onItemUse(id, x / 30, y / 30, x, y);
+				gui.inventory.onItemUse(id, x / 30, y / 30);
 			}
 		}		
 	}
@@ -143,37 +143,37 @@ public class SlotGrid extends GControl
 		if(getCurrentStack().isEmpty() && !stack.isEmpty())
 		{
 			gui.inventory.setItemStack(gui.currentSlot.id, stack);
-			setItem(stack.xCoord, stack.yCoord, new ItemStack());
+			setItemStack(stack.xCoord, stack.yCoord, new ItemStack());
 			gui.inventory.updateInventory();
 		}
 		else if(!getCurrentStack().isEmpty())
 		{
 			if(gui.inventory.canBePlacedAt(getItemGrid(), x, y, getCurrentStack()))
 			{
-				setItem(x, y, getCurrentStack());
+				setItemStack(x, y, getCurrentStack());
 				gui.inventory.setItemStack(gui.currentSlot.id, new ItemStack());
 				gui.inventory.updateInventory();
 			}			
 		}	
 	}
 
-	public SlotGrid setItem(int x, int y, ItemStack item) 
+	public SlotGrid setItemStack(int x, int y, ItemStack item) 
 	{
-		if(gui != null) gui.inventory.setItemGrid(id, item, x, y);
+		if(gui != null) gui.inventory.setItemStackGrid(id, item, x, y);
 		return this;
 	}
 	
-	public boolean setItemAndConfirm(int x, int y, ItemStack item) 
+	public boolean setItemStackAndConfirm(int x, int y, ItemStack item) 
 	{
 		if(gui.inventory.canBePlacedAt(gui.inventory.getItemStackGrid(id), x, y, item))
 		{
-			setItem(x, y, item);
+			setItemStack(x, y, item);
 			return true;
 		}
 		return false;
 	}
 	
-	public SlotGrid setItems(ItemStack[][] items) 
+	public SlotGrid setItemStacks(ItemStack[][] items) 
 	{
 		gui.inventory.setItemStackGrid(id, items);
 		return this;

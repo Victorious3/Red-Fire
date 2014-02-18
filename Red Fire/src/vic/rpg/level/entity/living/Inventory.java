@@ -183,7 +183,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return overlapsWith(grid, stack, x, y).isEmpty();
 	}
 	
-	public boolean setItemGrid(int id, ItemStack item, int xCoord, int yCoord)
+	public boolean setItemStackGrid(int id, ItemStack item, int xCoord, int yCoord)
 	{
 		ItemStack[][] grid = getItemStackGrid(id);
 
@@ -211,7 +211,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		{
 			for(int j = 0; j < getItemStackGrid(id)[0].length; j++)
 			{
-				if(setItemGrid(id, stack, i, j)) return true;
+				if(setItemStackGrid(id, stack, i, j)) return true;
 			}
 		}
 		return false;
@@ -398,6 +398,10 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		{
 			super(Side.SERVER, 2);
 			this.putData("mode", mode);
+			this.putData("id", id);
+			this.putData("sType", sType);
+			this.putData("gx", gx);
+			this.putData("gy", gy);
 		}
 
 		public InventoryEvent() 
@@ -406,16 +410,18 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		}
 	}
 
-	public void onItemUse(int id, int x, int y)
+	public void onItemUse(int id)
 	{
-		getItemStack(id).getItem().onItemUse(parentEntity, this, x, y);
-		parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
+		ItemStack stack = getItemStack(id);
+		setItemStack(id, stack.getItem().onItemUse(parentEntity, this, stack));
+		if(Utils.getSide() == Side.CLIENT) parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
 	}
 	
-	public void onItemUse(int id, int gx, int gy, int x, int y)
+	public void onItemUse(int id, int gx, int gy)
 	{
-		overlapsWith(getItemStackGrid(id), 1, 1, gx, gy).getItem().onItemUse(parentEntity, this, x, y);
-		parentEntity.postEvent(new InventoryEvent(0, id, 1, gx, gy));
+		ItemStack stack = overlapsWith(getItemStackGrid(id), 1, 1, gx, gy);
+		setItemStackGrid(id, stack.getItem().onItemUse(parentEntity, this, stack), stack.xCoord, stack.yCoord);
+		if(Utils.getSide() == Side.CLIENT) parentEntity.postEvent(new InventoryEvent(0, id, 1, gx, gy));
 	}
 
 	@Override
@@ -425,8 +431,8 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		{
 			if((Integer)e.getData("mode") == 0)
 			{
-				if((Integer)e.getData("sType") == 0) onItemUse((Integer)e.getData("id"), 0, 0);
-				if((Integer)e.getData("sType") == 1) onItemUse((Integer)e.getData("id"), (Integer)e.getData("gx"), (Integer)e.getData("gy"), 0, 0);
+				if((Integer)e.getData("sType") == 0) onItemUse((Integer)e.getData("id"));
+				if((Integer)e.getData("sType") == 1) onItemUse((Integer)e.getData("id"), (Integer)e.getData("gx"), (Integer)e.getData("gy"));
 			}
 		}
 	}

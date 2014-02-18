@@ -4,6 +4,7 @@ public class ItemStack
 {
 	private Item item;
 	private int stackSize;
+	
 	public int slotID;
 	public int xCoord;
 	public int yCoord;
@@ -49,5 +50,10 @@ public class ItemStack
 	public void setStackSize(int stackSize)
 	{
 		if(getItem().isStackable) this.stackSize = stackSize;
+		if(this.stackSize < 1) 
+		{
+			this.item = null;
+			this.stackSize = 0;
+		}
 	}
 }

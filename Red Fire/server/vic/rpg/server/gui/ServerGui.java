@@ -40,6 +40,7 @@ import javax.swing.text.StyleConstants;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.Server;
 import vic.rpg.server.io.Connection;
+import vic.rpg.utils.Utils;
 
 public class ServerGui 
 {
@@ -63,6 +64,7 @@ public class ServerGui
 		}
 		
 		frame = new JFrame();
+		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon_server.png"));
 		textArea = new JTextPane();
 		scrollPane = new JScrollPane(textArea);
 		textField = new JTextField();		

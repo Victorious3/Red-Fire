@@ -116,8 +116,8 @@ public class EntityLiving extends Entity
 	
 	public void formatInventory()
 	{
-		inventory = new Inventory(this);
-	};
+
+	}
 
 	public void setY(int y)
 	{

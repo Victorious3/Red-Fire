@@ -51,6 +51,6 @@ public class GuiContainer extends Gui
 	{
 		this.inventory = inventory;
 		currentSlot = new Slot(0, 0, -1, this);
-		if(currentSlot.getItemStack() == null) currentSlot.setItem(new ItemStack());	
+		if(currentSlot.getItemStack() == null) currentSlot.setItemStack(new ItemStack());	
 	}	
 }

@@ -21,7 +21,6 @@ import vic.rpg.PostInit;
 import vic.rpg.level.Level;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.registry.LevelRegistry;
 import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.gui.ServerGui;
 import vic.rpg.server.io.Connection;
@@ -254,7 +253,7 @@ public class Server extends Thread implements CommandSender
 				connections.put(player, con);
 		    	actConnections++;
 		    	
-		    	EntityPlayer playerEntity = (EntityPlayer) LevelRegistry.ENTITY_LIVING_PLAYER.clone();
+		    	EntityPlayer playerEntity = new EntityPlayer();
 		    	
 		    	if(ServerLoop.level.offlinePlayersMap.containsKey(player))
 		    	{

@@ -44,7 +44,7 @@ public class Slot extends GControl implements Cloneable
 		this.id = id;
 	}
 	
-	public Slot setItem(ItemStack stack)
+	public Slot setItemStack(ItemStack stack)
 	{
 		gui.inventory.setItemStack(id, stack);
 		return this;
@@ -115,7 +115,7 @@ public class Slot extends GControl implements Cloneable
 			{
 				if(canBePlacedIn(getCurrentItemStack()))
 				{
-					setItem(getCurrentItemStack());
+					setItemStack(getCurrentItemStack());
 					gui.inventory.setItemStack(gui.currentSlot.id, new ItemStack());
 					gui.inventory.updateInventory();
 				}
@@ -123,7 +123,7 @@ public class Slot extends GControl implements Cloneable
 			else if(!getItemStack().isEmpty() && getCurrentItemStack().isEmpty())
 			{									
 				gui.inventory.setItemStack(gui.currentSlot.id, getItemStack());
-				setItem(new ItemStack());
+				setItemStack(new ItemStack());
 				gui.inventory.updateInventory();
 			}
 			else if(!getItemStack().isEmpty() && !getCurrentItemStack().isEmpty())
@@ -131,7 +131,7 @@ public class Slot extends GControl implements Cloneable
 				if(canBePlacedIn(getCurrentItemStack()))
 				{	
 					ItemStack stack = getItemStack();
-					setItem(getCurrentItemStack());
+					setItemStack(getCurrentItemStack());
 					gui.inventory.setItemStack(gui.currentSlot.id, stack);
 					gui.inventory.updateInventory();
 				}
@@ -139,7 +139,7 @@ public class Slot extends GControl implements Cloneable
 		}
 		else if(mouseButton == MouseEvent.BUTTON3)
 		{
-			if(!getItemStack().isEmpty()) gui.inventory.onItemUse(id, x, y);
+			if(!getItemStack().isEmpty()) gui.inventory.onItemUse(id);
 		}
 	}
 

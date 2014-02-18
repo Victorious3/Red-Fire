@@ -67,6 +67,12 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		Collections.sort(entityListeners, Priority.entityEventListenerComperator);
 	}
 	
+	public void removeEventListener(EntityEventListener eel)
+	{
+		entityListeners.remove(eel);
+		Collections.sort(entityListeners, Priority.entityEventListenerComperator);
+	}
+	
 	@Override
 	public Entity clone()
 	{

@@ -103,7 +103,7 @@ public class SlotSkill extends GControl
 			{
 				if(canBePlacedIn(getCurrentItemStack()))
 				{
-					setItem(getCurrentItemStack());
+					setItemStack(getCurrentItemStack());
 					gui.inventory.setItemStack(gui.currentSlot.id, new ItemStack());
 					gui.inventory.updateInventory();
 				}
@@ -111,7 +111,7 @@ public class SlotSkill extends GControl
 			else if(!getItemStack().isEmpty() && getCurrentItemStack().isEmpty() && GameRegistry.key.shiftPressed)
 			{									
 				gui.inventory.setItemStack(gui.currentSlot.id, getItemStack());
-				setItem(new ItemStack());
+				setItemStack(new ItemStack());
 				gui.inventory.updateInventory();
 			}
 			else if(!getItemStack().isEmpty() && !getCurrentItemStack().isEmpty())
@@ -119,14 +119,14 @@ public class SlotSkill extends GControl
 				if(canBePlacedIn(getCurrentItemStack()))
 				{	
 					ItemStack stack = getItemStack();
-					setItem(getCurrentItemStack());
+					setItemStack(getCurrentItemStack());
 					gui.inventory.setItemStack(gui.currentSlot.id, stack);
 					gui.inventory.updateInventory();
 				}
 			}
 			else if(!getItemStack().isEmpty())
 			{
-				getItemStack().getItem().onItemCast(Game.getPlayer(), gui.inventory, x, y);
+				setItemStack(getItemStack().getItem().onItemCast(Game.getPlayer(), gui.inventory, getItemStack()));
 			}
 			else if(getSkill() != null)
 			{
@@ -135,7 +135,7 @@ public class SlotSkill extends GControl
 		}
 		else if(mouseButton == MouseEvent.BUTTON3)
 		{
-			if(!getItemStack().isEmpty()) gui.inventory.onItemUse(id, x, y);
+			if(!getItemStack().isEmpty()) gui.inventory.onItemUse(itemID);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class SlotSkill extends GControl
 		if(getItemStack().isEmpty()) gui.inventory.setSkill(id, skill);
 	}
 	
-	public void setItem(ItemStack stack)
+	public void setItemStack(ItemStack stack)
 	{	
 		if(canBePlacedIn(stack)) 
 		{

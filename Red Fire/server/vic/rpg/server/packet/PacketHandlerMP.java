@@ -105,7 +105,7 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 12)
 			{
 				EntityEvent eev = ((Packet12Event)p).eev;
-				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).onEventReceived(eev);	
+				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);	
 			}
 			else if(p.id == 13)
 			{
@@ -113,6 +113,7 @@ public class PacketHandlerMP extends Thread
 				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
 				packet.inventory.parentEntity = ServerLoop.level.getPlayer(con.username);
 				packet.inventory.parentEntity.addEventListener(packet.inventory);
+				packet.inventory.parentEntity.removeEventListener(packet.inventory.parentEntity.inventory);
 				packet.inventory.parentEntity.inventory = packet.inventory;
 			}
 		} catch (Exception e) {

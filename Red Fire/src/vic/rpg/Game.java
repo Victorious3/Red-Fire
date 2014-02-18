@@ -331,6 +331,7 @@ public class Game extends GLCanvas implements Runnable
 		
 		frame.add(game);
 		frame.setTitle("Red Fire Alpha " + GameRegistry.VERSION);
+		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon.png"));
 		
 		frame.addWindowListener(new WindowListener() 
 		{

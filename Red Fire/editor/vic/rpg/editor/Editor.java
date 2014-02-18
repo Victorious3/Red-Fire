@@ -180,7 +180,8 @@ public class Editor
         GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
         labelLevel = new PanelLevel(glcapabilities);
 		
-		frame = new JFrame();	
+		frame = new JFrame();
+		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon_editor.png"));
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowListener() {
 			

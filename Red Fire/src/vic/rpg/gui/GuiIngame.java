@@ -67,7 +67,6 @@ public class GuiIngame extends GuiContainer implements IGButton
 	public GuiIngame() 
 	{
 		super(false);
-		controlsList.add(chatField);
 		chatField.isVisible = false;
 	}
 
@@ -80,12 +79,20 @@ public class GuiIngame extends GuiContainer implements IGButton
 
 	
 	@Override
+	public void initGui() 
+	{
+		init = false;
+	}
+
+	@Override
 	public void updateGui() 
 	{
 		if(Game.getPlayer() != null)
 		{
 			if(!init)
 			{
+				controlsList.clear();
+				controlsList.add(chatField);
 				setInventory(Game.getPlayer().getInventory());
 				
 				slotSkill0 = new SlotSkill(50, 505, 0, this);

@@ -81,24 +81,22 @@ public abstract class Item extends Drawable implements INBTReadWrite
 		return null;
 	}
 	
-	public void onItemUse(EntityLiving entity, Inventory i, int x, int y)
+	public ItemStack onItemUse(EntityLiving entity, Inventory i, ItemStack stack)
 	{
-		
+		return stack;
 	}
 	
-	public void onItemCast(EntityLiving entity, Inventory i, int x, int y)
+	public ItemStack onItemCast(EntityLiving entity, Inventory i, ItemStack stack)
 	{
-		
+		return stack;
 	}
 	
-	public void onItemDrop(EntityLiving entity, Inventory i, int x, int y)
+	public ItemStack onItemDrop(EntityLiving entity, Inventory i, ItemStack stack)
 	{
-		
+		return stack;
 	}
-	
-	public void onItemSlotChange(){}
-	
-	public boolean onItemPickUp(EntityLiving entity, int x, int y)
+
+	public boolean onItemPickUp(EntityLiving entity, Inventory i, ItemStack stack)
 	{
 		return true;
 	}
