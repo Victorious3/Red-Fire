@@ -657,7 +657,6 @@ public class Level implements INBTReadWrite
 		
 		for(Entity e : entityMap.values())
 		{
-			if(e instanceof EntityPlayer) continue;
 			CompoundTag enitiyTag = LevelRegistry.writeEntityToNBT(e);
 			entityList.add(enitiyTag);
 		}
