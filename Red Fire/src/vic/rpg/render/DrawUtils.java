@@ -1,6 +1,7 @@
 package vic.rpg.render;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
@@ -186,15 +187,15 @@ public class DrawUtils
 			gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
 			gl2.glBegin(GL2.GL_QUADS);
 			gl2.glNormal3i(0, 0, 1);
-	        gl2.glTexCoord2d(texX2, texY2);
-	        gl2.glVertex2i(x, y);
-	        gl2.glTexCoord2d(texX3, texY2);
-	        gl2.glVertex2i(x + width, y);
-	        gl2.glTexCoord2d(texX3, texY3);
-	        gl2.glVertex2i(x + width, y + height);
-	        gl2.glTexCoord2d(texX2, texY3);
-	        gl2.glVertex2i(x, y + height);
-	        gl2.glEnd();
+			gl2.glTexCoord2d(texX2, texY2);
+			gl2.glVertex2i(x, y);
+			gl2.glTexCoord2d(texX3, texY2);
+			gl2.glVertex2i(x + width, y);
+			gl2.glTexCoord2d(texX3, texY3);
+			gl2.glVertex2i(x + width, y + height);
+			gl2.glTexCoord2d(texX2, texY3);
+			gl2.glVertex2i(x, y + height);
+			gl2.glEnd();
 			gl2.glPopMatrix();
 			gl2.glDisable(GL2.GL_TEXTURE_2D);
 		}
@@ -231,12 +232,31 @@ public class DrawUtils
 	
 	public static void drawString(int x, int y, String string, Color color)
 	{
-		drawString(x, y, string, color, true);
+		drawString(x, y, string, color, true, -1);
 	}
 	
-	private static int drawString(int x, int y, String string, Color color, boolean draw) 
+	private static int[] drawString(int preX, int x, int y, String string, Color color, int maxWidth, boolean draw, boolean split)
+	{
+		int x2 = x;
+		for(String subString : string.split("(?<=\\s+|,\\s)"))
+		{
+			double width = FONT.getStringBounds(subString, getTextRenderer().getFontRenderContext()).getWidth();
+			if(x2 + width > maxWidth && split)
+			{
+				x2 = preX;
+				y += FONT.getSize();
+			}
+			if(draw) drawUnformattedString(x2, y, subString, color);
+			x2 += width;
+		}
+		return new int[]{x2, y};
+	}
+	
+	private static Dimension drawString(int x, int y, String string, Color color, boolean draw, int maxWidth) 
 	{		
 		int x2 = x;
+		int y2 = y;
+		
 		if(string.contains("&"))
 		{
 			String[] subStrings = string.split("&");	
@@ -265,14 +285,16 @@ public class DrawUtils
 						}
 						else
 						{
-							if(draw) drawUnformattedString(x2, y, LanguageRegistry.getTranslation(control), color);
-							x2 += FONT.getStringBounds(LanguageRegistry.getTranslation(control), getTextRenderer().getFontRenderContext()).getWidth();
+							int[] i2 = drawString(x, x2, y2, LanguageRegistry.getTranslation(control), color, x + maxWidth, draw, maxWidth > 0);
+							x2 = x + i2[0];
+							y2 = x + i2[1];
 						}
 					
 						if(rString.length() > 0)
 						{
-							if(draw) drawUnformattedString(x2, y, rString, color);
-							x2 += FONT.getStringBounds(rString, getTextRenderer().getFontRenderContext()).getWidth();				
+							int[] i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
+							x2 = x + i2[0];
+							y2 = x + i2[1];			
 						}
 					}
 					else
@@ -297,8 +319,9 @@ public class DrawUtils
 						}
 						if(rString.length() > 0)
 						{
-							if(draw) drawUnformattedString(x2, y, rString, color);
-							x2 += FONT.getStringBounds(rString, getTextRenderer().getFontRenderContext()).getWidth();
+							int[] i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
+							x2 = x + i2[0];
+							y2 = x + i2[1];
 						}
 					}
 				}
@@ -308,99 +331,16 @@ public class DrawUtils
 		}
 		else 
 		{
-			if(draw) drawUnformattedString(x2, y, string, color);
-			x2 += FONT.getStringBounds(string, getTextRenderer().getFontRenderContext()).getWidth();
+			int[] i2 = drawString(x, x2, y2, string, color, x + maxWidth, draw, maxWidth > 0);
+			x2 = x + i2[0];
+			y2 = x + i2[1];
 		}
-		return x2 - x;
+		return new Dimension(x2 - x, y2 - y + FONT.getSize());
 	}
 	
-	private static String addString(String a, String b, Color color, Integer style)
+	public static void drawString(int x, int y, String string, Color color, int maxWidth)
 	{
-		for(int i = 0; i < b.length(); i++)
-		{
-			String sub = b.substring(i, i + 1);
-			a += "#" + (color == null ? -1 : color.getRGB()) + "#" + (style == null ? -1 : style) + "#" + sub + ";";
-		}
-		return a;
-	}
-	
-	//TODO Not sure how to use this yet.
-	public static String processFormattedString(String string)
-	{
-		String newString = "";
-		Color color = null;
-		Integer style = null;
-		
-		if(string.contains("&"))
-		{
-			String[] subStrings = string.split("&");	
-			int i = 0;
-			for(String subString : subStrings)
-			{
-				if(subString.length() > 0)
-				{
-					if(subString.contains("#"))
-					{
-						String control = subString.split("#")[0];
-						String rString = "";
-						if(subString.split("#").length > 1) rString = subString.split("#")[1];
-						
-						if(control.contains("="))
-						{
-							String controlName = control.split("=")[0];
-							String argument = control.split("=")[1];
-							StringControl sControl = stringControls.get(controlName);
-							if(sControl == null) continue;
-							try {
-								color = sControl.format(argument, rString, color, 0, 0);
-							} catch (Exception e) {
-								
-							}
-						}
-						else
-						{
-							newString = addString(newString, LanguageRegistry.getTranslation(control), color, style);
-						}
-					
-						if(rString.length() > 0)
-						{
-							newString = addString(newString, rString, color, style);		
-						}
-					}
-					else
-					{
-						String control = subString.substring(0, 1);
-						String rString = subString.substring((i != 0 ? 1 : 0), subString.length());
-						switch(control)
-						{
-						case "b" : style = Font.BOLD; break;
-						case "i" : style = Font.ITALIC; break;
-						case "p" : style = Font.PLAIN; break;
-						case "0" : color = Color.black; break;
-						case "1" : color = Color.white; break;
-						case "2" : color = Color.blue; break;
-						case "3" : color = Color.green; break;
-						case "4" : color = Color.red; break;
-						case "5" : color = new Color(218, 165, 032); break;
-						case "6" : color = Color.yellow; break;
-						case "7" : color = Color.pink; break;
-						case "8" : color = Color.gray; break;
-						case "9" : color = Color.darkGray; break;
-						}
-						if(rString.length() > 0)
-						{
-							newString = addString(newString, rString, color, style);
-						}
-					}
-				}
-				i++;
-			}
-		}
-		else 
-		{
-			newString = addString(newString, string, color, style);
-		}
-		return newString;
+		drawString(x, y, string, color, true, maxWidth);
 	}
 	
 	public static String removeFormatation(String s)
@@ -428,9 +368,34 @@ public class DrawUtils
 		return out;
 	}
 	
+	public static int getFormattedStringLenght(String string, int maxLenght)
+	{
+		return drawString(0, 0, string, null, false, maxLenght).width;
+	}
+	
 	public static int getFormattedStringLenght(String string)
 	{
-		return drawString(0, 0, string, null, false);
+		return drawString(0, 0, string, null, false, -1).width;
+	}
+	
+	public static int getFormattedStringHeight(String string, int maxLenght)
+	{
+		return drawString(0, 0, string, null, false, maxLenght).height;
+	}
+	
+	public static int getFormattedStringHeight(String string)
+	{
+		return drawString(0, 0, string, null, false, -1).height;
+	}
+	
+	public static Dimension getFormattedStringBounds(String string, int maxLenght)
+	{
+		return drawString(0, 0, string, null, false, maxLenght);
+	}
+	
+	public static Dimension getFormattedStringBounds(String string)
+	{
+		return drawString(0, 0, string, null, false, -1);
 	}
 	
 	public static void startClip(int x, int y, int width, int height)

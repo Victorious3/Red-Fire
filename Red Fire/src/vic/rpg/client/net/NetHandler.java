@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 
 import vic.rpg.Game;
@@ -14,9 +15,14 @@ import vic.rpg.gui.GuiMain;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
+import vic.rpg.server.command.CommandStop;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet0StateUpdate;
 
+/**
+ * NetHandler does handle all Client <-> Server communication for the Client.
+ * @author Victorious3
+ */
 public class NetHandler extends Thread 
 {
 	public Socket socket;
@@ -26,13 +32,27 @@ public class NetHandler extends Thread
 	public boolean IS_SINGLEPLAYER = false;
 	public String lastError = "";
 	
+	/**
+	 * Indicates the current {@link GameState} of the Client.
+	 */
 	public int STATE = GameState.RUNNING; 
 	
+	/**
+	 * NetHandler constructor. Sets the thread name to "Network Thread".
+	 */
 	public NetHandler()
 	{
 		this.setName("Network Thread");
 	}
 	
+	/**
+	 * Tries to connect to a given Server. On success it returns {@code true}.
+	 * The latest error is stored in {@link #lastError}.
+	 * @param adress
+	 * @param port
+	 * @param username
+	 * @return Boolean
+	 */
 	public boolean connect(String adress, int port, String username)
 	{		
 		Game.USERNAME = username;
@@ -61,6 +81,13 @@ public class NetHandler extends Thread
 	long previousTime = System.nanoTime();
 	double secondsPerTick = 3;
 	
+	/**
+	 * Network Thread. It listens on the Client socket and creates a new {@link Packet} by the use of {@link Packet#readData(DataInputStream)} for processing
+	 * in {@link PacketHandlerSP} if a server sent a new {@link Packet}. It also sends an {@link Packet0StateUpdate update Packet}
+	 * every 10 seconds to inform the Server of the fact that the Client is still up and running.
+	 * <br><br>
+	 * The latest error is stored in {@link #lastError}.
+	 */
 	public void run() 
 	{		
 		while(connected)
@@ -96,6 +123,12 @@ public class NetHandler extends Thread
 		}		
 	}
 	
+	/**
+	 * Used to stop the Network Thread and close the active Socket on disconnect. 
+	 * Also stops the server by sending the {@link CommandStop stop command} if the Game is running on SMP.
+	 * <br>
+	 * If an error had occurred previously, {@link GuiError} is displayed.
+	 */
 	public void close()
 	{
 		try {
@@ -137,6 +170,9 @@ public class NetHandler extends Thread
 		}
 	}
 	
+	/**
+	 * Reference to {@link InputStream#available()}.
+	 */
 	public boolean available()
     {
     	try {

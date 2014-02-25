@@ -115,7 +115,7 @@ public abstract class Item extends Drawable implements INBTReadWrite
 	public void renderItemInformation(GL2 gl2, int x, int y)
 	{
 		DrawUtils.setGL(gl2);
-		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
+		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 12));
 
 		int width = 0;
 		if(getItemDescription() != null)

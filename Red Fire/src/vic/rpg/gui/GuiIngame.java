@@ -1,6 +1,7 @@
 package vic.rpg.gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	private boolean init = false;
 	private ArrayList<Object[]> chatValues = new ArrayList<Object[]>();
 	private String lastChat = "";
+	private int scroll = 0;
 	private final int MAX_CHATLINES = 10;
 	private int lp = 0;
 	
@@ -64,7 +66,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	public static GuiIngame gui = new GuiIngame();
 	public static EntityLiving focusedEntity = null;
 	
-	public GuiIngame() 
+	private GuiIngame() 
 	{
 		super(false);
 		chatField.isVisible = false;
@@ -81,6 +83,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	@Override
 	public void initGui() 
 	{
+		scroll = 0;
 		init = false;
 	}
 
@@ -185,22 +188,23 @@ public class GuiIngame extends GuiContainer implements IGButton
 		super.render(gl2);
 		
 		DrawUtils.setGL(gl2);
-		DrawUtils.setFont(new Font("Veranda", 0, 20));
+		DrawUtils.setFont(new Font("Monospaced", 0, 20));
 		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
 		
-		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 14));
+		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		
 		int i2 = 0;
-		for(int i = 0; i < chatValues.size(); i++)
+		for(int i = 0 + scroll; i < chatValues.size() - scroll; i++)
 		{
 			if(chatValues.get(i) != null)
 			{		
 				Object[] clog = chatValues.get(i);
 				if(System.currentTimeMillis() < (long)clog[1] + 20000L || chatField.isVisible)
 				{
-					DrawUtils.fillRect(0, (int)(39 + i2 * DrawUtils.getFont().getSize()), MAX_CHATSIZE, DrawUtils.getFont().getSize(), new Color(0, 0, 0, 120));
-					DrawUtils.drawString(0, (int)(50 + i2 * DrawUtils.getFont().getSize()), (String)clog[0], Color.white);
-					i2++;
+					Dimension dim = DrawUtils.getFormattedStringBounds((String)clog[0], MAX_CHATSIZE);
+					DrawUtils.fillRect(0, (int)(39 + i2 * DrawUtils.getFont().getSize()), MAX_CHATSIZE, DrawUtils.getFont().getSize() * (dim.height / DrawUtils.getFont().getSize()), new Color(0, 0, 0, 120));
+					DrawUtils.drawString(0, (int)(50 + i2 * DrawUtils.getFont().getSize()), (String)clog[0], Color.white, MAX_CHATSIZE);
+					i2 += dim.height / DrawUtils.getFont().getSize();
 				}
 			}
 		}
@@ -222,6 +226,13 @@ public class GuiIngame extends GuiContainer implements IGButton
 		}
 	}
 	
+	@Override
+	public void onMouseWheelMoved(int amount) 
+	{
+		//TODO Implement the rest of the scrolling
+		if(scroll + amount / 3 >= 0) scroll += amount / 3;
+	}
+
 	public void addChatMessage(String s, String playername)
 	{		
 		if(playername.equals("SERVER"))

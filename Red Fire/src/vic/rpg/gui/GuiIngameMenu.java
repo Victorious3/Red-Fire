@@ -39,7 +39,7 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 		DrawUtils.drawRect(xOffset, yOffset, 544, 268, new Color(120, 31, 0));		
 		DrawUtils.setLineWidth(oldStroke);
 		
-		DrawUtils.setFont(new Font("Veranda", 0, 20));
+		DrawUtils.setFont(new Font("Monospaced", 0, 20));
 		DrawUtils.drawString(5, 20, "Red Fire V." + GameRegistry.VERSION, Color.white);
 		
 		super.render(gl2);

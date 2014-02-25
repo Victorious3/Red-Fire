@@ -206,7 +206,7 @@ public class EntityLiving extends Entity
 	{
 		if(e instanceof HealthChangeEvent)
 		{
-			int lp = (int) e.getData("health");
+			int lp = (int)e.getData("health");
 			this.lp = lp < 0 ? 0 : lp > this.max_lp ? this.max_lp : lp;
 		}
 		

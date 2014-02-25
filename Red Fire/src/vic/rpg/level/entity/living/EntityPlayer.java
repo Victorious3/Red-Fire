@@ -71,7 +71,7 @@ public class EntityPlayer extends EntityLiving
 		inventory.setSkill(9, LevelRegistry.SKILL_HEAL.clone());
 		
 		inventory.setItemStack(2, new ItemStack(LevelRegistry.ITEM_APPLE, 16));
-		inventory.setItemStack(9, new ItemStack(LevelRegistry.ITEM_PEER));
+		inventory.setItemStack(3, new ItemStack(LevelRegistry.ITEM_PEER, 16));
 		inventory.addToInventory(new ItemStack(LevelRegistry.ITEM_SHIELD));
 		inventory.addToInventory(new ItemStack(LevelRegistry.ITEM_SWORD));
 	}

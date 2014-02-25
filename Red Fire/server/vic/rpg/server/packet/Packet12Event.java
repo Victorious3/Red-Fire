@@ -56,7 +56,9 @@ public class Packet12Event extends Packet
 			for(int i = 0; i < objectLength; i++)
 			{
 				Tag t = nbtStream.readTag();
-				eev.data.put(t.getName(), t.getValue());			
+				Object data = t.getValue();
+				if(data instanceof Short) data = (Short)data == 1;
+				eev.data.put(t.getName(), data);			
 			}
 			nbtStream.close();
 			

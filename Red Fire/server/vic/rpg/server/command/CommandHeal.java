@@ -4,6 +4,7 @@ import java.util.List;
 
 import vic.rpg.level.entity.living.EntityController;
 import vic.rpg.server.ServerLoop;
+import vic.rpg.server.io.Connection;
 
 public class CommandHeal extends Command 
 {	
@@ -15,6 +16,12 @@ public class CommandHeal extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(args.size() == 0 && commandSender instanceof Connection)
+		{
+			Connection con = (Connection)commandSender;
+			args.add(con.username);
+			args.add("1");
+		}
 		if(args.size() > 0)
 		{
 			if(args.size() > 1)

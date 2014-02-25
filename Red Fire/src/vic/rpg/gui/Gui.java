@@ -27,7 +27,7 @@ public class Gui
 		currentGui.initGui();
 	}
 	
-	public List<GControl> controlsList = Collections.synchronizedList(new ArrayList<GControl>()); 
+	protected List<GControl> controlsList = Collections.synchronizedList(new ArrayList<GControl>()); 
 	
 	public Gui(boolean pauseGame, boolean overridesEsc)
 	{
@@ -61,11 +61,8 @@ public class Gui
 	{
 		synchronized(controlsList)
 		{
-			Iterator<GControl> i = controlsList.iterator();
-			
-			while(i.hasNext())
+			for(GControl gc : controlsList)
 			{
-				GControl gc = i.next();
 				if(gc.isVisible) gc.postRender(gl2, GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord);
 			}
 		}
@@ -73,18 +70,21 @@ public class Gui
 	
 	public void onMouseClickStart(int x, int y, int mouseButton)
 	{
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible)
+			for(GControl gc : controlsList)
 			{
-				if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
+				if(gc.isVisible)
 				{
-					gc.onClickStart(x, y, mouseButton);
-					gc.mouseDown = true;
-				}
-				else
-				{
-					gc.onClickEnd(x, y);
+					if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
+					{
+						gc.onClickStart(x, y, mouseButton);
+						gc.mouseDown = true;
+					}
+					else
+					{
+						gc.onClickEnd(x, y);
+					}
 				}
 			}
 		}
@@ -92,23 +92,29 @@ public class Gui
 	
 	public void onMouseClickEnd(int x, int y, int mouseButton)
 	{
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible && gc.mouseDown)
+			for(GControl gc : controlsList)
 			{
-				gc.onClickReleased(x, y, mouseButton);
-				gc.mouseDown = false;
+				if(gc.isVisible && gc.mouseDown)
+				{
+					gc.onClickReleased(x, y, mouseButton);
+					gc.mouseDown = false;
+				}
 			}
 		}
 	}
 	
 	public void onDoubleClick(int x, int y, int mouseButton)
 	{
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible)
+			for(GControl gc : controlsList)
 			{
-				gc.onDoubleClick(x, y, mouseButton);
+				if(gc.isVisible)
+				{
+					gc.onDoubleClick(x, y, mouseButton);
+				}
 			}
 		}
 	}
@@ -117,17 +123,23 @@ public class Gui
 	
 	public void onKeyTyped(char k, int keyCode)
 	{
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible) gc.onKeyTyped(k, keyCode);
+			for(GControl gc : controlsList)
+			{
+				if(gc.isVisible) gc.onKeyTyped(k, keyCode);
+			}
 		}
 	}
 	
 	public void onMouseWheelMoved(int amount)
 	{
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible) gc.onMouseWheelMoved(amount);
+			for(GControl gc : controlsList)
+			{
+				if(gc.isVisible) gc.onMouseWheelMoved(amount);
+			}
 		}
 	}
 	
@@ -136,16 +148,19 @@ public class Gui
 		int x = GameRegistry.mouse.xCoord;
 		int y = GameRegistry.mouse.yCoord;
 		
-		for(GControl gc : controlsList)
+		synchronized(controlsList)
 		{
-			if(gc.isVisible)
-			{			
-				gc.tick();
-				if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
-				{
-					gc.mouseHovered = true;
+			for(GControl gc : controlsList)
+			{
+				if(gc.isVisible)
+				{			
+					gc.tick();
+					if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
+					{
+						gc.mouseHovered = true;
+					}
+					else if(gc.mouseHovered) gc.mouseHovered = false;
 				}
-				else if(gc.mouseHovered) gc.mouseHovered = false;
 			}
 		}
 	}

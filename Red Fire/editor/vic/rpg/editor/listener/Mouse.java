@@ -210,7 +210,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					if(!arg0.isControlDown()) selectedTiles.clear();
 				
-					//FIXME Behaves strange on the upper edges of the map.
+					//TODO Behaves strange on the upper edges of the map.
 					for(int i = (int)selection.getMinX(); i <= selection.getMaxX(); i += Level.CELL_SIZE / 4)
 					{
 						for(int j = (int)selection.getMinY(); j <= selection.getMaxY(); j += Level.CELL_SIZE / 2)

@@ -8,11 +8,16 @@ import java.lang.annotation.Target;
 import vic.rpg.utils.Utils.Side;
 
 /**
- * Only for use inside vic.rpg!
+ * Mark any static method with this annotation to let it been loaded on startup.
+ * A {@link Side} is used to specify weather it should be called from Server or Client/Editor.
+ * <br>
+ * Supported Sides are: {@link Side#CLIENT CLIENT}, {@link Side#CLIENT SERVER}, {@link Side#CLIENT BOTH} <br>
+ * <br>
+ * <b>Only for use inside vic.rpg!</b>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Init 
+public @interface Init
 {
 	Side side();
 }

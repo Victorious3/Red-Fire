@@ -5,6 +5,10 @@ import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+/**
+ * Under Construction
+ * @author Victorious3
+ */
 public class Skill extends Drawable implements Cloneable
 {
 	public int id;

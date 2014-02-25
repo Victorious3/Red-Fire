@@ -9,16 +9,39 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.item.Item;
 import vic.rpg.item.ItemFilter;
 import vic.rpg.item.ItemStack;
+import vic.rpg.item.Slot;
+import vic.rpg.item.SlotGrid;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * A Slot that can be used as a container for a {@link Skill}, an {@link Item} or both.
+ * It's mainly a graphical thing because all the storing is done by the underlying {@link Inventory} referenced in {@link #gui}.
+ * @see GControl
+ * @see Slot
+ * @see SlotGrid
+ * @author Victorious3
+ */
 public class SlotSkill extends GControl
 {
+	/**
+	 * Id of referenced {@link ItemStack} from the underlying {@link Inventory} accessible via {@link #gui}. {@code null} if no {@link ItemStack ItemStacks} are supported.
+	 *@see #gui
+	 */
 	private Integer itemID;
+	/**
+	 * Id of referenced {@link Slot} from the underlying {@link Inventory} accessible via {@link #gui}.
+	 *@see #gui
+	 */
 	private Integer id;
 	private ItemFilter filter;
+	/**
+	 * Gui reference.
+	 */
 	private GuiContainer gui;
 	
 	public SlotSkill(int xCoord, int yCoord, Integer id, GuiContainer gui) 
@@ -139,6 +162,11 @@ public class SlotSkill extends GControl
 		}
 	}
 
+	/**
+	 * Checks weather a given {@link ItemStack} can be placed in this SkillSlot.
+	 * @param stack
+	 * @return Boolean
+	 */
 	public boolean canBePlacedIn(ItemStack stack)
 	{
 		if(itemID == null) return false;
@@ -151,27 +179,55 @@ public class SlotSkill extends GControl
 		return false;
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} currently active in {@link #gui}.
+	 * @see #itemID
+	 * @return ItemStack
+	 */
 	private ItemStack getCurrentItemStack()
 	{
 		return gui.inventory.getItemStack(gui.currentSlot.id);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} stored in the underlying {@link Inventory}.
+	 * @see #itemID
+	 * @return ItemStack
+	 */
 	public ItemStack getItemStack()
 	{
 		if(itemID == null) return new ItemStack();
 		else return gui.inventory.getItemStack(itemID);
 	}
 	
+	/**
+	 * Returns the {@link Skill} stored in the underlying {@link Inventory} or {@code null} if it's not set.
+	 * @see #id
+	 * @return Skill
+	 */
 	public Skill getSkill()
 	{
 		return gui.inventory.getSkill(id);
 	}
 
+	/**
+	 * Sets the current {@link Skill} if the current {@link ItemStack} is empty.
+	 * @see #id
+	 * @see #itemID
+	 * @param skill
+	 */
 	public void setSkill(Skill skill)
 	{
 		if(getItemStack().isEmpty()) gui.inventory.setSkill(id, skill);
 	}
 	
+	/**
+	 * Sets the current {@link ItemStack} if {@link #canBePlacedIn(ItemStack)} allows for it and this SlotSkill supports {@link ItemStack ItemStacks}.
+	 * Overrides any {@link Skill} present at that time.
+	 * @see #id
+	 * @see #itemID
+	 * @param stack
+	 */
 	public void setItemStack(ItemStack stack)
 	{	
 		if(canBePlacedIn(stack)) 

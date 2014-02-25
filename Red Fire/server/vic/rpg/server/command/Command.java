@@ -21,6 +21,7 @@ public abstract class Command
 		commands.put("heal", new CommandHeal());
 		commands.put("ban", new CommandBan());
 		commands.put("kick", new CommandKick());
+		commands.put("give", new CommandGive());
 	}
 	
 	public static void getHelp(CommandSender commandSender)

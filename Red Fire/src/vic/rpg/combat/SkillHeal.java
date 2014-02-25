@@ -2,6 +2,10 @@ package vic.rpg.combat;
 
 import vic.rpg.level.entity.living.EntityLiving;
 
+/**
+ * A basic Healing Skill.
+ * @author Victorious3
+ */
 public class SkillHeal extends Skill
 {
 	public SkillHeal() 

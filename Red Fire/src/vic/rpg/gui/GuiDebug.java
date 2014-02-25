@@ -23,7 +23,7 @@ public class GuiDebug extends Gui
 	public void render(GL2 gl2) 
 	{
 		DrawUtils.setGL(gl2);
-		DrawUtils.setFont(new Font("Veranda", 0, 20));
+		DrawUtils.setFont(new Font("Monospaced", 0, 20));
 		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
 		DrawUtils.drawString(5, 560, GameRegistry.mouse.xCoord + " " + GameRegistry.mouse.yCoord, Color.white);
 		Point p = Utils.convIsoToCart(new Point(GameRegistry.mouse.xCoord, GameRegistry.mouse.yCoord));

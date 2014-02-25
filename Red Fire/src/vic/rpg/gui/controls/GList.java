@@ -37,7 +37,7 @@ public class GList extends GControl
 	{
 		DrawUtils.setGL(gl2);
 		DrawUtils.fillRect(xCoord, yCoord, width, height, new Color(97, 74, 119, 190));
-		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
+		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		DrawUtils.startClip(xCoord, yCoord, width, height);
 		int offset = (int) (scrollPos * maxOffset);

@@ -44,6 +44,10 @@ import vic.rpg.utils.Utils.Side;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.awt.Screenshot;
 
+/**
+ * Main game class
+ * @author Victorious3
+ */
 public class Game extends GLCanvas implements Runnable 
 {
 	public static String USERNAME = "victorious3";
@@ -73,6 +77,11 @@ public class Game extends GLCanvas implements Runnable
 	public static String playerUUID;
 	public static Level level;
 	
+	/**
+	 * Returns the instance of the currently active player by using {@link #playerUUID}.
+	 * If the game hasn't started yet, it returns null.
+	 * @return EntityPlayer
+	 */
 	public static EntityPlayer getPlayer()
 	{
 		if(Game.level != null && playerUUID != null)
@@ -82,6 +91,10 @@ public class Game extends GLCanvas implements Runnable
 		return null;
 	}
 	
+	/**
+	 * Main constructor.
+	 * @param glcapabilities
+	 */
     public Game(GLCapabilities glcapabilities)
     {
     	super(glcapabilities);
@@ -90,6 +103,9 @@ public class Game extends GLCanvas implements Runnable
         Options.load();	 	
     }
     
+    /**
+     * Used to save the config and do some cleanup work in {@link RenderRegistry#stop()}. It does terminate the application afterwards.
+     */
     public synchronized void stopGame()
     {
     	System.out.println("Stopping client...");
@@ -104,6 +120,11 @@ public class Game extends GLCanvas implements Runnable
     	System.exit(0);
     }
     
+    /**
+     * Calls all static methods that are marked with {@link Init} and {@link PostInit}
+     * to perform some inits like setting up textures.
+     * Only searches in the package {@code vic.rpg}.
+     */
     public static void init()
     {   	
     	List<Class<?>> cls;
@@ -153,7 +174,11 @@ public class Game extends GLCanvas implements Runnable
 			e.printStackTrace();
 		}
     }
-  
+    
+    /**
+     * Does all the init operations involved in setting up OpenGL,<br> creates the Screen object and calls {@link #init()}
+     * @param gl2
+     */
     private void init(GL2 gl2)
     {
     	init();
@@ -181,6 +206,11 @@ public class Game extends GLCanvas implements Runnable
 		GL_ANIMATOR.start();
     }
     
+    /**
+     * Main render loop. It does flush the OpenGL context and pauses the 
+     * Render Thread if a game tick is in progress.
+     * @param gl2
+     */
     private synchronized void render(GL2 gl2)
     {
     	if(isUpdating)
@@ -201,6 +231,10 @@ public class Game extends GLCanvas implements Runnable
     	notify();
     }
     
+    /**
+     * Main update loop. It updates the Screen, the currently active gui and the active level. 
+     * It triggers {@link #isUpdating} to inform the Render Thread that a game tick is in progress.
+     */
 	private synchronized void tick() 
 	{
 		isUpdating = true;
@@ -217,6 +251,9 @@ public class Game extends GLCanvas implements Runnable
 		isUpdating = false;
 	}
 	
+	/**
+	 * Creates and starts the Update Thread "Game".
+	 */
     public void start()
 	{
 		if(isRunning) return;
@@ -226,6 +263,9 @@ public class Game extends GLCanvas implements Runnable
 		thread.start();
 	}
 	
+    /**
+     * Stops the Update Thread and terminates the application. <b>Not in use anymore</b>.
+     */
 	public void stop()
 	{
 		if(!isRunning) return;
@@ -238,6 +278,10 @@ public class Game extends GLCanvas implements Runnable
 		}
 	}
 	
+	/**
+	 * Main void for the Client. Does a lot of initialization like creating the OpenGL Animator.
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{		
 		try {
@@ -374,6 +418,9 @@ public class Game extends GLCanvas implements Runnable
 		else Game.USERNAME = String.valueOf(new Random().nextLong());	
 	}
 
+	/**
+	 * Main Update Thread. It caps the update frequency at 20TPS. <br>Calls {@link #tick()}. 
+	 */
 	@Override
 	public void run() 
 	{	

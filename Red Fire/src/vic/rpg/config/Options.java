@@ -10,6 +10,7 @@ import vic.rpg.utils.Utils;
 
 public class Options 
 {
+	//FIXME Documentation will be continued soon...
 	public static String LANGUAGE = LanguageRegistry.en_GB;
 	public static boolean LIGHTING = true;
 	

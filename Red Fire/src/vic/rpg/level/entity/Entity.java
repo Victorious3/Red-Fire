@@ -43,7 +43,7 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 			for(EntityEventListener el : entityListeners) el.onEventPosted(eev);
 			for(EntityEventListener el : entityListeners) el.onEventReceived(eev);
 		}
-		if(Utils.getSide() != eev.side || eev.side == Side.BOTH)
+		if(Utils.getSide() != eev.side || eev.side == Side.OTHER_SIDE || eev.side == Side.BOTH)
 		{
 			if(Utils.getSide() == Side.CLIENT)
 			{

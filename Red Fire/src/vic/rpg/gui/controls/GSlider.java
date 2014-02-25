@@ -55,7 +55,7 @@ public class GSlider extends GControl {
 		}
 		
 		gl2.setColor(Color.WHITE);
-		gl2.setFont(new Font("Veranda", 2, 18));
+		gl2.setFont(new Font("Monospaced", 2, 18));
 		
 		FontMetrics fm = gl2.getFontMetrics();		
 		int sWidth = fm.stringWidth(String.valueOf((int)returnValue));

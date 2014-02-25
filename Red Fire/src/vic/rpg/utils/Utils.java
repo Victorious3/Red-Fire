@@ -32,7 +32,7 @@ public class Utils
 	
 	public static enum Side
 	{
-		CLIENT, SERVER, BOTH
+		CLIENT, SERVER, BOTH, OTHER_SIDE
 	}
 	
 	public static InputStream getStreamFromJar(String s)

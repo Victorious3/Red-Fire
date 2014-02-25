@@ -30,6 +30,7 @@ public class EntityEvent implements Cloneable
 	
 	public static void registerEntityEvent(EntityEvent e)
 	{
+		if(eventRegistry.containsKey(e.id)) throw new IllegalArgumentException("There's already an EntityEvent registered with the id " + e.id + "!");
 		eventRegistry.put(e.id, e);
 	}
 	

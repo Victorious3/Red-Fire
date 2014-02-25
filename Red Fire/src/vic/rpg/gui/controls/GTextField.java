@@ -46,7 +46,7 @@ public class GTextField extends GControl
 		else DrawUtils.drawRect(xCoord, yCoord, width, height, Color.LIGHT_GRAY); 
 		DrawUtils.setLineWidth(oldThickness);
 		
-		DrawUtils.setFont(new Font("Lucida Console", Font.PLAIN, 12));
+		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 12));
 		
 		wdt = (int) DrawUtils.getTextRenderer().getBounds(text).getWidth();
 		wdt1 = (int) DrawUtils.getTextRenderer().getBounds("_").getWidth();
