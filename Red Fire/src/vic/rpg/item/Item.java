@@ -8,6 +8,7 @@ import javax.media.opengl.GL2;
 import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
+import vic.rpg.combat.SlotSkill;
 import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.Inventory;
@@ -16,6 +17,10 @@ import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+/**
+ * An item is a thing a player can pick up, use and play with it. It can be a weapon, a potion or anything else that can be carried in an {@link Inventory}.
+ * @author Victorious3
+ */
 public abstract class Item extends Drawable implements INBTReadWrite
 {
 	protected String image; 
@@ -57,6 +62,9 @@ public abstract class Item extends Drawable implements INBTReadWrite
 		this(image, id, 30, 30);
 	}
 	
+	/**
+	 * Getting called every 0.2 seconds if this Item is rendered in a {@link Slot}, {@link SlotGrid} or {@link SlotSkill}. Disable it by setting {@link #isTicking} to {@code false}.
+	 */
 	public void tick()
 	{
 		
@@ -74,44 +82,95 @@ public abstract class Item extends Drawable implements INBTReadWrite
 		
 	}
 	
+	/**
+	 * The Item name rendered in the mouse hover.
+	 * @return
+	 */
 	public abstract String getItemName();
 	
+	/**
+	 * A set of special information that has to do with this Item.
+	 * @return
+	 */
 	public String[] getItemDescription()
 	{
 		return null;
 	}
 	
+	/**
+	 * Called when this item is used by a right click. Disable it by setting {@link #isUsable} to {@code false}.
+	 * @param entity
+	 * @param i
+	 * @param stack
+	 * @return ItemStack - a modified version of stack
+	 */
 	public ItemStack onItemUse(EntityLiving entity, Inventory i, ItemStack stack)
 	{
 		return stack;
 	}
 	
+	/**
+	 * Called when this item is casted by clicking on a {@link SlotSkill}. Disable it by setting {@link #isCastable} to {@code false}.
+	 * @param entity
+	 * @param i
+	 * @param stack
+	 * @return ItemStack - a modified version of stack
+	 */
 	public ItemStack onItemCast(EntityLiving entity, Inventory i, ItemStack stack)
 	{
 		return stack;
 	}
 	
+	/**
+	 * Called when this item is dropped to the floor.
+	 * @param entity
+	 * @param i
+	 * @param stack
+	 * @return ItemStack - a modified version of stack
+	 */
 	public ItemStack onItemDrop(EntityLiving entity, Inventory i, ItemStack stack)
 	{
 		return stack;
 	}
-
+	
+	/**
+	 * Called when this item was picked up by {@code entity}.
+	 * @param entity
+	 * @param i
+	 * @param stack
+	 * @return
+	 */
 	public boolean onItemPickUp(EntityLiving entity, Inventory i, ItemStack stack)
 	{
 		return true;
 	}
 	
+	/**
+	 * Returns {@code true} if the given Item has the same id as this Item.
+	 * @param item
+	 * @return
+	 */
 	public boolean equals(Item item)
 	{
 		if(id == item.id) return true;
 		return false;
 	}
 
+	/**
+	 * A background color that is rendered in the back of this Item.
+	 * @return
+	 */
 	public Color getBgColor() 
 	{
 		return new Color(130, 91, 213, 180);
 	}
 	
+	/**
+	 * Render a box that contains all the Item information. Modify it by changing {@link #getItemName()} and {@link #getItemDescription()}
+	 * @param gl2
+	 * @param x
+	 * @param y
+	 */
 	public void renderItemInformation(GL2 gl2, int x, int y)
 	{
 		DrawUtils.setGL(gl2);

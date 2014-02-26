@@ -8,14 +8,30 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * A SlotGrid is basically a number of {@link Slot Slots} organized in a grid. It can hold more than one {@link ItemStack}.
+ * It's mainly a graphical thing because all the storing is done by the underlying {@link Inventory} referenced in {@link #gui}.
+ * @see GControl
+ * @see Slot
+ * @see SlotGrid
+ * @author Victorious3
+ */
 public class SlotGrid extends GControl
 {	
+	/**
+	 * Gui reference.
+	 */
 	public GuiContainer gui;
 	
 	public int gridWidth = 1;
 	public int gridHeight = 1;
+	/**
+	 * Id of referenced {@link ItemStack ItemStack[][]} from the underlying {@link Inventory} accessible via {@link #gui}.
+	 *@see #gui
+	 */
 	public int id;
 	
 	public SlotGrid(int xCoord, int yCoord, int width, int height, int id, GuiContainer gui) 
@@ -136,6 +152,11 @@ public class SlotGrid extends GControl
 		}		
 	}
 	
+	/**
+	 * A helper method that does react based on the x and y coordinate in the {@link ItemStack ItemStack[][]} grid. 
+	 * @param x
+	 * @param y
+	 */
 	private void onClickedAtCoord(int x, int y)
 	{
 		ItemStack stack = gui.inventory.overlapsWith(getItemGrid(), 1, 1, x, y);
@@ -157,12 +178,28 @@ public class SlotGrid extends GControl
 		}	
 	}
 
+	/**
+	 * Sets the {@link ItemStack} on the given coordinates.
+	 * @see #setItemStackAndConfirm(int, int, ItemStack)
+	 * @param x
+	 * @param y
+	 * @param item
+	 * @return this
+	 */
 	public SlotGrid setItemStack(int x, int y, ItemStack item) 
 	{
 		if(gui != null) gui.inventory.setItemStackGrid(id, item, x, y);
 		return this;
 	}
 	
+	/**
+	 * Sets the {@link ItemStack} on the given coordinates if {@link Inventory#canBePlacedAt(ItemStack[][], int, int, ItemStack)} does allow it.
+	 * @see #setItemStack(int, int, ItemStack)
+	 * @param x
+	 * @param y
+	 * @param item
+	 * @return Boolean
+	 */
 	public boolean setItemStackAndConfirm(int x, int y, ItemStack item) 
 	{
 		if(gui.inventory.canBePlacedAt(gui.inventory.getItemStackGrid(id), x, y, item))
@@ -173,17 +210,31 @@ public class SlotGrid extends GControl
 		return false;
 	}
 	
+	/**
+	 * Sets the whole {@link ItemStack ItemStack[][]} grid.
+	 * @param items
+	 * @return
+	 */
 	public SlotGrid setItemStacks(ItemStack[][] items) 
 	{
 		gui.inventory.setItemStackGrid(id, items);
 		return this;
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} currently active in {@link #gui}.
+	 * @return ItemStack
+	 */
 	private ItemStack getCurrentStack()
 	{
 		return gui.inventory.getItemStack(gui.currentSlot.id);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack ItemStack[][]} stored in the underlying {@link Inventory}.
+	 * @see #id
+	 * @return ItemStack[][]
+	 */
 	private ItemStack[][] getItemGrid()
 	{
 		return gui.inventory.getItemStackGrid(id);

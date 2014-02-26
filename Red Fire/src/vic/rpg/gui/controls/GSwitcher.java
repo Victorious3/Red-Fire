@@ -9,6 +9,10 @@ import vic.rpg.render.DrawUtils;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
 
+/**
+ * GSwitcher is a switcher that cycles through all the given modes on click.
+ * @author Victorious3
+ */
 public class GSwitcher extends GControl 
 {
 	public String[] modes;

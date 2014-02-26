@@ -8,12 +8,19 @@ import java.util.Properties;
 import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.utils.Utils;
 
+/**
+ * Options handle all the configurable parts of the Game.
+ * @author Victorious3
+ */
 public class Options 
 {
-	//FIXME Documentation will be continued soon...
 	public static String LANGUAGE = LanguageRegistry.en_GB;
 	public static boolean LIGHTING = true;
 	
+	/**
+	 * Loads all the config options from a file called "%APPDATA%/.RedFire/config/config.cf". It is using the
+	 * {@link Properties} API.
+	 */
 	public static void load() 
 	{
 		File file = Utils.getOrCreateFile(Utils.getAppdata() + "/config/config.cf");
@@ -28,6 +35,10 @@ public class Options
 		}
 	}
 
+	/**
+	 * Saves all the config options to a file called "%APPDATA%/.RedFire/config/config.cf". It is using the
+	 * {@link Properties} API.
+	 */
 	public static void safe() 
 	{
 		File file = Utils.getOrCreateFile(Utils.getAppdata() + "/config/config.cf");

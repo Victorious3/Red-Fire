@@ -38,13 +38,29 @@ import vic.rpg.registry.LevelRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
+import vic.rpg.server.ServerLoop;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+/**
+ * A level is the map all players are interacting with. It is stored twice, one is located in {@link Game#level} for rendering with the Client
+ * and the other one in {@link ServerLoop#level} where all Server calculations are performed. A Level can be saved to a {@link File}, read from a {@link File}
+ * and send via an {@link NBTOutputStream}. The Editor is used to modify the contents of a Level e.g {@link Tile Tiles} and {@link Entity Entities}.
+ * <br><br>
+ * Everything is stored with its Cartesian coordinates and is converted to Isometric coordinates on rendering to allow a isometric Projection. <b>Always figure out
+ * which coordinate system is used at the time and convert with {@link Utils#convCartToIso(Point)} and {@link Utils#convIsoToCart(Point)} if necessary!</b>
+ * @author Victorious3
+ */
 public class Level implements INBTReadWrite
 {
+	/**
+	 * The width of the Level in tiles.
+	 */
 	public int width;
+	/**
+	 * The height of the Level in tiles.
+	 */
 	public int height;
 	
 	private ArrayList<Integer[][][]> layers;
@@ -64,6 +80,12 @@ public class Level implements INBTReadWrite
 	@Editable public int spawnX = 0;
 	@Editable public int spawnY = 0;
 
+	/**
+	 * Creates a new Level.
+	 * @param width
+	 * @param height
+	 * @param name
+	 */
 	public Level(int width, int height, String name) 
 	{	
 		this.width = width;
@@ -74,7 +96,10 @@ public class Level implements INBTReadWrite
 		this.layerVisibility = new HashMap<Integer, Boolean>();
 		this.layerVisibility.put(0, true);
 	}
-		
+	
+	/**
+	 * Creates an empty Level that has to be read with {@link #readFromNBT(CompoundTag, Object...)}.
+	 */
 	public Level() 
 	{
 		this.width = 0;
@@ -84,6 +109,11 @@ public class Level implements INBTReadWrite
 		this.layerVisibility = new HashMap<Integer, Boolean>();
 	}
 
+	/**
+	 * Called when the mouse is moved.
+	 * @param x
+	 * @param y
+	 */
 	public void onMouseMoved(int x, int y)
 	{
 		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
@@ -93,6 +123,12 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * Called when any mouse key was clicked.
+	 * @param x
+	 * @param y
+	 * @param mouseEvent
+	 */
 	public void onMouseClicked(int x, int y, int mouseEvent)
 	{
 		Entity ent = intersectOnRender(x - Screen.xOffset, y - Screen.yOffset); 
@@ -102,16 +138,28 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * Returns the actual width of this level (in Cartesian coordinates) by multiplying {@link #width} with {@link #CELL_SIZE}.
+	 * @return
+	 */
 	public int getWidth()
 	{
-		return width * CELL_SIZE;
+		return width * CELL_SIZE / 2;
 	}
 	
+	/**
+	 * Returns the actual height of this level (in Cartesian coordinates) by multiplying {@link #height} with {@link #CELL_SIZE}.
+	 * @return
+	 */
 	public int getHeight()
 	{
-		return height * CELL_SIZE;
+		return height * CELL_SIZE / 2;
 	}
 	
+	/**
+	 * Called when a key was pressed.
+	 * @param key
+	 */
 	public void onKeyPressed(KeyEvent key)
 	{
 		for(Entity e : entityMap.values())
@@ -120,6 +168,9 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * This is called when a Server is started when there was no save file specified to fill the new Level with something.
+	 */
 	@Deprecated
 	public void populate()
 	{			
@@ -127,7 +178,7 @@ public class Level implements INBTReadWrite
 		{
 			for(int y = 0; y < height; y++)
 			{
-				setTile(LevelRegistry.TILE_TERRAIN.id, x, y, 29);
+				setTile(LevelRegistry.TILE_TERRAIN.id, x, y, 0);
 			}
 		}
 		
@@ -159,6 +210,12 @@ public class Level implements INBTReadWrite
 		nodeMap.recreate(this);
 	}
 	
+	/**
+	 * Fill a complete layer with the specified {@link Tile} id and data.
+	 * @param id
+	 * @param data
+	 * @param layerID
+	 */
 	public void fill(int id, int data, int layerID)
 	{
 		Integer[][][] layer = layers.get(layerID);
@@ -172,11 +229,21 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * Called by the Client to render in native Resolution
+	 * @param gl2
+	 */
 	public void render(GL2 gl2) 
 	{
 		render(gl2, -Screen.xOffset, -Screen.yOffset, Game.WIDTH, Game.HEIGHT);
 	}
 	
+	/**
+	 * Returns the {@link Tile} located at x|y. Uses the currently active layer.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Tile getTileAt(int x, int y)
 	{
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
@@ -185,11 +252,24 @@ public class Level implements INBTReadWrite
 		return t;
 	}
 	
+	/**
+	 * Returns the data associated with the {@link Tile} at x|y. Uses the currently active layer.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Integer getTileDataAt(int x, int y)
 	{
 		return layers.get(getLayer())[x][y][1];
 	}
 	
+	/**
+	 * Returns the {@link Tile} located at layerID[x|y].
+	 * @param x
+	 * @param y
+	 * @param layerID
+	 * @return
+	 */
 	public Tile getTileAt(int x, int y, int layerID)
 	{
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(layerID)[x][y][0]);
@@ -198,6 +278,13 @@ public class Level implements INBTReadWrite
 		return t;
 	}
 	
+	/**
+	 * Returns all {@link Tile Tiles} located at x|y. It cycles through all layers.
+	 * If the place is empty on a layer, {@code null} is stored in the array.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Tile[] getTilesAt(int x, int y)
 	{
 		Tile[] tiles = new Tile[this.layers.size()];
@@ -208,16 +295,37 @@ public class Level implements INBTReadWrite
 		return tiles;
 	}
 	
+	/**
+	 * Returns the data associated with the {@link Tile} at layerID[x|y].
+	 * @param x
+	 * @param y
+	 * @param layerID
+	 * @return
+	 */
 	public Integer getTileDataAt(int x, int y, int layerID)
 	{
 		return layers.get(layerID)[x][y][1];
 	}
 	
+	/**
+	 * Returns the amount of total layers.
+	 * @return
+	 */
 	public int getLayerAmount()
 	{
 		return layers.size();
 	}
 
+	/**
+	 * Renders the level. It does some Cartesian to Isometric conversions to render in the right place.
+	 * The xOffset and yOffset is used to set the viewpoint. Width and height specify how much of the Level
+	 * should be rendered.
+	 * @param gl2
+	 * @param xOffset
+	 * @param yOffset
+	 * @param width
+	 * @param height
+	 */
 	public void render(GL2 gl2, int xOffset, int yOffset, int width, int height)
 	{
 		DrawUtils.setGL(gl2);
@@ -261,6 +369,9 @@ public class Level implements INBTReadWrite
 	
 	int tickCounter = 0;
 	
+	/**
+	 * Called every 0.2 seconds. Updates every {@link Tile}, {@link Entity} and the server time.
+	 */
 	public void tick()
 	{	
 		/*if(Utils.getSide() == Side.CLIENT)
@@ -307,26 +418,44 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * The width of one {@link Tile}. The height is {@code CELL_SIZE / 2}.
+	 */
 	public static final int CELL_SIZE = 64;	
 	
 	private int currentLayer = 0;
 	
+	/**
+	 * Returns the id of the currently active layer.
+	 * @return
+	 */
 	public int getLayer()
 	{
 		return currentLayer;
 	}
 	
+	/**
+	 * Sets the currently active layer to layerID.
+	 * @param layerID
+	 */
 	public void setLayer(int layerID)
 	{
 		this.currentLayer = layerID;
 	}
 	
+	/**
+	 * Add a new empty layer to the layer list.
+	 */
 	public void addLayer()
 	{
 		this.layers.add(new Integer[width][height][2]);	
 		this.layerVisibility.put(this.layers.size() - 1, true);
 	}
 	
+	/**
+	 * Remove a layer from the layer list
+	 * @param layerID
+	 */
 	public void removeLayer(int layerID)
 	{
 		if(layerID == 0) return;
@@ -338,27 +467,59 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * Set weather a given layer should be rendered or not.
+	 * @param layerID
+	 * @param visiblility
+	 */
 	public void setLayerVisibility(int layerID, boolean visiblility)
 	{
 		this.layerVisibility.put(layerID, visiblility);
 	}
 	
+	/**
+	 * Checks if a given layer should be rendered or not.
+	 * @param layerID
+	 * @return
+	 */
 	public boolean isLayerVisible(int layerID)
 	{
 		Boolean bool = this.layerVisibility.get(layerID);
 		return bool != null ? bool : false;
 	}
 	
+	/**
+	 * Sets a {@link Tile} at x|y. Uses the currently active layer.
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @param data
+	 */
 	public void setTile(Integer id, int x, int y)
 	{
-		setTile(id, x, y, 0);
+		setTile(id, x, y, getLayer());
 	}
 	
+	/**
+	 * Sets a {@link Tile} at x|y and its data. Uses the currently active layer.
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @param data
+	 */
 	public void setTile(Integer id, int x, int y, int data)
 	{
 		setTile(id, x, y, data, getLayer());
 	}
 	
+	/**
+	 * Sets a {@link Tile} at layerID[x|y] and its data.
+	 * @param id
+	 * @param x
+	 * @param y
+	 * @param data
+	 * @param layerID
+	 */
 	public void setTile(Integer id, int x, int y, int data, int layerID)
 	{
 		if(x < 0 || y < 0 || x >= width || y >= height) return;
@@ -406,6 +567,12 @@ public class Level implements INBTReadWrite
 		layer[x][y][1] = data;
 	}
 	
+	/**
+	 * Creates a the new {@link Entity} associated with the given id. It places it at x|y.
+	 * @param id
+	 * @param x
+	 * @param y
+	 */
 	public void addEntity(int id, int x, int y)
 	{
 		Entity e = LevelRegistry.entityRegistry.get(id).clone();
@@ -421,6 +588,12 @@ public class Level implements INBTReadWrite
 		entityMap.put(uuid.toString(), e);
 	}
 	
+	/**
+	 * Adds an {@link Entity} and places it at x|y.
+	 * @param id
+	 * @param x
+	 * @param y
+	 */
 	public void addEntity(Entity ent, int x, int y)
 	{	
 		if(x > getWidth() || x < 0 || y > getHeight() || y < 0) return;
@@ -436,6 +609,13 @@ public class Level implements INBTReadWrite
 		entityMap.put(uuid.toString(), ent);
 	}
 
+	/**
+	 * Create a new {@link EntityPlayer} with a username and places it at x|y.
+	 * @param player
+	 * @param username
+	 * @param x
+	 * @param y
+	 */
 	public void createPlayer(EntityPlayer player, String username, int x, int y)
     {
         UUID uuid = UUID.randomUUID();
@@ -449,11 +629,21 @@ public class Level implements INBTReadWrite
         onlinePlayersMap.put(username, player.UUID);                
     }
 	
+	/**
+	 * Returns an {@link EntityPlayer} by searching for its username.
+	 * @param username
+	 * @return
+	 */
 	public EntityPlayer getPlayer(String username)
 	{
 		return (EntityPlayer)entityMap.get(onlinePlayersMap.get(username));
 	}
-	
+		
+	/**
+	 * There is no zLevel supported at the moment.
+	 * @return
+	 */
+	@Deprecated
 	public HashMap<Point, ArrayList<Entity>> sortEntitiesByZLevel()
 	{
 		HashMap<Point, ArrayList<Entity>> ent2 = new HashMap<Point, ArrayList<Entity>>();
@@ -473,7 +663,7 @@ public class Level implements INBTReadWrite
 	}
 	
 	/**
-	 * This method returns an Entity given two isometric coordinates.<br>
+	 * Returns an Entity given its Isometric coordinates.
 	 * If no entity can be found, null is returned.
 	 * @return Entity
 	 */
@@ -491,7 +681,7 @@ public class Level implements INBTReadWrite
 	}
 	
 	/**
-	 * This method returns an array of all entities that intersect with a given shape in isometric coordinates.<br>
+	 * Returns an array of all entities that intersect with a given shape in isometric coordinates.
 	 * If no entity can be found, an empty list is returned.
 	 * @return ArrayList&lt;Entity&gt;
 	 */
@@ -677,6 +867,10 @@ public class Level implements INBTReadWrite
 		return new CompoundTag("level", levelMap);
 	}
 	
+	/**
+	 * Writes this Level to a given {@link File}.
+	 * @param file
+	 */
 	public void writeToFile(File file)
 	{
 		try {
@@ -688,6 +882,10 @@ public class Level implements INBTReadWrite
 		}
 	}
 	
+	/**
+	 * Reads this Level from a given {@link File}.
+	 * @param file
+	 */
 	public static Level readFromFile(File file)
 	{
 		try {

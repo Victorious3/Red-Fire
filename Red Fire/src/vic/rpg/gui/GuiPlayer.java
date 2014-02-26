@@ -5,14 +5,20 @@ import java.awt.Color;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.combat.Skill;
 import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemFilter;
 import vic.rpg.item.ItemPeer;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * GuiPlayer displays all player related stuff like the {@link Inventory} or the {@link Skill} configuration.
+ * @author Victorious3
+ */
 public class GuiPlayer extends GuiContainer
 {
 	public GuiPlayer() 
@@ -46,8 +52,8 @@ public class GuiPlayer extends GuiContainer
 		
 		controlsList.clear();
 		controlsList.add(new Slot(620, 20, 1, this, 2, 2));
-		controlsList.add(new Slot(700, 50, 2, this).addFilter(new ItemFilter.SimpleItemFilter(ItemApple.class)));
-		controlsList.add(new Slot(730, 50, 3, this).addFilter(new ItemFilter.SimpleItemFilter(ItemPeer.class)));
+		controlsList.add(new Slot(700, 50, 2, this).setFilter(new ItemFilter.SimpleItemFilter(ItemApple.class)));
+		controlsList.add(new Slot(730, 50, 3, this).setFilter(new ItemFilter.SimpleItemFilter(ItemPeer.class)));
 		controlsList.add(new Slot(540, 100, 4, this, 2, 4, true));
 		controlsList.add(new Slot(620, 100, 5, this, 2, 3));
 		controlsList.add(new Slot(700, 100, 6, this, 2, 3, true));

@@ -6,8 +6,14 @@ import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.gui.Gui;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * IGList draws a {@link ArrayList} of {@link Object Objects}. You can select any element by clicking on it. On a double click, {@link IGList#onElementDoubleClick(GList, Object, int)}
+ * is getting called on the parent {@link Gui}. It also uses a scroll bar if there are more elements that can be displayed at once.
+ * @author Victorious3
+ */
 public class GList extends GControl 
 {
 	private int elementHeight;
@@ -119,8 +125,18 @@ public class GList extends GControl
 		}
 	}
 	
+	/**
+	 * Provides the method for receiving GList events.
+	 * @author Victorious3
+	 */
 	public static interface IGList
 	{
+		/**
+		 * Called when an element was double clicked on.
+		 * @param glist - event sender
+		 * @param element - the element clicked on
+		 * @param pos - the position of the element
+		 */
 		public void onElementDoubleClick(GList glist, Object element, int pos);
 	}
 }

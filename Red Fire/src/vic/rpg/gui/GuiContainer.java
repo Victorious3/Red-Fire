@@ -7,13 +7,20 @@ import java.awt.Font;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.combat.SlotSkill;
 import vic.rpg.item.ItemStack;
 import vic.rpg.item.Slot;
+import vic.rpg.item.SlotGrid;
 import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 
-public class GuiContainer extends Gui 
+/**
+ * GuiContainer offers an extra layer of complexity to Gui. It is dependent if a {@link Slot}, {@link SlotGrid} or {@link SlotSkill} is used.
+ * It contains an {@link Inventory} and a {@link Slot} which is used to transfer {@link ItemStack ItemStaks} between the slots of the given {@link Inventory}.
+ * @author Victorious3
+ */
+public abstract class GuiContainer extends Gui 
 {
 	public boolean isSlotHovered = false;
 	public Inventory inventory;
@@ -47,6 +54,10 @@ public class GuiContainer extends Gui
 		super(pauseGame);
 	}
 	
+	/**
+	 * Sets the current {@link Inventory}. Should be called on {@link #initGui()}.
+	 * @param inventory
+	 */
 	public void setInventory(Inventory inventory)
 	{
 		this.inventory = inventory;

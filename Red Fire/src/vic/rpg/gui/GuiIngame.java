@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.combat.Skill;
 import vic.rpg.combat.SlotSkill;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
@@ -25,6 +26,10 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * GuiIngame is the main gui that's displayed when no other gui is active. It displays stuff like the current health of the player, the chat or the Quickbar with all the active {@link Skill Skills}.
+ * @author Victorious3
+ */
 public class GuiIngame extends GuiContainer implements IGButton
 {
 	public GTextField chatField = new GTextField(10, Game.HEIGHT - 25, Game.WIDTH - 35, 20, 120, false);
@@ -233,6 +238,11 @@ public class GuiIngame extends GuiContainer implements IGButton
 		if(scroll + amount / 3 >= 0) scroll += amount / 3;
 	}
 
+	/**
+	 * Adds a chat message to the buffer.
+	 * @param s
+	 * @param playername
+	 */
 	public void addChatMessage(String s, String playername)
 	{		
 		if(playername.equals("SERVER"))

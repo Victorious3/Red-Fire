@@ -4,10 +4,16 @@ import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.gui.Gui;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.GradientAnimator;
 
+/**
+ * A simple button. To use it, the parent {@link Gui} has to implement {@link IGButton} to receive the button events.
+ * @author Victorious3
+ *
+ */
 public class GButton extends GControl {
 
 	public IGButton handler;
@@ -69,8 +75,16 @@ public class GButton extends GControl {
 		if(this.mouseHovered) handler.onButtonPressed(this);
 	}
 	
+	/**
+	 * Provides the method for receiving button events.
+	 * @author Victorious3
+	 */
 	public static interface IGButton
 	{
+		/**
+		 * Called when a button was clicked on.
+		 * @param button - event sender
+		 */
 		public void onButtonPressed(GControl button);
 	}
 }

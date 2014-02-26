@@ -9,10 +9,20 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * GTextField is a one line text field. An maximal amount of writable text can be specified.
+ * @author Victorious3
+ */
 public class GTextField extends GControl
 {
 	public boolean isActivated = false;
+	/**
+	 * text is the text being rendered.
+	 */
 	public String text = "";
+	/**
+	 * plaintext is the actual text stored in GTextField
+	 */
 	public String plaintext = "";
 	public int maxLenght = 0;
 	public boolean returnPressed = false;
@@ -75,6 +85,11 @@ public class GTextField extends GControl
 		if(Game.getPlayer() != null) Game.getPlayer().isWalkingBlocked = false;		
 	}
 	
+	/**
+	 * Sets the GTextField to either be grayed out or ready for input.
+	 * @param b
+	 * @return
+	 */
 	public GTextField activate(boolean b) 
 	{
 		if(!isActivated && b) text += "_";
@@ -139,12 +154,20 @@ public class GTextField extends GControl
 		}
 	}
 	
+	/**
+	 * Empty the GTextField
+	 */
 	public void clear()
 	{
 		this.plaintext = "";
 		this.text = "_";
 	}
 	
+	/**
+	 * Sets the text of the GTextField
+	 * @param text
+	 * @return this
+	 */
 	public GTextField setText(String text)
 	{
 		this.text = text;

@@ -17,6 +17,10 @@ import vic.rpg.utils.Utils;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * GuiError is displayed when an unexpected exception is caught.
+ * @author Victorious3
+ */
 public class GuiError extends Gui implements IGButton
 {
 	private static Texture tex = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/error.png"));

@@ -9,7 +9,6 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
-import vic.rpg.item.Item;
 import vic.rpg.item.ItemFilter;
 import vic.rpg.item.ItemStack;
 import vic.rpg.item.Slot;
@@ -19,7 +18,7 @@ import vic.rpg.registry.GameRegistry;
 import vic.rpg.render.DrawUtils;
 
 /**
- * A Slot that can be used as a container for a {@link Skill}, an {@link Item} or both.
+ * A SkillSlot that can be used as a container for a {@link Skill}, an {@link ItemStack} or both.
  * It's mainly a graphical thing because all the storing is done by the underlying {@link Inventory} referenced in {@link #gui}.
  * @see GControl
  * @see Slot
@@ -34,7 +33,7 @@ public class SlotSkill extends GControl
 	 */
 	private Integer itemID;
 	/**
-	 * Id of referenced {@link Slot} from the underlying {@link Inventory} accessible via {@link #gui}.
+	 * Id of referenced {@link Skill} from the underlying {@link Inventory} accessible via {@link #gui}.
 	 *@see #gui
 	 */
 	private Integer id;
@@ -164,6 +163,7 @@ public class SlotSkill extends GControl
 
 	/**
 	 * Checks weather a given {@link ItemStack} can be placed in this SkillSlot.
+	 * @see ItemFilter
 	 * @param stack
 	 * @return Boolean
 	 */
@@ -181,7 +181,6 @@ public class SlotSkill extends GControl
 	
 	/**
 	 * Returns the {@link ItemStack} currently active in {@link #gui}.
-	 * @see #itemID
 	 * @return ItemStack
 	 */
 	private ItemStack getCurrentItemStack()
@@ -222,7 +221,7 @@ public class SlotSkill extends GControl
 	}
 	
 	/**
-	 * Sets the current {@link ItemStack} if {@link #canBePlacedIn(ItemStack)} allows for it and this SlotSkill supports {@link ItemStack ItemStacks}.
+	 * Sets the current {@link ItemStack} if this SlotSkill supports {@link ItemStack ItemStacks}.
 	 * Overrides any {@link Skill} present at that time.
 	 * @see #id
 	 * @see #itemID
@@ -230,10 +229,7 @@ public class SlotSkill extends GControl
 	 */
 	public void setItemStack(ItemStack stack)
 	{	
-		if(canBePlacedIn(stack)) 
-		{
-			setSkill(null);
-			gui.inventory.setItemStack(itemID, stack);		
-		}
+		setSkill(null);
+		gui.inventory.setItemStack(itemID, stack);		
 	}
 }

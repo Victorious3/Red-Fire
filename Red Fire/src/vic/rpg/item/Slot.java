@@ -8,15 +8,31 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
+import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * A Slot that can be used as a container for an {@link ItemStack}. The width and height of the Slot can be adjusted to allow bigger {@link Item Items}.
+ * It's mainly a graphical thing because all the storing is done by the underlying {@link Inventory} referenced in {@link #gui}.
+ * @see GControl
+ * @see Slot
+ * @see SlotGrid
+ * @author Victorious3
+ */
 public class Slot extends GControl implements Cloneable
 {		
+	/**
+	 * Gui reference.
+	 */
 	public GuiContainer gui;
 	public int sWidth = 1;
 	public int sHeight = 1;
 	public ItemFilter filter;
 	public boolean acceptOtherSizes = false;
+	/**
+	 * Id of referenced {@link ItemStack} from the underlying {@link Inventory} accessible via {@link #gui}.
+	 *@see #gui
+	 */
 	public int id;
 	
 	public Slot(int xCoord, int yCoord, int id, GuiContainer gui) 
@@ -44,13 +60,23 @@ public class Slot extends GControl implements Cloneable
 		this.id = id;
 	}
 	
+	/**
+	 * Sets the current {@link ItemStack}
+	 * @param stack
+	 * @return this
+	 */
 	public Slot setItemStack(ItemStack stack)
 	{
 		gui.inventory.setItemStack(id, stack);
 		return this;
 	}
 	
-	public Slot addFilter(ItemFilter filter)
+	/**
+	 * Set the {@link ItemFilter} of this slot.
+	 * @param filter
+	 * @return this
+	 */
+	public Slot setFilter(ItemFilter filter)
 	{
 		this.filter = filter;
 		return this;
@@ -143,6 +169,12 @@ public class Slot extends GControl implements Cloneable
 		}
 	}
 
+	/**
+	 * Checks weather a given {@link ItemStack} can be placed in this Slot.
+	 * @see ItemFilter
+	 * @param stack
+	 * @return Boolean
+	 */
 	public boolean canBePlacedIn(ItemStack stack)
 	{
 		if(stack.isEmpty()) return true;
@@ -154,11 +186,20 @@ public class Slot extends GControl implements Cloneable
 		return false;
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} currently active in {@link #gui}.
+	 * @return ItemStack
+	 */
 	private ItemStack getCurrentItemStack()
 	{
 		return gui.inventory.getItemStack(gui.currentSlot.id);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} stored in the underlying {@link Inventory}.
+	 * @see #id
+	 * @return ItemStack
+	 */
 	public ItemStack getItemStack()
 	{
 		return gui.inventory.getItemStack(id);

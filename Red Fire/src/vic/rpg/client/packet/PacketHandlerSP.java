@@ -46,7 +46,7 @@ public class PacketHandlerSP extends Thread
 	}
 	
 	/**
-	 * Adds a {@link Packet} to the {@link #packetQueue} to for later processing by {@link #run()}
+	 * Adds a {@link Packet} to the {@link #packetQueue} for later processing by {@link #run()}
 	 * @param p - Packet to process.
 	 */
 	public void addPacketToQueue(Packet p)
@@ -55,7 +55,7 @@ public class PacketHandlerSP extends Thread
 	}
 	
 	/**
-	 * Adds a {@link Packet} to the {@link #sendingQueue} to for later sending by {@link #run()}
+	 * Adds a {@link Packet} to the {@link #sendingQueue} for later sending by {@link #run()}
 	 * @param p - Packet to send.
 	 */
 	public void addPacketToSendingQueue(Packet p)
@@ -161,8 +161,8 @@ public class PacketHandlerSP extends Thread
 	}
 	
 	/**
-	 * PacketHandlerSp thread. It picks one {@link Packet} from the {@link #packetQueue} and {@link #sendingQueue}, processes one and sends the other.
-	 * If any of the queues are overflowing, the internal {@link Thread#sleep(long)} is skipped to allow fast processing.
+	 * PacketHandlerSP thread. It picks one {@link Packet} from the {@link #packetQueue} and {@link #sendingQueue}, processes one and sends the other.
+	 * If any of the queues is overflowing, the internal {@link Thread#sleep(long)} is skipped to allow fast processing.
 	 */
 	@Override
 	public void run()

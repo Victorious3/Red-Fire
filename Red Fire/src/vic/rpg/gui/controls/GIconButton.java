@@ -7,6 +7,10 @@ import vic.rpg.render.DrawUtils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * GIconButton is a special type of button as it has no text but three {@link Texture Textures} which are used based on the current state. E.g: hovered
+ * @author Victorious3
+ */
 public class GIconButton extends GControl
 {
 	private final Texture tNormal;

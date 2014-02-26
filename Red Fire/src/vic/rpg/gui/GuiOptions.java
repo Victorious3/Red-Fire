@@ -15,6 +15,10 @@ import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 
+/**
+ * GuiOptions is the gui that lets the player change all the {@link Options}.
+ * @author Victorious3
+ */
 public class GuiOptions extends Gui implements GButton.IGButton 
 {	
 	private GSwitcher switcherLighting;

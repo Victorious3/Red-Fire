@@ -1,6 +1,9 @@
 package vic.rpg.gui.controls;
 
-
+/**
+ * GSlider
+ * @author Victorious3
+ */
 public class GSlider extends GControl {
 
 	public float minS;

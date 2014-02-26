@@ -19,6 +19,7 @@ import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GList;
 import vic.rpg.gui.controls.GList.IGList;
+import vic.rpg.level.Level;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
@@ -29,6 +30,10 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * GuiSinglePlayer is the gui where you can select a {@link Level} located in "%APPDATA%\.RedFire\saves\" for loading and starting an internal Server.
+ * @author Victorious3
+ */
 public class GuiSinglePlayer extends Gui implements IGList, IGButton
 {
 	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
@@ -91,6 +96,12 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		}
 	}
 	
+	/**
+	 * Starts a new internal {@link Server} with the given file as a -file parameter in -splayer mode.
+	 * The method waits for the {@link Server} to finish its startup and connects to it after creating a new
+	 * {@link NetHandler}. The {@link Gui#currentGui} is set to {@code null}.
+	 * @param file
+	 */
 	private void loadGame(File file)
 	{
 		System.out.println("Starting Server...");

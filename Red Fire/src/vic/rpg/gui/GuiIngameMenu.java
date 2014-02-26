@@ -15,6 +15,10 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * GuiIngameMenu is the gui for providing stuff like the options without closing the active game session.
+ * @author Victorious3
+ */
 public class GuiIngameMenu extends Gui implements GButton.IGButton {
 
 	private Texture logo = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/Red Fire.png"));

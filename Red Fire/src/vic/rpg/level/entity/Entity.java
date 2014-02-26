@@ -24,6 +24,7 @@ import vic.rpg.server.packet.Packet12Event;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+//FIXME Documentation will be continued soon...
 public class Entity extends Drawable implements Cloneable, INBTReadWrite, EntityEventListener
 {
 	@Editable public int xCoord = 0;

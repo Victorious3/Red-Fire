@@ -17,7 +17,11 @@ import vic.rpg.render.TextureFX;
 import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils.Side;
 
-
+/**
+ * GuiMain is the main menu that's displayed when the game has started. All actions start from here.
+ * @author Victorious3
+ *
+ */
 public class GuiMain extends Gui implements IGButton 
 {
 	public static TextureFX bgimage = new TextureFX("/vic/rpg/resources/fire.gif", 40);	

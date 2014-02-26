@@ -20,6 +20,10 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * The Gui for connecting to a server.
+ * @author Victorious3
+ */
 public class GuiConnect extends Gui implements IGButton
 {
 	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
