@@ -8,6 +8,11 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * A LightSource provides all values that a proper source of light should have.
+ * Right now there are only Spotlights available.
+ * @author Victorious3
+ */
 public class LightSource 
 {
 	public static Texture baseTexture = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/light.png"));
@@ -24,9 +29,16 @@ public class LightSource
 		this.brightness = brightness;
 		this.color = color;
 		this.isFlickering = isFlickering;
-		this.randomOffset = Utils.rnd(0, 1000000);
+		if(isFlickering) this.randomOffset = Utils.rnd(0, 1000000);
+		else this.randomOffset = 0;
 	}
 	
+	/**
+	 * Renders the LightSource at the given Isometric Coordinates.
+	 * @param gl2
+	 * @param x
+	 * @param y
+	 */
 	public void draw(GL2 gl2, int x, int y)
 	{
 		int lightSize = width;

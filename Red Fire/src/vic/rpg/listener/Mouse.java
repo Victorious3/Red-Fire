@@ -11,6 +11,10 @@ import javax.swing.event.MouseInputListener;
 import vic.rpg.Game;
 import vic.rpg.gui.Gui;
 
+/**
+ * Listens for mouse input on the Client.
+ * @author Victorious3
+ */
 public class Mouse implements MouseListener, MouseMotionListener, MouseInputListener, MouseWheelListener {
 
 	public boolean isRightDown = false;

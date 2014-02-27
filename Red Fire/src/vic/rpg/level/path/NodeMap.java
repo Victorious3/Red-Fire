@@ -9,6 +9,10 @@ import vic.rpg.level.Level;
 import vic.rpg.level.entity.Entity;
 import vic.rpg.utils.Utils;
 
+/**
+ * A NodeMap is a grid of {@link Node Nodes}.
+ * @author Victorious3
+ */
 public class NodeMap implements Cloneable 
 {
 	public int width, height;
@@ -20,6 +24,11 @@ public class NodeMap implements Cloneable
 		recreate(level);
 	}
 	
+	/**
+	 * Recreates this NodeMap with a given {@link Level}. It checks weather a {@link Node} is
+	 * blocked because the collision box of an {@link Entity} intersects with it.
+	 * @param level
+	 */
 	public void recreate(Level level)
 	{	
 		this.width = level.width;

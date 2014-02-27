@@ -6,6 +6,10 @@ import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+/**
+ * A generic Non-Player-Character.
+ * @author Victorious3
+ */
 public class EntityNPC extends EntityLiving 
 {
 	public int step = 0;
@@ -44,6 +48,9 @@ public class EntityNPC extends EntityLiving
 		return "The Chaser";
 	}
 
+	/**
+	 * Initialize the current sprite and the rotation.
+	 */
 	public void initRender() 
 	{
 		this.rotatedSprites = sprites;

@@ -21,6 +21,10 @@ import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * An EntityPlayer is the player controlled by the user.
+ * @author Victorious3
+ */
 public class EntityPlayer extends EntityLiving 
 {	
 	public int step = 0;
@@ -28,6 +32,7 @@ public class EntityPlayer extends EntityLiving
 	public boolean isWalkingBlocked = false;
 	
 	public static TextureFX[] sprites = TextureFX.createTextureFXArray("/vic/rpg/resources/character/character.png", 70, 70, 8, 8, 0, 0, 10);
+	
 	public EntityPlayer() 
 	{
 		super(70, 70);
@@ -100,6 +105,7 @@ public class EntityPlayer extends EntityLiving
 	
 	public int tickCounter = 0;	
 	
+	@Override
 	public void tick() 
 	{	
 		super.tick();
@@ -113,13 +119,9 @@ public class EntityPlayer extends EntityLiving
 		}
 	}
 
-	@Override
-	public void readFromNBT(CompoundTag tag, Object... args) 
-	{
-		super.readFromNBT(tag);
-		this.username = tag.getString("username", this.username);
-	}
-
+	/**
+	 * Initialize the current sprite and the rotation.
+	 */
 	public void initRender() 
 	{
 		this.lightSources.add(new LightSource(500, 1.0F, Color.orange, true));
@@ -135,6 +137,13 @@ public class EntityPlayer extends EntityLiving
 			return new Point(this.xCoord + getWidth() / 2, this.yCoord);
 		}
 		return null;
+	}
+	
+	@Override
+	public void readFromNBT(CompoundTag tag, Object... args) 
+	{
+		super.readFromNBT(tag);
+		this.username = tag.getString("username", this.username);
 	}
 
 	@Override

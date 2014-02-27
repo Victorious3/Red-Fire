@@ -3,6 +3,7 @@ package vic.rpg.render;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -16,6 +17,11 @@ import vic.rpg.utils.Utils.Side;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * DrawUtils is where all the OpenGl related methods are located used for
+ * drawing onto the screen.
+ * @author Victorious3
+ */
 public class DrawUtils 
 {
 	private static GL2 gl2;
@@ -48,16 +54,29 @@ public class DrawUtils
 		stringControls.put(con.getName(), con);
 	}
 	
+	/**
+	 * Sets the reference to a {@link GL2} context. Should always be called before using DrawUtils.
+	 * @param gl2
+	 */
 	public static void setGL(GL2 gl2)
 	{
 		DrawUtils.gl2 = gl2;
 	}
 	
+	/**
+	 * Sets the thickness of the border.
+	 * @param width
+	 */
 	public static void setLineWidth(float width)
 	{
 		LINE_WIDTH = width;
 	}
 	
+	/**
+	 * Sets the currently used {@link Font} and creates a new {@link TextRenderer}
+	 * if necessary.
+	 * @param f
+	 */
 	public static void setFont(Font f)
 	{
 		FONT = f;
@@ -67,6 +86,14 @@ public class DrawUtils
 		}
 	}
 	
+	/**
+	 * Draws a solid rectangle with the given color at x|y.
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param color
+	 */
 	public static void fillRect(int x, int y, int width, int height, Color color)
 	{
 		gl2.glPushMatrix();
@@ -80,6 +107,15 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a hollow rectangle with the given color at x|y.
+	 * @see #setLineWidth(float)
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param color
+	 */
 	public static void drawRect(int x, int y, int width, int height, Color color)
 	{
 		gl2.glPushMatrix();
@@ -94,6 +130,15 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a line with from coordinate 1 to coordinate 2 with the given color.
+	 * @see #setLineWidth(float)
+	 * @param x
+	 * @param y
+	 * @param x2
+	 * @param y2
+	 * @param color
+	 */
 	public static void drawLine(int x, int y, int x2, int y2, Color color)
 	{
 		gl2.glPushMatrix();
@@ -106,6 +151,13 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a simple dot at x|y with the given color.
+	 * @see #setLineWidth(float)
+	 * @param x
+	 * @param y
+	 * @param color
+	 */
 	public static void drawPoint(int x, int y, Color color)
 	{
 		gl2.glPushMatrix();
@@ -116,6 +168,15 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a hollow circle with a given radius and the given color at x|y.
+	 * x|y is the center of the circle.
+	 * @see #setLineWidth(float)
+	 * @param x
+	 * @param y
+	 * @param radius
+	 * @param color
+	 */
 	public static void drawCircle(int x, int y, int radius, Color color)
 	{
 		gl2.glPushMatrix();
@@ -130,6 +191,15 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a solid circle with a given radius and the given color at x|y.
+	 * x|y is the center of the circle.
+	 * @see #setLineWidth(float)
+	 * @param x
+	 * @param y
+	 * @param radius
+	 * @param color
+	 */
 	public static void fillCircle(int x, int y, int radius, Color color)
 	{
 		gl2.glPushMatrix();
@@ -143,6 +213,14 @@ public class DrawUtils
 		gl2.glPopMatrix();
 	}
 	
+	/**
+	 * Draws a given {@link Texture} at x|y. The Texture has to be bound to the
+	 * OpenGL context to display anything with {@link TextureLoader#requestTexture(java.awt.image.BufferedImage)}
+	 * @see TextureLoader#requestTexture(java.awt.image.BufferedImage)
+	 * @param x
+	 * @param y
+	 * @param tex
+	 */
 	public static void drawTexture(int x, int y, Texture tex)
 	{
 		if(tex != null && tex.getWidth() > 0 && tex.getHeight() > 0)
@@ -169,6 +247,18 @@ public class DrawUtils
 		}
 	}
 	
+	/**
+	 * Draws only a part of a {@link Texture}. The offset and bounds can be specified. The Texture has to be bound to the
+	 * OpenGL context to display anything with {@link TextureLoader#requestTexture(java.awt.image.BufferedImage)}
+	 * @see TextureLoader#requestTexture(java.awt.image.BufferedImage)
+	 * @param x
+	 * @param y
+	 * @param texX
+	 * @param texY
+	 * @param width
+	 * @param height
+	 * @param tex
+	 */
 	public static void drawTextureWithOffset(int x, int y, int texX, int texY, int width, int height, Texture tex)
 	{
 		if(tex != null && tex.getWidth() > 0 && tex.getHeight() > 0)
@@ -201,6 +291,14 @@ public class DrawUtils
 		}
 	}
 	
+	/**
+	 * Draws a {@link Texture} or a {@link TextureFX}.
+	 * @see #drawTexture(int, int, Texture)
+	 * @see TextureFX#draw(GL2, int, int)
+	 * @param x
+	 * @param y
+	 * @param tex
+	 */
 	public static void drawTexture(int x, int y, Object tex)
 	{
 		if(tex instanceof Texture)
@@ -213,6 +311,13 @@ public class DrawUtils
 		}
 	}
 	
+	/**
+	 * Draws a simple line of text without any formatation in the given color.
+	 * @param x
+	 * @param y
+	 * @param string
+	 * @param color
+	 */
 	public static void drawUnformattedString(int x, int y, String string, Color color) 
 	{
 		TextRenderer tr = textRenderers.get(FONT);
@@ -230,6 +335,23 @@ public class DrawUtils
 		public String getName();
 	}
 	
+	/**
+	 * Draws a simple line of text that can be formatted in the given color.
+	 * 
+	 * Possible formats are:
+	 * <ul>
+	 * <li>& + int from 1 to 9: Set the color</li>
+	 * <li>& + f: <b>fat</b></li>
+	 * <li>& + i: <i>italics</i></li>
+	 * <li>& + k: plain</li>
+	 * <li>&color=red,green,blue#: Set a special color</li>
+	 * <li>&string#: Translates the given string to the current language</li>
+	 * </ul>
+	 * @param x
+	 * @param y
+	 * @param string
+	 * @param color
+	 */
 	public static void drawString(int x, int y, String string, Color color)
 	{
 		drawString(x, y, string, color, true, -1);
@@ -338,11 +460,28 @@ public class DrawUtils
 		return new Dimension(x2 - x, y2 - y + FONT.getSize());
 	}
 	
+	/**
+	 * Draws formatted text and automatically wraps the text at {@code maxWidth}.
+	 * For a list of all available formats check
+	 * {@link #drawString(int, int, String, Color)}.
+	 * @param x
+	 * @param y
+	 * @param string
+	 * @param color
+	 * @param draw
+	 * @param maxWidth
+	 * @return Dimension
+	 */
 	public static void drawString(int x, int y, String string, Color color, int maxWidth)
 	{
 		drawString(x, y, string, color, true, maxWidth);
 	}
 	
+	/**
+	 * Returns a new String with all formatation being wiped.
+	 * @param s
+	 * @return String
+	 */
 	public static String removeFormatation(String s)
 	{
 		if(!s.contains("&")) return s;
@@ -398,32 +537,60 @@ public class DrawUtils
 		return drawString(0, 0, string, null, false, -1);
 	}
 	
+	/**
+	 * See {@link Graphics2D#clipRect(int, int, int, int)}
+	 * @see #endClip()
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
 	public static void startClip(int x, int y, int width, int height)
 	{
 		gl2.glEnable(GL2.GL_SCISSOR_TEST);
 		gl2.glScissor((int) (x * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) ((-y + Game.HEIGHT - height) * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)), (int) (width * ((double)Game.RES_WIDTH / (double)Game.WIDTH)), (int) (height * ((double)Game.RES_HEIGHT / (double)Game.HEIGHT)));	
 	}
 	
+	/**
+	 * Does {@link GL2#glColor4f(float, float, float, float)} with a {@link Color}.
+	 * @param color
+	 */
 	public static void glColor(Color color)
 	{
 		gl2.glColor4f(getR(color), getG(color), getB(color), getA(color));
 	}
 	
+	/**
+	 * Stops clipping.
+	 */
 	public static void endClip()
 	{
 		gl2.glDisable(GL2.GL_SCISSOR_TEST);
 	}
 	
+	/**
+	 * Returns the thickness of the border.
+	 * @see #setLineWidth(float)
+	 * @return Float
+	 */
 	public static float getLineWidth()
 	{
 		return LINE_WIDTH;
 	}
 	
+	/**
+	 * Returns the currently active {@link Font}
+	 * @return
+	 */
 	public static Font getFont()
 	{
 		return FONT;
 	}
 	
+	/**
+	 * Returns the currently active {@link TextRenderer}
+	 * @return
+	 */
 	public static TextRenderer getTextRenderer()
 	{
 		TextRenderer tr = textRenderers.get(FONT);
@@ -451,22 +618,49 @@ public class DrawUtils
 		return color.getAlpha() / 255.0F;
 	}
 
+	/**
+	 * Creates a new {@link Animator} that caps the framerate on the given FPS and repeats for times.
+	 * If times is set to 0, it loops infinitely.
+	 * @param fps
+	 * @param times
+	 * @return FPSAnimator
+	 */
 	public static FPSAnimator createFPSAnimator(double fps, int times)
 	{
 		if(times > 0) return new FPSAnimator(fps, times);
 		else return new FPSAnimator(fps);
 	}
 	
+	/**
+	 * Creates a new {@link Animator} that interpolates between two given {@link Color Colors}. It takes the specified
+	 * time to complete.
+	 * @param fps
+	 * @param times
+	 * @return GradientAnimator
+	 */
 	public static GradientAnimator createGratientAnimator(int timeMillis, Color start, Color end)
 	{
 		return new GradientAnimator(timeMillis, start, end);
 	}
 	
+	/**
+	 * Creates a new {@link Animator} that interpolates between two numbers. It takes the specified
+	 * time to complete.
+	 * @param timeMillis
+	 * @param start
+	 * @param end
+	 * @return LinearAnimator
+	 */
 	public static LinearAnimator createLinearAnimator(int timeMillis, long start, long end)
 	{
 		return new LinearAnimator(timeMillis, start, end);
 	}
 	
+	/**
+	 * An Animator is providing an easy way to animate stuff.
+	 * @author Victorious3
+	 *
+	 */
 	public static interface Animator
 	{
 		public boolean animate();
@@ -511,6 +705,10 @@ public class DrawUtils
 			return false;
 		}
 		
+		/**
+		 * Returns how much this Animator already looped.
+		 * @return
+		 */
 		public long getTimes()
 		{
 			return times;
@@ -576,11 +774,19 @@ public class DrawUtils
 			return true;
 		}
 		
+		/**
+		 * Returns the current color.
+		 * @return
+		 */
 		public Color getColor()
 		{
 			return new Color((int)r, (int)g, (int)b, (int)a);
 		}
 		
+		/**
+		 * Sets the color to the initial color.
+		 * @return
+		 */
 		public GradientAnimator reset()
 		{
 			r = start.getRed();
@@ -590,6 +796,10 @@ public class DrawUtils
 			return this;
 		}
 		
+		/**
+		 * Sets the color to the final color.
+		 * @return
+		 */
 		public GradientAnimator forward()
 		{
 			r = rEnd;
@@ -640,6 +850,10 @@ public class DrawUtils
 			return true;
 		}
 		
+		/**
+		 * Returns the current value.
+		 * @return
+		 */
 		public double getValue()
 		{
 			return value;

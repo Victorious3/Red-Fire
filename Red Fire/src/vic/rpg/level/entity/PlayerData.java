@@ -21,55 +21,60 @@ import org.jnbt.Tag;
 
 import vic.rpg.level.INBTReadWrite;
 
-//TODO Needs some testing will later be used
+/**
+ * A set of data that can be written to a {@link CompoundTag}. Every set of data is referenced by a playerName and a dataName.
+ * @author Victorious3
+ */
 public class PlayerData implements INBTReadWrite
 {
 	private HashMap<String, HashMap<String, PlayerValue>> data = new HashMap<String, HashMap<String, PlayerValue>>();
 	
-	public PlayerData()
-	{
-		
-	}
-	
-	public Object getData(String playerName, String dataName)
-	{
-		if(data.containsKey(playerName))
-		{
-			HashMap<String, PlayerValue> player = data.get(playerName);
-			if(player.containsKey(dataName))
-			{
-				return player.get(dataName);
-			}
-		}
-		return null;
-	}
-	
 	private static class PlayerValue
 	{
-		private boolean presistent;
+		private boolean persistent;
 		private Object o;
 		
 		private PlayerValue(Object o, boolean presistent)
 		{
 			this.o = o;
-			this.presistent = presistent;
+			this.persistent = presistent;
 		}
 	}
 	
-	public void put(String player, String oName, Object o, boolean presistent)
+	/**
+	 * Puts a new Object. {@code persistent} indicates if the value should be temporary and therefore not
+	 * be saved to NBT.
+	 * @param player
+	 * @param oName
+	 * @param o
+	 * @param presistent
+	 */
+	public void put(String player, String oName, Object o, boolean persistent)
 	{
 		if(!data.containsKey(player))
 		{
 			data.put(player, new HashMap<String, PlayerValue>());
 		}
-		data.get(player).put(oName, new PlayerValue(o, presistent));
+		data.get(player).put(oName, new PlayerValue(o, persistent));
 	}
 	
+	/**
+	 * Puts a new persistent Object.
+	 * @param player
+	 * @param oName
+	 * @param o
+	 */
 	public void put(String player, String oName, Object o)
 	{
 		put(player, oName, o, true);
 	}
 	
+	/**
+	 * Returns an Object referenced with a player name and a data name.
+	 * @param playerName
+	 * @param dataName
+	 * @return
+	 */
 	public Object get(String player, String oName)
 	{
 		if(data.containsKey(player))
@@ -112,7 +117,7 @@ public class PlayerData implements INBTReadWrite
 			for(String oName : data.get(pName).keySet())
 			{				
 				PlayerValue pv = data.get(pName).get(oName);
-				if(pv.presistent)
+				if(pv.persistent)
 				{
 					HashMap<String, Tag> value = new HashMap<String, Tag>();
 					Object o = pv.o;

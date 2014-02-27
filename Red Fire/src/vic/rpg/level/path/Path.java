@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import vic.rpg.level.tiles.Tile;
 
+/**
+ * A Path is a set of {@link Node Nodes} representing the shortest Path from the begin {@link Node} to the end {@link Node}.
+ * @author Victorious3
+ *
+ */
 public class Path
 {
 	protected ArrayList<Node> path = new ArrayList<Node>();
@@ -22,9 +27,16 @@ public class Path
 	private Node end;
 	private double maxCost;
 	
+	/**
+	 * Indicates if this Path was computed already.
+	 */
 	public boolean isReady = false;
 	public boolean isPossible = true;
 	
+	/**
+	 * Returns the next {@link Node} from the Path.
+	 * @return
+	 */
 	public Node next()
 	{		
 		if(pointer > path.size()) return null;
@@ -34,21 +46,36 @@ public class Path
 		return n;
 	}
 	
+	/**
+	 * Checks if the Path has a {@link Node} left to walk onto.
+	 * @return
+	 */
 	public boolean hasNext()
 	{
 		return pointer + 1 <= getLenght();
 	}
 	
+	/**
+	 * Resets the pointer of this Path to 1.
+	 */
 	public void revert()
 	{
 		pointer = 1;
 	}
 	
+	/**
+	 * Returns the length of this Path.
+	 * @return
+	 */
 	public int getLenght()
 	{
 		return path.size();
 	}
 	
+	/**
+	 * A* Algorithm.
+	 * @return
+	 */
 	public boolean compute()
 	{
 		NodeMap map = nodeMap.clone();
@@ -189,6 +216,12 @@ public class Path
 		return neighbors;
 	}
 	
+	/**
+	 * Checks weather a node can be walked onto.
+	 * @param n
+	 * @param map
+	 * @return
+	 */
 	public static boolean isNodeBlocked(Node n, NodeMap map)
 	{
 		if(n.isBlocked) return true;

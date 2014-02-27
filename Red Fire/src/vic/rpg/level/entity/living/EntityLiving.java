@@ -12,6 +12,7 @@ import vic.rpg.level.entity.EntityEvent;
 import vic.rpg.level.entity.living.EntityController.HealthChangeEvent;
 import vic.rpg.level.path.Node;
 import vic.rpg.level.path.Path;
+import vic.rpg.level.path.PathServer;
 import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
@@ -22,10 +23,17 @@ import vic.rpg.utils.Utils.Side;
 
 import com.jogamp.opengl.util.texture.Texture;
 
-public class EntityLiving extends Entity
+/**
+ * EntityLivig is every Entity that can move around.
+ * @author Victorious3
+ */
+public abstract class EntityLiving extends Entity
 {
 	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png"));
 	
+	/**
+	 * The rotation of this EntityLiving.
+	 */
 	public Direction rotation = Direction.NORTH;
 	
 	@Editable public int lp = 100;
@@ -45,7 +53,7 @@ public class EntityLiving extends Entity
 	
 	public Inventory inventory;
 	
-	public EntityLiving(int width, int height) 
+	protected EntityLiving(int width, int height) 
 	{
 		super(width, height);
 		inventory = new Inventory(this);
@@ -56,12 +64,24 @@ public class EntityLiving extends Entity
 		this.xCoord = x;
 	}
 	
+	public void setY(int y)
+	{
+		this.yCoord = y;
+	}
+	
 	@Override
 	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent) 
 	{
 		GuiIngame.focusedEntity = this;
 	}
 
+	/**
+	 * Walk to the given Cartesian Coordinates using the {@link PathServer}. {@code maxCost} indicates
+	 * how long the path can be before its getting aborted.
+	 * @param x
+	 * @param y
+	 * @param maxCost
+	 */
 	public void walkTo(int x, int y, double maxCost) 
 	{
 		if(Utils.getSide() == Side.CLIENT) return;
@@ -85,6 +105,10 @@ public class EntityLiving extends Entity
 		return isWalking;
 	}
 	
+	/**
+	 * Returns the {@link Inventory} of this EntityLiving.
+	 * @return Inventory
+	 */
 	public Inventory getInventory()
 	{
 		return inventory;
@@ -114,28 +138,35 @@ public class EntityLiving extends Entity
 		return tag;
 	}
 	
+	/**
+	 * Called one a new EntityLiving is created for the first time. Used to add Fields to the {@link Inventory}.
+	 */
 	public void formatInventory()
 	{
 
 	}
-
-	public void setY(int y)
-	{
-		this.yCoord = y;
-	}
 	
+	/**
+	 * Sets the currently rendered to new {@link TextureFX}.
+	 * @param fx
+	 */
 	public void setSprite(TextureFX fx)
 	{
 		this.sprite = fx;
 		this.setTexture(fx);
 	}
 	
+	/**
+	 * Sets the rotation to the given {@link Direction}.
+	 * @param rotation
+	 */
 	public void setRotation(Direction rotation)
 	{
 		if(Utils.getSide() == Side.CLIENT) this.setSprite(rotatedSprites[rotation.getID()]);
 		this.rotation = rotation;
 	}
 	
+	@Override
 	public void tick()
 	{
 		if(walk && !walkNow && curPath.isReady)
@@ -196,13 +227,17 @@ public class EntityLiving extends Entity
 		return area;
 	}
 	
+	/**
+	 * Gets the shortcut texture of this EntityLiving that will be displayed when this Entity has focus.
+	 * @return Texture
+	 */
 	public Texture getShortcutImage()
 	{
 		return sprite_unknown;
 	}
 	
 	@Override
-	public void onEventReceived(EntityEvent e) 
+	public EntityEvent onEventReceived(EntityEvent e) 
 	{
 		if(e instanceof HealthChangeEvent)
 		{
@@ -210,6 +245,6 @@ public class EntityLiving extends Entity
 			this.lp = lp < 0 ? 0 : lp > this.max_lp ? this.max_lp : lp;
 		}
 		
-		super.onEventReceived(e);
+		return super.onEventReceived(e);
 	}
 }

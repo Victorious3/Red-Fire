@@ -8,12 +8,18 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.media.opengl.GL2;
 
+import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.sun.imageio.plugins.gif.GIFImageReader;
 import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
 
+/**
+ * A TextureFX is basically an array of {@link Texture Textures} that updates its current {@link Texture}
+ * at the specified framerate.
+ * @author Victorious3
+ */
 public class TextureFX implements Cloneable
 {
 	private Texture[] data;
@@ -69,6 +75,18 @@ public class TextureFX implements Cloneable
 		this(Utils.readImageFromJar(pngURL), width, height, repeatX, xOff, yOff, framerate);
 	}
 	
+	/**
+	 * Parses a sprite sheet that is used by {@link EntityLiving}.
+	 * @param pngURL
+	 * @param width
+	 * @param height
+	 * @param repeatX
+	 * @param repeatY
+	 * @param xOff
+	 * @param yOff
+	 * @param framerate
+	 * @return extureFX[]
+	 */
 	public static TextureFX[] createTextureFXArray(String pngURL, int width, int height, int repeatX, int repeatY, int xOff, int yOff, int framerate)
 	{
 		ArrayList<TextureFX> texFrames = new ArrayList<TextureFX>();
@@ -113,11 +131,17 @@ public class TextureFX implements Cloneable
 		return isFinished;
 	}
 	
+	/**
+	 * Starts animationg the TextureFX
+	 */
 	public void start()
 	{
 		this.isPlaying = true;
 	}
 	
+	/**
+	 * Stops animation the TextureFX
+	 */
 	public void stop()
 	{
 		this.isPlaying = false;

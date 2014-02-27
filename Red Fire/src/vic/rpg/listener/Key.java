@@ -10,6 +10,10 @@ import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiIngameMenu;
 import vic.rpg.gui.GuiPlayer;
 
+/**
+ * Listens for keyboard input on the Client.
+ * @author Victorious3
+ */
 public class Key implements KeyListener {
 
 	public char currChar = 0;

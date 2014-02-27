@@ -1,6 +1,11 @@
 package vic.rpg.level.entity;
 
-
+/**
+ * Was used for Entites created by the Editor.
+ * @author Victorious3
+ *
+ */
+@Deprecated
 public abstract class EntityCustom extends Entity 
 {
 	public EntityCustom(int width, int height) 

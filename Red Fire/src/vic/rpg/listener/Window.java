@@ -5,6 +5,10 @@ import java.awt.event.ComponentListener;
 
 import vic.rpg.Game;
 
+/**
+ * Used to change the resolution when the Game window is getting resized.
+ * @author Victorious3
+ */
 public class Window implements ComponentListener {
 
 	@Override

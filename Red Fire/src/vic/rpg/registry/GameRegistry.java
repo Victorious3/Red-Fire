@@ -9,6 +9,10 @@ import vic.rpg.listener.Mouse;
 import vic.rpg.listener.Window;
 import vic.rpg.utils.Utils;
 
+/**
+ * Contains the version and some other useful things.
+ * @author Victorious3
+ */
 public class GameRegistry 
 {
 	public static final String VERSION = "0.5r08c";

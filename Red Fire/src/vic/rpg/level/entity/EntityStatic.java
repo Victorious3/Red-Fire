@@ -3,9 +3,14 @@ package vic.rpg.level.entity;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 
-public class EntityStatic extends Entity
+/**
+ * An EntityStatic is a none movable Entity.
+ * @author Victorious3
+ *
+ */
+public abstract class EntityStatic extends Entity
 {
-	public EntityStatic(int width, int height) 
+	protected EntityStatic(int width, int height) 
 	{
 		super(width, height);		
 	}

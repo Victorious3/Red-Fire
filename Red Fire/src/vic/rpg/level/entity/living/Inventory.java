@@ -27,6 +27,11 @@ import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
+/**
+ * The Inventory is where all {@link Item Items} are saved.
+ * @author Victorious3
+ *
+ */
 public class Inventory implements INBTReadWrite, EntityEventListener
 {
 	private HashMap<Integer, ItemStack[][]> itemGrids = new HashMap<Integer, ItemStack[][]>();
@@ -47,6 +52,12 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		if(parentEntity != null) this.parentEntity.addEventListener(this);
 	}
 	
+	/**
+	 * Creates a new grid of empty {@link ItemStack ItemStacks}.
+	 * @param width
+	 * @param height
+	 * @return ItemStack[][]
+	 */
 	public ItemStack[][] createEmptyItemStackGrid(int width, int height)
 	{
 		ItemStack[][] grid = new ItemStack[width][height];
@@ -59,68 +70,138 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return grid;
 	}
 	
+	/**
+	 * Adds a new Skill with the given id.
+	 * @param id
+	 */
 	public void addSkill(int id)
 	{
 		skills.put(id, null);
 	}
 	
+	/**
+	 * Sets the Skill with the given id.
+	 * @param id
+	 */
 	public void setSkill(int id, Skill skill)
 	{
 		skills.put(id, skill);
 	}
 	
+	/**
+	 * Adds a new grid of empty {@link ItemStack ItemStacks} with a specified width and height.
+	 * @param id
+	 * @param width
+	 * @param height
+	 */
 	public void addItemStackGrid(int id, int width, int height)
 	{
 		itemGrids.put(id, createEmptyItemStackGrid(width, height));
 	}
 	
+	/**
+	 * Adds an empty {@link ItemStack} with the given id.
+	 * @param id
+	 */
 	public void addItemStack(int id)
 	{
 		items.put(id, new ItemStack());
 	}
 	
+	/**
+	 * Sets the grid of {@link ItemStack ItemStacks} with the given id.
+	 * @param id
+	 * @param items
+	 */
 	public void setItemStackGrid(int id, ItemStack[][] items)
 	{
 		itemGrids.put(id, items);
 	}
 	
+	/**
+	 * Set the {@link ItemStack} with the given id.
+	 * @param id
+	 * @param item
+	 */
 	public void setItemStack(int id, ItemStack item)
 	{
 		if(item == null) throw new NullPointerException("An ItemStack cannot be null! Use an empty ItemStack instead!");
 		items.put(id, item);
 	}
 
+	/**
+	 * Returns all grids of {@link ItemStack} in this Inventory.
+	 * @return ArrayList&ltItemStack[][]&gt
+	 */
 	public ArrayList<ItemStack[][]> getAllItemStackGrids()
 	{
 		return new ArrayList<ItemStack[][]>(itemGrids.values());
 	}
 	
+	/**
+	 * Returns all {@link ItemStack ItemStacks} in this Inventory.
+	 * @return ArrayList&ltItemStack&gt
+	 */
 	public ArrayList<ItemStack> getAllItemStacks()
 	{
 		return new ArrayList<ItemStack>(items.values());
 	}
 	
+	/**
+	 * Returns the grid of {@link ItemStack} with the given id.
+	 * @param id
+	 * @return ItemStack[][]
+	 */
 	public ItemStack[][] getItemStackGrid(int id)
 	{
 		return itemGrids.get(id);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} with the given id.
+	 * @param id
+	 * @return ItemStack
+	 */
 	public ItemStack getItemStack(Integer id)
 	{
 		return items.get(id);
 	}
 	
+	/**
+	 * Returns the {@link Skill} with the given id.
+	 * @param id
+	 * @return Skill
+	 */
 	public Skill getSkill(Integer id)
 	{
 		return skills.get(id);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} that overlaps with the given {@link ItemStack} at grid[x|y].
+	 * If there is nothing overlapping, an empty {@link ItemStack} is returned.
+	 * @param grid
+	 * @param stack
+	 * @param x
+	 * @param y
+	 * @return ItemStack
+	 */
 	public ItemStack overlapsWith(ItemStack[][] grid, ItemStack stack, int x, int y)
 	{
 		if(stack.isEmpty()) return new ItemStack();
 		return overlapsWith(grid, stack.getItem().gridWidth, stack.getItem().gridHeight, x, y);
 	}
 	
+	/**
+	 * Returns the {@link ItemStack} that overlaps with a pseudo Item at grid[x|y].
+	 * If there is nothing overlapping, an empty {@link ItemStack} is returned.
+	 * @param grid
+	 * @param width
+	 * @param height
+	 * @param x
+	 * @param y
+	 * @return ItemStack
+	 */
 	public ItemStack overlapsWith(ItemStack[][] grid, int width, int height, int x, int y)
 	{
 		for(int i = 0; i < grid.length; i++)
@@ -142,6 +223,18 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return new ItemStack();
 	}
 	
+	/**
+	 * The actual method that calculates the overlapping.
+	 * @param width1
+	 * @param height1
+	 * @param x1
+	 * @param y1
+	 * @param width2
+	 * @param height2
+	 * @param x2
+	 * @param y2
+	 * @return Boolean
+	 */
 	private boolean overlapsWith(int width1, int height1, int x1, int y1, int width2, int height2, int x2, int y2)
 	{			
 		for(int x = 0; x < width1; x++)
@@ -173,6 +266,14 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return overlapsWith(item1.gridWidth, item1.gridHeight, x1, y1, item2.gridWidth, item2.gridHeight, x2, y2);
 	}
 	
+	/**
+	 * Checks if an {@link ItemStack} can be placed in the given grid of {@link ItemStack} at x|y.
+	 * @param grid
+	 * @param x
+	 * @param y
+	 * @param stack
+	 * @return Boolean
+	 */
 	public boolean canBePlacedAt(ItemStack[][] grid, int x, int y, ItemStack stack)
 	{
 		if(stack.isEmpty()) return true;
@@ -183,6 +284,14 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return overlapsWith(grid, stack, x, y).isEmpty();
 	}
 	
+	/**
+	 * Sets a specific {@link ItemStack} inside of a grid of {@link ItemStack} and returns weather it was successful or not.
+	 * @param id
+	 * @param item
+	 * @param xCoord
+	 * @param yCoord
+	 * @return Boolean
+	 */
 	public boolean setItemStackGrid(int id, ItemStack item, int xCoord, int yCoord)
 	{
 		ItemStack[][] grid = getItemStackGrid(id);
@@ -196,6 +305,9 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return false;
 	}
 	
+	/**
+	 * Syncs the Inventory between the Client and the Server.
+	 */
 	public void updateInventory()
 	{
 		if(Utils.getSide() == Side.CLIENT)
@@ -205,6 +317,12 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
 	}
 	
+	/**
+	 * Add an {@link ItemStack} to a given grid of {@link ItemStack} anywhere it fits. Returns weather it was successful or not.
+	 * @param id
+	 * @param stack
+	 * @return
+	 */
 	public boolean addItemToGrid(int id, ItemStack stack)
 	{
 		for(int i = 0; i < getItemStackGrid(id).length; i++)
@@ -217,6 +335,12 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return false;
 	}
 	
+	/**
+	 * Add a new {@link ItemStack} to this Inventory anywhere it fits. 
+	 * Grids of {@link ItemStack} are checked before the single {@link ItemStack ItemStacks.}
+	 * @param stack
+	 * @return
+	 */
 	public boolean addToInventory(ItemStack stack)
 	{	
 		for(int id : itemGrids.keySet())
@@ -391,7 +515,9 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return new CompoundTag(tag.getName(), tagMap);	
 	}
 	
-	//Inventory event
+	/**
+	 * Inventory Event.
+	 */
 	public static class InventoryEvent extends EntityEvent
 	{
 		public InventoryEvent(int mode, int id, int sType, int gx, int gy) 
@@ -410,6 +536,10 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		}
 	}
 
+	/**
+	 * Called when an {@link ItemStack} was clicked on.
+	 * @param id
+	 */
 	public void onItemUse(int id)
 	{
 		ItemStack stack = getItemStack(id);
@@ -417,6 +547,10 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		if(Utils.getSide() == Side.CLIENT) parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
 	}
 	
+	/**
+	 * Called when an {@link ItemStack} was clicked on inside a grid of {@link ItemStack}.
+	 * @param id
+	 */
 	public void onItemUse(int id, int gx, int gy)
 	{
 		ItemStack stack = overlapsWith(getItemStackGrid(id), 1, 1, gx, gy);
@@ -425,7 +559,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	}
 
 	@Override
-	public void onEventReceived(EntityEvent e) 
+	public EntityEvent onEventReceived(EntityEvent e) 
 	{
 		if(e instanceof InventoryEvent)
 		{
@@ -435,9 +569,13 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 				if((Integer)e.getData("sType") == 1) onItemUse((Integer)e.getData("id"), (Integer)e.getData("gx"), (Integer)e.getData("gy"));
 			}
 		}
+		return e;
 	}
 
-	@Override public void onEventPosted(EntityEvent e) {}
+	@Override public EntityEvent onEventPosted(EntityEvent e) 
+	{
+		return e;
+	}
 
 	@Override
 	public Priority getPriority() 

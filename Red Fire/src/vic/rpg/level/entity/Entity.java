@@ -6,6 +6,7 @@ import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import org.jnbt.CompoundTag;
 
@@ -13,6 +14,7 @@ import vic.rpg.Game;
 import vic.rpg.level.Editable;
 import vic.rpg.level.INBTReadWrite;
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.tiles.Tile;
 import vic.rpg.listener.EntityEventListener;
@@ -24,12 +26,18 @@ import vic.rpg.server.packet.Packet12Event;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
-//FIXME Documentation will be continued soon...
-public class Entity extends Drawable implements Cloneable, INBTReadWrite, EntityEventListener
+/**
+ * An Entity is any object in a level that is not a {@link Tile}. Mostly used for moving objects like {@link EntityPlayer}.
+ * @author Victorious3
+ */
+public abstract class Entity extends Drawable implements Cloneable, INBTReadWrite, EntityEventListener
 {
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
 	
+	/**
+	 * The UUID is an {@link UUID} that allows for unique indexing of the Entities.
+	 */
 	@Editable public String UUID;
 	public int id = 0;
 	
@@ -37,8 +45,19 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 	public Level levelObj;
 	public ArrayList<EntityEventListener> entityListeners = new ArrayList<EntityEventListener>(Arrays.asList(new EntityEventListener[]{this}));
 	
+	/**
+	 * Used to deploy a new {@link EntityEvent} unique to this Entity.
+	 * Returns if the {@link EntityEvent} was cancelled by one Listener.
+	 * @param eev
+	 */
 	public void postEvent(EntityEvent eev)
 	{
+		for(EntityEventListener el : entityListeners)
+		{
+			eev = el.onEventPosted(eev);
+			if(eev.isCancelled()) return;
+		}
+		
 		if(Utils.getSide() == eev.side || eev.side == Side.BOTH)
 		{
 			for(EntityEventListener el : entityListeners) el.onEventPosted(eev);
@@ -57,17 +76,34 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		}	
 	}
 	
+	/**
+	 * Cycles through all {@link EntityEventListener} bound to this Entity and calls {@link EntityLiving#onEventReceived(EntityEvent)}.
+	 * Returns if the {@link EntityEvent} was cancelled by one Listener.
+	 * @param eev
+	 */
 	public void processEvent(EntityEvent eev)
 	{
-		for(EntityEventListener el : entityListeners) el.onEventReceived(eev);
+		for(EntityEventListener el : entityListeners) 
+		{
+			eev = el.onEventReceived(eev);
+			if(eev.isCancelled()) return;
+		}
 	}
 	
+	/**
+	 * Adds an {@link EntityEventListener} to let him receive {@link EntityEvent EntityEvents}.
+	 * @param eel
+	 */
 	public void addEventListener(EntityEventListener eel)
 	{
 		entityListeners.add(eel);
 		Collections.sort(entityListeners, Priority.entityEventListenerComperator);
 	}
 	
+	/**
+	 * Removes an {@link EntityEventListener}.
+	 * @param eel
+	 */
 	public void removeEventListener(EntityEventListener eel)
 	{
 		entityListeners.remove(eel);
@@ -80,24 +116,24 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		return (Entity) super.clone();
 	}
 
-	public Entity(int width, int height) 
+	protected Entity(int width, int height) 
 	{
 		super(width, height);
 	}
 	
+	/**
+	 * Returns the position of a {@link LightSource} for rendering.
+	 * @param l
+	 * @return
+	 */
 	public Point getLightPosition(LightSource l)
 	{
 		return new Point(this.xCoord, this.yCoord);
 	}
-	
-	public Entity(int width, int height, int xCoord, int yCoord) 
-	{
-		super(width, height);
-		
-		this.xCoord = xCoord;
-		this.yCoord = yCoord;
-	}
 
+	/**
+	 * Called every 0.2 seconds.
+	 */
 	public void tick() {}
 	
 	@Override public void readFromNBT(CompoundTag tag, Object... args) {}
@@ -108,13 +144,31 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		return tag;
 	}
 	
+	/**
+	 * Gets the collision box of an Entity represented by an {@link Area}.
+	 * @param area
+	 * @return
+	 */
 	public Area getCollisionBoxes(Area area)
 	{
 		return area;	
 	}
 	
+	/**
+	 * Called when the user mouse hovered over this Entity. (Isometric coordinates)
+	 * @param x
+	 * @param y
+	 * @param entity
+	 */
 	public void onMouseHovered(int x, int y, EntityPlayer entity){}
 	
+	/**
+	 * Called when the user clicked on this Entity. (Isometric coordinates)
+	 * @param x
+	 * @param y
+	 * @param entity
+	 * @param mouseEvent
+	 */
 	public void onMouseClicked(int x, int y, EntityPlayer entity, int mouseEvent)
 	{
 		if(Utils.getSide() == Side.CLIENT)
@@ -125,6 +179,11 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 
 	public void onKeyPressed(KeyEvent key){}
 	
+	/**
+	 * Calculates if this Entity collides with any other Entities or impassable Tiles.
+	 * @param level
+	 * @return
+	 */
 	public boolean collides(Level level)
 	{
 		for(Entity ent : level.entityMap.values())
@@ -175,16 +234,26 @@ public class Entity extends Drawable implements Cloneable, INBTReadWrite, Entity
 		return false;
 	}
 	
+	/**
+	 * Returns the displayed name of this Entity.
+	 * @return
+	 */
 	public String getName()
 	{
 		return "Entity";
 	}
 
 	@Override
-	public void onEventReceived(EntityEvent e) {}
+	public EntityEvent onEventReceived(EntityEvent e) 
+	{
+		return e;
+	}
 
 	@Override
-	public void onEventPosted(EntityEvent e) {}
+	public EntityEvent onEventPosted(EntityEvent e) 
+	{
+		return e;
+	}
 
 	@Override
 	public Priority getPriority() 

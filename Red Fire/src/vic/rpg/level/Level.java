@@ -247,7 +247,7 @@ public class Level implements INBTReadWrite
 	public Tile getTileAt(int x, int y)
 	{
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
-		if(t != null) t.setWorldObj(this);
+		if(t != null) t.setLevelObj(this);
 		else if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
@@ -273,7 +273,7 @@ public class Level implements INBTReadWrite
 	public Tile getTileAt(int x, int y, int layerID)
 	{
 		Tile t = LevelRegistry.tileRegistry.get(layers.get(layerID)[x][y][0]);
-		if(t != null) t.setWorldObj(this);
+		if(t != null) t.setLevelObj(this);
 		else if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
@@ -389,7 +389,7 @@ public class Level implements INBTReadWrite
 					Tile t = LevelRegistry.tileRegistry.get(layer[x][y][0]);
 					if(t != null)
 					{
-						t.setWorldObj(this);
+						t.setLevelObj(this);
 						t.tick(x, y, layer[x][y][1]);
 					}
 				}
@@ -681,7 +681,7 @@ public class Level implements INBTReadWrite
 	}
 	
 	/**
-	 * Returns an array of all entities that intersect with a given shape in isometric coordinates.
+	 * Returns an array of all entities that intersect with a given shape in Isometric coordinates.
 	 * If no entity can be found, an empty list is returned.
 	 * @return ArrayList&lt;Entity&gt;
 	 */

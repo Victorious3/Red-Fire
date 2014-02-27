@@ -2,16 +2,44 @@ package vic.rpg.listener;
 
 import java.util.Comparator;
 
+import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
 
+/**
+ * The EntityEventListener has to be added to an {@link Entity} with {@link Entity#addEventListener(EntityEventListener)} to receive
+ * {@link EntityEvent EntityEvents} dedicated to this Entity.
+ * @author Victorious3
+ *
+ */
 public interface EntityEventListener
 {
-	public void onEventReceived(EntityEvent e);
+	/**
+	 * Called when an {@link EntityEvent} was received on the referenced {@link Entity}.
+	 * The {@link EntityEvent} can be modified or cancelled.
+	 * @param e
+	 * @return EntityEvent
+	 */
+	public EntityEvent onEventReceived(EntityEvent e);
 	
-	public void onEventPosted(EntityEvent e);
+	/**
+	 * Called when an {@link EntityEvent} was posted on the referenced {@link Entity}.
+	 * The {@link EntityEvent} can be modified or cancelled.
+	 * @param e
+	 * @return EntityEvent
+	 */
+	public EntityEvent onEventPosted(EntityEvent e);
 	
+	/**
+	 * Returns the Priority of this {@link EntityEventListener}.
+	 * @return Priority
+	 */
 	public Priority getPriority();
 	
+	/**
+	 * A Priority is used to sort the {@link EntityEventListener EntityEventListeners} to ceck
+	 * which one should be notified of a new {@link EntityEvent} first.
+	 * @author Victorious3
+	 */
 	public static class Priority implements Comparable<Priority>
 	{
 		private final int p;
@@ -25,8 +53,7 @@ public interface EntityEventListener
 		private Priority(int p)
 		{
 			this.p = p;
-		}
-		
+		}	
 		
 		@Override
 		public int compareTo(Priority arg0) 

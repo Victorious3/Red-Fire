@@ -16,6 +16,12 @@ import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 
+/**
+ * The {@link Drawable} Screen. It renders the {@link Gui} and
+ * does all lighting.
+ * @see LightSource
+ * @author Victorious3
+ */
 public class Screen extends Drawable 
 {	
 	public static int xOffset = 0;
@@ -35,6 +41,9 @@ public class Screen extends Drawable
 		}
 	}
 	
+	/**
+	 * Updates ever 0.2 seconds to update the player's position.
+	 */
 	public void tick()
 	{
 		if(Game.getPlayer() != null && !Game.getPlayer().isWalkingBlocked)
@@ -144,6 +153,11 @@ public class Screen extends Drawable
 	private int textureID = 0;
 	private int frameBufferID = 0;
 	
+	/**
+	 * Initializes the lighting.
+	 * @see LightSource
+	 * @param gl2
+	 */
 	public void init(GL2 gl2)
 	{
 		int[] params1 = new int[1];
@@ -163,6 +177,11 @@ public class Screen extends Drawable
 		gl2.glBindFramebuffer(GL2.GL_DRAW_FRAMEBUFFER, 0);
 	}
 
+	/**
+	 * Renders the {@link Gui} and applies the lighting.
+	 * @see LightSource
+	 * @param gl2
+	 */
 	public void postRender(GL2 gl2)
 	{
 		if(Game.level != null && Options.LIGHTING)

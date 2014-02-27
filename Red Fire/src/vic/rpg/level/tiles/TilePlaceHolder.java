@@ -6,6 +6,12 @@ import vic.rpg.utils.Utils;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * Used for {@link Tile Tiles} of a size bigger than 1x1 to keep its place.
+ * It is passing all methods from the parent {@link Tile}. <b>Should never be
+ * used on its own!</b>
+ * @author Victorious3
+ */
 public class TilePlaceHolder extends Tile
 {
 	@Override
@@ -17,15 +23,15 @@ public class TilePlaceHolder extends Tile
 	@Override
 	public double getMovementCost() 
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.worldObj.width);
-		return this.worldObj.getTileAt(p.x, p.y).getMovementCost();
+		Point p = Utils.conv1Dto2DPoint(data, this.levelObj.width);
+		return this.levelObj.getTileAt(p.x, p.y).getMovementCost();
 	}
 
 	@Override
 	public boolean isWalkingPermitted() 
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.worldObj.width);
-		return this.worldObj.getTileAt(p.x, p.y).isWalkingPermitted();	
+		Point p = Utils.conv1Dto2DPoint(data, this.levelObj.width);
+		return this.levelObj.getTileAt(p.x, p.y).isWalkingPermitted();	
 	}
 
 	@Override
@@ -34,9 +40,16 @@ public class TilePlaceHolder extends Tile
 		return "Don't use this Tile! Ever!";
 	}
 	
+	/**
+	 * Returns the parent {@link Tile} of this place holder.
+	 * @param x
+	 * @param y
+	 * @param data
+	 * @return Tile
+	 */
 	public Tile getParent(int x, int y, int data)
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.worldObj.width);
-		return this.worldObj.getTileAt(p.x, p.y);
+		Point p = Utils.conv1Dto2DPoint(data, this.levelObj.width);
+		return this.levelObj.getTileAt(p.x, p.y);
 	}
 }

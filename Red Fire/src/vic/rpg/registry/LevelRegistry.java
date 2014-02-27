@@ -34,6 +34,10 @@ import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import bsh.Interpreter;
 
+/**
+ * The LevelRegistry contains all game objects like {@link Item Items}, {@link Tile Tiles} and {@link Entity Entities}.
+ * @author Victorious3
+ */
 public class LevelRegistry 
 {
 	public static HashMap<Integer, Entity> entityRegistry = new HashMap<Integer, Entity>();
@@ -92,6 +96,11 @@ public class LevelRegistry
 		}
 	}
 	
+	/**
+	 * Adds a new custom created {@link EntityCustom} to the list of {@link Entity Entities}.
+	 * @param f
+	 * @return
+	 */
 	public static Entity addNewEntity(File f)
 	{
 		Interpreter i = new Interpreter();

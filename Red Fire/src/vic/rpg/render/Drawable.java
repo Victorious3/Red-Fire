@@ -6,6 +6,10 @@ import javax.media.opengl.GL2;
 
 import com.jogamp.opengl.util.texture.Texture;
 
+/**
+ * Drawable is a pseudo interface for everything that only has one {@link Texture}.
+ * @author Victorious3
+ */
 public class Drawable implements Cloneable
 {
 	private int width;

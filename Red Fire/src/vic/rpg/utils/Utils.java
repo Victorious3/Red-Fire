@@ -24,6 +24,11 @@ import javax.imageio.ImageIO;
 
 import vic.rpg.Game;
 
+/**
+ * Utils is a class that is used almost everywhere. It contains a
+ * set of methods for every taste.
+ * @author Victorious3
+ */
 public class Utils 
 {
 	public static GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -35,11 +40,21 @@ public class Utils
 		CLIENT, SERVER, BOTH, OTHER_SIDE
 	}
 	
+	/**
+	 * Returns a new {@link InputStream} from a {@link File} inside the jar.
+	 * @param s
+	 * @return InputStream
+	 */
 	public static InputStream getStreamFromJar(String s)
 	{
 		return Game.class.getResourceAsStream(s);		
 	}
 	
+	/**
+	 * Self explaining.
+	 * @param s
+	 * @return File
+	 */
 	public static File getFileFromJar(String s)
 	{
 		try {
@@ -50,6 +65,10 @@ public class Utils
 		return null;
 	}
 	
+	/**
+	 * Returns %APPDATA% + ./RedFire
+	 * @return
+	 */
 	public static String getAppdata()
 	{
 		String s =  System.getenv("APPDATA") + "/.RedFire";
@@ -57,11 +76,22 @@ public class Utils
 		return s;
 	}
 	
+	/**
+	 * Replaces any backslash inside a string with forward slashes.
+	 * @param s
+	 * @return
+	 */
 	public static String replaceBackslashes(String s)
 	{
 		return s.replaceAll("\\\\", "/");
 	}
 	
+	/**
+	 * Searches for a given File or Directory and if it doesn't exist,
+	 * it's automatically created.
+	 * @param s
+	 * @return
+	 */
 	public static File getOrCreateFile(String s)
 	{
 		File file = new File(s);
@@ -103,6 +133,12 @@ public class Utils
 		return file;
 	}
 	
+	/**
+	 * Returns the current side the active {@link Thread} is running on.
+	 * Can either be {@link Side#SERVER} or {@link Side#CLIENT}.
+	 * The Editor counts as Client.
+	 * @return
+	 */
 	public static Side getSide()
 	{
 		Thread thr = Thread.currentThread();
@@ -113,6 +149,11 @@ public class Utils
 		return Side.CLIENT;
 	}
 	
+	/**
+	 * Parse a {@link BufferedImage} from inside the jar.
+	 * @param s
+	 * @return
+	 */
 	public static BufferedImage readImageFromJar(String s)
 	{
 		try {
@@ -145,6 +186,17 @@ public class Utils
 		return new Dimension(p.x, p.y);	
 	}
 	
+	/**
+	 * Used reflection to set a field inside a given Object.
+	 * @param fieldName
+	 * @param value
+	 * @param object
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws NumberFormatException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	public static void setField(String fieldName, Object value, Object object) throws NoSuchFieldException, SecurityException, NumberFormatException, IllegalArgumentException, IllegalAccessException
 	{
 		Field field = object.getClass().getField(fieldName);
@@ -169,6 +221,12 @@ public class Utils
     	}
 	}
 	
+	/**
+	 * Strips the extension of a file name.
+	 * "test.test" becomes "test".
+	 * @param str
+	 * @return
+	 */
 	public static String stripExtension(String str) 
 	{
         if (str == null) return null;
@@ -177,6 +235,12 @@ public class Utils
         return str.substring(0, pos);
     }
 	
+	/**
+	 * This is a very tricky method. It only returns {@code true}
+	 * if you are lucky enough to hit the specified chance.
+	 * @param percent
+	 * @return
+	 */
 	public static boolean withChance(int percent)
 	{
 		Random rand = new Random();
@@ -186,6 +250,11 @@ public class Utils
 		return false;
 	}
 	
+	/**
+	 * Returns the {@link Exception#printStackTrace()} inside a handy string.
+	 * @param e
+	 * @return
+	 */
 	public static String getStackTrace(Exception e)
 	{
 		StringWriter sw = new StringWriter();
@@ -194,6 +263,12 @@ public class Utils
 		return sw.toString();
 	}
 	
+	/**
+	 * Performs a clone of every Object inside an array.
+	 * @param source
+	 * @param type
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Object> T[] cloneArray(Object[] source, Class<T> type)
 	{
@@ -217,6 +292,10 @@ public class Utils
 	
 	private static OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
 	
+	/**
+	 * Returns the current CPU usage in percent.
+	 * @return
+	 */
 	public static double getCPUUsage()
 	{	
 		try {
@@ -229,6 +308,10 @@ public class Utils
 		return -1.0D;
 	}
 	
+	/**
+	 * Returns the amount of RAM installed. 
+	 * @return
+	 */
 	public static long getDeviceMemory()
 	{	
 		try {
@@ -259,6 +342,12 @@ public class Utils
 		}
 	}
 	
+	/**
+	 * Rounds to i2
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
 	public static int rnd(int i1, int i2) 
 	{
 		if(i1 % i2 == 0) return i1;
@@ -270,11 +359,21 @@ public class Utils
 		return 0;
 	}
 	
+	/**
+	 * Converts an Isometric coordinate to a Cartesian coordinate.
+	 * @param p
+	 * @return
+	 */
 	public static Point convIsoToCart(Point p)
 	{
 		return new Point((2 * p.y + p.x) / 2, (2 * p.y - p.x) / 2);
 	}
 	
+	/**
+	 * Converts a Cartesian coordinate to an Isometric coordinate.
+	 * @param p
+	 * @return
+	 */
 	public static Point convCartToIso(Point p)
 	{
 		return new Point(p.x - p.y, (p.x + p.y) / 2);

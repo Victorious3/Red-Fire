@@ -6,6 +6,13 @@ import java.io.InputStream;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
+/**
+ * Was once used for saving the int[] arrays of parsed BufferedImages containing the color values for
+ * a texture. Not used very often these days.
+ * @author Victorious3
+ *
+ */
+@Deprecated
 public class RenderRegistry 
 {
 	public static Font RPGFont;

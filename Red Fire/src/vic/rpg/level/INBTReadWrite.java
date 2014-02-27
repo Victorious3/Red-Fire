@@ -3,7 +3,7 @@ package vic.rpg.level;
 import org.jnbt.CompoundTag;
 
 /**
- * INBTReadWrite does provide for read and write a {@link CompoundTag}.
+ * INBTReadWrite does provide methods to read and write a {@link CompoundTag}.
  * @author Victorious3
  */
 public interface INBTReadWrite

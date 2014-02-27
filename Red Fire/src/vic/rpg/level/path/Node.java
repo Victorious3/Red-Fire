@@ -3,7 +3,15 @@ package vic.rpg.level.path;
 import java.awt.Point;
 
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.living.EntityLiving;
+import vic.rpg.level.tiles.Tile;
 
+/**
+ * A node is basically a {@link Tile} coordinate. It contains information about weather an {@link EntityLiving}
+ * can walk onto it.
+ * @author Victorious3
+ *
+ */
 public class Node implements Cloneable 
 {
 	public int x,y;
@@ -23,6 +31,11 @@ public class Node implements Cloneable
 		this.y = y;
 	}
 	
+	/**
+	 * Creates a new Node from a {@link Point}.
+	 * @param p
+	 * @return
+	 */
 	public static Node fromPoint(Point p)
 	{
 		Node n = new Node();
@@ -31,6 +44,10 @@ public class Node implements Cloneable
 		return n;
 	}
 	
+	/**
+	 * Returns the coordinates of this node inside a {@link Point}.
+	 * @return
+	 */
 	public Point toPoint()
 	{
 		int x2 = x * Level.CELL_SIZE;

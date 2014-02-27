@@ -14,6 +14,11 @@ import javax.sound.sampled.FloatControl.Type;
 import vic.rpg.Game;
 import vic.rpg.utils.Utils;
 
+/**
+ * The SoundEngine is not quite ready yet.
+ * @author Victorious3
+ *
+ */
 public class SoundEngine 
 {
 	private static HashMap<String, Clip> clips = new HashMap<String, Clip>();
