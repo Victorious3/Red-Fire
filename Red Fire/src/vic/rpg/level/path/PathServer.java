@@ -53,8 +53,8 @@ public class PathServer extends Thread
 			
 			if(processingPaths.size() > 0)
 			{
-				Path p = processingPaths.get(0);
-				processingPaths.remove(0);
+				Path p = processingPaths.remove(0);
+				if(p == null) continue;
 				p.isPossible = p.compute();
 				p.isReady = true;
 			}

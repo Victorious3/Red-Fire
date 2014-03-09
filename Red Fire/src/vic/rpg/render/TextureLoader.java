@@ -18,7 +18,7 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
  * The TextureLoader does bind all the {@link BufferedImage BufferedImages} to the OpenGL context
  * and creates {@link Texture Textures}. The nice part is that you can create {@link Texture Textures}
  * everywhere using {@link #requestTexture(BufferedImage)} and the Textures are automatically created
- * on the next frame.
+ * inside the next frame.
  * @author Victorious3
  */
 public class TextureLoader {

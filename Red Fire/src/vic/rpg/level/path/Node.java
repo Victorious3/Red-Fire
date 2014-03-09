@@ -32,26 +32,26 @@ public class Node implements Cloneable
 	}
 	
 	/**
-	 * Creates a new Node from a {@link Point}.
+	 * Creates a new Node from a {@link Point}. (Cartesian)
 	 * @param p
 	 * @return
 	 */
 	public static Node fromPoint(Point p)
 	{
 		Node n = new Node();
-		n.x = (int) ((float)p.x / (float)Level.CELL_SIZE);
-		n.y = (int) ((float)p.y / (float)Level.CELL_SIZE);
+		n.x = (int) ((float)p.x / (float)(Level.CELL_SIZE / 2));
+		n.y = (int) ((float)p.y / (float)(Level.CELL_SIZE / 2));
 		return n;
 	}
 	
 	/**
-	 * Returns the coordinates of this node inside a {@link Point}.
+	 * Returns the coordinates of this node inside a {@link Point}. (Cartesian)
 	 * @return
 	 */
 	public Point toPoint()
 	{
-		int x2 = x * Level.CELL_SIZE;
-		int y2 = y * Level.CELL_SIZE;
+		int x2 = x * (Level.CELL_SIZE / 2);
+		int y2 = y * (Level.CELL_SIZE / 2);
 		
 		return new Point(x2, y2);
 	}

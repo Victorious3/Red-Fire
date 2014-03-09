@@ -29,6 +29,11 @@ public class TextureFX implements Cloneable
 	private boolean isRepeating = true;
 	private int imgPointer = 0;
 	
+	/**
+	 * Globally controls weather the textures should be animated.
+	 */
+	public static boolean IS_PLAYING = true;
+	
 	public TextureFX(String gifURL, int framerate)
 	{
 		this.framerate = framerate;
@@ -154,7 +159,7 @@ public class TextureFX implements Cloneable
 	
 	private int getNextFrame()
 	{
-		if(isPlaying)
+		if(isPlaying && IS_PLAYING)
 		{
 			float frametime = 1000 / framerate;
 			long currTime = System.currentTimeMillis();

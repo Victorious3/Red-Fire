@@ -271,6 +271,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			preX = xCoord;
 			preY = yCoord;
+			
+			Editor.instance.labelLevel.updateUI();
 		}
 		else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{

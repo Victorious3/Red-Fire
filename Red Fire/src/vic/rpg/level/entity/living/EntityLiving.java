@@ -74,6 +74,14 @@ public abstract class EntityLiving extends Entity
 	{
 		GuiIngame.focusedEntity = this;
 	}
+	
+	/**
+	 * See {@link #walkTo(int, int, double)}
+	 */
+	public void walkTo(Point coord, double maxCost)
+	{
+		walkTo(coord.x, coord.y, maxCost);
+	}
 
 	/**
 	 * Walk to the given Cartesian Coordinates using the {@link PathServer}. {@code maxCost} indicates
@@ -85,6 +93,7 @@ public abstract class EntityLiving extends Entity
 	public void walkTo(int x, int y, double maxCost) 
 	{
 		if(Utils.getSide() == Side.CLIENT) return;
+		if(x < 0 || y < 0 || x >= levelObj.getWidth() || y >= levelObj.getHeight()) return;
 		Node begin = Node.fromPoint(new Point(this.xCoord, this.yCoord));
 		Node end = Node.fromPoint(new Point(x, y));
 		this.curPath = Server.server.serverLoop.pathServer.create(this.levelObj.nodeMap, begin, end, maxCost);

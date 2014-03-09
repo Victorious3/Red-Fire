@@ -1,5 +1,6 @@
 package vic.rpg.level;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -355,6 +356,9 @@ public class Level implements INBTReadWrite
 									for(Entity e : entitiesForRender.get(new Point(x, y)))
 									{
 										Point entPos = Utils.convCartToIso(new Point(e.xCoord - xOffset, e.yCoord - yOffset));
+										Dimension entOffset = e.getRenderOffset();
+										entPos.x -= entOffset.width;
+										entPos.y -= entOffset.height;
 										e.render(gl2);
 										DrawUtils.drawTexture(entPos.x, entPos.y, e.getTexture());
 									}
@@ -649,12 +653,8 @@ public class Level implements INBTReadWrite
 		HashMap<Point, ArrayList<Entity>> ent2 = new HashMap<Point, ArrayList<Entity>>();
 		for(Entity e : entityMap.values())
 		{
-			Point p = Utils.convCartToIso(new Point(e.xCoord, e.yCoord));
-			p.x += e.getWidth() / 2;
-			p.y += e.getHeight();
-			Point p2 = Utils.convIsoToCart(p);
-			int x = (int)((float)(p2.x) / (float)Level.CELL_SIZE * 2);
-			int y = (int)((float)(p2.y) / (float)Level.CELL_SIZE * 2);
+			int x = (int)((float)(e.xCoord) / (float)Level.CELL_SIZE * 2);
+			int y = (int)((float)(e.yCoord) / (float)Level.CELL_SIZE * 2);
 			Point pnt = new Point(x, y);
 			if(ent2.get(pnt) == null) ent2.put(pnt, new ArrayList<Entity>());
 			ent2.get(pnt).add(e);
@@ -672,6 +672,9 @@ public class Level implements INBTReadWrite
 		for(Entity ent : entityMap.values())
 		{
 			Point p = Utils.convCartToIso(new Point(ent.xCoord, ent.yCoord));
+			Dimension off = ent.getRenderOffset();
+			p.x -= off.width;
+			p.y -= off.height;
 			if(x >= p.x && x <= p.x + ent.getWidth() && y >= p.y && y <= p.y + ent.getHeight())
 			{
 				return ent;

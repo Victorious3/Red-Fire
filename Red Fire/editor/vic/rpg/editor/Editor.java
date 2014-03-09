@@ -68,6 +68,7 @@ import vic.rpg.level.entity.EntityCustom;
 import vic.rpg.level.tiles.Tile;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Utils;
 
 public class Editor 
@@ -535,6 +536,7 @@ public class Editor
 			@Override public void mouseClicked(MouseEvent e) {}
 		});
 		
+		selectTileTextureScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		selectTileTextureScrollPane.setBorder(null);
 		selectTileTextureScrollPane.setVisible(false);
 		panelTiles.add(selectTileTextureScrollPane, panelTilesConstraints);
@@ -656,6 +658,7 @@ public class Editor
 		
 		RenderRegistry.bufferImages();
 		RenderRegistry.setup();
+		TextureFX.IS_PLAYING = false;
 		Game.init();
 		
 		for(Integer i : LevelRegistry.entityRegistry.keySet())

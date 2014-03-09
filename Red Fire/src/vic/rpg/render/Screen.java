@@ -1,6 +1,7 @@
 package vic.rpg.render;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 
 import javax.media.opengl.GL;
@@ -201,6 +202,9 @@ public class Screen extends Drawable
 				{
 					Point p1 = e.getLightPosition(s);
 					Point p2 = Utils.convCartToIso(new Point(p1.x + xOffset, p1.y + yOffset));
+					Dimension dim = e.getRenderOffset();
+					p2.x -= dim.width;
+					p2.y -= dim.height;
 					s.draw(gl2, p2.x, Game.HEIGHT - p2.y);				
 				}
 			}

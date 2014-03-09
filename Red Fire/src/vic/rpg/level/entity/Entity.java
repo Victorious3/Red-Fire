@@ -1,5 +1,6 @@
 package vic.rpg.level.entity;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
@@ -180,6 +181,28 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 	public void onKeyPressed(KeyEvent key){}
 	
 	/**
+	 * Returns the position of this Entity in tiled space.
+	 * @return Point
+	 */
+	public Point getTiledPosition()
+	{
+		int x = (int)((float)(this.xCoord) / (float)Level.CELL_SIZE * 2);
+		int y = (int)((float)(this.yCoord) / (float)Level.CELL_SIZE * 2);
+		
+		return new Point(x, y);
+	}
+	
+	/**
+	 * Returns the render offset to center the Entity at its bottom point in
+	 * Isometric Coordinates
+	 * @return
+	 */
+	public Dimension getRenderOffset()
+	{
+		return new Dimension(getWidth() / 2, getHeight());
+	}
+	
+	/**
 	 * Calculates if this Entity collides with any other Entities or impassable Tiles.
 	 * @param level
 	 * @return
@@ -214,17 +237,10 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 			if(collides) return true;
 		}
 		
-		//TODO Not quite precise, this is using a single point rather than using an area.
-		Point p = Utils.convCartToIso(new Point(this.xCoord, this.yCoord));
-		p.x += this.getWidth() / 2;
-		p.y += this.getHeight();
-		Point p2 = Utils.convIsoToCart(p);
-		int x = (int)((float)(p2.x) / (float)Level.CELL_SIZE * 2);
-		int y = (int)((float)(p2.y) / (float)Level.CELL_SIZE * 2);
+		Point p = getTiledPosition();
+		if(p.x < 0 || p.y < 0 || p.x >= level.width || p.y >= level.height) return true;
 		
-		if(x < 0 || y < 0 || x >= level.width || y >= level.height) return true;
-		
-		Tile[] tiles = level.getTilesAt(x, y);		
+		Tile[] tiles = level.getTilesAt(p.x, p.y);		
 		for(Tile t : tiles)
 		{
 			if(t == null) continue;

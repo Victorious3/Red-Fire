@@ -2,6 +2,7 @@ package vic.rpg.editor.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -33,8 +34,6 @@ import vic.rpg.render.DrawUtils;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
-import com.jogamp.opengl.util.Animator;
-
 public class PanelLevel extends GLJPanel
 {
 	private float scale = 1;
@@ -58,10 +57,6 @@ public class PanelLevel extends GLJPanel
 		    	gl2.glEnable(GL2.GL_BLEND);
 		    	gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		    	gl2.glDisable(GL2.GL_DEPTH_TEST);
-		    	
-				Animator animator = new Animator();
-				animator.add(drawable);
-				animator.start();
 			}
 			
 			@Override public void dispose(GLAutoDrawable drawable) {}
@@ -118,6 +113,9 @@ public class PanelLevel extends GLJPanel
 				Stroke stroke = g2d.getStroke();
 				g2d.setStroke(new BasicStroke(5));
 				Point p = Utils.convCartToIso(new Point(e.xCoord, e.yCoord));
+				Dimension off = e.getRenderOffset();
+				p.x -= off.width;
+				p.y -= off.height;
 				g2d.drawRect(p.x, p.y, e.getWidth(), e.getHeight());
 				g2d.setStroke(stroke);
 			}
