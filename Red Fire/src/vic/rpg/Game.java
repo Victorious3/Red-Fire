@@ -323,7 +323,7 @@ public class Game extends GLCanvas implements Runnable
 		System.out.println("Please report bugs to our gitHub page at https://github.com/Victorious3/Red-Fire/");
 		System.out.println("WARNING: Threre is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
 		
-		GL_PROFILE = GLProfile.getDefault();
+		GL_PROFILE = GLProfile.get(GLProfile.GL2);
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
 		
         game = new Game(glcapabilities);

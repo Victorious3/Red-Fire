@@ -177,7 +177,7 @@ public class Editor
 	
 	public Editor()
 	{				
-		Game.GL_PROFILE = GLProfile.getDefault();
+		Game.GL_PROFILE = GLProfile.get(GLProfile.GL2);
         GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
         labelLevel = new PanelLevel(glcapabilities);
 		
