@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLException;
 import javax.media.opengl.GLProfile;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -177,7 +178,18 @@ public class Editor
 	
 	public Editor()
 	{				
-		Game.GL_PROFILE = GLProfile.get(GLProfile.GL2);
+		try {
+			Game.GL_PROFILE = GLProfile.get(GLProfile.GL2);
+		} catch (GLException e) {
+			System.err.println("Woops, looks like your device doesn't support GL2. Let me try something different...");
+			try {
+				Game.GL_PROFILE = GLProfile.get(GLProfile.GL2GL3);
+			} catch (GLException e2) {
+				System.err.println("Ehm GL2GL3 is also not supported. That's a really annoying. Sorry but I can't help you.");
+				System.exit(-1);
+			}
+		}
+		
         GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
         labelLevel = new PanelLevel(glcapabilities);
 		
@@ -639,7 +651,7 @@ public class Editor
 		
 		for(Tile t : LevelRegistry.tileRegistry.values())
 		{
-			dropdownTiles.addItem(t.id + ": " + t.getClass().getSimpleName());
+			dropdownTiles.addItem(t.id + ": " + t.getName());
 		}
 		
 		for(Entity e : TableListener.entities.values())

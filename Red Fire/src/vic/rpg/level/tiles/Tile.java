@@ -105,7 +105,11 @@ public class Tile
 	
 	//Editor stuff
 	public String getDescription(){return "MISSING_DESCRIPTION";}
-	public String getName(){return "MISSING_NAME";}
+	
+	public String getName()
+	{
+		return getClass().getSimpleName();
+	}
 	
 	/**
 	 * Used from the {@link Path} to check the cheapest path. E.g walking on a road takes less effort

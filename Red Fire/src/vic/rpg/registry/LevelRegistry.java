@@ -2,6 +2,7 @@ package vic.rpg.registry;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.jnbt.CompoundTag;
 import org.jnbt.IntTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
+import org.json.simple.parser.ParseException;
 
 import vic.rpg.Init;
 import vic.rpg.combat.Skill;
@@ -26,6 +28,7 @@ import vic.rpg.level.entity.EntityTree;
 import vic.rpg.level.entity.living.EntityNPC;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.tiles.Tile;
+import vic.rpg.level.tiles.TileJSON;
 import vic.rpg.level.tiles.TilePlaceHolder;
 import vic.rpg.level.tiles.TileTerrain;
 import vic.rpg.level.tiles.TileTree;
@@ -94,6 +97,17 @@ public class LevelRegistry
 		})){
 			addNewEntity(f2);
 		}
+		
+		f = Utils.getOrCreateFile(Utils.getAppdata() + "/resources/tiles/");
+		
+		for(File f2 : f.listFiles(new FilenameFilter(){
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".json");
+			}
+		})){
+			addNewTile(f2);
+		}
 	}
 	
 	/**
@@ -118,6 +132,24 @@ public class LevelRegistry
 			return e;
 		} catch (Exception e) {
 			System.err.println("[LevelRegistry]: Caught error in file " + f + ". Entity could't be loaded!");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Tile addNewTile(File f)
+	{
+		try {
+			TileJSON tile = TileJSON.parse(f);
+			if(tileRegistry.containsKey(tile.getSuggestedID()))
+			{
+				System.err.println("[LevelRegistry]: Tile " + tile.getName() + " couldn't be registered! Id " + tile.getSuggestedID() + " is already occupied by " + tileRegistry.get(tile.getSuggestedID()).getName());
+				return null;
+			}
+			register(tile, tile.getSuggestedID());
+			System.out.println("[LevelRegistry]: Registered Tile " + tile.getName() + " with ID:" + tile.getSuggestedID());
+			return tile;
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 		return null;

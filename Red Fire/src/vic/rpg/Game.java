@@ -19,6 +19,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.swing.JFrame;
@@ -323,7 +324,18 @@ public class Game extends GLCanvas implements Runnable
 		System.out.println("Please report bugs to our gitHub page at https://github.com/Victorious3/Red-Fire/");
 		System.out.println("WARNING: Threre is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
 		
-		GL_PROFILE = GLProfile.get(GLProfile.GL2);
+		try {
+			GL_PROFILE = GLProfile.get(GLProfile.GL2);
+		} catch (GLException e) {
+			System.err.println("Woops, looks like your device doesn't support GL2. Let me try something different...");
+			try {
+				GL_PROFILE = GLProfile.get(GLProfile.GL2GL3);
+			} catch (GLException e2) {
+				System.err.println("Ehm GL2GL3 is also not supported. That's a really annoying. Sorry but I can't help you.");
+				System.exit(-1);
+			}
+		}
+		
         GLCapabilities glcapabilities = new GLCapabilities(GL_PROFILE);
 		
         game = new Game(glcapabilities);

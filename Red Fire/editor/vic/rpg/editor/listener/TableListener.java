@@ -91,7 +91,7 @@ public class TableListener implements TableModelListener
 	
 	public static void setTile(Tile t, int data)
 	{
-		Editor.instance.dropdownTiles.setSelectedItem(t.id + ": " + t.getClass().getSimpleName());
+		Editor.instance.dropdownTiles.setSelectedItem(t.id + ": " + t.getName());
 		Editor.instance.labelTiles.setText("<html>" + t.getDescription() + "</html>");
 		
 		Editor.instance.updateTileTextureSelector(t);
