@@ -5,8 +5,7 @@ import java.awt.Point;
 import vic.rpg.level.TexturePath;
 import vic.rpg.utils.Utils;
 
-@TexturePath(path = "/vic/rpg/resources/terrain/terrain.png")
-public class TileTerrain extends Tile 
+public class TileTerrain extends Tile implements TexturePath
 {	
 	@Override
 	public String getDescription() 
@@ -18,5 +17,11 @@ public class TileTerrain extends Tile
 	public Point getTextureCoord(int x, int y, int data) 
 	{
 		return Utils.conv1Dto2DPoint(data, 10D);
+	}
+
+	@Override
+	public String getTexturePath() 
+	{
+		return "/vic/rpg/resources/terrain/terrain.png";
 	}	
 }

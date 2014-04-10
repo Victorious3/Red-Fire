@@ -28,7 +28,7 @@ public class PanelEntity extends JBackgroundPanel implements MouseListener, Mous
 	
 	public PanelEntity(BufferedImage img, EntityEditor editor)
 	{	
-		super(Utils.readImageFromJar("/vic/rpg/resources/editor/transparent_bg.png"));
+		super(Utils.readImage("/vic/rpg/resources/editor/transparent_bg.png"));
 		this.img = img;
 		this.polys.add(currPoly);
 		this.editor = editor;

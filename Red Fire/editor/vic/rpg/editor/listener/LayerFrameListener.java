@@ -62,6 +62,7 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 			int id = (Integer) table.getValueAt(arg0.getFirstRow(), 0);
 			boolean selected = (Boolean) table.getValueAt(arg0.getFirstRow(), 1);	
 			Editor.instance.level.setLayerVisibility(id, selected);
+			Editor.instance.labelLevel.updateUI();
 		}
 	}
 

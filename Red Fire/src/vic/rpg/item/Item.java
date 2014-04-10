@@ -53,7 +53,7 @@ public abstract class Item extends Drawable implements INBTReadWrite
 		
 		if(Utils.getSide() == Side.CLIENT)
 		{
-			this.setTexture(Utils.readImageFromJar(image));
+			this.setTexture(Utils.readImage(image));
 		}
 	}
 	

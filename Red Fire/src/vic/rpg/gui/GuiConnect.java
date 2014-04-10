@@ -26,7 +26,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class GuiConnect extends Gui implements IGButton
 {
-	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
+	private Texture bgimage = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/connect_1.png"));
 	
 	private GTextField server = new GTextField(Game.WIDTH / 2 - 75, Game.HEIGHT / 2 - 20, 150, 20, 15, true).setText("localhost");
 	private GTextField username = new GTextField(Game.WIDTH / 2 - 75, Game.HEIGHT / 2 + 10, 150, 20, 15, true).setText(Game.USERNAME);

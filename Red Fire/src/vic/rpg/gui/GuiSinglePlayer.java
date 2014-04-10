@@ -36,7 +36,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class GuiSinglePlayer extends Gui implements IGList, IGButton
 {
-	private Texture bgimage = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/connect_1.png"));
+	private Texture bgimage = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/connect_1.png"));
 	private GList levelList;
 	private ArrayList<File> list = new ArrayList<File>();
 	

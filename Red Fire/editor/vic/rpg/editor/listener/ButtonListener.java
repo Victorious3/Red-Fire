@@ -10,6 +10,7 @@ import javax.swing.JPopupMenu;
 
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
+import vic.rpg.level.tiles.TileJSON;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.utils.Utils;
 
@@ -178,6 +179,30 @@ public class ButtonListener implements ActionListener
 				LevelRegistry.entityRegistry.remove(id);
 				Editor.instance.updateTilesAndEntites();
 				File f = new File(Utils.getAppdata() + "/resources/entities/" + name.substring(1) + ".bsh");
+				System.out.println("Deleted File " + f.getAbsolutePath());
+				f.delete();
+			}
+		}
+		else if(arg0.getSource() == Editor.instance.buttonNewTile)
+		{
+			Editor.instance.tileEditor.show();
+		}
+		else if(arg0.getSource() == Editor.instance.buttonEditTile)
+		{
+			Editor.instance.tileEditor.show((TileJSON)LevelRegistry.tileRegistry.get(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0])));
+		}
+		else if(arg0.getSource() == Editor.instance.buttonDeleteTile)
+		{
+			int id = Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]);
+			TileJSON tile = (TileJSON)LevelRegistry.tileRegistry.get(id);
+			
+			int confirm = JOptionPane.showConfirmDialog(Editor.instance.frame, "Do you really want to delete Tile " + tile.getName() + "?", "Delete Tile", JOptionPane.OK_CANCEL_OPTION);
+			if(confirm == JOptionPane.OK_OPTION)
+			{
+				TableListener.tiles.remove(id);
+				LevelRegistry.tileRegistry.remove(id);
+				Editor.instance.updateTilesAndEntites();
+				File f = new File(tile.getFilePath());
 				System.out.println("Deleted File " + f.getAbsolutePath());
 				f.delete();
 			}

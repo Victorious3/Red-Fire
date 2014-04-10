@@ -88,10 +88,10 @@ public class EntityEditor implements WindowListener
 		splitPane = new JSplitPane();
 		panelEdit = new JPanel();
 		
-		buttonAdd = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
-		buttonRemove = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
-		buttonLeft = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/arrow-left.png")));
-		buttonRight = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/arrow-right.png")));
+		buttonAdd = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/add.png")));
+		buttonRemove = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/remove.png")));
+		buttonLeft = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/arrow-left.png")));
+		buttonRight = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/arrow-right.png")));
 		buttonSave = new JButton("Save");	
 		fieldDimensionX = new JTextField("0");
 		fieldDimensionY = new JTextField("0");
@@ -108,10 +108,7 @@ public class EntityEditor implements WindowListener
 		gbConstraints.weightx = 1;
 		gbConstraints.weighty = 1;
 			
-		frame = new JDialog();	
-		
-		Editor.instance.frame.setEnabled(false);
-		
+		frame = new JDialog();			
 		frame.setSize(800, 600);
 		frame.setModal(true);
 		frame.setLocationRelativeTo(Editor.instance.frame);
@@ -430,6 +427,7 @@ public class EntityEditor implements WindowListener
 		if(e == null) generateNewDocument();
 		
 		frame.add(splitPane);
+		GuiState.restore(frame, "entity_dialog");
 		frame.setVisible(true);
 	}
 	
@@ -440,7 +438,7 @@ public class EntityEditor implements WindowListener
 	
 	public void hide()
 	{
-		Editor.instance.frame.setEnabled(true);
+		GuiState.save(frame, "entity_dialog");
 		frame.setVisible(false);
 	}
 	
@@ -518,7 +516,7 @@ public class EntityEditor implements WindowListener
 			int m = editor.getText().indexOf("\"))))", l);
 			String url = editor.getText().substring(l, m);
 			fieldImageURL.setText(url);
-			pArea.setImage(ImageIO.read(new File(Utils.getAppdata() + url)));
+			pArea.setImage(Utils.readImage(Utils.getAppdata() + url));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}		
@@ -599,11 +597,7 @@ public class EntityEditor implements WindowListener
         	file = Utils.replaceBackslashes(file);
         	
         	BufferedImage img = null;		
-        	try {
-				img = ImageIO.read(chooser.getSelectedFile());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}		
+        	img = Utils.readImage(chooser.getSelectedFile().getAbsolutePath());		
         	pArea.setImage(img);
         	
         	fieldImageURL.setText(file.replace(Utils.getAppdata(), ""));

@@ -29,7 +29,7 @@ public class TextureLoader {
 	@Deprecated
 	public static void storeTexture(String name, String filePath)
 	{
-		BufferedImage img = Utils.readImageFromJar(filePath);
+		BufferedImage img = Utils.readImage(filePath);
 		bufferedTextures.put(name, requestTexture(img));
 	}
 	

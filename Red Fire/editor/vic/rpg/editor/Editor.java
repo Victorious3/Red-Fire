@@ -67,18 +67,20 @@ import vic.rpg.level.TexturePath;
 import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityCustom;
 import vic.rpg.level.tiles.Tile;
+import vic.rpg.level.tiles.TileJSON;
 import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Utils;
 
-public class Editor 
+public class Editor
 {
 	public static Editor instance;
 	public static int layerID = 0;
-	public static BufferedImage NO_TEXTURE = Utils.readImageFromJar("/vic/rpg/resources/editor/no_texture.png");
+	public static BufferedImage NO_TEXTURE = Utils.readImage("/vic/rpg/resources/editor/no_texture.png");
 	
 	public EntityEditor entityEditor = new EntityEditor();
+	public TileEditor tileEditor = new TileEditor();
 	
 	public JFrame frame;	
 	public JMenuBar menubar   = new JMenuBar();	
@@ -106,14 +108,14 @@ public class Editor
 	public PanelLevel labelLevel;
 	
 	public JComboBox<String> dropdownZoom = new JComboBox<String>(new String[]{"500%", "400%", "300%", "200%", "100%", "66%", "50%", "33%", "25%", "16%", "10%"});
-	public JButton buttonZoomIn      = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/zoom-in.png")));
-	public JButton buttonZoomOut     = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/zoom-out.png")));
-	public JButton buttonRefresh     = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/repeat-2.png")));
-	public JToggleButton buttonMove  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/move.png")));
-	public JToggleButton buttonEdit  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
-	public JToggleButton buttonPaint = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pencil.png")));
-	public JToggleButton buttonErase = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/rubber.png")));
-	public JToggleButton buttonPath  = new JToggleButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/pathfinding.png")));
+	public JButton buttonZoomIn      = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/zoom-in.png")));
+	public JButton buttonZoomOut     = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/zoom-out.png")));
+	public JButton buttonRefresh     = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/repeat-2.png")));
+	public JToggleButton buttonMove  = new JToggleButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/move.png")));
+	public JToggleButton buttonEdit  = new JToggleButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/swap.png")));
+	public JToggleButton buttonPaint = new JToggleButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/pencil.png")));
+	public JToggleButton buttonErase = new JToggleButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/rubber.png")));
+	public JToggleButton buttonPath  = new JToggleButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/pathfinding.png")));
 	
 	public JTabbedPane tabpanelEditor = new JTabbedPane();
 	public JPanel panelTiles = new JPanel();
@@ -123,9 +125,13 @@ public class Editor
 	public JComboBox<String> dropdownTiles = new JComboBox<String>();
 	public JComboBox<String> dropdownEntities = new JComboBox<String>();
 	
-	public JButton buttonNewEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
-	public JButton buttonEditEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
-	public JButton buttonDeleteEntity = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
+	public JButton buttonNewEntity = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/add.png")));
+	public JButton buttonEditEntity = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/swap.png")));
+	public JButton buttonDeleteEntity = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/remove.png")));
+	
+	public JButton buttonNewTile = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/add.png")));
+	public JButton buttonEditTile = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/swap.png")));
+	public JButton buttonDeleteTile = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/remove.png")));
 	
 	public JTable tableLevel = new JTable(new DefaultTableModel(new String[][]{}, new String[]{"NBTTag", "Type", "value"}))
 	{
@@ -163,8 +169,8 @@ public class Editor
 	//Layer Frame
 	public JDockableFrame frameLayers;
 	public JTable tableLayers = new JTable();
-	public JButton buttonNewLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/add.png")));
-	public JButton buttonRemoveLayer = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/remove.png")));
+	public JButton buttonNewLayer = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/add.png")));
+	public JButton buttonRemoveLayer = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/remove.png")));
 	
 	/*
 	//Brush Frame
@@ -178,6 +184,7 @@ public class Editor
 	
 	public Editor()
 	{				
+		GuiState.readFromFile();
 		try {
 			Game.GL_PROFILE = GLProfile.get(GLProfile.GL2);
 		} catch (GLException e) {
@@ -194,7 +201,7 @@ public class Editor
         labelLevel = new PanelLevel(glcapabilities);
 		
 		frame = new JFrame();
-		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon_editor.png"));
+		frame.setIconImage(Utils.readImage("/vic/rpg/resources/rf_icon_editor.png"));
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowListener() {
 			
@@ -207,6 +214,9 @@ public class Editor
 			public void windowClosing(WindowEvent e) 
 			{
 				TileMaterial.saveMaterials();
+				GuiState.save(frame, "main_frame");
+				GuiState.save(panelMain, "main_panel");
+				GuiState.saveToFile();
 				System.exit(0);
 			}
 			
@@ -251,6 +261,15 @@ public class Editor
 		buttonDeleteEntity.addActionListener(ButtonListener.listener);
 		buttonDeleteEntity.setPreferredSize(new Dimension(25, 25));
 		buttonDeleteEntity.setEnabled(false);
+		
+		buttonNewTile.addActionListener(ButtonListener.listener);
+		buttonNewTile.setPreferredSize(new Dimension(25, 25));
+		buttonEditTile.addActionListener(ButtonListener.listener);
+		buttonEditTile.setPreferredSize(new Dimension(25, 25));
+		buttonEditTile.setEnabled(false);
+		buttonDeleteTile.addActionListener(ButtonListener.listener);
+		buttonDeleteTile.setPreferredSize(new Dimension(25, 25));
+		buttonDeleteTile.setEnabled(false);
 		
 		menuFile.add(open);
 		menuFile.add(newLevel);
@@ -336,7 +355,7 @@ public class Editor
 		
 		//Layer Frame
 		frameLayers = new JDockableFrame("Layers", true, false);
-		frameLayers.setFrameIcon(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/windows.png")));
+		frameLayers.setFrameIcon(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/windows.png")));
 		frameLayers.getContentPane().setLayout(new BorderLayout());
 		tableLayers.setModel(new DefaultTableModel(0, 2)
 		{
@@ -458,6 +477,16 @@ public class Editor
 				{
 					@SuppressWarnings("unchecked")
 					int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
+					if(LevelRegistry.tileRegistry.get(id) instanceof TileJSON)
+					{
+						buttonEditTile.setEnabled(true);
+						buttonDeleteTile.setEnabled(true);
+					}
+					else
+					{
+						buttonEditTile.setEnabled(false);
+						buttonDeleteTile.setEnabled(false);
+					}
 					
 					TableListener.setTile(LevelRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
 				}
@@ -508,10 +537,22 @@ public class Editor
 		panelTilesConstraints.weightx = 1;		
 		panelTilesConstraints.anchor = GridBagConstraints.WEST;	
 		panelTilesConstraints.fill = GridBagConstraints.BOTH;
-		
 		panelTiles.add(dropdownTiles, panelTilesConstraints);
 		
+		panelTilesConstraints.gridx = 1;
+		panelTilesConstraints.weightx = 0;	
+		panelTiles.add(buttonEditTile, panelTilesConstraints);
+		
+		panelTilesConstraints.gridx = 2;
+		panelTiles.add(buttonDeleteTile, panelTilesConstraints);
+		
+		panelTilesConstraints.gridx = 3;
+		panelTiles.add(buttonNewTile, panelTilesConstraints);
+		
+		panelTilesConstraints.gridwidth = 4;
+		panelTilesConstraints.gridx = 0;
 		panelTilesConstraints.gridy = 1;
+		panelTilesConstraints.weightx = 1;
 		labelTiles.setFont(labelTiles.getFont().deriveFont(Font.ITALIC));
 		labelTiles.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
 		panelTiles.add(labelTiles, panelTilesConstraints);
@@ -531,9 +572,8 @@ public class Editor
 		
 		tableTilesScrollPane.setPreferredSize(new Dimension(200, 0));
 		panelTiles.add(tableTilesScrollPane, panelTilesConstraints);
-		
+	
 		panelTilesConstraints.gridy = 4;
-		
 		selectTileTexture.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -550,6 +590,7 @@ public class Editor
 		
 		selectTileTextureScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		selectTileTextureScrollPane.setBorder(null);
+		selectTileTextureScrollPane.setPreferredSize(new Dimension(200, 0));
 		selectTileTextureScrollPane.setVisible(false);
 		panelTiles.add(selectTileTextureScrollPane, panelTilesConstraints);
 		
@@ -622,20 +663,22 @@ public class Editor
 		
 		panelMain.add(tabpanelEditor, JSplitPane.LEFT);
 		panelMain.add(panelEast, JSplitPane.RIGHT);		
+		GuiState.restore(panelMain, "main_panel");
 		
 		frame.add(menubar, BorderLayout.NORTH);
 		frame.add(panelMain);
+		GuiState.restore(frame, "main_frame");
 		frame.setVisible(true);
 	}
 	
 	public void updateTileTextureSelector(Tile t)
 	{
-		if(t.getClass().getAnnotation(TexturePath.class) != null)
+		if(t instanceof TexturePath)
 		{
-			TexturePath texPath = t.getClass().getAnnotation(TexturePath.class);
+			TexturePath texPath = (TexturePath)t;
 			tableTilesScrollPane.setVisible(false);
 			selectTileTextureScrollPane.setVisible(true);
-			selectTileTexture.setImagePath(texPath.path());
+			selectTileTexture.setImagePath(texPath.getTexturePath());
 		}
 		else
 		{

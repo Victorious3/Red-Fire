@@ -64,7 +64,7 @@ public class ServerGui
 		}
 		
 		frame = new JFrame();
-		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon_server.png"));
+		frame.setIconImage(Utils.readImage("/vic/rpg/resources/rf_icon_server.png"));
 		textArea = new JTextPane();
 		scrollPane = new JScrollPane(textArea);
 		textField = new JTextField();		

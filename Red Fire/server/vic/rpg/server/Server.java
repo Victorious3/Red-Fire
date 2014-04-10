@@ -193,8 +193,8 @@ public class Server extends Thread implements CommandSender
 						{
 							m.setAccessible(true);
 							try {
-								m.invoke(null, (Object[])null);
 								System.out.println("init: " + c.getName() + "." + m.getName() + "()");
+								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -213,8 +213,8 @@ public class Server extends Thread implements CommandSender
 						{
 							m.setAccessible(true);
 							try {
-								m.invoke(null, (Object[])null);
 								System.out.println("postinit: " + c.getName() + "." + m.getName() + "()");
+								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}

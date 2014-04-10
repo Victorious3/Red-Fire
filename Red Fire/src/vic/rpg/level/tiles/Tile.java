@@ -16,7 +16,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class Tile
 {	
-	protected static Texture terrainTex = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/terrain/terrain.png"));
+	protected static Texture terrainTex = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/terrain/terrain.png"));
 	protected Level levelObj;
 	public int data = 0;
 	public int id = 0;

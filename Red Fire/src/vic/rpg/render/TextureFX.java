@@ -77,7 +77,7 @@ public class TextureFX implements Cloneable
 	
 	public TextureFX(String pngURL, int width, int height, int repeatX, int xOff, int yOff, int framerate)
 	{
-		this(Utils.readImageFromJar(pngURL), width, height, repeatX, xOff, yOff, framerate);
+		this(Utils.readImage(pngURL), width, height, repeatX, xOff, yOff, framerate);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class TextureFX implements Cloneable
 	public static TextureFX[] createTextureFXArray(String pngURL, int width, int height, int repeatX, int repeatY, int xOff, int yOff, int framerate)
 	{
 		ArrayList<TextureFX> texFrames = new ArrayList<TextureFX>();
-		BufferedImage img = Utils.readImageFromJar(pngURL);
+		BufferedImage img = Utils.readImage(pngURL);
 		if(height * repeatY + yOff > img.getHeight()) throw new IllegalArgumentException("impossible parameters");
 		
 		for(int y = 0; y < repeatY; y++)

@@ -21,7 +21,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class GuiIngameMenu extends Gui implements GButton.IGButton {
 
-	private Texture logo = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/Red Fire.png"));
+	private Texture logo = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/Red Fire.png"));
 	private int xOffset;
 	private int yOffset;
 	

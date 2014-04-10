@@ -150,19 +150,30 @@ public class Utils
 	}
 	
 	/**
-	 * Parse a {@link BufferedImage} from inside the jar.
+	 * Parse a {@link BufferedImage} from inside the Jar or from elsewhere.
 	 * @param s
 	 * @return
 	 */
-	public static BufferedImage readImageFromJar(String s)
+	public static BufferedImage readImage(String s)
 	{
-		try {
-			InputStream in = getStreamFromJar(s);
-			BufferedImage img = ImageIO.read(in);
-			in.close();
-			return img;
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(s.startsWith("/"))
+		{
+			try {
+				InputStream in = getStreamFromJar(s);
+				BufferedImage img = ImageIO.read(in);
+				in.close();
+				return img;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				return ImageIO.read(new File(s));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}

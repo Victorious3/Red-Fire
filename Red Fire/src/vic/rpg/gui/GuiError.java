@@ -23,7 +23,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class GuiError extends Gui implements IGButton
 {
-	private static Texture tex = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/error.png"));
+	private static Texture tex = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/error.png"));
 	
 	public GuiError() 
 	{

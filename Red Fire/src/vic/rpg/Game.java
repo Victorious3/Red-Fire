@@ -142,8 +142,8 @@ public class Game extends GLCanvas implements Runnable
 						{
 							m.setAccessible(true);
 							try {
-								m.invoke(null, (Object[])null);
 								System.out.println("init: " + c.getName() + "." + m.getName() + "()");
+								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -162,8 +162,8 @@ public class Game extends GLCanvas implements Runnable
 						{
 							m.setAccessible(true);
 							try {
-								m.invoke(null, (Object[])null);
 								System.out.println("postinit: " + c.getName() + "." + m.getName() + "()");
+								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
 							}
@@ -323,6 +323,7 @@ public class Game extends GLCanvas implements Runnable
 		System.out.println("Welcome to the RedFire alpha! Feel free to redistribute this software in binary form.");
 		System.out.println("Please report bugs to our gitHub page at https://github.com/Victorious3/Red-Fire/");
 		System.out.println("WARNING: Threre is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
+		System.out.println(GLProfile.glAvailabilityToString());
 		
 		try {
 			GL_PROFILE = GLProfile.get(GLProfile.GL2);
@@ -387,7 +388,7 @@ public class Game extends GLCanvas implements Runnable
 		
 		frame.add(game);
 		frame.setTitle("Red Fire Alpha " + GameRegistry.VERSION);
-		frame.setIconImage(Utils.readImageFromJar("/vic/rpg/resources/rf_icon.png"));
+		frame.setIconImage(Utils.readImage("/vic/rpg/resources/rf_icon.png"));
 		
 		frame.addWindowListener(new WindowListener() 
 		{

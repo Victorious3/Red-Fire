@@ -29,7 +29,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public abstract class EntityLiving extends Entity
 {
-	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/unknown.png"));
+	public static Texture sprite_unknown = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/character/unknown.png"));
 	
 	/**
 	 * The rotation of this EntityLiving.

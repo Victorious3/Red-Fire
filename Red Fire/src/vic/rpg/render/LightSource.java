@@ -15,7 +15,7 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class LightSource 
 {
-	public static Texture baseTexture = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/light.png"));
+	public static Texture baseTexture = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/light.png"));
 	
 	public int width;
 	private float brightness;

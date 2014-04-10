@@ -41,9 +41,9 @@ public class GuiIngame extends GuiContainer implements IGButton
 	private final int MAX_CHATLINES = 10;
 	private int lp = 0;
 	
-	private Texture tNormal = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange.png"));
-	private Texture tHover = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_hover.png"));
-	private Texture tClick = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/slotchange_click.png"));
+	private Texture tNormal = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/slotchange.png"));
+	private Texture tHover = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/slotchange_hover.png"));
+	private Texture tClick = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/slotchange_click.png"));
 	
 	private GIconButton buttonSlot2;
 	private GIconButton buttonSlot3;

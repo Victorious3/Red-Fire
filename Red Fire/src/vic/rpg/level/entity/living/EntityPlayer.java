@@ -89,7 +89,7 @@ public class EntityPlayer extends EntityLiving
 		return area;
 	}
 
-	public static Texture portrait = TextureLoader.requestTexture(Utils.readImageFromJar("/vic/rpg/resources/character/portrait.png"));
+	public static Texture portrait = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/character/portrait.png"));
 	
 	@Override
 	public Texture getShortcutImage() 

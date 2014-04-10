@@ -15,12 +15,12 @@ import vic.rpg.utils.Utils;
  */
 public class GameRegistry 
 {
-	public static final String VERSION = "0.5r10b";
+	public static final String VERSION = "0.5r10c";
 	
 	public static Mouse mouse = new Mouse();
 	public static Key key = new Key();
 	public static Window window = new Window();
 	
-	public static Cursor CURSOR_DRAG = Toolkit.getDefaultToolkit().createCustomCursor(Utils.readImageFromJar("/vic/rpg/resources/drag.gif"), new Point(0,0), "CUSTOM_DRAG");
-	public static Cursor CURSOR_DROP = Toolkit.getDefaultToolkit().createCustomCursor(Utils.readImageFromJar("/vic/rpg/resources/drop.gif"), new Point(0,0), "CUSTOM_DROP");
+	public static Cursor CURSOR_DRAG = Toolkit.getDefaultToolkit().createCustomCursor(Utils.readImage("/vic/rpg/resources/drag.gif"), new Point(0,0), "CUSTOM_DRAG");
+	public static Cursor CURSOR_DROP = Toolkit.getDefaultToolkit().createCustomCursor(Utils.readImage("/vic/rpg/resources/drop.gif"), new Point(0,0), "CUSTOM_DROP");
 }

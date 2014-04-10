@@ -2,7 +2,6 @@ package vic.rpg.registry;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import org.jnbt.CompoundTag;
 import org.jnbt.IntTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
-import org.json.simple.parser.ParseException;
 
 import vic.rpg.Init;
 import vic.rpg.combat.Skill;
@@ -149,7 +147,8 @@ public class LevelRegistry
 			register(tile, tile.getSuggestedID());
 			System.out.println("[LevelRegistry]: Registered Tile " + tile.getName() + " with ID:" + tile.getSuggestedID());
 			return tile;
-		} catch (IOException | ParseException e) {
+		} catch (Exception e) {
+			System.err.println("[LevelRegistry]: Caught error in file " + f + ". Tile could't be loaded!");
 			e.printStackTrace();
 		}
 		return null;

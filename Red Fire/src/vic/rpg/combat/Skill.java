@@ -19,7 +19,7 @@ public class Skill extends Drawable implements Cloneable
 		
 		if(Utils.getSide() == Side.CLIENT)
 		{
-			setTexture(Utils.readImageFromJar(image));
+			setTexture(Utils.readImage(image));
 		}
 	}
 	

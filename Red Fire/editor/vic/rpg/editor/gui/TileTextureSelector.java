@@ -27,7 +27,8 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	
 	public void setImagePath(String path)
 	{
-		img = Utils.readImageFromJar(path);
+		if(path == null) img = new BufferedImage(5 * 64, 10 * 64, BufferedImage.TYPE_INT_ARGB);
+		else img = Utils.readImage(path);
 		updateUI();
 	}
 
