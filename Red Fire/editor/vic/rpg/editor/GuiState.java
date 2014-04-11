@@ -26,32 +26,37 @@ public class GuiState
 {
 	private static HashMap<String, HashMap<String, Object>> state = new HashMap<String, HashMap<String, Object>>();
 	
+	/**
+	 * Saves the state of a given component.
+	 * @param comp
+	 * @param name
+	 */
 	public static void save(Component comp, String name)
 	{
 		if(comp instanceof JFrame)
 		{
 			JFrame frame = (JFrame) comp;
 			newState(name);
-			state.get(name).put("width", frame.getWidth());
-			state.get(name).put("height", frame.getHeight());
-			state.get(name).put("x", frame.getX());
-			state.get(name).put("y", frame.getY());
+			state.get(name).put("width", Long.valueOf(frame.getWidth()));
+			state.get(name).put("height", Long.valueOf(frame.getHeight()));
+			state.get(name).put("x", Long.valueOf(frame.getX()));
+			state.get(name).put("y", Long.valueOf(frame.getY()));
 			state.get(name).put("isMaximized", (frame.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH);
 		}
 		else if(comp instanceof JDialog)
 		{
 			JDialog dialog = (JDialog) comp;
 			newState(name);
-			state.get(name).put("width", dialog.getWidth());
-			state.get(name).put("height", dialog.getHeight());
-			state.get(name).put("x", dialog.getX());
-			state.get(name).put("y", dialog.getY());
+			state.get(name).put("width", Long.valueOf(dialog.getWidth()));
+			state.get(name).put("height", Long.valueOf(dialog.getHeight()));
+			state.get(name).put("x", Long.valueOf(dialog.getX()));
+			state.get(name).put("y", Long.valueOf(dialog.getY()));
 		}
 		else if(comp instanceof JSplitPane)
 		{
 			JSplitPane splitPane = (JSplitPane) comp;
 			newState(name);
-			state.get(name).put("divider", splitPane.getDividerLocation());
+			state.get(name).put("divider", Long.valueOf(splitPane.getDividerLocation()));
 		}
 		else
 		{
@@ -59,15 +64,23 @@ public class GuiState
 		}
 	}
 	
+	/**
+	 * Restores the state of a given component.
+	 * @param comp
+	 * @param name
+	 */
 	public static void restore(Component comp, String name)
 	{
 		if(!state.containsKey(name)) return;
 		if(comp instanceof JFrame)
 		{
 			JFrame frame = (JFrame) comp;
-			frame.setSize((int)(long)state.get(name).get("width"), (int)(long)state.get(name).get("height"));
-			frame.setLocation((int)(long)state.get(name).get("x"), (int)(long)state.get(name).get("y"));
 			if((Boolean)state.get(name).get("isMaximized")) frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			else
+			{
+				frame.setSize((int)(long)state.get(name).get("width"), (int)(long)state.get(name).get("height"));
+				frame.setLocation((int)(long)state.get(name).get("x"), (int)(long)state.get(name).get("y"));
+			}
 		}
 		else if(comp instanceof JDialog)
 		{
@@ -86,6 +99,9 @@ public class GuiState
 		}
 	}
 	
+	/**
+	 * Saves the current state to the file {@code %APPDATA%/.RedFire/tmp/guistate.dat}.
+	 */
 	@SuppressWarnings("unchecked")
 	public static void saveToFile()
 	{

@@ -2,6 +2,7 @@ package vic.rpg.editor.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.JMenuItem;
@@ -48,7 +49,7 @@ public class ButtonListener implements ActionListener
 		}
 		else if(arg0.getSource() == Editor.instance.exit)
 		{
-			
+			Editor.instance.frame.dispatchEvent(new WindowEvent(Editor.instance.frame, WindowEvent.WINDOW_CLOSING));
 		}
 		else if(arg0.getSource() == Editor.instance.undo)
 		{

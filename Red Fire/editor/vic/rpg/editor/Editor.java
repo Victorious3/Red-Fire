@@ -73,6 +73,7 @@ import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Utils;
 
+//TODO This class is ridiculously big...
 public class Editor
 {
 	public static Editor instance;
@@ -705,6 +706,7 @@ public class Editor
 	
 	public static void main(String[] args)
 	{
+		System.setProperty("sun.java2d.noddraw", Boolean.TRUE.toString());
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
