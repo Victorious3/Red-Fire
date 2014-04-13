@@ -672,7 +672,7 @@ public class Editor
 		frame.setVisible(true);
 	}
 	
-	public void updateTileTextureSelector(Tile t)
+	public void updateTileTextureSelector(Tile t, int data)
 	{
 		if(t instanceof TexturePath)
 		{
@@ -680,6 +680,7 @@ public class Editor
 			tableTilesScrollPane.setVisible(false);
 			selectTileTextureScrollPane.setVisible(true);
 			selectTileTexture.setImagePath(texPath.getTexturePath());
+			selectTileTexture.setSelectedTexture(data);
 		}
 		else
 		{

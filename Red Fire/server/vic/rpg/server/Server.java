@@ -27,6 +27,7 @@ import vic.rpg.server.io.Connection;
 import vic.rpg.server.io.Listener;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet1ConnectionRefused;
+import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
@@ -234,7 +235,7 @@ public class Server extends Thread implements CommandSender
 	
 	public void addConnection(Connection con, String player, String version) 
 	{	    
-		if(player.equals("server"))
+		if(player.equalsIgnoreCase("server"))
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("HAHAHAHAHAHA"));
 			System.out.println("Disconnecting Player " + player + " Reason: Tried to be funny");
@@ -269,6 +270,7 @@ public class Server extends Thread implements CommandSender
 		    	
 		    	if(!nogui) ServerGui.updatePlayers();
 		    	System.out.println("Player " + player + " connected to the Server.");
+		    	broadcast(new Packet20Chat("Player " + player + " connected to the Server.", "SERVER"));
 	    	}
 	    	else System.out.println("Disconnecting Player " + player + " Reason: Multiple Login");
 	    }
@@ -359,7 +361,11 @@ public class Server extends Thread implements CommandSender
 	    	if(!connections.containsValue(c)) return;
 	    	actConnections--;	    	
 	    	c.connected = false;
-	    	if(reason.length() > 0) System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
+	    	if(reason.length() > 0) 
+	    	{
+	    		System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
+	    		broadcast(new Packet20Chat("Disconnecting player " + c.username + ".", "SERVER"));
+	    	}
 	    	broadcast(new Packet7Entity(ServerLoop.level.entityMap.get(ServerLoop.level.onlinePlayersMap.get(c.username)), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 

@@ -94,8 +94,6 @@ public class TableListener implements TableModelListener
 		Editor.instance.dropdownTiles.setSelectedItem(t.id + ": " + t.getName());
 		Editor.instance.labelTiles.setText("<html>" + t.getDescription() + "</html>");
 		
-		Editor.instance.updateTileTextureSelector(t);
-		
 		DefaultTableModel tableModel = (DefaultTableModel) Editor.instance.tableTiles.getModel();
 		tableModel.setRowCount(0);
 		
@@ -106,6 +104,8 @@ public class TableListener implements TableModelListener
 		v.add(data);
 		
 		tableModel.addRow(v);
+		tiles.put(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((Editor.instance.tableTiles.getModel()).getValueAt(0, 2).toString())));
+		Editor.instance.updateTileTextureSelector(t, data);	
 	}
 	
 	public static void setEntity(Entity e)
@@ -130,5 +130,6 @@ public class TableListener implements TableModelListener
 				}
 			}
 		}
+		entities.put(e.id, e);
 	}
 }

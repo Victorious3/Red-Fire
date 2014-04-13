@@ -18,6 +18,8 @@ public class TileTextureSelector extends JLabel implements MouseListener
 {
 	private BufferedImage img;
 	private int selectedTexture = 0;
+	private int texHeight = 1;
+	private int texWidth = 1;
 	
 	public TileTextureSelector(String path)
 	{
@@ -38,7 +40,13 @@ public class TileTextureSelector extends JLabel implements MouseListener
 		int width = getXAmount() * Level.CELL_SIZE;
 		int height = getYAmount() * Level.CELL_SIZE;
 		
-		return new Dimension(width, height);
+		return new Dimension(width + 1, height + 1);
+	}
+	
+	public void setTextureDimension(int width, int height)
+	{
+		this.texHeight = height;
+		this.texWidth = width;
 	}
 	
 	private int getXAmount()
@@ -56,6 +64,16 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	{
 		return selectedTexture;
 	}
+	
+	public void setSelectedTexture(int texture)
+	{
+		selectedTexture = texture;
+	}
+	
+	public Point getSelectedTexturePoint()
+	{
+		return Utils.conv1Dto2DPoint(selectedTexture, img.getWidth() / Level.CELL_SIZE);
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) 
@@ -67,14 +85,58 @@ public class TileTextureSelector extends JLabel implements MouseListener
 			for(int x = 0; x < getXAmount(); x++)
 			{
 				Point p = Utils.conv1Dto2DPoint(i, img.getWidth() / Level.CELL_SIZE);
-				if(p.x * Level.CELL_SIZE + Level.CELL_SIZE <= img.getWidth() && p.y * Level.CELL_SIZE + Level.CELL_SIZE <= img.getHeight()) g2d.drawImage(img.getSubimage(p.x * Level.CELL_SIZE, p.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE), null, x * Level.CELL_SIZE, y * Level.CELL_SIZE);
+				g2d.setColor(Color.black);
+				if(p.x * Level.CELL_SIZE + Level.CELL_SIZE <= img.getWidth() && p.y * Level.CELL_SIZE + Level.CELL_SIZE <= img.getHeight()) 
+				{
+					g2d.drawImage(img.getSubimage(p.x * Level.CELL_SIZE, p.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE), null, x * Level.CELL_SIZE, y * Level.CELL_SIZE);
+					g2d.drawRect(x * Level.CELL_SIZE, y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+				}
 				i++;
 			}
 		}
 		
-		g2d.setColor(new Color(0, 155, 255, 100));
+		g2d.setColor(new Color(0, 0, 255, 100));
+		int selectedTexture = this.selectedTexture;
 		Point p2 = Utils.conv1Dto2DPoint(selectedTexture, getXAmount());
 		g2d.fillRect(p2.x * Level.CELL_SIZE, p2.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+		
+		Point p3 = Utils.conv1Dto2DPoint(selectedTexture, (img.getWidth() / Level.CELL_SIZE));
+		if((texWidth > 1 || texHeight > 1) && (p3.x + texWidth) * Level.CELL_SIZE <= img.getWidth() && (p3.y - texHeight) * Level.CELL_SIZE >= -Level.CELL_SIZE)
+		{
+			for(int x = 0; x < texWidth; x++)
+			{
+				for(int y = 0; y < texHeight; y++)
+				{
+					selectedTexture = this.selectedTexture + x;
+					selectedTexture -= y * (img.getWidth() / Level.CELL_SIZE);
+					Point p4 = Utils.conv1Dto2DPoint(selectedTexture, getXAmount());
+					
+					if(x > 0 || y > 0)
+					{				
+						g2d.setColor(new Color(0, 155, 255, 100));
+						g2d.fillRect(p4.x * Level.CELL_SIZE, p4.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+					}
+					
+					g2d.setColor(Color.black);
+					if(x == 0 && y == 0)
+					{
+						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE + 10}, new int[]{p4.y * Level.CELL_SIZE + Level.CELL_SIZE - 10, p4.y * Level.CELL_SIZE + Level.CELL_SIZE, p4.y * Level.CELL_SIZE + Level.CELL_SIZE}, 3);
+					}
+					if(x == 0 && y == texHeight - 1)
+					{
+						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE + 10}, new int[]{p4.y * Level.CELL_SIZE + 10, p4.y * Level.CELL_SIZE, p4.y * Level.CELL_SIZE}, 3);
+					}
+					if(x == texWidth - 1 && y == texHeight - 1)
+					{
+						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE- 10}, new int[]{p4.y * Level.CELL_SIZE + 10, p4.y * Level.CELL_SIZE, p4.y * Level.CELL_SIZE}, 3);
+					}
+					if(x == texWidth - 1 && y == 0)
+					{
+						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE- 10}, new int[]{p4.y * Level.CELL_SIZE + Level.CELL_SIZE - 10, p4.y * Level.CELL_SIZE + Level.CELL_SIZE, p4.y * Level.CELL_SIZE + Level.CELL_SIZE}, 3);
+					}
+				}
+			}
+		}
 		
 		super.paintComponent(g);
 	}

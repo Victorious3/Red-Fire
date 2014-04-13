@@ -227,7 +227,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 			lpAnim.animate();
 			DrawUtils.fillRect(50, 470, (int)(200 * ((float)lpAnim.getValue() / (float)Game.getPlayer().max_lp)), 15, Color.green);
 			DrawUtils.drawRect(50, 470, 200, 15, Color.black);
-			DrawUtils.drawString(52, 483, "LP", Color.black);
+			DrawUtils.drawString(52, 483, "HP", Color.black);
 		}
 	}
 	
