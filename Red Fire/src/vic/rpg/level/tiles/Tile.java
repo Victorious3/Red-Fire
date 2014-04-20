@@ -3,6 +3,7 @@ package vic.rpg.level.tiles;
 import java.awt.Point;
 
 import vic.rpg.level.Level;
+import vic.rpg.level.entity.EntityTile;
 import vic.rpg.level.path.Path;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
@@ -57,6 +58,25 @@ public class Tile
 	public int getHeight(int x, int y, int data)
 	{
 		return 1;
+	}
+	
+	/**
+	 * Indicates weather the {@link Level} should generate an {@link EntityTile} at the Tile's position. The generated Tile can be specified with {@link #getTileEntity()}
+	 * @see #getTileEntity()
+	 * @return boolean
+	 */
+	public boolean hasTileEntity()
+	{
+		return false;
+	}
+	
+	/**
+	 * The {@link EntityTile} that is added to the level upon tile creation.
+	 * @return
+	 */
+	public Class<EntityTile> getTileEntity()
+	{
+		return null;
 	}
 	
 	/**

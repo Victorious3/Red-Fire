@@ -55,7 +55,7 @@ public class LevelRegistry
 	public static final EntityAppleTree ENTITY_APLTREE = new EntityAppleTree();
 	public static final EntityHouse ENTITY_HOUSE = new EntityHouse();
 	public static final EntityPlayer ENTITY_LIVING_PLAYER = new EntityPlayer();
-	public static final EntityNPC ENTITY_LIVING_NPC = new EntityNPC();
+	public static final EntityNPC ENTITY_LIVING_NPC = new EntityNPC();	
 	
 	public static final Item ITEM_APPLE = new ItemApple();
 	public static final Item ITEM_PEER = new ItemPeer();

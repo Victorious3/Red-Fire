@@ -487,7 +487,7 @@ public class ServerGui
 			    	model.setValueAt(con.packetHandler.getQueueLenght(), i, 2);
 			    	model.setValueAt(con.packetHandler.getSendingQueueLenght(), i, 3);
 					i++;
-			    }
+			    }		
 				model.fireTableDataChanged();
 				players.setBorder(BorderFactory.createTitledBorder("Players (" + Server.actConnections + "/" + Server.MAX_CONNECTIONS + ")"));
 			}

@@ -110,7 +110,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible)
+				if(gc.isVisible && !gc.isLocked)
 				{
 					if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)
 					{
@@ -139,7 +139,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible && gc.mouseDown)
+				if(gc.isVisible && gc.mouseDown && !gc.isLocked)
 				{
 					gc.onClickReleased(x, y, mouseButton);
 					gc.mouseDown = false;
@@ -161,7 +161,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible)
+				if(gc.isVisible && !gc.isLocked)
 				{
 					gc.onDoubleClick(x, y, mouseButton);
 				}
@@ -186,7 +186,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible) gc.onKeyTyped(k, keyCode);
+				if(gc.isVisible && !gc.isLocked) gc.onKeyTyped(k, keyCode);
 			}
 		}
 	}
@@ -202,7 +202,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible) gc.onMouseWheelMoved(amount);
+				if(gc.isVisible && !gc.isLocked) gc.onMouseWheelMoved(amount);
 			}
 		}
 	}
@@ -221,7 +221,7 @@ public class Gui
 		{
 			for(GControl gc : controlsList)
 			{
-				if(gc.isVisible)
+				if(gc.isVisible && !gc.isLocked)
 				{			
 					gc.tick();
 					if(x >= gc.xCoord && x <= gc.xCoord + gc.width && y >= gc.yCoord && y <= gc.yCoord + gc.height)

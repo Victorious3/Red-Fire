@@ -50,19 +50,7 @@ public class PopupMenu implements ActionListener
 		menuSelection.add(replace);
 		menuSelection.add(delete);
 		
-		for(Tile t : LevelRegistry.tileRegistry.values())
-		{
-			JMenuItem item = new JMenuItem(t.id + ": " + t.getClass().getSimpleName());
-			item.addActionListener(this);
-			menuTile.add(item);
-		}
-		
-		for(Entity e : LevelRegistry.entityRegistry.values())
-		{
-			JMenuItem item = new JMenuItem(e.id + ": " + e.getClass().getSimpleName());
-			item.addActionListener(this);
-			menuEntity.add(item);
-		}
+		updateTilesAndEntities();
 		
 		menuNew.add(menuTile);
 		menuNew.add(menuEntity);
@@ -72,6 +60,24 @@ public class PopupMenu implements ActionListener
 		menu.add(help);
 		menu.addSeparator();
 		menu.add(paste);
+	}
+	
+	public void updateTilesAndEntities()
+	{
+		menuTile.removeAll();
+		for(Tile t : LevelRegistry.tileRegistry.values())
+		{
+			JMenuItem item = new JMenuItem(t.id + ": " + t.getClass().getSimpleName());
+			item.addActionListener(this);
+			menuTile.add(item);
+		}
+		menuEntity.removeAll();
+		for(Entity e : LevelRegistry.entityRegistry.values())
+		{
+			JMenuItem item = new JMenuItem(e.id + ": " + e.getClass().getSimpleName());
+			item.addActionListener(this);
+			menuEntity.add(item);
+		}
 	}
 	
 	private int x = 0;
@@ -93,7 +99,7 @@ public class PopupMenu implements ActionListener
 			Clipboard.paste(x, y);
 		}
 		if(arg0.getSource() instanceof JMenuItem)
-		{
+		{	
 			if(((JPopupMenu)((JMenuItem)arg0.getSource()).getParent()).getInvoker() == menuEntity)
 			{
 				int id =  Integer.parseInt(((JMenuItem)arg0.getSource()).getText().split(":")[0]);

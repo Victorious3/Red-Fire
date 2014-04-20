@@ -30,6 +30,7 @@ import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.level.entity.Entity;
+import vic.rpg.level.entity.EntityTile;
 import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.level.path.NodeMap;
@@ -65,6 +66,7 @@ public class Level implements INBTReadWrite
 	public int height;
 	
 	private ArrayList<Integer[][][]> layers;
+	private ArrayList<EntityTile[][]> tileEntites;
 	public HashMap<Integer, Boolean> layerVisibility;
 	
 	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
@@ -94,6 +96,8 @@ public class Level implements INBTReadWrite
 		this.name = name;
 		this.layers = new ArrayList<Integer[][][]>();
 		this.layers.add(new Integer[width][height][2]);
+		this.tileEntites = new ArrayList<EntityTile[][]>();
+		this.tileEntites.add(new EntityTile[width][height]);
 		this.layerVisibility = new HashMap<Integer, Boolean>();
 		this.layerVisibility.put(0, true);
 	}
@@ -108,6 +112,7 @@ public class Level implements INBTReadWrite
 		this.name = "NO_NAME!";
 		this.layers = new ArrayList<Integer[][][]>();
 		this.layerVisibility = new HashMap<Integer, Boolean>();
+		this.tileEntites = new ArrayList<EntityTile[][]>();
 	}
 
 	/**

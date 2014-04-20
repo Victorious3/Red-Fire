@@ -13,6 +13,7 @@ import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.GradientAnimator;
+import vic.rpg.render.DrawUtils.LinearAnimator;
 import vic.rpg.render.TextureFX;
 import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils.Side;
@@ -31,8 +32,16 @@ public class GuiMain extends Gui implements IGButton
 		super(true, true);
 	}
 
-	GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
-//	SlopeAnimator fadeRight = DrawUtils.createSlopeAnimator(1000, -500, 0, 0, 1, 20);
+	private GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
+	private static LinearAnimator fadeRight = DrawUtils.createLinearAnimator(500, -500, 0);
+	
+	private static LinearAnimator fadeRightButton1 = DrawUtils.createLinearAnimator(500, -500, 0);
+	private static LinearAnimator fadeRightButton2 = DrawUtils.createLinearAnimator(600, -600, 0);
+	private static LinearAnimator fadeRightButton3 = DrawUtils.createLinearAnimator(700, -700, 0);
+	private static LinearAnimator fadeRightButton4 = DrawUtils.createLinearAnimator(800, -800, 0);
+	private static LinearAnimator fadeRightButton5 = DrawUtils.createLinearAnimator(900, -900, 0);
+	
+	boolean animationFinished = false;
 	
 	@PostInit(side = Side.CLIENT)
 	public static void init()
@@ -69,11 +78,36 @@ public class GuiMain extends Gui implements IGButton
 		bgimage.draw(gl2, 0, 0);
 		super.render(gl2);	
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(80.0F));
-//		fadeRight.animate();
-		DrawUtils.drawString(Game.WIDTH / 2 - 130 /*+ (int)fadeRight.getValue()*/, Game.HEIGHT / 2 - 100, "Red Fire", Color.white);
+		fadeRight.animate();
+		DrawUtils.drawString(Game.WIDTH / 2 - 130 + (int)fadeRight.getValue(), Game.HEIGHT / 2 - 100, "Red Fire", Color.white);
 		
 		fadeIn.animate();
 		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, fadeIn.getColor());
+		
+		if(!animationFinished)
+		{
+			fadeRightButton1.animate();
+			fadeRightButton2.animate();
+			fadeRightButton3.animate();
+			fadeRightButton4.animate();
+			fadeRightButton5.animate();
+			
+			controlsList.get(0).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton1.getValue();
+			controlsList.get(1).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton2.getValue();
+			controlsList.get(2).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton3.getValue();
+			controlsList.get(3).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton4.getValue();
+			controlsList.get(4).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton5.getValue();
+			
+			if(fadeRightButton5.getValue() == 0) 
+			{
+				animationFinished = true;
+				controlsList.get(0).lock(false);
+				controlsList.get(1).lock(false);
+				controlsList.get(2).lock(false);
+				controlsList.get(3).lock(false);
+				controlsList.get(4).lock(false);
+			}
+		}
 	}
 
 	@Override
@@ -84,11 +118,11 @@ public class GuiMain extends Gui implements IGButton
 		SoundEngine.playClip("GuiMain.bg", true);
 		
 		super.initGui();
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, LanguageRegistry.getTranslation("guimain.singleplayer"), "Singleplayer"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 10, 240, 40, this, LanguageRegistry.getTranslation("guimain.multiplayer"), "Multiplayer"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 60, 240, 40, this, LanguageRegistry.getTranslation("guimain.options"), "Options"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 110, 240, 40, this, LanguageRegistry.getTranslation("guimain.credits"), "Credits"));
-		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 160, 240, 40, this, LanguageRegistry.getTranslation("guimain.quit"), "Quit"));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 - 40, 240, 40, this, LanguageRegistry.getTranslation("guimain.singleplayer"), "Singleplayer").lock(true));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 10, 240, 40, this, LanguageRegistry.getTranslation("guimain.multiplayer"), "Multiplayer").lock(true));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 60, 240, 40, this, LanguageRegistry.getTranslation("guimain.options"), "Options").lock(true));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 110, 240, 40, this, LanguageRegistry.getTranslation("guimain.credits"), "Credits").lock(true));
+		controlsList.add(new GButton(Game.WIDTH / 2 - 120, Game.HEIGHT / 2 + 160, 240, 40, this, LanguageRegistry.getTranslation("guimain.quit"), "Quit").lock(true));
 	}
 
 	@Override

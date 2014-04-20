@@ -53,6 +53,7 @@ import vic.rpg.Game;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
 import vic.rpg.editor.gui.PanelLevel;
+import vic.rpg.editor.gui.PopupMenu;
 import vic.rpg.editor.gui.TileTextureSelector;
 import vic.rpg.editor.listener.ButtonListener;
 import vic.rpg.editor.listener.Key;
@@ -691,6 +692,8 @@ public class Editor
 	
 	public void updateTilesAndEntites() 
 	{
+		PopupMenu.popupMenu.updateTilesAndEntities();
+		
 		dropdownTiles.removeAllItems();
 		dropdownEntities.removeAllItems();
 		

@@ -17,6 +17,7 @@ public abstract class GControl {
 	public int height;
 	
 	public boolean isVisible = true;
+	public boolean isLocked = false;
 	public boolean mouseDown = false;
 	public boolean mouseHovered = false;
 	
@@ -26,6 +27,16 @@ public abstract class GControl {
 		this.yCoord = yCoord;
 		this.height = height;
 		this.width = width;	
+	}
+	
+	/**
+	 * Prevents this GControl from receiving any Events from the parent {@link Gui}. Used for Animation.
+	 * @return this
+	 */
+	public GControl lock(boolean locked)
+	{
+		this.isLocked = locked;
+		return this;
 	}
 	
 	/**
