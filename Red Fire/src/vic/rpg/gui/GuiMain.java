@@ -86,11 +86,7 @@ public class GuiMain extends Gui implements IGButton
 		
 		if(!animationFinished)
 		{
-			fadeRightButton1.animate();
-			fadeRightButton2.animate();
-			fadeRightButton3.animate();
-			fadeRightButton4.animate();
-			fadeRightButton5.animate();
+			DrawUtils.animate(fadeRightButton1, fadeRightButton2, fadeRightButton3, fadeRightButton4, fadeRightButton5);
 			
 			controlsList.get(0).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton1.getValue();
 			controlsList.get(1).xCoord = Game.WIDTH / 2 - 120 + (int)fadeRightButton2.getValue();

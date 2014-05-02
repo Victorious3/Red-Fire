@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -357,9 +359,10 @@ public class DrawUtils
 		drawString(x, y, string, color, true, -1);
 	}
 	
-	private static int[] drawString(int preX, int x, int y, String string, Color color, int maxWidth, boolean draw, boolean split)
+	private static RenderedText drawString(int preX, int x, int y, String string, Color color, int maxWidth, boolean draw, boolean split)
 	{
 		int x2 = x;
+		String finalString = "";
 		for(String subString : string.split("(?<=\\s+|,\\s)"))
 		{
 			double width = FONT.getStringBounds(subString, getTextRenderer().getFontRenderContext()).getWidth();
@@ -367,17 +370,42 @@ public class DrawUtils
 			{
 				x2 = preX;
 				y += FONT.getSize();
+				if(draw) drawUnformattedString(x2, y, subString, color);
+				x2 += width;
+				finalString += "\n" + subString;
 			}
-			if(draw) drawUnformattedString(x2, y, subString, color);
-			x2 += width;
+			else
+			{
+				if(draw) drawUnformattedString(x2, y, subString, color);
+				x2 += width;
+				finalString += subString;
+			}
 		}
-		return new int[]{x2, y};
+		return new RenderedText(x2, y, finalString);
 	}
 	
-	private static Dimension drawString(int x, int y, String string, Color color, boolean draw, int maxWidth) 
+	private static Color fontColor = Color.white;
+	private static boolean fontLock = false;
+	
+	/**
+	 * Used to lock the color and the font style for the text rendering.
+	 * @param lockFont
+	 */
+	public static void lockFont(boolean lockFont)
+	{
+		fontLock = lockFont;
+	}
+	
+	private static RenderedText drawString(int x, int y, String string, Color color, boolean draw, int maxWidth) 
 	{		
 		int x2 = x;
 		int y2 = y;
+		String finalString = "";
+		
+		if(fontLock)
+		{
+			color = fontColor;
+		}
 		
 		if(string.contains("&"))
 		{
@@ -404,60 +432,109 @@ public class DrawUtils
 							} catch (Exception e) {
 								
 							}
+							
+							if(rString.length() > 0)
+							{
+								RenderedText i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
+								x2 = (int)(x + i2.getDimension().getWidth());
+								y2 = (int)(x + i2.getDimension().getHeight());
+								finalString += "&" + control + "#" + i2.getText();
+							}
+							else
+							{
+								finalString += "&" + control + "#";
+							}
 						}
 						else
 						{
-							int[] i2 = drawString(x, x2, y2, LanguageRegistry.getTranslation(control), color, x + maxWidth, draw, maxWidth > 0);
-							x2 = x + i2[0];
-							y2 = x + i2[1];
-						}
-					
-						if(rString.length() > 0)
-						{
-							int[] i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
-							x2 = x + i2[0];
-							y2 = x + i2[1];			
+							RenderedText i2 = drawString(x, x2, y2, LanguageRegistry.getTranslation(control), color, x + maxWidth, draw, maxWidth > 0);
+							x2 = (int)(x + i2.getDimension().getWidth());
+							y2 = (int)(x + i2.getDimension().getHeight());
+							finalString += "&" + control + "#";
 						}
 					}
 					else
 					{
 						String control = subString.substring(0, 1);
 						String rString = subString.substring((i != 0 ? 1 : 0), subString.length());
+						
+						boolean valid = true;
 						switch(control)
 						{
-						case "b" : setFont(getFont().deriveFont(Font.BOLD)); break;
-						case "i" : setFont(getFont().deriveFont(Font.ITALIC)); break;
-						case "p" : setFont(getFont().deriveFont(Font.PLAIN)); break;
-						case "0" : color = Color.black; break;
-						case "1" : color = Color.white; break;
-						case "2" : color = Color.blue; break;
-						case "3" : color = Color.green; break;
-						case "4" : color = Color.red; break;
-						case "5" : color = new Color(218, 165, 032); break;
-						case "6" : color = Color.yellow; break;
-						case "7" : color = Color.pink; break;
-						case "8" : color = Color.gray; break;
-						case "9" : color = Color.darkGray; break;
+							case "b" : setFont(getFont().deriveFont(Font.BOLD)); break;
+							case "i" : setFont(getFont().deriveFont(Font.ITALIC)); break;
+							case "p" : setFont(getFont().deriveFont(Font.PLAIN)); break;
+							case "0" : color = Color.black; break;
+							case "1" : color = Color.white; break;
+							case "2" : color = Color.blue; break;
+							case "3" : color = Color.green; break;
+							case "4" : color = Color.red; break;
+							case "5" : color = new Color(218, 165, 032); break;
+							case "6" : color = Color.yellow; break;
+							case "7" : color = Color.pink; break;
+							case "8" : color = Color.gray; break;
+							case "9" : color = Color.darkGray; break;
+							default: valid = false; break;
 						}
+						
 						if(rString.length() > 0)
 						{
-							int[] i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
-							x2 = x + i2[0];
-							y2 = x + i2[1];
+							RenderedText i2 = drawString(x, x2, y2, rString, color, x + maxWidth, draw, maxWidth > 0);
+							x2 = (int)(x + i2.getDimension().getWidth());
+							y2 = (int)(x + i2.getDimension().getHeight());
+							if(valid) finalString += "&" + control; 
+							finalString += i2.getText();
+						}
+						else
+						{
+							if(valid) finalString += "&" + control;
 						}
 					}
 				}
 				i++;
 			}
-			setFont(getFont().deriveFont(Font.PLAIN));
 		}
 		else 
 		{
-			int[] i2 = drawString(x, x2, y2, string, color, x + maxWidth, draw, maxWidth > 0);
-			x2 = x + i2[0];
-			y2 = x + i2[1];
+			RenderedText i2 = drawString(x, x2, y2, string, color, x + maxWidth, draw, maxWidth > 0);
+			x2 = (int)(x + i2.getDimension().getWidth());
+			y2 = (int)(x + i2.getDimension().getHeight());
+			finalString += i2.getText();
 		}
-		return new Dimension(x2 - x, y2 - y + FONT.getSize());
+		
+		fontColor = color;
+		if(!fontLock) setFont(getFont().deriveFont(Font.PLAIN));
+		
+		return new RenderedText(x2 - x, y2 - y + FONT.getSize(), finalString);
+	}
+	
+	public static class RenderedText
+	{
+		private final int width;
+		private final int height;
+		private final String text;
+		
+		private RenderedText(int width, int height, String text)
+		{
+			this.width = width;
+			this.height = height;
+			this.text = text;
+		}
+		
+		public Dimension getDimension()
+		{
+			return new Dimension(width, height);
+		}
+		
+		public String getText()
+		{
+			return text;
+		}
+		
+		public String[] getLineSeperatedText()
+		{
+			return text.split("\n");
+		}
 	}
 	
 	/**
@@ -527,12 +604,12 @@ public class DrawUtils
 		return drawString(0, 0, string, null, false, -1).height;
 	}
 	
-	public static Dimension getFormattedStringBounds(String string, int maxLenght)
+	public static RenderedText getFormattedStringMetrics(String string, int maxLenght)
 	{
 		return drawString(0, 0, string, null, false, maxLenght);
 	}
 	
-	public static Dimension getFormattedStringBounds(String string)
+	public static RenderedText getFormattedStringMetrics(String string)
 	{
 		return drawString(0, 0, string, null, false, -1);
 	}
@@ -617,6 +694,18 @@ public class DrawUtils
 	{
 		return color.getAlpha() / 255.0F;
 	}
+	
+	/**
+	 * Calls {@link Animator#animate()} on every {@link Animator} in the given list.
+	 * @param animators
+	 */
+	public static void animate(Animator... animators)
+	{
+		for(Animator ani : animators)
+		{
+			ani.animate();
+		}
+	}
 
 	/**
 	 * Creates a new {@link Animator} that caps the framerate on the given FPS and repeats for times.
@@ -656,6 +745,18 @@ public class DrawUtils
 		return new LinearAnimator(timeMillis, start, end);
 	}
 	
+	/** 
+	 * Creates a new {@link Animator} that follows the given set of {@link Animator Animators}.
+	 * Accepted Animators are: {@link LinearAnimator} and {@link PauseAnimator}.</br></br>
+	 * <b>The first and the last Animator in the list has to be of the Type {@link LinearAnimator}!</b>
+	 * @param animators
+	 * @return CascadeAnimator
+	 */
+	public static CascadeAnimator createCascadeAnimator(Animator... animators)
+	{
+		return new CascadeAnimator(animators);
+	}
+	
 	/**
 	 * An Animator is providing an easy way to animate stuff.
 	 * @author Victorious3
@@ -664,6 +765,153 @@ public class DrawUtils
 	public static interface Animator
 	{
 		public boolean animate();
+		
+		/**
+		 * Sets the Animator to its original value
+		 * @return this
+		 */
+		public Animator reset();
+		
+		/**
+		 * Sets the Animator to its final value
+		 * @return this
+		 */
+		public Animator forward();
+		
+		/**
+		 * Indicates weather this Animator has reached its final value.
+		 * @return
+		 */
+		public boolean hasFinished();
+	}
+	
+	private static class PauseAnimator implements Animator
+	{
+		private final double start = 0;
+		private final double end = 100;
+		private final double step;
+		
+		private double value;
+		
+		private static final double FPS = 30D;
+		
+		private PauseAnimator(int timeMillis)
+		{
+			double timePerFrame = 0.001 * (double)FPS;	
+			step = (end - value) / (timePerFrame * (double)timeMillis);
+		}
+		
+		private FPSAnimator animator = new FPSAnimator(FPS);
+		
+		@Override
+		public boolean animate() 
+		{
+			if(animator.animate())
+			{
+				double newVal = value + step;
+				if(newVal <= end) value = newVal;
+				else value = end;
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public Animator reset() 
+		{
+			value = start;
+			return this;
+		}
+
+		@Override
+		public Animator forward() 
+		{
+			value = end;
+			return this;
+		}
+
+		@Override
+		public boolean hasFinished() 
+		{
+			return value >= end;
+		}		
+	}
+	
+	public static class CascadeAnimator implements Animator
+	{
+		private ArrayList<Animator> list = new ArrayList<Animator>();
+		private int pointer = 0;
+		private double value = 0;
+		
+		private CascadeAnimator(Animator... animators)
+		{
+			value = ((LinearAnimator)animators[0]).value;
+			list.addAll(Arrays.asList(animators));
+		}
+		
+		/**
+		 * Creates a new {@link PauseAnimator} that does sleep for the given time interval.
+		 * @param timeMillis
+		 * @return PauseAnimator
+		 */
+		public static PauseAnimator generateBreak(int timeMillis)
+		{
+			return new PauseAnimator(timeMillis);
+		}
+		
+		@Override
+		public boolean animate() 
+		{
+			if(!hasFinished())
+			{
+				list.get(pointer).animate();
+				if(list.get(pointer) instanceof LinearAnimator)
+				{
+					value = ((LinearAnimator)list.get(pointer)).value;
+				}			
+				if(list.get(pointer).hasFinished())
+				{
+					pointer++;
+				}		
+				return true;
+			}
+			return false;
+		}
+
+		@Override
+		public Animator reset() 
+		{
+			for(Animator ani : list)
+			{
+				ani.reset();
+			}
+			pointer = 0;
+			value = ((LinearAnimator)list.get(0)).value;
+			return this;
+		}
+
+		@Override
+		public Animator forward() 
+		{	
+			for(Animator ani : list)
+			{
+				ani.forward();
+			}
+			pointer = list.size() - 1;
+			value = ((LinearAnimator)list.get(list.size() - 1)).value;
+			return this;
+		}
+
+		@Override
+		public boolean hasFinished() 
+		{
+			return pointer == list.size();
+		}
+		
+		public double getValue()
+		{
+			return value;
+		}
 	}
 	
 	public static class FPSAnimator implements Animator
@@ -694,7 +942,7 @@ public class DrawUtils
 		@Override
 		public boolean animate()
 		{
-			if(!repeat && times >= maxTimes) return false;		
+			if(!hasFinished()) return false;		
 			long currTime = System.currentTimeMillis();
 			if(currTime >= lastTime + timePerFrame)
 			{
@@ -712,6 +960,26 @@ public class DrawUtils
 		public long getTimes()
 		{
 			return times;
+		}
+
+		@Override
+		public Animator reset() 
+		{
+			times = 0;
+			return this;
+		}
+
+		@Override
+		public Animator forward() 
+		{
+			times = maxTimes;
+			return this;
+		}
+
+		@Override
+		public boolean hasFinished() 
+		{
+			return repeat && times >= maxTimes;
 		}
 	}
 	
@@ -787,6 +1055,7 @@ public class DrawUtils
 		 * Sets the color to the initial color.
 		 * @return
 		 */
+		@Override
 		public GradientAnimator reset()
 		{
 			r = start.getRed();
@@ -800,6 +1069,7 @@ public class DrawUtils
 		 * Sets the color to the final color.
 		 * @return
 		 */
+		@Override
 		public GradientAnimator forward()
 		{
 			r = rEnd;
@@ -808,19 +1078,27 @@ public class DrawUtils
 			a = aEnd;
 			return this;
 		}
+
+		@Override
+		public boolean hasFinished() 
+		{
+			return r == rEnd && g == gEnd && b == bEnd && a == aEnd;
+		}
 	}
 
 	public static class LinearAnimator implements Animator
 	{	
 		private final double end;
-			
-		private double step;
+		private final double start;		
+		private final double step;
+		
 		private double value;
 		
 		private static final double FPS = 30D;
 		
 		private LinearAnimator(int timeMillis, long start, long end)
 		{
+			this.start = start;
 			this.end = end;
 			this.value = start;
 			
@@ -857,6 +1135,26 @@ public class DrawUtils
 		public double getValue()
 		{
 			return value;
+		}
+
+		@Override
+		public Animator reset() 
+		{
+			value = start;
+			return this;
+		}
+
+		@Override
+		public Animator forward() 
+		{
+			value = end;
+			return this;
+		}
+
+		@Override
+		public boolean hasFinished() 
+		{
+			return value == end;
 		}
 	}
 }

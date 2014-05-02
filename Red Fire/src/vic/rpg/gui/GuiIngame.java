@@ -1,10 +1,10 @@
 package vic.rpg.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.media.opengl.GL2;
 
@@ -20,6 +20,7 @@ import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.LinearAnimator;
+import vic.rpg.render.DrawUtils.RenderedText;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Utils;
@@ -36,6 +37,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	
 	private boolean init = false;
 	private ArrayList<Object[]> chatValues = new ArrayList<Object[]>();
+	private CopyOnWriteArrayList<Object[]> chatBuffer = new CopyOnWriteArrayList<Object[]>();
 	private String lastChat = "";
 	private int scroll = 0;
 	private final int MAX_CHATLINES = 10;
@@ -164,6 +166,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 		
 		if(keyCode == KeyEvent.VK_ENTER)
 		{
+			scroll = 0;
 			if(chatField.isVisible)
 			{
 				chatField.isVisible = false;
@@ -193,26 +196,40 @@ public class GuiIngame extends GuiContainer implements IGButton
 		super.render(gl2);
 		
 		DrawUtils.setGL(gl2);
+		
+		if(chatBuffer.size() > 0)
+		{
+			for(Object[] o : chatBuffer)
+			{
+				addChatMessageFromBuffer((String)o[0], (String)o[1]);
+			}
+			chatBuffer.clear();
+		}
+		
 		DrawUtils.setFont(new Font("Monospaced", 0, 20));
 		DrawUtils.drawString(5, 20, (int)Game.game.GL_ANIMATOR.getLastFPS() + " FPS", Color.white);
 		
 		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		
 		int i2 = 0;
-		for(int i = 0 + scroll; i < chatValues.size() - scroll; i++)
+		int scroll = this.scroll;
+		if(!chatField.isVisible) scroll = 0;
+		
+		DrawUtils.lockFont(true);
+		for(int i = (chatValues.size() - MAX_CHATLINES + scroll) > 0 ? (chatValues.size() - MAX_CHATLINES + scroll) : 0; i < chatValues.size() + scroll; i++)
 		{
 			if(chatValues.get(i) != null)
 			{		
 				Object[] clog = chatValues.get(i);
 				if(System.currentTimeMillis() < (long)clog[1] + 20000L || chatField.isVisible)
 				{
-					Dimension dim = DrawUtils.getFormattedStringBounds((String)clog[0], MAX_CHATSIZE);
-					DrawUtils.fillRect(0, (int)(39 + i2 * DrawUtils.getFont().getSize()), MAX_CHATSIZE, DrawUtils.getFont().getSize() * (dim.height / DrawUtils.getFont().getSize()), new Color(0, 0, 0, 120));
-					DrawUtils.drawString(0, (int)(50 + i2 * DrawUtils.getFont().getSize()), (String)clog[0], Color.white, MAX_CHATSIZE);
-					i2 += dim.height / DrawUtils.getFont().getSize();
+					DrawUtils.fillRect(0, (int)(39 + i2 * DrawUtils.getFont().getSize()), MAX_CHATSIZE, 14, new Color(0, 0, 0, 120));
+					DrawUtils.drawString(0, (int)(50 + i2 * DrawUtils.getFont().getSize()), (String)clog[0], Color.white);
+					i2++;
 				}
 			}
 		}
+		DrawUtils.lockFont(false);
 		
 		if(focusedEntity != null)
 		{
@@ -235,7 +252,7 @@ public class GuiIngame extends GuiContainer implements IGButton
 	public void onMouseWheelMoved(int amount) 
 	{
 		//TODO Implement the rest of the scrolling
-		if(scroll + amount / 3 >= 0) scroll += amount / 3;
+		if(scroll + amount / 3 <= 0 && Math.abs(scroll + amount / 3) <= chatValues.size() - MAX_CHATLINES) scroll += amount / 3;
 	}
 
 	/**
@@ -245,14 +262,26 @@ public class GuiIngame extends GuiContainer implements IGButton
 	 */
 	public void addChatMessage(String s, String playername)
 	{		
+		chatBuffer.add(new Object[]{s, playername});
+	}
+	
+	private void addChatMessageFromBuffer(String s, String playername)
+	{
 		if(playername.equals("SERVER"))
 		{
-			s = "[&color=178,0,255#SERVER&1]: " + s;
+			s = "&p&1[&color=178,0,255#SERVER&1]: " + s;
 		}
-		else s = "[" + playername + "]: " + s;
+		else s = "&p&1[" + playername + "]: " + s;
 		
-		if(chatValues.size() + 1 > MAX_CHATLINES) chatValues.remove(0);
-		chatValues.add(new Object[]{s, System.currentTimeMillis()});
+		DrawUtils.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		RenderedText rs = DrawUtils.getFormattedStringMetrics(s, MAX_CHATSIZE);
+		long time = System.currentTimeMillis();
+		
+		for(String s2 : rs.getLineSeperatedText())
+		{
+			if(chatValues.size() + 1 > 100) chatValues.remove(0);
+			chatValues.add(new Object[]{s2, time});
+		}
 	}
 
 	@Override

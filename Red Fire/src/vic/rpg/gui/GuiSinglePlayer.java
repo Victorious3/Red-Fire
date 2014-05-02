@@ -22,6 +22,7 @@ import vic.rpg.gui.controls.GList.IGList;
 import vic.rpg.level.Level;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.render.DrawUtils.GradientAnimator;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
@@ -40,6 +41,8 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	private GList levelList;
 	private ArrayList<File> list = new ArrayList<File>();
 	
+	private GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
+	
 	public GuiSinglePlayer() 
 	{
 		super(true, true);
@@ -50,11 +53,13 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	{		
 		DrawUtils.setGL(gl2);
 		DrawUtils.drawTexture(0, 0, bgimage);	
-		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, new Color(80, 80, 80, 180));
 		super.render(gl2);
 		
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(50.0F));
 		DrawUtils.drawString(Game.WIDTH / 2 - 135, 50, "Start a Game", Color.white);
+		
+		fadeIn.animate();
+		DrawUtils.fillRect(0, 0, Game.WIDTH, Game.HEIGHT, fadeIn.getColor());
 	}
 	
 	@Override
