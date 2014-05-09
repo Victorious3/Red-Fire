@@ -26,7 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 import vic.rpg.client.net.NetHandler;
-import vic.rpg.client.packet.PacketHandlerSP;
+import vic.rpg.client.net.PacketHandlerSP;
 import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;

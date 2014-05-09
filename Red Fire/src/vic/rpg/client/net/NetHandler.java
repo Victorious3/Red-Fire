@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.Socket;
 
 import vic.rpg.Game;
-import vic.rpg.client.packet.PacketHandlerSP;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiError;
 import vic.rpg.gui.GuiMain;

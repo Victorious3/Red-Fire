@@ -8,6 +8,8 @@ public class Packet20Chat extends Packet
 {
 	public String message;
 	public String player;
+	public String prefix = "";
+	public String suffix = "";
 
 	public Packet20Chat(String message, String player) 
 	{
@@ -28,6 +30,8 @@ public class Packet20Chat extends Packet
 		try {
 			player = stream.readUTF();
 			message = stream.readUTF();
+			prefix = stream.readUTF();
+			suffix = stream.readUTF();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -39,6 +43,8 @@ public class Packet20Chat extends Packet
 		try {
 			stream.writeUTF(player);
 			stream.writeUTF(message);
+			stream.writeUTF(prefix);
+			stream.writeUTF(suffix);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		

@@ -15,6 +15,11 @@ public class CommandKick extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("operator.kick"))
+		{
+			noPermission(commandSender);
+			return;
+		}
 		if(args.size() > 0)
 		{
 			if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))

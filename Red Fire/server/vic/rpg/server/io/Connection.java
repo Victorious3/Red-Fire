@@ -14,6 +14,7 @@ import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.PacketHandlerMP;
+import vic.rpg.server.permission.Permission;
 
 public class Connection extends Thread implements CommandSender
 {   	
@@ -28,6 +29,10 @@ public class Connection extends Thread implements CommandSender
     
     public String username;
 	public InetAddress ip;
+	
+	public Permission permission;
+	public String prefix;
+	public String suffix;
     
     public Connection(Socket socket) 
     {
@@ -131,5 +136,11 @@ public class Connection extends Thread implements CommandSender
 	public void print(String string) 
 	{
 		packetHandler.addPacketToSendingQueue(new Packet20Chat(string, "SERVER"));
+	}
+
+	@Override
+	public Permission getPermission() 
+	{
+		return permission;
 	}
 }

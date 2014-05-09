@@ -15,6 +15,12 @@ public class CommandSay extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("operator.say"))
+		{
+			noPermission(commandSender);
+			return;
+		}
+		
 		if(args.size() > 0)
 		{		
 			String s = args.get(0);

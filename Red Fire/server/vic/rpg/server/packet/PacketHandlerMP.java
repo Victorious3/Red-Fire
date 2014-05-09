@@ -88,6 +88,8 @@ public class PacketHandlerMP extends Thread
 				}
 				else
 				{
+					((Packet20Chat)p).prefix = con.prefix;
+					((Packet20Chat)p).suffix = con.suffix;
 					System.out.println("[" + con.username + "]: " + message);
 					Server.server.broadcast(p);
 				}

@@ -16,23 +16,28 @@ public class CommandTime extends Command
 	{
 		if(args.size() > 0 && args.get(0).equals("set"))
 		{
-			if(args.size() > 1 && args.get(1) != null) 
+			if(commandSender.getPermission().hasPermission("world.time.set"))
 			{
-				String time = args.get(1);
-				try {
-					int t2 = Integer.parseInt(time);
-					ServerLoop.level.time = t2;
-					commandSender.print("Time set to " + t2);
-				} catch (NumberFormatException e) {
-					commandSender.print("Time has to be numeric!");
-				}				
+				if(args.size() > 1 && args.get(1) != null) 
+				{
+					String time = args.get(1);
+					try {
+						int t2 = Integer.parseInt(time);
+						ServerLoop.level.time = t2;
+						commandSender.print("Time set to " + t2);
+					} catch (NumberFormatException e) {
+						commandSender.print("Time has to be numeric!");
+					}				
+				}
+				else
+				{
+					help(null);
+				}
 			}
-			else
-			{
-				help(null);
-			}
+			else noPermission(commandSender);
 		}
-		else commandSender.print("The current game time is " + ServerLoop.level.time);
+		else if(commandSender.getPermission().hasPermission("world.time.get")) commandSender.print("The current game time is " + ServerLoop.level.time);
+		else noPermission(commandSender);
 	}
 
 	@Override

@@ -1,11 +1,10 @@
-package vic.rpg.client.packet;
+package vic.rpg.client.net;
 
 import java.awt.Point;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 
 import vic.rpg.Game;
-import vic.rpg.client.net.NetHandler;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiPlayer;
@@ -156,7 +155,7 @@ public class PacketHandlerSP extends Thread
 		}
 		else if(p.id == 20)
 		{
-			GuiIngame.gui.addChatMessage(((Packet20Chat)p).message, ((Packet20Chat)p).player);
+			GuiIngame.gui.addChatMessage(((Packet20Chat)p).message, ((Packet20Chat)p).prefix + ((Packet20Chat)p).player + ((Packet20Chat)p).suffix);
 		}
 	}
 	

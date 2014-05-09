@@ -12,6 +12,11 @@ public class CommandHelp extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("utility.help"))
+		{
+			noPermission(commandSender);
+			return;
+		}
 		if(args.size() > 0)
 		{
 			if(Command.commands.get(args.get(0)) != null)

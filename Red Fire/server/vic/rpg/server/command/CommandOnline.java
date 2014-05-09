@@ -1,5 +1,6 @@
 package vic.rpg.server.command;
 
+import java.util.Iterator;
 import java.util.List;
 
 import vic.rpg.server.Server;
@@ -15,12 +16,19 @@ public class CommandOnline extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("utility.online"))
+		{
+			noPermission(commandSender);
+			return;
+		}
+		
 		String out = "";
 		out += "Online Players: " + Server.actConnections + " (";
 		
-		for(Connection con : Server.connections.values())
+		Iterator<Connection> iter = Server.connections.values().iterator();
+		while(iter.hasNext())
 		{
-			out += con.username + ", ";
+			out += iter.next().username + (iter.hasNext() ? ", " : "");
 		}
 		
 		out += ")";

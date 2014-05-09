@@ -22,6 +22,7 @@ public abstract class Command
 		commands.put("ban", new CommandBan());
 		commands.put("kick", new CommandKick());
 		commands.put("give", new CommandGive());
+		commands.put("permission", new CommandPermission());
 	}
 	
 	public static void getHelp(CommandSender commandSender)
@@ -46,6 +47,11 @@ public abstract class Command
 	{
 		commandSender.print("&4/" + name + ":");
 		commandSender.print("&4Usage: " + getUsage());
+	}
+	
+	public void noPermission(CommandSender commandSender)
+	{
+		commandSender.print("&4You have no permission!");
 	}
 	
 	public abstract void cast(List<String> args, CommandSender commandSender);

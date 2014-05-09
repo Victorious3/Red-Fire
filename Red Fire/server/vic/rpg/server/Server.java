@@ -30,6 +30,8 @@ import vic.rpg.server.packet.Packet1ConnectionRefused;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
+import vic.rpg.server.permission.Permission;
+import vic.rpg.server.permission.PermissionHelper;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 
@@ -42,6 +44,7 @@ public class Server extends Thread implements CommandSender
 	public BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 	public InputHandler inputHandler;
 	public ServerLoop serverLoop;
+	public Permission permission = Permission.createRoot(true);
 	
 	public static int MAX_CONNECTIONS = 10;	
 	public static int actConnections = 0;
@@ -134,6 +137,9 @@ public class Server extends Thread implements CommandSender
 					System.out.println("Performing init operations...");
 					server.init();
 					System.out.println("done!");
+					
+					System.out.println("Loading Permissions...");
+					PermissionHelper.loadPermissions();
 					
 					server.serverSocket = new ServerSocket(port);
 					server.listener = new Listener(new Server());
@@ -393,5 +399,11 @@ public class Server extends Thread implements CommandSender
 	public void print(String string) 
 	{
 		System.out.println(string);
+	}
+
+	@Override
+	public Permission getPermission() 
+	{
+		return permission;
 	}
 }

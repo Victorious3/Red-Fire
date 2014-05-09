@@ -251,7 +251,6 @@ public class GuiIngame extends GuiContainer implements IGButton
 	@Override
 	public void onMouseWheelMoved(int amount) 
 	{
-		//TODO Implement the rest of the scrolling
 		if(scroll + amount / 3 <= 0 && Math.abs(scroll + amount / 3) <= chatValues.size() - MAX_CHATLINES) scroll += amount / 3;
 	}
 

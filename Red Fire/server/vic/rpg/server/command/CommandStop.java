@@ -15,6 +15,12 @@ public class CommandStop extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("operator.stop"))
+		{
+			noPermission(commandSender);
+			return;
+		}
+		
 		System.out.println("Stopping Server...");
 		Server.server.stopServer();
 		while(Server.STATE != GameState.QUIT)

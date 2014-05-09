@@ -18,6 +18,11 @@ public class CommandGive extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("world.give"))
+		{
+			noPermission(commandSender);
+			return;
+		}
 		if(args.size() > 1)
 		{
 			int amount = 1;

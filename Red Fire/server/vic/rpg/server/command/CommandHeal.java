@@ -16,6 +16,11 @@ public class CommandHeal extends Command
 	@Override
 	public void cast(List<String> args, CommandSender commandSender) 
 	{
+		if(!commandSender.getPermission().hasPermission("world.heal"))
+		{
+			noPermission(commandSender);
+			return;
+		}
 		if(args.size() == 0 && commandSender instanceof Connection)
 		{
 			Connection con = (Connection)commandSender;

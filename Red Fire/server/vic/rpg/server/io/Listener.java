@@ -4,6 +4,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import vic.rpg.server.Server;
+import vic.rpg.server.permission.PermissionHelper;
 
 public class Listener extends Thread 
 {
@@ -51,6 +52,9 @@ public class Listener extends Thread
 		        	if(player.length() != 0 || version.length() != 0)
 		        	{
 		        		con.username = player;
+		        		con.permission = PermissionHelper.getPermissionForPlayer(player);
+		        		con.prefix = PermissionHelper.getPrefix(player);
+		        		con.suffix = PermissionHelper.getSuffix(player);
 		        		con.ip = socket.getInetAddress();
 		        		con.start();
 			        	server.addConnection(con, player, version);
