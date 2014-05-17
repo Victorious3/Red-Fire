@@ -5,12 +5,17 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
+import javax.media.opengl.GL2;
+
 import org.jnbt.CompoundTag;
 
 import vic.rpg.item.ItemStack;
 import vic.rpg.level.Editable;
 import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.RenderRegistry;
+import vic.rpg.render.DrawUtils;
 import vic.rpg.render.LightSource;
+import vic.rpg.render.Screen;
 import vic.rpg.render.TextureFX;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
@@ -39,6 +44,16 @@ public class EntityPlayer extends EntityLiving
 		if(Utils.getSide() == Side.CLIENT) this.initRender();
 	}
 	
+	@Override
+	public void postRender(GL2 gl2) 
+	{
+		super.render(gl2);
+		DrawUtils.setGL(gl2);
+		Point p = Utils.convCartToIso(new Point(xCoord + Screen.xOffset, yCoord + Screen.yOffset));
+		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(18F));
+		DrawUtils.drawString(p.x - DrawUtils.getFormattedStringLenght(username) / 2, p.y - getHeight() - 10, username, Color.white);
+	}
+
 	@Override
 	public void formatInventory() 
 	{		

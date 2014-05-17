@@ -8,17 +8,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import bsh.EvalError;
 import bsh.Interpreter;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jogamp.opengl.util.texture.Texture;
 
 /**
@@ -156,40 +154,40 @@ public class TileJSON extends Tile
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public static TileJSON parse(File file) throws FileNotFoundException, IOException, ParseException
+	public static TileJSON parse(File file) throws FileNotFoundException, IOException
 	{
 		TileJSON tile = new TileJSON();
-		JSONParser parser = new JSONParser();
-		JSONObject obj = (JSONObject)parser.parse(new FileReader(file));
+		JsonParser parser = new JsonParser();
+		JsonObject obj = (JsonObject)parser.parse(new FileReader(file));
 
-		String name = (String)obj.get("name");
-		Integer id = (int)(long)obj.get("id");
-		String description = (String)(obj.containsKey("description") ? obj.get("description") : "");
-		String source = (String)(obj.containsKey("source") ? obj.get("source") : "");
-		Texture texture = TextureLoader.requestTexture(Utils.readImage(Utils.getAppdata() + "/resources/tiles/" + (String)obj.get("texture")));
+		String name = obj.get("name").getAsString();
+		Integer id = obj.get("id").getAsInt();
+		String description = obj.has("description") ? obj.get("description").getAsString() : "";
+		String source = obj.has("source") ? obj.get("source").getAsString() : "";
+		Texture texture = TextureLoader.requestTexture(Utils.readImage(Utils.getAppdata() + "/resources/tiles/" + obj.get("texture").getAsString()));
 		
 		tile.filePath = file.getAbsolutePath();
-		tile.texturePath = (String)obj.get("texture");
+		tile.texturePath = obj.get("texture").getAsString();
 		tile.suggestedID = id;
 		tile.name = name;
 		tile.description = description;
 		tile.source = source;
-		tile.isTicking = obj.containsKey("source");
+		tile.isTicking = obj.has("source");
 		tile.texture = texture;
 		
-		JSONArray tileArray = (JSONArray)obj.get("tiles");
+		JsonArray tileArray = (JsonArray)obj.get("tiles");
 		
 		for(Object o : tileArray)
 		{
-			JSONObject o2 = (JSONObject)o;
-			Integer data = (int)(long)(o2.containsKey("data") ? o2.get("data") : 0L);
-			Point texPoint = new Point((int)(long)o2.get("texX"), (int)(long)o2.get("texY"));
-			Integer height = (int)(long)(o2.containsKey("height") ? o2.get("height") : 1L);
-			Boolean emitsLight = (Boolean)(o2.containsKey("emitsLight") ? o2.get("emitsLight") : false);
-			LightSource ls = emitsLight ? new LightSource((int)(long)o2.get("lightWidth"), (float)(long)o2.get("lightBrightness"), new Color((int)(long)o2.get("lightColor")), (boolean)o2.get("lightFlickering")) : null;
-			Point lightPosition = emitsLight ? new Point((int)(long)o2.get("lightX"), (int)(long)o2.get("lightY")) : null;
-			Boolean isWalkingPermitted = (Boolean)o2.get("isWalkingPermitted");
-			Double movementCost = isWalkingPermitted ? (long)o2.get("movementCost") : 0D;
+			JsonObject o2 = (JsonObject)o;
+			int data = o2.has("data") ? o2.get("data").getAsInt() : 0;
+			Point texPoint = new Point(o2.get("texX").getAsInt(), o2.get("texY").getAsInt());
+			int height = o2.has("height") ? o2.get("height").getAsInt() : 1;
+			boolean emitsLight = o2.has("emitsLight") ? o2.get("emitsLight").getAsBoolean() : false;
+			LightSource ls = emitsLight ? new LightSource(o2.get("lightWidth").getAsInt(), o2.get("lightBrightness").getAsFloat(), new Color(o2.get("lightColor").getAsInt()), o2.get("lightFlickering").getAsBoolean()) : null;
+			Point lightPosition = emitsLight ? new Point(o2.get("lightX").getAsInt(), o2.get("lightY").getAsInt()) : null;
+			boolean isWalkingPermitted = o2.get("isWalkingPermitted").getAsBoolean();
+			double movementCost = isWalkingPermitted ? o2.get("movementCost").getAsDouble() : 0;
 			
 			tile.textureCoords.put(data, texPoint);
 			tile.heights.put(data, height);

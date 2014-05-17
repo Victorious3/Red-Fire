@@ -1,9 +1,9 @@
 package vic.rpg.server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import vic.rpg.server.command.Command;
 import vic.rpg.server.command.CommandSender;
@@ -20,12 +20,17 @@ public class InputHandler extends Thread
 	{
 		if(s.startsWith("/"))
 		{
-			String[] args = s.split(" ");
-			String command = args[0];
+			List<String> list = new ArrayList<String>();
+			Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(s);
+			
+			while(m.find())
+			{
+				list.add(m.group(1).replace("\"",""));
+			}
+			
+			String command = list.remove(0);
 			command = command.replace("/", "");
-			LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
-			args2.remove(0);
-			handleCommand(command, args2, Server.server);
+			handleCommand(command, list, Server.server);
 		}
 	}
 	

@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 
+import javax.media.opengl.GL2;
+
 import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
@@ -21,6 +23,7 @@ import vic.rpg.level.tiles.Tile;
 import vic.rpg.listener.EntityEventListener;
 import vic.rpg.render.Drawable;
 import vic.rpg.render.LightSource;
+import vic.rpg.render.Screen;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet11EntityInteraction;
 import vic.rpg.server.packet.Packet12Event;
@@ -276,4 +279,10 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 	{
 		return Priority.PRIORITY_LEAST;
 	}
+
+	/**
+	 * Called by {@link Screen} after rendering the light sources if there are any.
+	 * @param gl2
+	 */
+	public void postRender(GL2 gl2){}
 }

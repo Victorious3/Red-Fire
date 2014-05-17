@@ -247,6 +247,12 @@ public class Server extends Thread implements CommandSender
 			System.out.println("Disconnecting Player " + player + " Reason: Tried to be funny");
 			con = null;
 		}
+		else if(player.contains(" "))
+		{
+			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Sorry but your name is invalid. Don't take it personal."));
+			System.out.println("Disconnecting Player " + player + " Reason: Bad bad name.");
+			con = null;
+		}
 		else if(!version.equals(GameRegistry.VERSION))
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Wrong Version! Your Version: " + version + "; Server Version: " + GameRegistry.VERSION));
@@ -332,9 +338,11 @@ public class Server extends Thread implements CommandSender
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
-		
+		}	
 		System.out.println("done!");
+		
+		System.out.println("Saving permissions...");
+		PermissionHelper.savePermissions();
 		
 		System.out.println("Saving to file...");
 		serverLoop.stop();

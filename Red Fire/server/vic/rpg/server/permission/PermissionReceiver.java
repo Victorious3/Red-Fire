@@ -1,12 +1,14 @@
 package vic.rpg.server.permission;
 
+import java.util.ArrayList;
+
 public class PermissionReceiver implements Cloneable
 {
 	public String name;
 	public Permission permission;
 	public String prefix;
 	public String suffix;
-	public String[] groups;
+	public ArrayList<String> groups;
 	
 	public String getPrefix()
 	{

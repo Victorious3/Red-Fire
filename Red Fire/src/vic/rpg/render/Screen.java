@@ -253,6 +253,11 @@ public class Screen extends Drawable
 			gl2.glDisable(GL2.GL_TEXTURE_2D);
 			
 			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);		
+			
+			for(Entity e : Game.level.entityMap.values())
+			{
+				e.postRender(gl2);
+			}
 		}
     	if(Gui.currentGui != null) 
 		{

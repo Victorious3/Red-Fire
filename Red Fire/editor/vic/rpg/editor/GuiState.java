@@ -2,20 +2,26 @@ package vic.rpg.editor;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import vic.rpg.utils.Utils;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * GuiState saves the state of a given {@link Component} and can restore it on restart.
@@ -24,7 +30,7 @@ import vic.rpg.utils.Utils;
  */
 public class GuiState 
 {
-	private static HashMap<String, HashMap<String, Object>> state = new HashMap<String, HashMap<String, Object>>();
+	private static HashMap<String, HashMap<String, JsonPrimitive>> state = new HashMap<String, HashMap<String, JsonPrimitive>>();
 	
 	/**
 	 * Saves the state of a given component.
@@ -37,26 +43,26 @@ public class GuiState
 		{
 			JFrame frame = (JFrame) comp;
 			newState(name);
-			state.get(name).put("width", Long.valueOf(frame.getWidth()));
-			state.get(name).put("height", Long.valueOf(frame.getHeight()));
-			state.get(name).put("x", Long.valueOf(frame.getX()));
-			state.get(name).put("y", Long.valueOf(frame.getY()));
-			state.get(name).put("isMaximized", (frame.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH);
+			state.get(name).put("width", new JsonPrimitive(frame.getWidth()));
+			state.get(name).put("height", new JsonPrimitive(frame.getHeight()));
+			state.get(name).put("x", new JsonPrimitive(frame.getX()));
+			state.get(name).put("y", new JsonPrimitive(frame.getY()));
+			state.get(name).put("isMaximized", new JsonPrimitive((frame.getExtendedState() & JFrame.MAXIMIZED_BOTH) == JFrame.MAXIMIZED_BOTH));
 		}
 		else if(comp instanceof JDialog)
 		{
 			JDialog dialog = (JDialog) comp;
 			newState(name);
-			state.get(name).put("width", Long.valueOf(dialog.getWidth()));
-			state.get(name).put("height", Long.valueOf(dialog.getHeight()));
-			state.get(name).put("x", Long.valueOf(dialog.getX()));
-			state.get(name).put("y", Long.valueOf(dialog.getY()));
+			state.get(name).put("width", new JsonPrimitive(dialog.getWidth()));
+			state.get(name).put("height", new JsonPrimitive(dialog.getHeight()));
+			state.get(name).put("x", new JsonPrimitive(dialog.getX()));
+			state.get(name).put("y", new JsonPrimitive(dialog.getY()));
 		}
 		else if(comp instanceof JSplitPane)
 		{
 			JSplitPane splitPane = (JSplitPane) comp;
 			newState(name);
-			state.get(name).put("divider", Long.valueOf(splitPane.getDividerLocation()));
+			state.get(name).put("divider", new JsonPrimitive(splitPane.getDividerLocation()));
 		}
 		else
 		{
@@ -75,23 +81,23 @@ public class GuiState
 		if(comp instanceof JFrame)
 		{
 			JFrame frame = (JFrame) comp;
-			if((Boolean)state.get(name).get("isMaximized")) frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			if(state.get(name).get("isMaximized").getAsBoolean()) frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			else
 			{
-				frame.setSize((int)(long)state.get(name).get("width"), (int)(long)state.get(name).get("height"));
-				frame.setLocation((int)(long)state.get(name).get("x"), (int)(long)state.get(name).get("y"));
+				frame.setSize(state.get(name).get("width").getAsInt(), state.get(name).get("height").getAsInt());
+				frame.setLocation(state.get(name).get("x").getAsInt(), state.get(name).get("y").getAsInt());
 			}
 		}
 		else if(comp instanceof JDialog)
 		{
 			JDialog dialog = (JDialog) comp;
-			dialog.setSize((int)(long)state.get(name).get("width"), (int)(long)state.get(name).get("height"));
-			dialog.setLocation((int)(long)state.get(name).get("x"), (int)(long)state.get(name).get("y"));
+			dialog.setSize(state.get(name).get("width").getAsInt(), state.get(name).get("height").getAsInt());
+			dialog.setLocation(state.get(name).get("x").getAsInt(), state.get(name).get("y").getAsInt());
 		}
 		else if(comp instanceof JSplitPane)
 		{
 			JSplitPane splitPane = (JSplitPane) comp;
-			splitPane.setDividerLocation((int)(long)state.get(name).get("divider"));
+			splitPane.setDividerLocation(state.get(name).get("divider").getAsInt());
 		}
 		else
 		{
@@ -102,25 +108,23 @@ public class GuiState
 	/**
 	 * Saves the current state to the file {@code %APPDATA%/.RedFire/tmp/guistate.dat}.
 	 */
-	@SuppressWarnings("unchecked")
 	public static void saveToFile()
 	{
-		JSONObject mainObj = new JSONObject();
+		JsonObject mainObj = new JsonObject();
 		for(String name : state.keySet())
 		{
-			HashMap<String, Object> data = state.get(name);
-			JSONObject subObj = new JSONObject();
+			HashMap<String, JsonPrimitive> data = state.get(name);
+			JsonObject subObj = new JsonObject();
 			for(String name2 : data.keySet())
 			{
-				Object obj = data.get(name2);
-				subObj.put(name2, obj);
+				subObj.add(name2, data.get(name2));
 			}
-			mainObj.put(name, subObj);
+			mainObj.add(name, subObj);
 		}
 		File out = Utils.getOrCreateFile(Utils.getAppdata() + "/tmp/guistate.dat");
 		try {
 			FileWriter writer = new FileWriter(out);
-			writer.write(mainObj.toJSONString());
+			writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(mainObj));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
@@ -132,28 +136,29 @@ public class GuiState
 	{
 		File f = new File(Utils.getAppdata() + "/tmp/guistate.dat");
 		if(!f.exists()) return;
-		JSONParser parser = new JSONParser();
+		
+		JsonParser parser = new JsonParser();
+		JsonObject mainObj;
 		try {
-			JSONObject mainObj = (JSONObject)parser.parse(new FileReader(f));
-			for(Object name : mainObj.keySet())
-			{
-				state.put((String) name, new HashMap<String, Object>());
-				JSONObject subObj = (JSONObject) mainObj.get(name);
-				for(Object name2 : subObj.keySet())
-				{
-					Object obj = subObj.get(name2);
-					state.get(name).put((String)name2, obj);
-				}
-			}		
+			mainObj = (JsonObject)parser.parse(new FileReader(f));
 			
-		} catch (IOException | ParseException e) {
+			for(Entry<String, JsonElement> obj1 : mainObj.entrySet())
+			{
+				state.put(obj1.getKey(), new HashMap<String, JsonPrimitive>());
+				JsonObject subObj = obj1.getValue().getAsJsonObject();
+				for(Entry<String, JsonElement> obj2 : subObj.entrySet())
+				{
+					state.get(obj1.getKey()).put(obj2.getKey(), obj2.getValue().getAsJsonPrimitive());
+				}		
+			}			
+		} catch (JsonIOException | JsonSyntaxException | FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
 	
 	private static void newState(String name)
 	{
 		if(state.containsKey(name)) return;
-		state.put(name, new HashMap<String, Object>());
+		state.put(name, new HashMap<String, JsonPrimitive>());
 	}
 }

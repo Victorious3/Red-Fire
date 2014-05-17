@@ -31,7 +31,7 @@ public class CommandTime extends Command
 				}
 				else
 				{
-					help(null);
+					help(commandSender);
 				}
 			}
 			else noPermission(commandSender);

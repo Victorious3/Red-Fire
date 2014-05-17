@@ -2,8 +2,9 @@ package vic.rpg.server.packet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import vic.rpg.level.entity.Entity;
 import vic.rpg.level.entity.EntityEvent;
@@ -79,12 +80,18 @@ public class PacketHandlerMP extends Thread
 				String message = ((Packet20Chat)p).message;
 				if(message.startsWith("/"))
 				{
-					String[] args = message.split(" ");
-					String command = args[0];
+					List<String> list = new ArrayList<String>();
+					Matcher m = Pattern.compile("([^\"]\\S*|\".+?\")\\s*").matcher(message);
+					
+					while(m.find())
+					{
+						list.add(m.group(1).replace("\"",""));
+					}
+					
+					String command = list.remove(0);
 					command = command.replace("/", "");
-					LinkedList<String> args2 = new LinkedList<String>(Arrays.asList(args));
-					args2.remove(0);
-					Server.server.inputHandler.handleCommand(command, args2, con);
+					
+					Server.server.inputHandler.handleCommand(command, list, con);
 				}
 				else
 				{

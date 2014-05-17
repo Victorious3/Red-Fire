@@ -210,7 +210,6 @@ public class Permission
 			Permission perm = this;
 			while(perm.parent != null)
 			{
-				System.out.println(perm + " " + perm.parent);
 				if(perm.access != perm.parent.access)
 				{
 					valid = true;
