@@ -10,17 +10,17 @@ import org.jnbt.CompoundTag;
 import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
 
-import vic.rpg.level.Level;
+import vic.rpg.world.Map;
 
 public class Packet6World extends Packet
 {
-	Level level;
+	Map map;
 	byte[] data;
 	
-	public Packet6World(Level level)
+	public Packet6World(Map map)
 	{
 		super(6);
-		this.level = level;
+		this.map = map;
 	}
 	
 	public Packet6World()
@@ -65,7 +65,7 @@ public class Packet6World extends Packet
 		NBTOutputStream out;
 		try {
 			out = new NBTOutputStream(new DataOutputStream(baos));
-			out.writeTag(level.writeToNBT(null, true));		
+			out.writeTag(map.writeToNBT(null, true));		
 			baos.flush();
 			baos.close();
 			out.close();

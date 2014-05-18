@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import vic.rpg.editor.listener.Mouse;
-import vic.rpg.level.Level;
-import vic.rpg.level.entity.Entity;
+import vic.rpg.world.Map;
+import vic.rpg.world.entity.Entity;
 
 public class Clipboard 
 {
@@ -25,30 +25,30 @@ public class Clipboard
 		{
 			Entity e2 = e.clone();
 			
-			int x2 = (int) ((float)(x - Editor.instance.labelLevel.xOffset) * (1 / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.instance.labelLevel.yOffset) * (1 / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelMap.xOffset) * (1 / Editor.instance.labelMap.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelMap.yOffset) * (1 / Editor.instance.labelMap.getScale()));
 			
 			e2.xCoord += x2;
 			e2.yCoord += y2;
 			
-			Editor.instance.level.addEntity(e2, e2.xCoord, e2.yCoord);
+			Editor.instance.map.addEntity(e2, e2.xCoord, e2.yCoord);
 			Mouse.selectedEntities.add(e2);
 		}
 		for(Point p : tiles)
 		{
 			Point p2 = (Point) p.clone();
 			
-			int x2 = (int) ((float)(x - Editor.instance.labelLevel.xOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)(y - Editor.instance.labelLevel.yOffset) / Level.CELL_SIZE * (1 / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)(x - Editor.instance.labelMap.xOffset) / Map.CELL_SIZE * (1 / Editor.instance.labelMap.getScale()));
+			int y2 = (int) ((float)(y - Editor.instance.labelMap.yOffset) / Map.CELL_SIZE * (1 / Editor.instance.labelMap.getScale()));
 			
 			p2.x += x2;
 			p2.y += y2;
 			
 			Integer[] data = tilesID.get(p).clone();
-			Editor.instance.level.setTile(data[0].intValue(), p2.x, p2.y, data[1].intValue(), Editor.layerID);
+			Editor.instance.map.setTile(data[0].intValue(), p2.x, p2.y, data[1].intValue(), Editor.layerID);
 		}
 		
-		Editor.instance.labelLevel.updateUI();
+		Editor.instance.labelMap.updateUI();
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class Clipboard
 		}
 		for(Point p : tiles)
 		{
-			Integer[] values = new Integer[]{Editor.instance.level.getTileAt(p.x, p.y, Editor.layerID).id, Editor.instance.level.getTileDataAt(p.x, p.y, Editor.layerID)};
+			Integer[] values = new Integer[]{Editor.instance.map.getTileAt(p.x, p.y, Editor.layerID).id, Editor.instance.map.getTileDataAt(p.x, p.y, Editor.layerID)};
 			tilesID.put(p, values);
 		}
 	}
@@ -83,9 +83,9 @@ public class Clipboard
 	{
 		for(Entity e : Mouse.selectedEntities)
 		{
-			Editor.instance.level.entityMap.remove(e.UUID);
+			Editor.instance.map.entityMap.remove(e.UUID);
 		}
 		Mouse.selectedEntities.clear();
-		Editor.instance.labelLevel.updateUI();
+		Editor.instance.labelMap.updateUI();
 	}
 }

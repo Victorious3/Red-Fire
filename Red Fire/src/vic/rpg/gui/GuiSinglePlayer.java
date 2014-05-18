@@ -19,7 +19,6 @@ import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GList;
 import vic.rpg.gui.controls.GList.IGList;
-import vic.rpg.level.Level;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.GradientAnimator;
@@ -28,17 +27,18 @@ import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
 
 import com.jogamp.opengl.util.texture.Texture;
 
 /**
- * GuiSinglePlayer is the gui where you can select a {@link Level} located in "%APPDATA%\.RedFire\saves\" for loading and starting an internal Server.
+ * GuiSinglePlayer is the gui where you can select a {@link Map} located in "%APPDATA%\.RedFire\saves\" for loading and starting an internal Server.
  * @author Victorious3
  */
 public class GuiSinglePlayer extends Gui implements IGList, IGButton
 {
 	private Texture bgimage = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/connect_1.png"));
-	private GList levelList;
+	private GList mapList;
 	private ArrayList<File> list = new ArrayList<File>();
 	
 	private GradientAnimator fadeIn = DrawUtils.createGratientAnimator(1000, new Color(0, 0, 0, 255), new Color(0, 0, 0, 0));
@@ -83,8 +83,8 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		}
 		
 		
-		levelList = new GList(150, 70, 500, 380, 30, nameList, this);
-		controlsList.add(levelList);
+		mapList = new GList(150, 70, 500, 380, 30, nameList, this);
+		controlsList.add(mapList);
 		
 		controlsList.add(new GButton(270, 500, 100, 30, this, "Cancel", "Cancel"));
 		controlsList.add(new GButton(410, 500, 100, 30, this, "Load", "Load"));
@@ -136,9 +136,9 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))
 		{
 			Gui.setGui(null);
-			SoundEngine.loadClip("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav", "Level.MainLoop");
+			SoundEngine.loadClip("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav", "Map.MainLoop");
 			SoundEngine.stopAll();
-			SoundEngine.playClip("Level.MainLoop", true);
+			SoundEngine.playClip("Map.MainLoop", true);
 		}
 	}
 
@@ -153,6 +153,6 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	{
 		GButton b2 = (GButton)button;
 		if(b2.name.equalsIgnoreCase("Cancel")) Gui.setGui(new GuiMain());
-		if(b2.name.equalsIgnoreCase("Load")) loadGame(list.get(levelList.selectedPos));
+		if(b2.name.equalsIgnoreCase("Load")) loadGame(list.get(mapList.selectedPos));
 	}	
 }

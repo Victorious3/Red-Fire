@@ -23,7 +23,7 @@ public class CommandTime extends Command
 					String time = args.get(1);
 					try {
 						int t2 = Integer.parseInt(time);
-						ServerLoop.level.time = t2;
+						ServerLoop.map.time = t2;
 						commandSender.print("Time set to " + t2);
 					} catch (NumberFormatException e) {
 						commandSender.print("Time has to be numeric!");
@@ -36,7 +36,7 @@ public class CommandTime extends Command
 			}
 			else noPermission(commandSender);
 		}
-		else if(commandSender.getPermission().hasPermission("world.time.get")) commandSender.print("The current game time is " + ServerLoop.level.time);
+		else if(commandSender.getPermission().hasPermission("world.time.get")) commandSender.print("The current game time is " + ServerLoop.map.time);
 		else noPermission(commandSender);
 	}
 

@@ -6,8 +6,8 @@ import java.awt.event.KeyListener;
 
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
-import vic.rpg.level.entity.Entity;
 import vic.rpg.registry.GameRegistry;
+import vic.rpg.world.entity.Entity;
 
 public class Key implements KeyListener
 {
@@ -58,8 +58,8 @@ public class Key implements KeyListener
 				
 			if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 			{
-				int minX = Editor.instance.level.getWidth();
-				int minY = Editor.instance.level.getHeight();
+				int minX = Editor.instance.map.getWidth();
+				int minY = Editor.instance.map.getHeight();
 				int maxX = 0;
 				int maxY = 0;
 				
@@ -77,13 +77,13 @@ public class Key implements KeyListener
 					{
 						e.xCoord += plusX;
 						e.yCoord += plusY;
-						Editor.instance.level.entityMap.put(e.UUID, e);
+						Editor.instance.map.entityMap.put(e.UUID, e);
 						if(e.xCoord < minX) minX = e.xCoord;
 						if(e.yCoord < minY) minY = e.yCoord;
 						if(e.xCoord + e.getWidth() > maxX) maxX = e.xCoord + e.getWidth();
 						if(e.yCoord + e.getHeight() > maxY) maxY = e.yCoord + e.getHeight();
 					}			
-					Editor.instance.labelLevel.updateUI();
+					Editor.instance.labelMap.updateUI();
 					Mouse.selection = null;
 				}
 			}
@@ -121,7 +121,7 @@ public class Key implements KeyListener
 				if(button == 4) Editor.instance.buttonErase.setSelected(true);
 				
 				Editor.instance.buttonMove.setSelected(false);
-				Editor.instance.labelLevel.updateUI();
+				Editor.instance.labelMap.updateUI();
 				
 				if(Editor.instance.frame.getCursor() == GameRegistry.CURSOR_DRAG || Editor.instance.frame.getCursor() == GameRegistry.CURSOR_DROP)
 				{

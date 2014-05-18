@@ -9,13 +9,13 @@ import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
 import vic.rpg.combat.SlotSkill;
-import vic.rpg.level.INBTReadWrite;
-import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
+import vic.rpg.world.INBTReadWrite;
+import vic.rpg.world.entity.living.EntityLiving;
+import vic.rpg.world.entity.living.Inventory;
 
 /**
  * An item is a thing a player can pick up, use and play with it. It can be a weapon, a potion or anything else that can be carried in an {@link Inventory}.

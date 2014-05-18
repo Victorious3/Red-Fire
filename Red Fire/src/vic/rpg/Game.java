@@ -31,8 +31,6 @@ import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiMain;
-import vic.rpg.level.Level;
-import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
@@ -41,6 +39,8 @@ import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
+import vic.rpg.world.Map;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.awt.Screenshot;
@@ -76,7 +76,7 @@ public class Game extends GLCanvas implements Runnable
 	
 	//Game Objects
 	public static String playerUUID;
-	public static Level level;
+	public static Map map;
 	
 	/**
 	 * Returns the instance of the currently active player by using {@link #playerUUID}.
@@ -85,9 +85,9 @@ public class Game extends GLCanvas implements Runnable
 	 */
 	public static EntityPlayer getPlayer()
 	{
-		if(Game.level != null && playerUUID != null)
+		if(Game.map != null && playerUUID != null)
 		{
-			return (EntityPlayer) Game.level.entityMap.get(playerUUID);
+			return (EntityPlayer) Game.map.entityMap.get(playerUUID);
 		}
 		return null;
 	}
@@ -233,7 +233,7 @@ public class Game extends GLCanvas implements Runnable
     }
     
     /**
-     * Main update loop. It updates the Screen, the currently active gui and the active level. 
+     * Main update loop. It updates the Screen, the currently active gui and the active map. 
      * It triggers {@link #isUpdating} to inform the Render Thread that a game tick is in progress.
      */
 	private synchronized void tick() 
@@ -245,9 +245,9 @@ public class Game extends GLCanvas implements Runnable
         {
 			Gui.currentGui.updateGui();
         }
-		if(level != null)
+		if(map != null)
 		{
-			level.tick();
+			map.tick();
 		}	
 		isUpdating = false;
 	}

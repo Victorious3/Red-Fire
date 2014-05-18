@@ -11,9 +11,9 @@ import javax.swing.JPopupMenu;
 
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
-import vic.rpg.level.tiles.TileJSON;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.tiles.TileJSON;
 
 public class ButtonListener implements ActionListener 
 {
@@ -25,11 +25,11 @@ public class ButtonListener implements ActionListener
 	{
 		if(arg0.getSource() == Editor.instance.open)
 		{
-			Editor.openLevel();
+			Editor.openMap();
 		}
-		else if(arg0.getSource() == Editor.instance.newLevel)
+		else if(arg0.getSource() == Editor.instance.newMap)
 		{
-			Editor.createNewLevel();
+			Editor.createNewMap();
 		}
 		else if(arg0.getSource() == Editor.instance.save)
 		{
@@ -39,13 +39,13 @@ public class ButtonListener implements ActionListener
 			}
 			else
 			{
-				Editor.instance.level.writeToFile(file);
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" was saved", "Save", JOptionPane.INFORMATION_MESSAGE);  	
+				Editor.instance.map.writeToFile(file);
+            	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved", "Save", JOptionPane.INFORMATION_MESSAGE);  	
 			}
 		}
 		else if(arg0.getSource() == Editor.instance.saveas)
 		{
-			Editor.saveLevel();
+			Editor.saveMap();
 		}
 		else if(arg0.getSource() == Editor.instance.exit)
 		{
@@ -96,9 +96,9 @@ public class ButtonListener implements ActionListener
 		}
 		else if(arg0.getSource() == Editor.instance.buttonRefresh)
 		{
-			Editor.instance.labelLevel.updateUI();
-			Editor.instance.level.nodeMap.recreate(Editor.instance.level);
-			Editor.instance.frame.setTitle("Red Fire Level Editor (" + Editor.instance.level.name + ")");			
+			Editor.instance.labelMap.updateUI();
+			Editor.instance.map.nodeMap.recreate(Editor.instance.map);
+			Editor.instance.frame.setTitle("Red Fire Map Editor (" + Editor.instance.map.name + ")");			
 		}
 		else if(arg0.getSource() == Editor.instance.buttonEdit)
 		{
@@ -109,7 +109,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 //			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonMove)
@@ -121,7 +121,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 //			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonPaint)
@@ -133,7 +133,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 //			Editor.instance.frameBrush.setVisible(true);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonErase)
@@ -145,7 +145,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 //			Editor.instance.frameBrush.setVisible(true);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonPath)
@@ -157,7 +157,7 @@ public class ButtonListener implements ActionListener
 			
 			Mouse.selectedEntities.clear();
 			Mouse.selectedTiles.clear();
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 //			Editor.instance.frameBrush.setVisible(false);
 		}
 		else if(arg0.getSource() == Editor.instance.buttonNewEntity)
@@ -177,7 +177,7 @@ public class ButtonListener implements ActionListener
 			if(confirm == JOptionPane.OK_OPTION)
 			{
 				TableListener.entities.remove(id);
-				LevelRegistry.entityRegistry.remove(id);
+				WorldRegistry.entityRegistry.remove(id);
 				Editor.instance.updateTilesAndEntites();
 				File f = new File(Utils.getAppdata() + "/resources/entities/" + name.substring(1) + ".bsh");
 				System.out.println("Deleted File " + f.getAbsolutePath());
@@ -190,18 +190,18 @@ public class ButtonListener implements ActionListener
 		}
 		else if(arg0.getSource() == Editor.instance.buttonEditTile)
 		{
-			Editor.instance.tileEditor.show((TileJSON)LevelRegistry.tileRegistry.get(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0])));
+			Editor.instance.tileEditor.show((TileJSON)WorldRegistry.tileRegistry.get(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0])));
 		}
 		else if(arg0.getSource() == Editor.instance.buttonDeleteTile)
 		{
 			int id = Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]);
-			TileJSON tile = (TileJSON)LevelRegistry.tileRegistry.get(id);
+			TileJSON tile = (TileJSON)WorldRegistry.tileRegistry.get(id);
 			
 			int confirm = JOptionPane.showConfirmDialog(Editor.instance.frame, "Do you really want to delete Tile " + tile.getName() + "?", "Delete Tile", JOptionPane.OK_CANCEL_OPTION);
 			if(confirm == JOptionPane.OK_OPTION)
 			{
 				TableListener.tiles.remove(id);
-				LevelRegistry.tileRegistry.remove(id);
+				WorldRegistry.tileRegistry.remove(id);
 				Editor.instance.updateTilesAndEntites();
 				File f = new File(tile.getFilePath());
 				System.out.println("Deleted File " + f.getAbsolutePath());

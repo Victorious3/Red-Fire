@@ -46,9 +46,9 @@ import javax.swing.text.PlainDocument;
 
 import vic.rpg.editor.gui.PanelEntity;
 import vic.rpg.editor.listener.TableListener;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.entity.Entity;
 
 public class EntityEditor implements WindowListener
 {
@@ -533,7 +533,7 @@ public class EntityEditor implements WindowListener
 		String text = 
 		"//IMPORTANT! Don't change any of the existing methods if you want the auto edit to be sufficent!" + n +
 		"//IMPORTS" + n +
-		"import vic.rpg.level.entity.*;" + n +
+		"import vic.rpg.world.entity.*;" + n +
 		"import vic.rpg.render.TextureLoader;" + n +
 		"import vic.rpg.utils.Utils;" + n +
 		"import java.awt.geom.Area;" + n +
@@ -617,8 +617,8 @@ public class EntityEditor implements WindowListener
 			fw.write(editor.getText());
 			fw.close();
 			
-			Entity ent = LevelRegistry.addNewEntity(f);
-			TableListener.entities.put(ent.id, LevelRegistry.entityRegistry.get(ent.id).clone());
+			Entity ent = WorldRegistry.addNewEntity(f);
+			TableListener.entities.put(ent.id, WorldRegistry.entityRegistry.get(ent.id).clone());
 			Editor.instance.updateTilesAndEntites();
 		} catch (Exception e1) {
 			e1.printStackTrace();

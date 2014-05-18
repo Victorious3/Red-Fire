@@ -26,6 +26,7 @@ public class CommandPermission extends Command
 				if(commandSender.getPermission().hasPermission("permissions.reload"))
 				{
 					PermissionHelper.reload();
+					commandSender.print("Reloaded permissions.");
 				}
 				else noPermission(commandSender);
 			}

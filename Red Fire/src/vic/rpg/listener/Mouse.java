@@ -39,18 +39,18 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseInputList
 		xCoord = (int) (arg0.getX() * xRes);
 		yCoord = (int) (arg0.getY() * yRes);
 		
-		if(Game.level != null)
+		if(Game.map != null)
 		{
-			Game.level.onMouseMoved(xCoord, yCoord);
+			Game.map.onMouseMoved(xCoord, yCoord);
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) 
 	{
-		if(Game.level != null)
+		if(Game.map != null)
 		{
-			Game.level.onMouseClicked(xCoord, yCoord, arg0.getButton());
+			Game.map.onMouseClicked(xCoord, yCoord, arg0.getButton());
 		}
 		if(Gui.currentGui != null && arg0.getClickCount() > 1)
 		{

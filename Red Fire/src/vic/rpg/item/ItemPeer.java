@@ -1,10 +1,10 @@
 package vic.rpg.item;
 
-import vic.rpg.level.entity.living.EntityController;
-import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
+import vic.rpg.world.entity.living.EntityController;
+import vic.rpg.world.entity.living.EntityLiving;
+import vic.rpg.world.entity.living.Inventory;
 
 public class ItemPeer extends Item {
 

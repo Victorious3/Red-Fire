@@ -11,9 +11,9 @@ import vic.rpg.item.ItemFilter;
 import vic.rpg.item.ItemPeer;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
-import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.world.entity.living.Inventory;
 
 /**
  * GuiPlayer displays all player related stuff like the {@link Inventory} or the {@link Skill} configuration.

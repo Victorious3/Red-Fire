@@ -18,8 +18,6 @@ import java.util.List;
 import vic.rpg.ClassFinder;
 import vic.rpg.Init;
 import vic.rpg.PostInit;
-import vic.rpg.level.Level;
-import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.gui.ServerGui;
@@ -34,6 +32,8 @@ import vic.rpg.server.permission.Permission;
 import vic.rpg.server.permission.PermissionHelper;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
+import vic.rpg.world.Map;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 public class Server extends Thread implements CommandSender
 {	
@@ -146,13 +146,13 @@ public class Server extends Thread implements CommandSender
 					server.inputHandler = new InputHandler();
 					server.serverLoop = new ServerLoop();
 					
-					System.out.println("Loading level...");
-					if(ServerLoop.file != null) ServerLoop.level = Level.readFromFile(ServerLoop.file);
+					System.out.println("Loading map...");
+					if(ServerLoop.file != null) ServerLoop.map = Map.readFromFile(ServerLoop.file);
 					
-					if(ServerLoop.level == null)
+					if(ServerLoop.map == null)
 					{
-						ServerLoop.level = new Level(100, 100, "New Level");
-						ServerLoop.level.populate();
+						ServerLoop.map = new Map(100, 100, "New Map");
+						ServerLoop.map.populate();
 					}
 					System.out.println("done!");
 					
@@ -268,15 +268,15 @@ public class Server extends Thread implements CommandSender
 		    	
 		    	EntityPlayer playerEntity = new EntityPlayer();
 		    	
-		    	if(ServerLoop.level.offlinePlayersMap.containsKey(player))
+		    	if(ServerLoop.map.offlinePlayersMap.containsKey(player))
 		    	{
-		    		playerEntity = ServerLoop.level.offlinePlayersMap.remove(player);	    		
-		    		ServerLoop.level.onlinePlayersMap.put(playerEntity.username, playerEntity.UUID);
-		    		ServerLoop.level.entityMap.put(playerEntity.UUID, playerEntity);
+		    		playerEntity = ServerLoop.map.offlinePlayersMap.remove(player);	    		
+		    		ServerLoop.map.onlinePlayersMap.put(playerEntity.username, playerEntity.UUID);
+		    		ServerLoop.map.entityMap.put(playerEntity.UUID, playerEntity);
 		    	}	    	
-		    	else ServerLoop.level.createPlayer(playerEntity, player, ServerLoop.level.spawnX, ServerLoop.level.spawnY);
+		    	else ServerLoop.map.createPlayer(playerEntity, player, ServerLoop.map.spawnX, ServerLoop.map.spawnY);
 		    		
-		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.level));
+		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.map));
 		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
 		    	con.STATE = GameState.LOADING;
 		    	
@@ -349,11 +349,11 @@ public class Server extends Thread implements CommandSender
 		
 		if(ServerLoop.file != null)
 		{
-			ServerLoop.level.writeToFile(ServerLoop.file);
+			ServerLoop.map.writeToFile(ServerLoop.file);
 		}
 		else
 		{
-			ServerLoop.level.writeToFile(Utils.getOrCreateFile(Utils.getAppdata() + "/saves/" + ServerLoop.level.name + ".lvl"));
+			ServerLoop.map.writeToFile(Utils.getOrCreateFile(Utils.getAppdata() + "/saves/" + ServerLoop.map.name + ".lvl"));
 		}
 		
 		System.out.println("done!");
@@ -380,10 +380,10 @@ public class Server extends Thread implements CommandSender
 	    		System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
 	    		broadcast(new Packet20Chat("Disconnecting player " + c.username + ".", "SERVER"));
 	    	}
-	    	broadcast(new Packet7Entity(ServerLoop.level.entityMap.get(ServerLoop.level.onlinePlayersMap.get(c.username)), Packet7Entity.MODE_DELETE), c.username);
+	    	broadcast(new Packet7Entity(ServerLoop.map.entityMap.get(ServerLoop.map.onlinePlayersMap.get(c.username)), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
-	    	ServerLoop.level.offlinePlayersMap.put(c.username, (EntityPlayer)ServerLoop.level.entityMap.remove(ServerLoop.level.onlinePlayersMap.remove(c.username)));
+	    	ServerLoop.map.offlinePlayersMap.put(c.username, (EntityPlayer)ServerLoop.map.entityMap.remove(ServerLoop.map.onlinePlayersMap.remove(c.username)));
 	    	if(!nogui) ServerGui.updatePlayers();
 		} catch (IOException e2) {
 			e2.printStackTrace();

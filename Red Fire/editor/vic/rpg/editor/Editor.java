@@ -52,7 +52,7 @@ import javax.swing.table.DefaultTableModel;
 import vic.rpg.Game;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
-import vic.rpg.editor.gui.PanelLevel;
+import vic.rpg.editor.gui.PanelMap;
 import vic.rpg.editor.gui.PopupMenu;
 import vic.rpg.editor.gui.TileTextureSelector;
 import vic.rpg.editor.listener.ButtonListener;
@@ -63,16 +63,16 @@ import vic.rpg.editor.listener.TableListener;
 import vic.rpg.editor.listener.ZoomListener;
 import vic.rpg.editor.script.Script;
 import vic.rpg.editor.tiles.TileMaterial;
-import vic.rpg.level.Level;
-import vic.rpg.level.TexturePath;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.entity.EntityCustom;
-import vic.rpg.level.tiles.Tile;
-import vic.rpg.level.tiles.TileJSON;
-import vic.rpg.registry.LevelRegistry;
 import vic.rpg.registry.RenderRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
+import vic.rpg.world.TexturePath;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.entity.EntityCustom;
+import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tiles.TileJSON;
 
 //TODO This class is ridiculously big...
 public class Editor
@@ -88,7 +88,7 @@ public class Editor
 	public JMenuBar menubar   = new JMenuBar();	
 	
 	public JMenu menuFile     = new JMenu("File");
-	public JMenuItem newLevel = new JMenuItem("New...");
+	public JMenuItem newMap = new JMenuItem("New...");
 	public JMenuItem open     = new JMenuItem("Open...");
 	public JMenuItem save     = new JMenuItem("Save", UIManager.getIcon("FileView.floppyDriveIcon"));
 	public JMenuItem saveas   = new JMenuItem("Save As...");
@@ -107,7 +107,7 @@ public class Editor
 	public JPanel panelEast   = new JPanel(); 
 	public JPanel panelEdit   = new JPanel();
 	
-	public PanelLevel labelLevel;
+	public PanelMap labelMap;
 	
 	public JComboBox<String> dropdownZoom = new JComboBox<String>(new String[]{"500%", "400%", "300%", "200%", "100%", "66%", "50%", "33%", "25%", "16%", "10%"});
 	public JButton buttonZoomIn      = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/zoom-in.png")));
@@ -122,7 +122,7 @@ public class Editor
 	public JTabbedPane tabpanelEditor = new JTabbedPane();
 	public JPanel panelTiles = new JPanel();
 	public JPanel panelEntities = new JPanel();
-	public JPanel panelLevel = new JPanel();
+	public JPanel panelMap = new JPanel();
 	
 	public JComboBox<String> dropdownTiles = new JComboBox<String>();
 	public JComboBox<String> dropdownEntities = new JComboBox<String>();
@@ -135,7 +135,7 @@ public class Editor
 	public JButton buttonEditTile = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/swap.png")));
 	public JButton buttonDeleteTile = new JButton(new ImageIcon(Utils.readImage("/vic/rpg/resources/editor/remove.png")));
 	
-	public JTable tableLevel = new JTable(new DefaultTableModel(new String[][]{}, new String[]{"NBTTag", "Type", "value"}))
+	public JTable tableMap = new JTable(new DefaultTableModel(new String[][]{}, new String[]{"NBTTag", "Type", "value"}))
 	{
 		@Override
 		public boolean isCellEditable(int row, int column) 
@@ -182,7 +182,7 @@ public class Editor
 	public PanelTexture panelTexture2 = new PanelTexture(NO_TEXTURE);
 	public JButton buttonEditBrush = new JButton(new ImageIcon(Utils.readImageFromJar("/vic/rpg/resources/editor/swap.png")));
 	*/
-	public Level level;
+	public Map map;
 	
 	public Editor()
 	{				
@@ -200,7 +200,7 @@ public class Editor
 		}
 		
         GLCapabilities glcapabilities = new GLCapabilities(Game.GL_PROFILE);
-        labelLevel = new PanelLevel(glcapabilities);
+        labelMap = new PanelMap(glcapabilities);
 		
 		frame = new JFrame();
 		frame.setIconImage(Utils.readImage("/vic/rpg/resources/rf_icon_editor.png"));
@@ -228,7 +228,7 @@ public class Editor
 
 		frame.setSize(1024, 720);
 		frame.setLocationRelativeTo(null);
-		frame.setTitle("Red Fire Level Editor");
+		frame.setTitle("Red Fire Map Editor");
 		
 		File[] files = Utils.getOrCreateFile(Utils.getAppdata() + "/scripts/").listFiles(new FilenameFilter(){
 			@Override
@@ -244,7 +244,7 @@ public class Editor
 		}
 		
 		open.addActionListener(ButtonListener.listener);
-		newLevel.addActionListener(ButtonListener.listener);
+		newMap.addActionListener(ButtonListener.listener);
 		save.addActionListener(ButtonListener.listener);
 		saveas.addActionListener(ButtonListener.listener);
 		exit.addActionListener(ButtonListener.listener);
@@ -274,7 +274,7 @@ public class Editor
 		buttonDeleteTile.setEnabled(false);
 		
 		menuFile.add(open);
-		menuFile.add(newLevel);
+		menuFile.add(newMap);
 		menuFile.add(save);
 		menuFile.add(saveas);
 		menuFile.addSeparator();
@@ -323,7 +323,7 @@ public class Editor
 			{
 				Mouse.selectedEntities.clear();
 				Mouse.selectedTiles.clear();
-				labelLevel.updateUI();
+				labelMap.updateUI();
 			}		
 		});
 		
@@ -341,13 +341,13 @@ public class Editor
 		panelEdit.add(buttonPaint);
 		panelEdit.add(buttonPath);
 		
-		labelLevel.setBackground(Color.white);
-		labelLevel.addMouseMotionListener(mouse);
-		labelLevel.addMouseWheelListener(mouse);
-		labelLevel.addMouseListener(mouse);
-		labelLevel.setFocusable(true);
-		labelLevel.addKeyListener(Key.keyListener);
-		labelLevel.setLayout(new BorderLayout());
+		labelMap.setBackground(Color.white);
+		labelMap.addMouseMotionListener(mouse);
+		labelMap.addMouseWheelListener(mouse);
+		labelMap.addMouseListener(mouse);
+		labelMap.setFocusable(true);
+		labelMap.addKeyListener(Key.keyListener);
+		labelMap.setLayout(new BorderLayout());
 		
 		desktop = new JDesktopPane();
 		desktop.setOpaque(false);
@@ -452,7 +452,7 @@ public class Editor
 		
 		desktop.add(frameBrush);
 		*/
-		labelLevel.add(desktop, BorderLayout.CENTER);
+		labelMap.add(desktop, BorderLayout.CENTER);
 		
 		GridBagConstraints panelEastConstraints = new GridBagConstraints();
 		panelEastConstraints.gridx = 0;
@@ -466,7 +466,7 @@ public class Editor
 		panelEastConstraints.gridy = 1;
 		panelEastConstraints.weighty = 1;
 		panelEastConstraints.fill = GridBagConstraints.BOTH;
-		panelEast.add(labelLevel, panelEastConstraints);
+		panelEast.add(labelMap, panelEastConstraints);
 		
 		updateTilesAndEntites();
 		
@@ -479,7 +479,7 @@ public class Editor
 				{
 					@SuppressWarnings("unchecked")
 					int id = Integer.parseInt(((JComboBox<String>)arg0.getSource()).getSelectedItem().toString().split(":")[0]);
-					if(LevelRegistry.tileRegistry.get(id) instanceof TileJSON)
+					if(WorldRegistry.tileRegistry.get(id) instanceof TileJSON)
 					{
 						buttonEditTile.setEnabled(true);
 						buttonDeleteTile.setEnabled(true);
@@ -490,7 +490,7 @@ public class Editor
 						buttonDeleteTile.setEnabled(false);
 					}
 					
-					TableListener.setTile(LevelRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
+					TableListener.setTile(WorldRegistry.tileRegistry.get(id), TableListener.tiles.get(id));
 				}
 			}		
 		});
@@ -520,15 +520,15 @@ public class Editor
 			}		
 		});
 		
-		panelLevel.setLayout(new GridBagLayout());
+		panelMap.setLayout(new GridBagLayout());
 		panelTiles.setLayout(new GridBagLayout());
 		panelEntities.setLayout(new GridBagLayout());
 		
-		panelLevel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		panelMap.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panelTiles.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		panelEntities.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		GridBagConstraints panelLevelConstraints = new GridBagConstraints();
+		GridBagConstraints panelMapConstraints = new GridBagConstraints();
 		GridBagConstraints panelTilesConstraints = new GridBagConstraints();
 		GridBagConstraints panelEntitiesConstraints = new GridBagConstraints();
 		
@@ -635,31 +635,31 @@ public class Editor
 		sp2.setPreferredSize(new Dimension(200, 0));
 		panelEntities.add(sp2, panelEntitiesConstraints);		
 		
-		//Panel Level
+		//Panel Map
 		
-		panelLevelConstraints.gridx = 0;
-		panelLevelConstraints.gridy = 0;
-		panelLevelConstraints.weightx = 1;		
-		panelLevelConstraints.anchor = GridBagConstraints.WEST;	
+		panelMapConstraints.gridx = 0;
+		panelMapConstraints.gridy = 0;
+		panelMapConstraints.weightx = 1;		
+		panelMapConstraints.anchor = GridBagConstraints.WEST;	
 		
-		JLabel lb3 = new JLabel("Level Attributes:");
+		JLabel lb3 = new JLabel("Map Attributes:");
 		lb3.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-		panelLevel.add(lb3, panelLevelConstraints);
+		panelMap.add(lb3, panelMapConstraints);
 		
-		panelLevelConstraints.gridy = 1;
-		panelLevelConstraints.weighty = 1;
-		panelLevelConstraints.fill = GridBagConstraints.BOTH;
+		panelMapConstraints.gridy = 1;
+		panelMapConstraints.weighty = 1;
+		panelMapConstraints.fill = GridBagConstraints.BOTH;
 		
-		tableLevel.setRowHeight(20);
-		tableLevel.getTableHeader().setReorderingAllowed(false);
-		tableLevel.getModel().addTableModelListener(new TableListener());
-		tableLevel.setColumnSelectionAllowed(true);
+		tableMap.setRowHeight(20);
+		tableMap.getTableHeader().setReorderingAllowed(false);
+		tableMap.getModel().addTableModelListener(new TableListener());
+		tableMap.setColumnSelectionAllowed(true);
 		
-		JScrollPane sp3 = new JScrollPane(tableLevel);
+		JScrollPane sp3 = new JScrollPane(tableMap);
 		sp3.setPreferredSize(new Dimension(200, 0));
-		panelLevel.add(sp3, panelLevelConstraints);
+		panelMap.add(sp3, panelMapConstraints);
 		
-		tabpanelEditor.addTab("Level", panelLevel);
+		tabpanelEditor.addTab("Map", panelMap);
 		tabpanelEditor.addTab("Tiles", panelTiles);
 		tabpanelEditor.addTab("Entities", panelEntities);	
 		
@@ -697,7 +697,7 @@ public class Editor
 		dropdownTiles.removeAllItems();
 		dropdownEntities.removeAllItems();
 		
-		for(Tile t : LevelRegistry.tileRegistry.values())
+		for(Tile t : WorldRegistry.tileRegistry.values())
 		{
 			dropdownTiles.addItem(t.id + ": " + t.getName());
 		}
@@ -722,29 +722,29 @@ public class Editor
 		TextureFX.IS_PLAYING = false;
 		Game.init();
 		
-		for(Integer i : LevelRegistry.entityRegistry.keySet())
+		for(Integer i : WorldRegistry.entityRegistry.keySet())
 		{
-			TableListener.entities.put(i, LevelRegistry.entityRegistry.get(i).clone());
+			TableListener.entities.put(i, WorldRegistry.entityRegistry.get(i).clone());
 		}
-		for(Integer i : LevelRegistry.tileRegistry.keySet())
+		for(Integer i : WorldRegistry.tileRegistry.keySet())
 		{
-			TableListener.tiles.put(i, LevelRegistry.tileRegistry.get(i).data);
+			TableListener.tiles.put(i, WorldRegistry.tileRegistry.get(i).data);
 		}
 		
 		instance = new Editor();
 		
-		TableListener.setTile(LevelRegistry.tileRegistry.values().iterator().next(), 0);
-		TableListener.setEntity(LevelRegistry.entityRegistry.values().iterator().next());
+		TableListener.setTile(WorldRegistry.tileRegistry.values().iterator().next(), 0);
+		TableListener.setEntity(WorldRegistry.entityRegistry.values().iterator().next());
 		
-		int choose = JOptionPane.showOptionDialog(null, "Welcome to the Red Fire Level Editor!\nBelow are some options you can choose from.\nPress F1 for help.", "Hello", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]{"New", "Open", "Help", "Cancel"}, 0);
+		int choose = JOptionPane.showOptionDialog(null, "Welcome to the Red Fire Map Editor!\nBelow are some options you can choose from.\nPress F1 for help.", "Hello", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new String[]{"New", "Open", "Help", "Cancel"}, 0);
 		
 		if(choose == 0)
 		{
-			Editor.createNewLevel();
+			Editor.createNewMap();
 		}
 		if(choose == 1)
 		{
-			Editor.openLevel();
+			Editor.openMap();
 		}
 		TileMaterial.loadMaterials();
 	}
@@ -783,8 +783,8 @@ public class Editor
 			Class<Script> cls = (Class<Script>) cl.loadClass("vic.rpg.editor.script." + className);
 			Script script = cls.newInstance();
 			
-			script.run(instance.level);
-			instance.labelLevel.updateUI();
+			script.run(instance.map);
+			instance.labelMap.updateUI();
 			
 			cl.close();
 			
@@ -795,20 +795,20 @@ public class Editor
 	}
 
 	/**
-	 * Opens the "New Level" - dialogue.
+	 * Opens the "New Map" - dialogue.
 	 */
-	public static void createNewLevel()
+	public static void createNewMap()
 	{
 		boolean quit = false;
 		
-		JTextField name = new JTextField("New Level");
+		JTextField name = new JTextField("New Map");
 		JTextField width = new JTextField("100");
 		JTextField height = new JTextField("100");
 		JTextField data = new JTextField("0"); 
 
 		JComboBox<String> tiles = new JComboBox<String>();
 		
-		for(Tile t : LevelRegistry.tileRegistry.values())
+		for(Tile t : WorldRegistry.tileRegistry.values())
 		{
 			tiles.addItem(t.id + ": " + t.getClass().getSimpleName());
 		}
@@ -823,7 +823,7 @@ public class Editor
 		con.gridwidth = 3;
 		con.fill = GridBagConstraints.BOTH;
 		
-		JLabel title = new JLabel("Set Level Options:");
+		JLabel title = new JLabel("Set Map Options:");
 		title.setFont(title.getFont().deriveFont(Font.BOLD));
 		
 		multiPanel.add(title, con);
@@ -888,12 +888,12 @@ public class Editor
 				{
 					try
 					{							
-						Level level = new Level(Integer.parseInt(width.getText()), Integer.parseInt(width.getText()), name.getText());
-						level.fill(id, Integer.parseInt(data.getText()), 0);
-						instance.labelLevel.setLevel(level);
+						Map map = new Map(Integer.parseInt(width.getText()), Integer.parseInt(width.getText()), name.getText());
+						map.fill(id, Integer.parseInt(data.getText()), 0);
+						instance.labelMap.setMap(map);
 						updateLayerFrame();
-						instance.setLevelName(instance.level.name);
-		            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
+						instance.setMapName(instance.map.name);
+		            	JOptionPane.showMessageDialog(null, "Map \"" + instance.map.name + "\" was sucsessfully created", "New...", JOptionPane.INFORMATION_MESSAGE);  
 		            	quit = true;
 		            	
 					} catch(NumberFormatException e) {
@@ -907,9 +907,9 @@ public class Editor
 	}
 
 	/**
-	 * Opens the "Open Level" - dialogue.
+	 * Opens the "Open Map" - dialogue.
 	 */
-	public static void openLevel()
+	public static void openMap()
 	{
 		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
 		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter("Plaintext: lvl", "lvl"); 
@@ -928,29 +928,29 @@ public class Editor
 	        {
 	        	System.out.println(file + " selected for loading"); 
 	            try{
-	            	instance.labelLevel.setLevel(Level.readFromFile(file));       
-	            	instance.setLevelName(instance.level.name);
+	            	instance.labelMap.setMap(Map.readFromFile(file));       
+	            	instance.setMapName(instance.map.name);
 	            	updateLayerFrame();
-	            	JOptionPane.showMessageDialog(null, "Level \"" + instance.level.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
+	            	JOptionPane.showMessageDialog(null, "Map \"" + instance.map.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
 	        		ButtonListener.file = file;
 	            } catch (Exception e) {
 	            	e.printStackTrace();
-	            	JOptionPane.showMessageDialog(null, "Level could'nt be loaded from " + path + "\nReason: " + e.getClass().getSimpleName() + "\nat " + e.getStackTrace()[0], "Open...", JOptionPane.ERROR_MESSAGE);	
+	            	JOptionPane.showMessageDialog(null, "Map could'nt be loaded from " + path + "\nReason: " + e.getClass().getSimpleName() + "\nat " + e.getStackTrace()[0], "Open...", JOptionPane.ERROR_MESSAGE);	
 	            }
 	        }
 	        else
 	        {
 	        	System.out.println(path + " is not valid for loading");
-	        	JOptionPane.showMessageDialog(null, "No level could be loaded from " + path + "\nMaybe the file is missing or currupted", "Open...", JOptionPane.ERROR_MESSAGE);
+	        	JOptionPane.showMessageDialog(null, "No Map could be loaded from " + path + "\nMaybe the file is missing or currupted", "Open...", JOptionPane.ERROR_MESSAGE);
 	        }                
 	        chooser.setVisible(false);            
 	    }
 	}
 	
 	/**
-	 * Opens the "Save Level" - dialogue.
+	 * Opens the "Save Map" - dialogue.
 	 */
-	public static void saveLevel()
+	public static void saveMap()
 	{
 		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
 		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter( 
@@ -969,29 +969,29 @@ public class Editor
             if (plainFilter.accept(file))
             {
                 System.out.println(file + " selected for saving"); 
-            	Editor.instance.level.writeToFile(file);
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
+            	Editor.instance.map.writeToFile(file);
+            	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
             	ButtonListener.file = file;
             }
             else
             {
             	System.out.println(path + " is not valid for saving");
-            	JOptionPane.showMessageDialog(null, "Level \"" + Editor.instance.level.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
             }                
             chooser.setVisible(false);            
         } 
 	}
 	
 	/**
-	 * Used to format the title of the editor window given the name of a level.
+	 * Used to format the title of the editor window given the name of a map.
 	 * @param name
 	 */
-	public void setLevelName(String name)
+	public void setMapName(String name)
 	{
 		if(name.length() > 0)
 		{
-			frame.setTitle("Red Fire Level Editor (" + name + ")");
+			frame.setTitle("Red Fire Map Editor (" + name + ")");
 		}
-		else frame.setTitle("Red Fire Level Editor");
+		else frame.setTitle("Red Fire Map Editor");
 	}
 }

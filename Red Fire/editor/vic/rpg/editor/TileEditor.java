@@ -20,8 +20,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 
 import vic.rpg.editor.gui.TileTextureSelector;
-import vic.rpg.level.tiles.TileJSON;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.tiles.TileJSON;
 
 public class TileEditor implements WindowListener
 {

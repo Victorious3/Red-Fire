@@ -8,8 +8,8 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
-import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.world.entity.living.Inventory;
 
 /**
  * A SlotGrid is basically a number of {@link Slot Slots} organized in a grid. It can hold more than one {@link ItemStack}.

@@ -2,15 +2,15 @@ package vic.rpg.server;
 
 import java.io.File;
 
-import vic.rpg.level.Level;
-import vic.rpg.level.path.PathServer;
 import vic.rpg.server.gui.ServerGui;
+import vic.rpg.world.Map;
+import vic.rpg.world.path.PathServer;
 
 public class ServerLoop implements Runnable
 {		
 	public Thread thread;
 	public boolean isRunning = false;
-	public static Level level;
+	public static Map map;
 	public static File file;
 	public PathServer pathServer;
 	
@@ -23,7 +23,7 @@ public class ServerLoop implements Runnable
 	int tickCounter = 0;
 	private void tick() 
 	{
-		level.tick();
+		map.tick();
 		ServerGui.tick();		
 	}
 	

@@ -4,9 +4,9 @@ import java.util.List;
 
 import vic.rpg.item.Item;
 import vic.rpg.item.ItemStack;
-import vic.rpg.level.entity.living.EntityPlayer;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.server.ServerLoop;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 public class CommandGive extends Command
 {
@@ -46,13 +46,13 @@ public class CommandGive extends Command
 				return;
 			}
 			
-			if(LevelRegistry.itemRegistry.containsKey(id))
+			if(WorldRegistry.itemRegistry.containsKey(id))
 			{
-				item = LevelRegistry.itemRegistry.get(id);
+				item = WorldRegistry.itemRegistry.get(id);
 				
-				if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+				if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
 				{
-					EntityPlayer player = ServerLoop.level.getPlayer(args.get(0));
+					EntityPlayer player = ServerLoop.map.getPlayer(args.get(0));
 					player.inventory.addToInventory(new ItemStack(item, amount));
 					player.inventory.updateInventory();
 				}

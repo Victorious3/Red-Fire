@@ -15,8 +15,7 @@ import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GIconButton;
 import vic.rpg.gui.controls.GTextField;
-import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.DrawUtils.LinearAnimator;
@@ -24,6 +23,7 @@ import vic.rpg.render.DrawUtils.RenderedText;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.entity.living.EntityLiving;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -286,14 +286,14 @@ public class GuiIngame extends GuiContainer implements IGButton
 	@Override
 	public void onButtonPressed(GControl button) 
 	{
-		if(button == buttonSlot2) slotSkill2.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot3) slotSkill3.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot4) slotSkill4.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot5) slotSkill5.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot6) slotSkill6.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot7) slotSkill7.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot8) slotSkill8.setSkill(LevelRegistry.SKILL_HEAL.clone());
-		else if(button == buttonSlot9) slotSkill9.setSkill(LevelRegistry.SKILL_HEAL.clone());
+		if(button == buttonSlot2) slotSkill2.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot3) slotSkill3.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot4) slotSkill4.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot5) slotSkill5.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot6) slotSkill6.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot7) slotSkill7.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot8) slotSkill8.setSkill(WorldRegistry.SKILL_HEAL.clone());
+		else if(button == buttonSlot9) slotSkill9.setSkill(WorldRegistry.SKILL_HEAL.clone());
 		
 		gui.inventory.updateInventory();
 	}

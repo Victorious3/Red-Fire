@@ -1,6 +1,6 @@
 package vic.rpg.combat;
 
-import vic.rpg.level.entity.living.EntityLiving;
+import vic.rpg.world.entity.living.EntityLiving;
 
 /**
  * A basic Healing Skill.

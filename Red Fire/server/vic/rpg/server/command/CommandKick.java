@@ -22,7 +22,7 @@ public class CommandKick extends Command
 		}
 		if(args.size() > 0)
 		{
-			if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+			if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
 			{
 				Server.server.delConnection(Server.connections.get(args.get(0)), "kick");
 			}

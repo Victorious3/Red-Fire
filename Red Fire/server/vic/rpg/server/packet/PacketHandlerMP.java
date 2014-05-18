@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.entity.EntityEvent;
-import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.server.io.Connection;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.entity.EntityEvent;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 public class PacketHandlerMP extends Thread
 {
@@ -59,19 +59,19 @@ public class PacketHandlerMP extends Thread
 			{
 				p.id = 7;
 				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
-				ServerLoop.level.entityMap.put(ServerLoop.level.onlinePlayersMap.get(con.username), player);
+				ServerLoop.map.entityMap.put(ServerLoop.map.onlinePlayersMap.get(con.username), player);
 				Server.server.broadcast(p);
 			}
 			else if(p.id == 9)
 			{
 				Packet9EntityMoving p9entitymoving = (Packet9EntityMoving) p;
 				
-				Entity e = ServerLoop.level.entityMap.get(p9entitymoving.UUID);
+				Entity e = ServerLoop.map.entityMap.get(p9entitymoving.UUID);
 				
 				e.xCoord = p9entitymoving.xCoord;
 				e.yCoord = p9entitymoving.yCoord;
 				
-				ServerLoop.level.entityMap.put(e.UUID, e);
+				ServerLoop.map.entityMap.put(e.UUID, e);
 				
 				Server.server.broadcast(p);
 			}
@@ -104,8 +104,8 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 11)
 			{
 				Packet11EntityInteraction packet = (Packet11EntityInteraction) p;
-				Entity entity = ServerLoop.level.entityMap.get(packet.UUID);
-				EntityPlayer player = ServerLoop.level.getPlayer(con.username);
+				Entity entity = ServerLoop.map.entityMap.get(packet.UUID);
+				EntityPlayer player = ServerLoop.map.getPlayer(con.username);
 				if(packet.mode == Packet11EntityInteraction.MODE_ONCLICK)
 				{
 					entity.onMouseClicked(packet.data[0], packet.data[1], player, packet.data[2]);
@@ -114,13 +114,13 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 12)
 			{
 				EntityEvent eev = ((Packet12Event)p).eev;
-				ServerLoop.level.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);	
+				ServerLoop.map.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);	
 			}
 			else if(p.id == 13)
 			{
 				//TODO This allows cheaters to modify their Inventory in every way they like. They could even add more size to it... Think of some verifying algorithm.
 				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
-				packet.inventory.parentEntity = ServerLoop.level.getPlayer(con.username);
+				packet.inventory.parentEntity = ServerLoop.map.getPlayer(con.username);
 				packet.inventory.parentEntity.addEventListener(packet.inventory);
 				packet.inventory.parentEntity.removeEventListener(packet.inventory.parentEntity.inventory);
 				packet.inventory.parentEntity.inventory = packet.inventory;

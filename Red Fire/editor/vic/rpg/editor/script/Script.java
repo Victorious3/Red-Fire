@@ -1,8 +1,9 @@
 package vic.rpg.editor.script;
 
-import vic.rpg.level.Level;
+import vic.rpg.world.Map;
 
+@Deprecated
 public interface Script 
 {
-	public void run(Level level);
+	public void run(Map map);
 }

@@ -105,9 +105,9 @@ public class Key implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) 
 	{
-		if(Game.level != null)
+		if(Game.map != null)
 		{
-			Game.level.onKeyPressed(arg0);
+			Game.map.onKeyPressed(arg0);
 		}
 	}
 

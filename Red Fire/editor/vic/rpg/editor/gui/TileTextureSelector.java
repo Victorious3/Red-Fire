@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JLabel;
 
-import vic.rpg.level.Level;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
 
 public class TileTextureSelector extends JLabel implements MouseListener
 {
@@ -37,8 +37,8 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	@Override
 	public Dimension getPreferredSize() 
 	{
-		int width = getXAmount() * Level.CELL_SIZE;
-		int height = getYAmount() * Level.CELL_SIZE;
+		int width = getXAmount() * Map.CELL_SIZE;
+		int height = getYAmount() * Map.CELL_SIZE;
 		
 		return new Dimension(width + 1, height + 1);
 	}
@@ -51,12 +51,12 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	
 	private int getXAmount()
 	{
-		return (int) (getParent().getSize().getWidth() / (float)Level.CELL_SIZE);
+		return (int) (getParent().getSize().getWidth() / (float)Map.CELL_SIZE);
 	}
 	
 	private int getYAmount()
 	{
-		float total = (img.getWidth() / Level.CELL_SIZE) * (img.getHeight() / Level.CELL_SIZE);
+		float total = (img.getWidth() / Map.CELL_SIZE) * (img.getHeight() / Map.CELL_SIZE);
 		return (int) Math.ceil(total / (float)getXAmount());
 	}
 	
@@ -72,7 +72,7 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	
 	public Point getSelectedTexturePoint()
 	{
-		return Utils.conv1Dto2DPoint(selectedTexture, img.getWidth() / Level.CELL_SIZE);
+		return Utils.conv1Dto2DPoint(selectedTexture, img.getWidth() / Map.CELL_SIZE);
 	}
 
 	@Override
@@ -84,12 +84,12 @@ public class TileTextureSelector extends JLabel implements MouseListener
 		{
 			for(int x = 0; x < getXAmount(); x++)
 			{
-				Point p = Utils.conv1Dto2DPoint(i, img.getWidth() / Level.CELL_SIZE);
+				Point p = Utils.conv1Dto2DPoint(i, img.getWidth() / Map.CELL_SIZE);
 				g2d.setColor(Color.black);
-				if(p.x * Level.CELL_SIZE + Level.CELL_SIZE <= img.getWidth() && p.y * Level.CELL_SIZE + Level.CELL_SIZE <= img.getHeight()) 
+				if(p.x * Map.CELL_SIZE + Map.CELL_SIZE <= img.getWidth() && p.y * Map.CELL_SIZE + Map.CELL_SIZE <= img.getHeight()) 
 				{
-					g2d.drawImage(img.getSubimage(p.x * Level.CELL_SIZE, p.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE), null, x * Level.CELL_SIZE, y * Level.CELL_SIZE);
-					g2d.drawRect(x * Level.CELL_SIZE, y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+					g2d.drawImage(img.getSubimage(p.x * Map.CELL_SIZE, p.y * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE), null, x * Map.CELL_SIZE, y * Map.CELL_SIZE);
+					g2d.drawRect(x * Map.CELL_SIZE, y * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE);
 				}
 				i++;
 			}
@@ -98,41 +98,41 @@ public class TileTextureSelector extends JLabel implements MouseListener
 		g2d.setColor(new Color(0, 0, 255, 100));
 		int selectedTexture = this.selectedTexture;
 		Point p2 = Utils.conv1Dto2DPoint(selectedTexture, getXAmount());
-		g2d.fillRect(p2.x * Level.CELL_SIZE, p2.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+		g2d.fillRect(p2.x * Map.CELL_SIZE, p2.y * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE);
 		
-		Point p3 = Utils.conv1Dto2DPoint(selectedTexture, (img.getWidth() / Level.CELL_SIZE));
-		if((texWidth > 1 || texHeight > 1) && (p3.x + texWidth) * Level.CELL_SIZE <= img.getWidth() && (p3.y - texHeight) * Level.CELL_SIZE >= -Level.CELL_SIZE)
+		Point p3 = Utils.conv1Dto2DPoint(selectedTexture, (img.getWidth() / Map.CELL_SIZE));
+		if((texWidth > 1 || texHeight > 1) && (p3.x + texWidth) * Map.CELL_SIZE <= img.getWidth() && (p3.y - texHeight) * Map.CELL_SIZE >= -Map.CELL_SIZE)
 		{
 			for(int x = 0; x < texWidth; x++)
 			{
 				for(int y = 0; y < texHeight; y++)
 				{
 					selectedTexture = this.selectedTexture + x;
-					selectedTexture -= y * (img.getWidth() / Level.CELL_SIZE);
+					selectedTexture -= y * (img.getWidth() / Map.CELL_SIZE);
 					Point p4 = Utils.conv1Dto2DPoint(selectedTexture, getXAmount());
 					
 					if(x > 0 || y > 0)
 					{				
 						g2d.setColor(new Color(0, 155, 255, 100));
-						g2d.fillRect(p4.x * Level.CELL_SIZE, p4.y * Level.CELL_SIZE, Level.CELL_SIZE, Level.CELL_SIZE);
+						g2d.fillRect(p4.x * Map.CELL_SIZE, p4.y * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE);
 					}
 					
 					g2d.setColor(Color.black);
 					if(x == 0 && y == 0)
 					{
-						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE + 10}, new int[]{p4.y * Level.CELL_SIZE + Level.CELL_SIZE - 10, p4.y * Level.CELL_SIZE + Level.CELL_SIZE, p4.y * Level.CELL_SIZE + Level.CELL_SIZE}, 3);
+						g2d.fillPolygon(new int[]{p4.x * Map.CELL_SIZE, p4.x * Map.CELL_SIZE, p4.x * Map.CELL_SIZE + 10}, new int[]{p4.y * Map.CELL_SIZE + Map.CELL_SIZE - 10, p4.y * Map.CELL_SIZE + Map.CELL_SIZE, p4.y * Map.CELL_SIZE + Map.CELL_SIZE}, 3);
 					}
 					if(x == 0 && y == texHeight - 1)
 					{
-						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE, p4.x * Level.CELL_SIZE + 10}, new int[]{p4.y * Level.CELL_SIZE + 10, p4.y * Level.CELL_SIZE, p4.y * Level.CELL_SIZE}, 3);
+						g2d.fillPolygon(new int[]{p4.x * Map.CELL_SIZE, p4.x * Map.CELL_SIZE, p4.x * Map.CELL_SIZE + 10}, new int[]{p4.y * Map.CELL_SIZE + 10, p4.y * Map.CELL_SIZE, p4.y * Map.CELL_SIZE}, 3);
 					}
 					if(x == texWidth - 1 && y == texHeight - 1)
 					{
-						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE- 10}, new int[]{p4.y * Level.CELL_SIZE + 10, p4.y * Level.CELL_SIZE, p4.y * Level.CELL_SIZE}, 3);
+						g2d.fillPolygon(new int[]{p4.x * Map.CELL_SIZE + Map.CELL_SIZE, p4.x * Map.CELL_SIZE + Map.CELL_SIZE, p4.x * Map.CELL_SIZE + Map.CELL_SIZE- 10}, new int[]{p4.y * Map.CELL_SIZE + 10, p4.y * Map.CELL_SIZE, p4.y * Map.CELL_SIZE}, 3);
 					}
 					if(x == texWidth - 1 && y == 0)
 					{
-						g2d.fillPolygon(new int[]{p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE, p4.x * Level.CELL_SIZE + Level.CELL_SIZE- 10}, new int[]{p4.y * Level.CELL_SIZE + Level.CELL_SIZE - 10, p4.y * Level.CELL_SIZE + Level.CELL_SIZE, p4.y * Level.CELL_SIZE + Level.CELL_SIZE}, 3);
+						g2d.fillPolygon(new int[]{p4.x * Map.CELL_SIZE + Map.CELL_SIZE, p4.x * Map.CELL_SIZE + Map.CELL_SIZE, p4.x * Map.CELL_SIZE + Map.CELL_SIZE- 10}, new int[]{p4.y * Map.CELL_SIZE + Map.CELL_SIZE - 10, p4.y * Map.CELL_SIZE + Map.CELL_SIZE, p4.y * Map.CELL_SIZE + Map.CELL_SIZE}, 3);
 					}
 				}
 			}
@@ -144,13 +144,13 @@ public class TileTextureSelector extends JLabel implements MouseListener
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		int x = e.getX() / Level.CELL_SIZE;
-		int y = e.getY() / Level.CELL_SIZE;
+		int x = e.getX() / Map.CELL_SIZE;
+		int y = e.getY() / Map.CELL_SIZE;
 		
 		if(x < getXAmount())
 		{
 			int sNew = Utils.conv2Dto1Dint(x, y, getXAmount());	
-			if(sNew < (img.getWidth() / Level.CELL_SIZE) * (img.getHeight() / Level.CELL_SIZE)) selectedTexture = sNew;
+			if(sNew < (img.getWidth() / Map.CELL_SIZE) * (img.getHeight() / Map.CELL_SIZE)) selectedTexture = sNew;
 			updateUI();
 		}
 	}

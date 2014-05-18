@@ -2,8 +2,8 @@ package vic.rpg.listener;
 
 import java.util.Comparator;
 
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.entity.EntityEvent;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.entity.EntityEvent;
 
 /**
  * The EntityEventListener has to be added to an {@link Entity} with {@link Entity#addEventListener(EntityEventListener)} to receive

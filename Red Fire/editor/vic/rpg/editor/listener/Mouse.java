@@ -14,15 +14,15 @@ import java.util.Arrays;
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.gui.PopupMenu;
 import vic.rpg.editor.tiles.TileMaterial;
-import vic.rpg.level.Level;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.path.Node;
-import vic.rpg.level.path.Path;
-import vic.rpg.level.tiles.Tile;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.path.Node;
+import vic.rpg.world.path.Path;
+import vic.rpg.world.tiles.Tile;
 
 public class Mouse implements MouseListener, MouseMotionListener, MouseWheelListener
 {
@@ -50,7 +50,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		if(Editor.instance.buttonMove.isSelected()) Editor.instance.frame.setCursor(GameRegistry.CURSOR_DROP);
 		else Editor.instance.frame.setCursor(Cursor.getDefaultCursor());
 		
-		Editor.instance.labelLevel.requestFocus();
+		Editor.instance.labelMap.requestFocus();
 		mouseHovered = true;
 	}
 
@@ -74,7 +74,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 			mouseDown = true;
 			
-			if(Editor.instance.level == null) return;
+			if(Editor.instance.map == null) return;
 			
 			if(Editor.instance.buttonPaint.isSelected()) paint(arg0.getX(), arg0.getY());
 			else if(Editor.instance.buttonErase.isSelected() && Editor.instance.tabpanelEditor.getSelectedIndex() == 1 && Editor.layerID != 0) paint(arg0.getX(), arg0.getY(), null, false);
@@ -82,20 +82,20 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			{
 				Point p = Utils.convIsoToCart(new Point(arg0.getX(), arg0.getY()));
 				
-				int x = (int)((float)(p.x - Editor.instance.labelLevel.xOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
-				int y = (int)((float)(p.y - Editor.instance.labelLevel.yOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
+				int x = (int)((float)(p.x - Editor.instance.labelMap.xOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
+				int y = (int)((float)(p.y - Editor.instance.labelMap.yOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
 				
-				if(x >= Editor.instance.level.width || y >= Editor.instance.level.height || x < 0 || y < 0) return;
+				if(x >= Editor.instance.map.width || y >= Editor.instance.map.height || x < 0 || y < 0) return;
 				
-				start = Editor.instance.level.nodeMap.nodes[x][y];
+				start = Editor.instance.map.nodeMap.nodes[x][y];
 				
 				if(end != null)
 				{
-					path = new Path(Editor.instance.level.nodeMap, start, end, Integer.MAX_VALUE);
+					path = new Path(Editor.instance.map.nodeMap, start, end, Integer.MAX_VALUE);
 					path.compute();
 				}
 				
-				Editor.instance.labelLevel.updateUI();
+				Editor.instance.labelMap.updateUI();
 			}		
 			else if(Editor.instance.buttonEdit.isSelected())
 			{
@@ -105,10 +105,10 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					Point p = Utils.convIsoToCart(new Point(arg0.getX(), arg0.getY()));
 					
-					int x = (int)((float)(p.x - Editor.instance.labelLevel.xOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
-					int y = (int)((float)(p.y - Editor.instance.labelLevel.yOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
+					int x = (int)((float)(p.x - Editor.instance.labelMap.xOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
+					int y = (int)((float)(p.y - Editor.instance.labelMap.yOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
 					
-					if(x >= Editor.instance.level.width || y >= Editor.instance.level.height || x < 0 || y < 0) return;
+					if(x >= Editor.instance.map.width || y >= Editor.instance.map.height || x < 0 || y < 0) return;
 					
 					
 					if(!arg0.isControlDown())
@@ -118,20 +118,20 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					selectedTiles.add(new Point(x, y));
 					
 					Editor.instance.tabpanelEditor.setSelectedComponent(Editor.instance.panelTiles);
-					Tile t = Editor.instance.level.getTileAt(x, y, Editor.layerID);
-					if(t != null) TableListener.setTile(t, Editor.instance.level.getTileDataAt(x, y, Editor.layerID));					
+					Tile t = Editor.instance.map.getTileAt(x, y, Editor.layerID);
+					if(t != null) TableListener.setTile(t, Editor.instance.map.getTileDataAt(x, y, Editor.layerID));					
 				}
 				else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 2)
 				{
 					Point p1 = Utils.convIsoToCart(new Point(arg0.getX(), arg0.getY()));
-					p1.x -= Editor.instance.labelLevel.xOffset;
-					p1.y -= Editor.instance.labelLevel.yOffset;
+					p1.x -= Editor.instance.labelMap.xOffset;
+					p1.y -= Editor.instance.labelMap.yOffset;
 					p1 = Utils.convCartToIso(p1);
 					
-					int x = (int) ((float)p1.x * (1 / Editor.instance.labelLevel.getScale()));
-					int y = (int) ((float)p1.y * (1 / Editor.instance.labelLevel.getScale()));
+					int x = (int) ((float)p1.x * (1 / Editor.instance.labelMap.getScale()));
+					int y = (int) ((float)p1.y * (1 / Editor.instance.labelMap.getScale()));
 					
-					Entity e = Editor.instance.level.intersectOnRender(x, y);
+					Entity e = Editor.instance.map.intersectOnRender(x, y);
 					
 					if(e != null) 
 					{
@@ -153,7 +153,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 						}
 					}
 				}			
-				Editor.instance.labelLevel.updateUI();			
+				Editor.instance.labelMap.updateUI();			
 			}
 			else
 			{
@@ -162,7 +162,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					selection = null;
 					selectedEntities.clear();
 					
-					Editor.instance.labelLevel.updateUI();
+					Editor.instance.labelMap.updateUI();
 				}
 			}
 		}
@@ -175,16 +175,16 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					Point p = Utils.convIsoToCart(new Point(arg0.getX(), arg0.getY()));
 					
-					int x = (int)((float)(p.x - Editor.instance.labelLevel.xOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
-					int y = (int)((float)(p.y - Editor.instance.labelLevel.yOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
+					int x = (int)((float)(p.x - Editor.instance.labelMap.xOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
+					int y = (int)((float)(p.y - Editor.instance.labelMap.yOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
 					
-					if(x >= Editor.instance.level.nodeMap.width || y >= Editor.instance.level.nodeMap.height || x < 0 || y < 0) return;
+					if(x >= Editor.instance.map.nodeMap.width || y >= Editor.instance.map.nodeMap.height || x < 0 || y < 0) return;
 					
-					end = Editor.instance.level.nodeMap.nodes[x][y];			
-					path = new Path(Editor.instance.level.nodeMap, start, end, Integer.MAX_VALUE);
+					end = Editor.instance.map.nodeMap.nodes[x][y];			
+					path = new Path(Editor.instance.map.nodeMap, start, end, Integer.MAX_VALUE);
 					path.compute();
 					
-					Editor.instance.labelLevel.updateUI();
+					Editor.instance.labelMap.updateUI();
 				}
 			}
 		}
@@ -211,14 +211,14 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 					if(!arg0.isControlDown()) selectedTiles.clear();
 				
 					//TODO Behaves strange on the upper edges of the map.
-					for(int i = (int)selection.getMinX(); i <= selection.getMaxX(); i += Level.CELL_SIZE / 4)
+					for(int i = (int)selection.getMinX(); i <= selection.getMaxX(); i += Map.CELL_SIZE / 4)
 					{
-						for(int j = (int)selection.getMinY(); j <= selection.getMaxY(); j += Level.CELL_SIZE / 2)
+						for(int j = (int)selection.getMinY(); j <= selection.getMaxY(); j += Map.CELL_SIZE / 2)
 						{
 							Point p = Utils.convIsoToCart(new Point(i, j));
-							int x = p.x / (Level.CELL_SIZE / 2);
-							int y = p.y / (Level.CELL_SIZE / 2);							
-							if(x < Editor.instance.level.width && y < Editor.instance.level.height && x >= 0 && y >= 0) selectedTiles.add(new Point(x, y));
+							int x = p.x / (Map.CELL_SIZE / 2);
+							int y = p.y / (Map.CELL_SIZE / 2);							
+							if(x < Editor.instance.map.width && y < Editor.instance.map.height && x >= 0 && y >= 0) selectedTiles.add(new Point(x, y));
 						}
 					}
 				}
@@ -229,23 +229,23 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 				{
 					if(arg0.isControlDown())
 					{
-						selectedEntities.addAll(Editor.instance.level.intersectOnRender(selection));
+						selectedEntities.addAll(Editor.instance.map.intersectOnRender(selection));
 					}
 					else
 					{
-						selectedEntities = Editor.instance.level.intersectOnRender(selection);				
+						selectedEntities = Editor.instance.map.intersectOnRender(selection);				
 					}				
 				}
 			}
 			Mouse.selection = null;
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 		}
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) 
 	{
-		Editor.instance.labelLevel.scale(Editor.instance.labelLevel.getScale() - arg0.getUnitsToScroll() / 100.0F);
+		Editor.instance.labelMap.scale(Editor.instance.labelMap.getScale() - arg0.getUnitsToScroll() / 100.0F);
 	}
 	
 	int preX = 0;
@@ -257,22 +257,22 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		xCoord = arg0.getX(); 
 		yCoord = arg0.getY(); 
 		
-		if(Editor.instance.level == null) return;
+		if(Editor.instance.map == null) return;
 		
 		if(Editor.instance.buttonMove.isSelected())
 		{
 			Point p = Utils.convIsoToCart(new Point(xCoord - preX, yCoord - preY));
 
-			int x = Editor.instance.labelLevel.xOffset + p.x;
-			int y = Editor.instance.labelLevel.yOffset + p.y;
+			int x = Editor.instance.labelMap.xOffset + p.x;
+			int y = Editor.instance.labelMap.yOffset + p.y;
 			
-			Editor.instance.labelLevel.xOffset = x;
-			Editor.instance.labelLevel.yOffset = y;
+			Editor.instance.labelMap.xOffset = x;
+			Editor.instance.labelMap.yOffset = y;
 			
 			preX = xCoord;
 			preY = yCoord;
 			
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 		}
 		else if(Editor.instance.tabpanelEditor.getSelectedIndex() == 1)
 		{
@@ -288,27 +288,27 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		if(Editor.instance.buttonEdit.isSelected()) 
 		{
 			Point p1 = Utils.convIsoToCart(new Point(preX, preY));
-			p1.x -= Editor.instance.labelLevel.xOffset;
-			p1.y -= Editor.instance.labelLevel.yOffset;
+			p1.x -= Editor.instance.labelMap.xOffset;
+			p1.y -= Editor.instance.labelMap.yOffset;
 			p1 = Utils.convCartToIso(p1);
 			
-			int x = (int) ((float)p1.x * (1F / Editor.instance.labelLevel.getScale())); 
-			int y = (int) ((float)p1.y * (1F / Editor.instance.labelLevel.getScale()));		
+			int x = (int) ((float)p1.x * (1F / Editor.instance.labelMap.getScale())); 
+			int y = (int) ((float)p1.y * (1F / Editor.instance.labelMap.getScale()));		
 			
 			Point p2 = Utils.convIsoToCart(new Point(arg0.getX(), arg0.getY()));
-			p2.x -= Editor.instance.labelLevel.xOffset;
-			p2.y -= Editor.instance.labelLevel.yOffset;
+			p2.x -= Editor.instance.labelMap.xOffset;
+			p2.y -= Editor.instance.labelMap.yOffset;
 			p2 = Utils.convCartToIso(p2);
 			
-			int x2 = (int) ((float)p2.x * (1F / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)p2.y * (1F / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)p2.x * (1F / Editor.instance.labelMap.getScale()));
+			int y2 = (int) ((float)p2.y * (1F / Editor.instance.labelMap.getScale()));
 			
 			if(x2 > x && y2 > y) selection = new Rectangle(x, y, x2 - x, y2 - y);
 			if(x2 < x && y2 < y) selection = new Rectangle(x2, y2, x - x2, y - y2);
 			if(x2 < x && y2 > y) selection = new Rectangle(x2, y, x - x2, y2 - y);
 			if(x2 > x && y2 < y) selection = new Rectangle(x, y2, x2 - x, y - y2);
 			 
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.labelMap.updateUI();
 		}
 	}
 
@@ -384,7 +384,7 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			
 				else continue;
 				
-				Editor.instance.level.setTile(LevelRegistry.TILE_TERRAIN.id, x2, y2, Utils.conv2Dto1Dint(p.x, p.y, 16D), Editor.layerID);
+				Editor.instance.map.setTile(WorldRegistry.TILE_TERRAIN.id, x2, y2, Utils.conv2Dto1Dint(p.x, p.y, 16D), Editor.layerID);
 			}
 		}
 	}
@@ -395,9 +395,9 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		int x2 = x + ox - r - 1;
 		int y2 = y + oy - r - 1;
 		
-		if(x2 >= 0 && y2 >= 0 && x2 < Editor.instance.level.height && y2 < Editor.instance.level.width) 
+		if(x2 >= 0 && y2 >= 0 && x2 < Editor.instance.map.height && y2 < Editor.instance.map.width) 
 		{
-			Point op = Utils.conv1Dto2DPoint(Editor.instance.level.getTileDataAt(x2, y2, Editor.layerID), 10D);
+			Point op = Utils.conv1Dto2DPoint(Editor.instance.map.getTileDataAt(x2, y2, Editor.layerID), 10D);
 			
 			if(Arrays.asList(inner.getSubMaterials().get(outer.getName())).contains(op) || Arrays.asList(outer.getSubMaterials().get(inner.getName())).contains(op))
 			{
@@ -419,8 +419,8 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 		{
 			Point p = Utils.convIsoToCart(new Point(x, y));
 			
-			int x2 = (int)((float)(p.x - Editor.instance.labelLevel.xOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
-			int y2 = (int)((float)(p.y - Editor.instance.labelLevel.yOffset) / (Level.CELL_SIZE / 2F) * 1F / Editor.instance.labelLevel.getScale());
+			int x2 = (int)((float)(p.x - Editor.instance.labelMap.xOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
+			int y2 = (int)((float)(p.y - Editor.instance.labelMap.yOffset) / (Map.CELL_SIZE / 2F) * 1F / Editor.instance.labelMap.getScale());
 			
 			//TODO So long work on brushes... Can't let it go that quick!!
 			/*if(id != null && id == LevelRegistry.TILE_TERRAIN.id)
@@ -429,21 +429,21 @@ public class Mouse implements MouseListener, MouseMotionListener, MouseWheelList
 			}
 			else*/
 			{
-				if(id != null) Editor.instance.level.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
-				else Editor.instance.level.setTile(id, x2, y2, 0, Editor.layerID);
-				Editor.instance.labelLevel.updateUI();
+				if(id != null) Editor.instance.map.setTile(id, x2, y2, TableListener.tiles.get(id), Editor.layerID);
+				else Editor.instance.map.setTile(id, x2, y2, 0, Editor.layerID);
+				Editor.instance.labelMap.updateUI();
 			}
 		}
 		else
 		{
 			Point p = Utils.convIsoToCart(new Point(x, y));
-			int x2 = (int) ((float)(p.x - Editor.instance.labelLevel.xOffset) * (1 / Editor.instance.labelLevel.getScale()));
-			int y2 = (int) ((float)(p.y - Editor.instance.labelLevel.yOffset) * (1 / Editor.instance.labelLevel.getScale()));
+			int x2 = (int) ((float)(p.x - Editor.instance.labelMap.xOffset) * (1 / Editor.instance.labelMap.getScale()));
+			int y2 = (int) ((float)(p.y - Editor.instance.labelMap.yOffset) * (1 / Editor.instance.labelMap.getScale()));
 						
-			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.level.getWidth() || y2 >= Editor.instance.level.getHeight()) return;
+			if(x2 < 0 || y2 < 0 || x2 >= Editor.instance.map.getWidth() || y2 >= Editor.instance.map.getHeight()) return;
 			
-			Editor.instance.level.addEntity(TableListener.entities.get(id).clone(), x2, y2);			
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.map.addEntity(TableListener.entities.get(id).clone(), x2, y2);			
+			Editor.instance.labelMap.updateUI();
 		}
 	}
 }

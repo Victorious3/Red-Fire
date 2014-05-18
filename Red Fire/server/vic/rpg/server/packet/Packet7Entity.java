@@ -14,8 +14,8 @@ import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
 import org.jnbt.Tag;
 
-import vic.rpg.level.entity.Entity;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
+import vic.rpg.world.entity.Entity;
 
 public class Packet7Entity extends Packet 
 {
@@ -73,7 +73,7 @@ public class Packet7Entity extends Packet
 			
 			for(Tag t : map.values())
 			{
-				Entity e = LevelRegistry.readEntityFromNBT((CompoundTag) t);
+				Entity e = WorldRegistry.readEntityFromNBT((CompoundTag) t);
 				list.add(e);
 			}
 			
@@ -96,7 +96,7 @@ public class Packet7Entity extends Packet
 			Map<String, Tag> map = new HashMap<String, Tag>();
 			for(Entity e : entities)
 			{
-				map.put("entity", LevelRegistry.writeEntityToNBT(e));
+				map.put("entity", WorldRegistry.writeEntityToNBT(e));
 			}
 			
 			CompoundTag tag = new CompoundTag("entities", map);			

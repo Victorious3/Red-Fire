@@ -13,9 +13,9 @@ import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.tiles.Tile;
-import vic.rpg.registry.LevelRegistry;
+import vic.rpg.registry.WorldRegistry;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.tiles.Tile;
 
 public class PopupMenu implements ActionListener
 {
@@ -65,14 +65,14 @@ public class PopupMenu implements ActionListener
 	public void updateTilesAndEntities()
 	{
 		menuTile.removeAll();
-		for(Tile t : LevelRegistry.tileRegistry.values())
+		for(Tile t : WorldRegistry.tileRegistry.values())
 		{
 			JMenuItem item = new JMenuItem(t.id + ": " + t.getClass().getSimpleName());
 			item.addActionListener(this);
 			menuTile.add(item);
 		}
 		menuEntity.removeAll();
-		for(Entity e : LevelRegistry.entityRegistry.values())
+		for(Entity e : WorldRegistry.entityRegistry.values())
 		{
 			JMenuItem item = new JMenuItem(e.id + ": " + e.getClass().getSimpleName());
 			item.addActionListener(this);
@@ -113,9 +113,9 @@ public class PopupMenu implements ActionListener
 				{
 					for(Point p : Mouse.selectedTiles)
 					{
-						Editor.instance.level.setTile(id, p.x, p.y, TableListener.tiles.get(id), Editor.layerID);			
+						Editor.instance.map.setTile(id, p.x, p.y, TableListener.tiles.get(id), Editor.layerID);			
 					}
-					Editor.instance.labelLevel.updateUI();
+					Editor.instance.labelMap.updateUI();
 				}
 				else Mouse.paint(x, y, id, false);
 			}

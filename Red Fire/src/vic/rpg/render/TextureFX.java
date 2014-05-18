@@ -8,8 +8,8 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.media.opengl.GL2;
 
-import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.entity.living.EntityLiving;
 
 import com.jogamp.opengl.util.texture.Texture;
 import com.sun.imageio.plugins.gif.GIFImageReader;

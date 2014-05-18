@@ -8,11 +8,6 @@ import vic.rpg.Game;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiPlayer;
-import vic.rpg.level.Level;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.entity.EntityEvent;
-import vic.rpg.level.entity.living.EntityLiving;
-import vic.rpg.level.entity.living.EntityPlayer;
 import vic.rpg.render.Screen;
 import vic.rpg.server.GameState;
 import vic.rpg.server.packet.Packet;
@@ -25,6 +20,11 @@ import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.entity.EntityEvent;
+import vic.rpg.world.entity.living.EntityLiving;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 /**
  * The PacketHandlerSP is processing all incoming {@link Packet Packets} from the Server and sends every {@link Packet} on the queue.
@@ -77,8 +77,8 @@ public class PacketHandlerSP extends Thread
 		}
 		else if(p.id == 6)
 		{
-			Game.level = new Level(); 
-			Game.level.readFromNBT(((Packet6World)p).getData());
+			Game.map = new Map(); 
+			Game.map.readFromNBT(((Packet6World)p).getData());
 			Game.netHandler.STATE = GameState.RUNNING;
 			sendPacket(new Packet0StateUpdate(Game.netHandler.STATE));
 		}
@@ -95,9 +95,9 @@ public class PacketHandlerSP extends Thread
 			case Packet7Entity.MODE_UPDATE:
 				for (Entity e : entities)
 				{
-					synchronized(Game.level.entityMap)
+					synchronized(Game.map.entityMap)
 					{
-						if(Game.level != null) Game.level.entityMap.put(e.UUID, e);
+						if(Game.map != null) Game.map.entityMap.put(e.UUID, e);
 						if(e instanceof EntityPlayer)
 						{
 							if(((EntityPlayer)e).username.equals(Game.USERNAME))
@@ -120,38 +120,38 @@ public class PacketHandlerSP extends Thread
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:
-				synchronized(Game.level.entityMap)
+				synchronized(Game.map.entityMap)
 				{
 					for (Entity e : entities)
 					{
-						Game.level.entityMap.remove(e.UUID);
+						Game.map.entityMap.remove(e.UUID);
 					}
 				}			
 			}
 		}
 		else if(p.id == 9)
 		{
-			if(Game.level != null && Game.getPlayer() != null)
+			if(Game.map != null && Game.getPlayer() != null)
 			{
-				EntityLiving e = (EntityLiving) Game.level.entityMap.get(((Packet9EntityMoving)p).UUID);
+				EntityLiving e = (EntityLiving) Game.map.entityMap.get(((Packet9EntityMoving)p).UUID);
 				if(e.UUID != Game.getPlayer().UUID)
 				{
 					e.xCoord = ((Packet9EntityMoving)p).xCoord;
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
 					e.setRotation(((Packet9EntityMoving)p).rotation);
 					e.setWalking(((Packet9EntityMoving)p).isWalking);
-					Game.level.entityMap.put(e.UUID, e);
+					Game.map.entityMap.put(e.UUID, e);
 				}
 			}
 		}
 		else if(p.id == 10)
 		{
-			Game.level.time = ((Packet10TimePacket)p).time;
+			Game.map.time = ((Packet10TimePacket)p).time;
 		}
 		else if(p.id == 12)
 		{
 			EntityEvent eev = ((Packet12Event)p).eev;
-			Game.level.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);		
+			Game.map.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);		
 		}
 		else if(p.id == 20)
 		{

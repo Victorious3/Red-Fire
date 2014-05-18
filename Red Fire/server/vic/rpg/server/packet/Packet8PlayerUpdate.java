@@ -1,7 +1,7 @@
 package vic.rpg.server.packet;
 
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.entity.living.EntityPlayer;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.entity.living.EntityPlayer;
 
 public class Packet8PlayerUpdate extends Packet7Entity
 {

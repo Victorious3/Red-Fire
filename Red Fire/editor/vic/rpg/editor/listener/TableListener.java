@@ -12,10 +12,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import vic.rpg.editor.Editor;
-import vic.rpg.level.Editable;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.tiles.Tile;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Editable;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.tiles.Tile;
 
 public class TableListener implements TableModelListener
 {
@@ -25,9 +25,9 @@ public class TableListener implements TableModelListener
 	@Override
 	public void tableChanged(TableModelEvent e) 
 	{
-		if(e.getSource() == Editor.instance.tableLevel.getModel() && e.getType() == TableModelEvent.UPDATE)
+		if(e.getSource() == Editor.instance.tableMap.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
-			if(Editor.instance.level == null) return;
+			if(Editor.instance.map == null) return;
 			
 			int row = e.getFirstRow();
 			
@@ -38,7 +38,7 @@ public class TableListener implements TableModelListener
 	        
 	        try
 	        {
-	        	Utils.setField(name, value, Editor.instance.level);
+	        	Utils.setField(name, value, Editor.instance.map);
 	        } catch (Exception ex) {
 	        	ex.printStackTrace();
 	        	JOptionPane.showMessageDialog(null, "Data with name \"" + name + "\" could'nt be changed to \"" + value +"\"\nIt's from type \"" + type + "\"", "Error", JOptionPane.ERROR_MESSAGE);	            
@@ -46,7 +46,7 @@ public class TableListener implements TableModelListener
 		}		
 		if(e.getSource() == Editor.instance.tableEntities.getModel() && e.getType() == TableModelEvent.UPDATE)
 		{
-			if(Editor.instance.level == null) return;
+			if(Editor.instance.map == null) return;
 			
 			int row = e.getFirstRow();
 			
@@ -60,7 +60,7 @@ public class TableListener implements TableModelListener
 	        	if(Mouse.selectedEntities.size() == 1) 
         		{
 	        		Utils.setField(name, value, Mouse.selectedEntities.get(0));
-	        		Editor.instance.labelLevel.updateUI();
+	        		Editor.instance.labelMap.updateUI();
         		}
 	        	else Utils.setField(name, value, entities.get(Integer.parseInt(Editor.instance.dropdownEntities.getSelectedItem().toString().split(":")[0])));
 	        } catch (Exception ex) {
@@ -75,15 +75,15 @@ public class TableListener implements TableModelListener
 			{
 				for(Point p : Mouse.selectedTiles)
 				{
-					Tile t = Editor.instance.level.getTileAt(p.x, p.y, Editor.layerID);
+					Tile t = Editor.instance.map.getTileAt(p.x, p.y, Editor.layerID);
 					if(t != null)
 					{
 						int data = Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString());
-						Editor.instance.level.setTile(t.id, p.x, p.y, data, Editor.layerID);
+						Editor.instance.map.setTile(t.id, p.x, p.y, data, Editor.layerID);
 					}
 				}				
 				
-				Editor.instance.labelLevel.updateUI();
+				Editor.instance.labelMap.updateUI();
 			}
 			else tiles.put(Integer.parseInt(Editor.instance.dropdownTiles.getSelectedItem().toString().split(":")[0]), Integer.parseInt(((TableModel)e.getSource()).getValueAt(e.getFirstRow(), 2).toString()));
 		}

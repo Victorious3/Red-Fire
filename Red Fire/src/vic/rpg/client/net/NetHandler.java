@@ -157,7 +157,7 @@ public class NetHandler extends Thread
 			}
 			
 			Game.playerUUID = null;
-			Game.level = null;
+			Game.map = null;
 			
 			if(lastError.length() > 0)
 			{

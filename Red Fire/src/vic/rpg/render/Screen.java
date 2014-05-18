@@ -10,12 +10,12 @@ import javax.media.opengl.GL2;
 import vic.rpg.Game;
 import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
-import vic.rpg.level.entity.Entity;
-import vic.rpg.level.tiles.Tile;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.entity.Entity;
+import vic.rpg.world.tiles.Tile;
 
 /**
  * The {@link Drawable} Screen. It renders the {@link Gui} and
@@ -36,9 +36,9 @@ public class Screen extends Drawable
 	@Override
 	public void render(GL2 gl2) 
 	{
-		if(Game.level != null)
+		if(Game.map != null)
 		{				
-			Game.level.render(gl2);			
+			Game.map.render(gl2);			
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class Screen extends Drawable
 				if(GameRegistry.key.APressed) 
 				{				
 					Game.getPlayer().xCoord -= 2;
-					if(!Game.getPlayer().collides(Game.level))
+					if(!Game.getPlayer().collides(Game.map))
 					{						
 						Game.getPlayer().setWalking(true);
 						Screen.xOffset += 2;
@@ -65,7 +65,7 @@ public class Screen extends Drawable
 				if(GameRegistry.key.WPressed) 
 				{			
 					Game.getPlayer().yCoord -= 2;
-					if(!Game.getPlayer().collides(Game.level))
+					if(!Game.getPlayer().collides(Game.map))
 					{
 						Game.getPlayer().setWalking(true);
 						Screen.yOffset += 2;
@@ -76,7 +76,7 @@ public class Screen extends Drawable
 				if(GameRegistry.key.SPressed) 
 				{				
 					Game.getPlayer().yCoord += 2;
-					if(!Game.getPlayer().collides(Game.level))
+					if(!Game.getPlayer().collides(Game.map))
 					{
 						Game.getPlayer().setWalking(true);
 						Screen.yOffset -= 2;
@@ -87,7 +87,7 @@ public class Screen extends Drawable
 				if(GameRegistry.key.DPressed) 
 				{					
 					Game.getPlayer().xCoord += 2;
-					if(!Game.getPlayer().collides(Game.level))
+					if(!Game.getPlayer().collides(Game.map))
 					{				
 						Game.getPlayer().setWalking(true);
 						Screen.xOffset -= 2;
@@ -142,9 +142,9 @@ public class Screen extends Drawable
 	
 	private Color getAmbientLight()
 	{
-		if(Game.level.isAmbientLighting)
+		if(Game.map.isAmbientLighting)
 		{			
-			float time = Game.level.time;
+			float time = Game.map.time;
 			if(time > 5000) time = 10000 - time;
 			return new Color((int)((255F / 5000F) * time), (int)((255F / 5000F) * time), (int)((255F / 5000F) * time));
 		}
@@ -185,7 +185,7 @@ public class Screen extends Drawable
 	 */
 	public void postRender(GL2 gl2)
 	{
-		if(Game.level != null && Options.LIGHTING)
+		if(Game.map != null && Options.LIGHTING)
 		{
 			DrawUtils.setGL(gl2);
 			
@@ -196,7 +196,7 @@ public class Screen extends Drawable
 			
 			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_DST_ALPHA);	
 									
-			for(Entity e : Game.level.entityMap.values())
+			for(Entity e : Game.map.entityMap.values())
 			{
 				for(LightSource s : e.lightSources)
 				{
@@ -209,14 +209,14 @@ public class Screen extends Drawable
 				}
 			}
 			
-			for(int x = 0; x < Game.level.width; x++)
+			for(int x = 0; x < Game.map.width; x++)
 			{
-				for(int y = 0; y < Game.level.height; y++)
+				for(int y = 0; y < Game.map.height; y++)
 				{				
-					for(int i = 0; i < Game.level.getLayerAmount(); i++)
+					for(int i = 0; i < Game.map.getLayerAmount(); i++)
 					{
-						Integer data = Game.level.getTileDataAt(x, y, i);
-						Tile tile = Game.level.getTileAt(x, y, i);
+						Integer data = Game.map.getTileDataAt(x, y, i);
+						Tile tile = Game.map.getTileAt(x, y, i);
 						if(tile != null)
 						{
 							if(tile.emitsLight(x, y, data))
@@ -254,7 +254,7 @@ public class Screen extends Drawable
 			
 			gl2.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);		
 			
-			for(Entity e : Game.level.entityMap.values())
+			for(Entity e : Game.map.entityMap.values())
 			{
 				e.postRender(gl2);
 			}

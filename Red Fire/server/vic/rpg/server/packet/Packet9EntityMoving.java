@@ -4,8 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import vic.rpg.level.entity.living.EntityLiving;
 import vic.rpg.utils.Direction;
+import vic.rpg.world.entity.living.EntityLiving;
 
 public class Packet9EntityMoving extends Packet 
 {

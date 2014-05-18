@@ -33,7 +33,7 @@ public class GuiDebug extends Gui
 		DrawUtils.drawString(5, 580, p.x + " " + p.y, Color.white);
 		DrawUtils.drawString(450, 560, "M1:" + GameRegistry.mouse.isLeftDown + " M2:" + GameRegistry.mouse.isRightDown + " M3:" + GameRegistry.mouse.isMiddleDown, Color.white);
 		DrawUtils.drawString(600, 20, "char:" + GameRegistry.key.currChar + " key:" + GameRegistry.key.currKey, Color.white);
-		if(Game.level != null) DrawUtils.drawString(600, 40, "time:" + Game.level.time, Color.white);
+		if(Game.map != null) DrawUtils.drawString(600, 40, "time:" + Game.map.time, Color.white);
 	}
 
 }

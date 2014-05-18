@@ -97,9 +97,9 @@ public class GuiConnect extends Gui implements IGButton
 			if(Game.netHandler.connect(adress, port, username))
 			{
 				Gui.setGui(null);
-				SoundEngine.loadClip("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav", "Level.MainLoop");
+				SoundEngine.loadClip("/vic/rpg/resources/sounds/Dubstep - Nostalgia - The Other Side.wav", "Map.MainLoop");
 				SoundEngine.stopAll();
-				SoundEngine.playClip("Level.MainLoop", true);
+				SoundEngine.playClip("Map.MainLoop", true);
 			}
 			else
 			{

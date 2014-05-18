@@ -8,8 +8,8 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
-import vic.rpg.level.entity.living.Inventory;
 import vic.rpg.render.DrawUtils;
+import vic.rpg.world.entity.living.Inventory;
 
 /**
  * A Slot that can be used as a container for an {@link ItemStack}. The width and height of the Slot can be adjusted to allow bigger {@link Item Items}.

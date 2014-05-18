@@ -2,9 +2,9 @@ package vic.rpg.server.command;
 
 import java.util.List;
 
-import vic.rpg.level.entity.living.EntityController;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.server.io.Connection;
+import vic.rpg.world.entity.living.EntityController;
 
 public class CommandHeal extends Command 
 {	
@@ -33,9 +33,9 @@ public class CommandHeal extends Command
 			{
 				try {
 					float amount = Float.parseFloat(args.get(1));
-					if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+					if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
 					{
-						EntityController.setHealth(ServerLoop.level.getPlayer(args.get(0)), amount);
+						EntityController.setHealth(ServerLoop.map.getPlayer(args.get(0)), amount);
 					}
 					else
 					{
@@ -47,9 +47,9 @@ public class CommandHeal extends Command
 			}
 			else 
 			{
-				if(ServerLoop.level.onlinePlayersMap.containsKey(args.get(0)))
+				if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
 				{
-					EntityController.setHealth(ServerLoop.level.getPlayer(args.get(0)), 1F);
+					EntityController.setHealth(ServerLoop.map.getPlayer(args.get(0)), 1F);
 				}
 				else
 				{

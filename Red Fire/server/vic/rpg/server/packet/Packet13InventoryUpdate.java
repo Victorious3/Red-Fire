@@ -12,7 +12,7 @@ import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
 import org.jnbt.Tag;
 
-import vic.rpg.level.entity.living.Inventory;
+import vic.rpg.world.entity.living.Inventory;
 
 public class Packet13InventoryUpdate extends Packet 
 {

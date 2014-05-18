@@ -24,11 +24,11 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 		
 		tableModel.setRowCount(0);
-		for(int i = 0; i < Editor.instance.level.getLayerAmount(); i++)
+		for(int i = 0; i < Editor.instance.map.getLayerAmount(); i++)
 		{
 			Vector<Object> row = new Vector<Object>();
 			row.add(i);
-			row.add(Editor.instance.level.isLayerVisible(i));
+			row.add(Editor.instance.map.isLayerVisible(i));
 			tableModel.addRow(row);
 		}
 	}
@@ -38,7 +38,7 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 	{
 		if(arg0.getSource() == Editor.instance.buttonNewLayer)
 		{
-			Editor.instance.level.addLayer();
+			Editor.instance.map.addLayer();
 			Editor.updateLayerFrame();
 		}
 		if(arg0.getSource() == Editor.instance.buttonRemoveLayer)
@@ -46,9 +46,9 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 			Integer layerID = (Integer) Editor.instance.tableLayers.getModel().getValueAt(Editor.instance.tableLayers.getSelectedRow(), 0);
 			if(Editor.layerID == layerID)
 			{
-				Editor.instance.tableLayers.setRowSelectionInterval(Editor.instance.level.getLayerAmount() - 1, Editor.instance.level.getLayerAmount() - 1);
+				Editor.instance.tableLayers.setRowSelectionInterval(Editor.instance.map.getLayerAmount() - 1, Editor.instance.map.getLayerAmount() - 1);
 			}
-			Editor.instance.level.removeLayer(layerID);
+			Editor.instance.map.removeLayer(layerID);
 			Editor.updateLayerFrame();
 		}
 	}
@@ -61,8 +61,8 @@ public class LayerFrameListener implements ActionListener, TableModelListener, L
 			TableModel table = (TableModel)arg0.getSource();
 			int id = (Integer) table.getValueAt(arg0.getFirstRow(), 0);
 			boolean selected = (Boolean) table.getValueAt(arg0.getFirstRow(), 1);	
-			Editor.instance.level.setLayerVisibility(id, selected);
-			Editor.instance.labelLevel.updateUI();
+			Editor.instance.map.setLayerVisibility(id, selected);
+			Editor.instance.labelMap.updateUI();
 		}
 	}
 

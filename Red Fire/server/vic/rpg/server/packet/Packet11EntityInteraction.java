@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import vic.rpg.level.entity.Entity;
+import vic.rpg.world.entity.Entity;
 
 public class Packet11EntityInteraction extends Packet 
 {
