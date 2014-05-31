@@ -1,7 +1,7 @@
 package vic.rpg.world.entity;
 
 /**
- * Was used for Entites created by the Editor.
+ * Was used for Entities created by the Editor.
  * @author Victorious3
  *
  */

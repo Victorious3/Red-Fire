@@ -4,7 +4,6 @@ import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
-import vic.rpg.world.entity.Entity;
 
 /**
  * A generic Non-Player-Character.
@@ -30,7 +29,8 @@ public class EntityNPC extends EntityLiving
 	{
 		super.tick();
 		
-		if(!isWalking() && !walk && Utils.getSide() == Side.SERVER)
+		//TODO Operations like that wont work anymore.
+		/*if(!isWalking() && !walk && Utils.getSide() == Side.SERVER)
 		{
 			String[] players = new String[mapObj.onlinePlayersMap.values().size()];
 			players = mapObj.onlinePlayersMap.values().toArray(players);
@@ -39,7 +39,7 @@ public class EntityNPC extends EntityLiving
 				Entity player = mapObj.entityMap.get(players[0]);
 				walkTo(player.xCoord, player.yCoord, Double.MAX_VALUE);
 			}
-		}
+		}*/
 	}
 
 	@Override

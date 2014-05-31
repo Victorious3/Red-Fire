@@ -50,9 +50,9 @@ public class CommandGive extends Command
 			{
 				item = WorldRegistry.itemRegistry.get(id);
 				
-				if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
+				if(ServerLoop.world.isPlayerOnline(args.get(0)))
 				{
-					EntityPlayer player = ServerLoop.map.getPlayer(args.get(0));
+					EntityPlayer player = ServerLoop.world.getPlayer(args.get(0));
 					player.inventory.addToInventory(new ItemStack(item, amount));
 					player.inventory.updateInventory();
 				}

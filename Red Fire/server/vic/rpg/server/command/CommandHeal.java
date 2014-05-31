@@ -33,9 +33,9 @@ public class CommandHeal extends Command
 			{
 				try {
 					float amount = Float.parseFloat(args.get(1));
-					if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
+					if(ServerLoop.world.isPlayerOnline(args.get(0)))
 					{
-						EntityController.setHealth(ServerLoop.map.getPlayer(args.get(0)), amount);
+						EntityController.setHealth(ServerLoop.world.getPlayer(args.get(0)), amount);
 					}
 					else
 					{
@@ -47,9 +47,9 @@ public class CommandHeal extends Command
 			}
 			else 
 			{
-				if(ServerLoop.map.onlinePlayersMap.containsKey(args.get(0)))
+				if(ServerLoop.world.isPlayerOnline(args.get(0)))
 				{
-					EntityController.setHealth(ServerLoop.map.getPlayer(args.get(0)), 1F);
+					EntityController.setHealth(ServerLoop.world.getPlayer(args.get(0)), 1F);
 				}
 				else
 				{

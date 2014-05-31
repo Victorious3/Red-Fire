@@ -3,11 +3,8 @@ package vic.rpg.registry;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.jnbt.CompoundTag;
-import org.jnbt.IntTag;
-import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Init;
@@ -162,6 +159,7 @@ public class WorldRegistry
 	
 	public static void register(Tile obj, int id)
 	{
+		if(id == 0) throw new IllegalArgumentException("The id 0 is reserved for emptly tiles!");
 		obj.id = id;
 		tileRegistry.put(id, obj);
 	}
@@ -180,14 +178,13 @@ public class WorldRegistry
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Entity readEntityFromNBT(CompoundTag tag)
-	{	
-		Map<String, Tag> map = tag.getValue();
+	{		
+		int xCoord = tag.getInt("xcoord", 0);
+		int yCoord = tag.getInt("ycoord", 0);
+		int dimension = tag.getInt("dim", 0);
+		int id = tag.getInt("id", 0);
 		
-		int xCoord = (Integer)(map.get("xcoord")).getValue();
-		int yCoord = (Integer)(map.get("ycoord")).getValue();
-		int id = (Integer)(map.get("id")).getValue();
-		
-		String uuid = (String)(map.get("uuid")).getValue();
+		String uuid = tag.getString("uuid", null);
 		
 		Entity ent = null;
 		Entity entLoad = entityRegistry.get(id);
@@ -197,6 +194,7 @@ public class WorldRegistry
 			Class entClass = entLoad.getClass();
 			try {		
 				ent = (Entity) entClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+				ent.dimension = dimension;
 				ent.xCoord = xCoord;
 				ent.yCoord = yCoord;
 				ent.UUID = uuid;
@@ -216,54 +214,15 @@ public class WorldRegistry
 	
 	public static CompoundTag writeEntityToNBT(Entity ent)
 	{
-		int id = ent.id;	
+		CompoundTag tag = new CompoundTag("entity", new HashMap<String, Tag>());
 		
-		Map<String, Tag> map = new HashMap<String, Tag>(); 	
-		map.put("id", new IntTag("id", id));		
-		map.put("xcoord", new IntTag("xcoord", ent.xCoord));
-		map.put("ycoord", new IntTag("ycoord", ent.yCoord));
-		map.put("uuid", new StringTag("uuid", ent.UUID));
+		tag.putInt("id", ent.id);
+		tag.putInt("dim", ent.dimension);
+		tag.putInt("xcoord", ent.xCoord);
+		tag.putInt("ycoord", ent.yCoord);
+		tag.putString("uuid", ent.UUID);
 		
-		CompoundTag tag = new CompoundTag("entity", map);		
-		tag = ent.writeToNBT(tag);
-		
-		return tag;		
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static Tile readTileFromNBT(CompoundTag tag)
-	{
-		Map<String, Tag> map = tag.getValue();
-		
-		if(map.containsKey("id"))
-		{
-			int data = (Integer)(map.get("data")).getValue();
-			int id = (Integer)(map.get("id")).getValue(); 
-			
-			Tile obj = null;	
-			Class objClass = tileRegistry.get(id).getClass();
-			try {		
-				obj = (Tile) objClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			obj.data = data;
-			obj.id = id;
-			
-			return obj;
-		}
-		return null;
-	}
-	
-	public static CompoundTag writeTileToNBT(Tile obj)
-	{
-		Map<String, Tag> map = new HashMap<String, Tag>(); 	
-		map.put("id", new IntTag("id", obj.id));		
-		map.put("data", new IntTag("data", obj.data));
-		
-		CompoundTag tag = new CompoundTag("tile", map);		
-		
+		tag = ent.writeToNBT(tag);	
 		return tag;		
 	}
 }

@@ -88,7 +88,6 @@ public final class CompoundTag extends Tag {
     }
     
     //Some custom methods
-    //FIXME I have used some ugly constructs in the methods readFromNBT and writeToNBT in the past.
     public CompoundTag putTag(Tag tag)
     {
     	value.put(tag.getName(), tag);

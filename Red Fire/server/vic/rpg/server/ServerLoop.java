@@ -3,14 +3,14 @@ package vic.rpg.server;
 import java.io.File;
 
 import vic.rpg.server.gui.ServerGui;
-import vic.rpg.world.Map;
+import vic.rpg.world.World;
 import vic.rpg.world.path.PathServer;
 
 public class ServerLoop implements Runnable
 {		
 	public Thread thread;
 	public boolean isRunning = false;
-	public static Map map;
+	public static World world;
 	public static File file;
 	public PathServer pathServer;
 	
@@ -23,7 +23,7 @@ public class ServerLoop implements Runnable
 	int tickCounter = 0;
 	private void tick() 
 	{
-		map.tick();
+		world.tick();
 		ServerGui.tick();		
 	}
 	

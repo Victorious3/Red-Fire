@@ -119,9 +119,4 @@ public final class ListTag extends Tag {
     {
     	return value.size() > id ? value.get(id) : null; 
     }
-    
-	public List<Tag> getAll()
-    {
-    	return value;
-    }
 }

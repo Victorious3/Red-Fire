@@ -8,34 +8,29 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Area;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.media.opengl.GL2;
 
-import org.jnbt.ByteTag;
 import org.jnbt.CompoundTag;
-import org.jnbt.IntTag;
 import org.jnbt.ListTag;
 import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
-import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.Game;
 import vic.rpg.registry.WorldRegistry;
 import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
-import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
-import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.utils.Utils;
-import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.Entity;
 import vic.rpg.world.entity.EntityTile;
 import vic.rpg.world.entity.living.EntityLiving;
@@ -49,7 +44,7 @@ import vic.rpg.world.tiles.TilePlaceHolder;
  * and the other one in {@link ServerLoop#map} where all Server calculations are performed. A Map can be saved to a {@link File}, read from a {@link File}
  * and send via an {@link NBTOutputStream}. The Editor is used to modify the contents of a Map e.g {@link Tile Tiles} and {@link Entity Entities}.
  * <br><br>
- * Everything is stored with its Cartesian coordinates and is converted to Isometric coordinates on rendering to allow a isometric Projection. <b>Always figure out
+ * Everything is stored with its Cartesian coordinates and is converted to Isometric coordinates on rendering to allow an isometric projection. <b>Always figure out
  * which coordinate system is used at the time and convert with {@link Utils#convCartToIso(Point)} and {@link Utils#convIsoToCart(Point)} if necessary!</b>
  * @author Victorious3
  */
@@ -70,17 +65,16 @@ public class Map implements INBTReadWrite
 	
 	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
 	
-	public LinkedHashMap<String, String> onlinePlayersMap = new LinkedHashMap<String, String>();
-	public LinkedHashMap<String, EntityPlayer> offlinePlayersMap = new LinkedHashMap<String, EntityPlayer>();
-	
 	public NodeMap nodeMap = new NodeMap(this);
+	public File saveFile;
 	
 	//Gameplay
-	@Editable public int time = 5000;
+	public int time = 5000;
 	@Editable public boolean isAmbientLighting = true;
 	@Editable public String name = "NO_NAME";
 	@Editable public int spawnX = 0;
 	@Editable public int spawnY = 0;
+	@Editable public int id = 0;
 
 	/**
 	 * Creates a new Map.
@@ -171,48 +165,6 @@ public class Map implements INBTReadWrite
 		{
 			e.onKeyPressed(key);
 		}
-	}
-	
-	/**
-	 * This is called when a Server is started when there was no save file specified to fill the new Map with something.
-	 */
-	@Deprecated
-	public void populate()
-	{			
-		for(int x = 0; x < width; x++)
-		{
-			for(int y = 0; y < height; y++)
-			{
-				setTile(WorldRegistry.TILE_TERRAIN.id, x, y, 0);
-			}
-		}
-		
-		for(int x = 30; x < 60; x++)
-		{
-			for(int y = 30; y < 60; y++)
-			{
-				setTile(WorldRegistry.TILE_VOID.id, x, y);
-			}
-		}
-		
-		Random rand = new Random();
-		int amount = rand.nextInt(51);
-		amount += 50;
-		
-		for (int i = 0; i < amount; i++)
-		{
-			int randX = rand.nextInt(width * CELL_SIZE + 1);
-			int randY = rand.nextInt(height * CELL_SIZE + 1);
-
-			addEntity(WorldRegistry.ENTITY_TREE.id, randX, randY);		
-		}
-		addEntity(WorldRegistry.ENTITY_HOUSE.id, 200, 200);
-		addEntity(WorldRegistry.ENTITY_APLTREE.id, 700, 400);
-		
-		addEntity(WorldRegistry.ENTITY_LIVING_NPC.id, 200, 200);
-		addEntity(WorldRegistry.ENTITY_LIVING_NPC.id, 700, 200);
-		
-		nodeMap.recreate(this);
 	}
 	
 	/**
@@ -408,22 +360,6 @@ public class Map implements INBTReadWrite
 		{
 			e.tick();
 		}
-		
-		if(Utils.getSide() == Side.SERVER)
-		{
-			tickCounter++;
-			
-			if(tickCounter == 10)
-			{
-				time++;
-				if(time >= 10000)
-				{
-					time = 0;
-				}
-				Server.server.broadcast(new Packet10TimePacket(time));
-				tickCounter = 0;
-			}
-		}
 	}
 	
 	/**
@@ -597,6 +533,17 @@ public class Map implements INBTReadWrite
 	}
 	
 	/**
+	 * Adds an {@link Entity}. Only {@link Entity#mapObj} is changed.
+	 * @param ent
+	 */
+	public void addEntity(Entity ent)
+	{
+		ent.dimension = id;
+		ent.mapObj = this;
+		entityMap.put(ent.UUID, ent);
+	}
+	
+	/**
 	 * Adds an {@link Entity} and places it at x|y.
 	 * @param id
 	 * @param x
@@ -613,12 +560,13 @@ public class Map implements INBTReadWrite
 		ent.xCoord = x;
 		ent.yCoord = y;
 		ent.UUID = uuid.toString();
+		ent.dimension = id;
 		ent.mapObj = this;
 		entityMap.put(uuid.toString(), ent);
 	}
 
 	/**
-	 * Create a new {@link EntityPlayer} with a username and places it at x|y.
+	 * Creates a new {@link EntityPlayer} with a username and places it at x|y.
 	 * @param player
 	 * @param username
 	 * @param x
@@ -631,20 +579,30 @@ public class Map implements INBTReadWrite
         player.yCoord = y;
         player.username = username;
         player.UUID = uuid.toString();
+        player.dimension = id;
         player.mapObj = this;
         player.formatInventory();
         entityMap.put(player.UUID, player);
-        onlinePlayersMap.put(username, player.UUID);                
     }
 	
 	/**
-	 * Returns an {@link EntityPlayer} by searching for its username.
-	 * @param username
-	 * @return
+	 * Removes an {@link Entity}.
+	 * @param uuid
+	 * @return Entity
 	 */
-	public EntityPlayer getPlayer(String username)
+	public Entity removeEntity(String uuid)
 	{
-		return (EntityPlayer)entityMap.get(onlinePlayersMap.get(username));
+		return entityMap.remove(uuid);
+	}
+	
+	/**
+	 * Gets an {@link Entity}.
+	 * @param uuid
+	 * @return Entity
+	 */
+	public Entity getEntity(String uuid)
+	{
+		return entityMap.get(uuid);
 	}
 		
 	/**
@@ -712,46 +670,40 @@ public class Map implements INBTReadWrite
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public void readFromNBT(CompoundTag tag, Object... args)
 	{
-		int width = tag.getInt("width", 0);
-		int height = tag.getInt("height", 0);
-		int time = tag.getInt("time", 0);
-		boolean isAmbientLighting = tag.getBoolean("isAmbeintLighting", true);
-		int spawnX = tag.getInt("spawnX", 0);
-		int spawnY = tag.getInt("spawnY", 0);
-		String name = tag.getString("name", "NO_NAME");
+		this.id = tag.getInt("id", 0);
+		this.width = tag.getInt("width", 0);
+		this.height = tag.getInt("height", 0);
+		this.time = tag.getInt("time", 0);
+		this.isAmbientLighting = tag.getBoolean("isAmbientLighting", true);
+		this.spawnX = tag.getInt("spawnX", 0);
+		this.spawnY = tag.getInt("spawnY", 0);
+		this.name = tag.getString("name", "NO_NAME");
 		
 		List<Tag> entityList = (List<Tag>)tag.getListTag("entities").getValue();
 		List<Tag> layerList = (List<Tag>)tag.getListTag("layers").getValue();
-		
-		this.width = width;
-		this.height = height;
-		this.name = name;
 
 		ArrayList<Integer[][][]> layers = new ArrayList<Integer[][][]>();
 		for(Tag layerTag : layerList)
 		{
-			List<Tag> tileList = (List<Tag>)(layerTag.getValue());
+			CompoundTag tileTag = ((CompoundTag)layerTag).getCompoundTag("tiles");
+			CompoundTag dataTag = ((CompoundTag)layerTag).getCompoundTag("data");
+			
 			Integer[][][] layer = new Integer[width][height][2];		
-			int x = 0; int y = 0;
-			for(Tag tileTag : tileList)
+			
+			for(int x = 0; x < width; x++)
 			{
-				Tile obj = WorldRegistry.readTileFromNBT((CompoundTag)tileTag);
-				if(obj != null)
+				int[] tiles = tileTag.getIntArray(String.valueOf(x), new int[height]);
+				int[] data = dataTag.getIntArray(String.valueOf(x), new int[height]);
+				
+				for(int y = 0; y < height; y++)
 				{
-					layer[x][y][0] = obj.id;
-					layer[x][y][1] = obj.data;
-				}
-				y++;
-				if(y == height)
-				{
-					y = 0;
-					x++;
-					if(x == width) break;
+					layer[x][y][0] = tiles[y] != 0 ? tiles[y] : null;
+					layer[x][y][1] = data[y];
 				}
 			}
+			
 			layers.add(layer);
 		}
 		
@@ -766,30 +718,12 @@ public class Map implements INBTReadWrite
 			}
 		}
 		
+		this.entityMap = entities;
 		this.layers = layers;
 		
 		for(int i = 0; i < this.layers.size(); i++)
 		{
 			this.layerVisibility.put(i, true);
-		}
-		
-		this.entityMap = entities;
-		this.time = time;
-		this.spawnX = spawnX;
-		this.spawnY = spawnY;
-		this.isAmbientLighting = isAmbientLighting;
-		
-		if(tag.getValue().containsKey("players"))
-		{
-			List<Tag> playerList = (List<Tag>)tag.getListTag("players").getValue();
-			LinkedHashMap<String, EntityPlayer> players = new LinkedHashMap<String, EntityPlayer>();
-			for(Tag playerTag : playerList)
-			{
-				EntityPlayer ent = (EntityPlayer) WorldRegistry.readEntityFromNBT((CompoundTag)playerTag);
-				ent.mapObj = this;
-				players.put(ent.username, ent);
-			}
-			this.offlinePlayersMap = players;
 		}
 		
 		this.nodeMap.recreate(this);
@@ -798,91 +732,66 @@ public class Map implements INBTReadWrite
 	@Override
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args)
 	{
-		IntTag widthTag = new IntTag("width", width);
-		IntTag heightTag = new IntTag("height", height);
-		IntTag timeTag = new IntTag("time", time);
-		ByteTag ambientTag = new ByteTag("isAmbientLighting", (byte)(isAmbientLighting ? 1 : 0));
-		IntTag spawnXTag = new IntTag("spawnX", spawnX);
-		IntTag spawnYTag = new IntTag("spawnY", spawnY);
-		StringTag nameTag = new StringTag("name", name);
+		CompoundTag mapTag = new CompoundTag("map", new HashMap<String, Tag>());
 		
-		java.util.Map<String, Tag> MapMap = new HashMap<String, Tag>();
-		List<Tag> entityList = new ArrayList<Tag>();
-		List<Tag> layerList = new ArrayList<Tag>();
+		mapTag.putInt("id", id);
+		mapTag.putInt("width", width);
+		mapTag.putInt("height", height);
+		mapTag.putInt("time", time);
+		mapTag.putBoolean("isAmbientLighting", isAmbientLighting);
+		mapTag.putInt("spawnX", spawnX);
+		mapTag.putInt("spawnY", spawnY);
+		mapTag.putString("name", name);
+		
+		ListTag layerListTag = new ListTag("layers", CompoundTag.class, new ArrayList<Tag>());
+		ListTag entityListTag = new ListTag("entities", CompoundTag.class, new ArrayList<Tag>());
 		
 		for(int l = 0; l < layers.size(); l++)
 		{
-			Integer[][][] layer = layers.get(l);
+			Integer[][][] layer = layers.get(l);		
+			CompoundTag layerTag = new CompoundTag("layer", new HashMap<String, Tag>());
+			CompoundTag tileTag = new CompoundTag("tiles", new HashMap<String, Tag>());
+			CompoundTag dataTag = new CompoundTag("data", new HashMap<String, Tag>());
 			
-			List<Tag> tileList = new ArrayList<Tag>();
 			for(int x = 0; x < width; x++)
 			{
+				int[] tiles = new int[height];
+				int[] data = new int[height];			
 				for(int y = 0; y < height; y++)
 				{
-					Tile t = WorldRegistry.tileRegistry.get(layer[x][y][0]);
-					if(t != null)
-					{
-						t.data = layer[x][y][1];
-						CompoundTag tileTag = WorldRegistry.writeTileToNBT(t);
-						tileList.add(tileTag);
-					}
-					else
-					{
-						CompoundTag tileTag = new CompoundTag("tile", new HashMap<String, Tag>());
-						tileList.add(tileTag);
-					}
-				}
+					tiles[y] = layer[x][y][0] != null ? layer[x][y][0] : 0;
+					data[y] = layer[x][y][1] != null ? layer[x][y][1] : 0;
+				}		
+				tileTag.putIntArray(String.valueOf(x), tiles);
+				dataTag.putIntArray(String.valueOf(x), data);
 			}
-			ListTag layerTag = new ListTag("layer", CompoundTag.class, tileList);
-			layerList.add(layerTag);
-		}		
-		
-		if(args[0] != null && args[0] == Boolean.FALSE)
-		{
-			//Player saves
-			ArrayList<CompoundTag> playerList = new ArrayList<CompoundTag>();
+			layerTag.putTag(tileTag);
+			layerTag.putTag(dataTag);
 			
-			for(EntityPlayer e : offlinePlayersMap.values())
-			{
-				CompoundTag entityTag = WorldRegistry.writeEntityToNBT(e);
-				playerList.add(entityTag);
-			}
-			
-			ListTag playerListTag = new ListTag("players", CompoundTag.class, playerList);
-			MapMap.put("players", playerListTag);
+			layerListTag.addTag(layerTag);
 		}
+		
+		mapTag.putTag(layerListTag);
+		mapTag.putTag(entityListTag);
 		
 		for(Entity e : entityMap.values())
 		{
 			CompoundTag enitiyTag = WorldRegistry.writeEntityToNBT(e);
-			entityList.add(enitiyTag);
+			entityListTag.addTag(enitiyTag);
 		}
 		
-		ListTag tileListTag = new ListTag("layers", ListTag.class, layerList);
-		ListTag entityListTag = new ListTag("entities", CompoundTag.class, entityList);
-		
-		MapMap.put("width", widthTag);
-		MapMap.put("height", heightTag);
-		MapMap.put("time", timeTag);
-		MapMap.put("isAmbientLighting", ambientTag);
-		MapMap.put("name", nameTag);
-		MapMap.put("spawnX", spawnXTag);
-		MapMap.put("spawnY", spawnYTag);
-		MapMap.put("tiles", tileListTag);
-		MapMap.put("entities", entityListTag);	
-
-		return new CompoundTag("Map", MapMap);
+		return mapTag;
 	}
 	
 	/**
-	 * Writes this Map to a given {@link File}.
+	 * Writes this Map to {@link #saveFile}
 	 * @param file
 	 */
-	public void writeToFile(File file)
+	public void writeToFile()
 	{
 		try {
-			NBTOutputStream out = new NBTOutputStream(new FileOutputStream(file));
-			out.writeTag(writeToNBT(null, false));
+			NBTOutputStream out = new NBTOutputStream(new FileOutputStream(saveFile));
+			out.writeTag(writeToNBT(null));
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -892,18 +801,16 @@ public class Map implements INBTReadWrite
 	/**
 	 * Reads this Map from a given {@link File}.
 	 * @param file
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	public static Map readFromFile(File file)
+	public static Map readFromFile(File file) throws FileNotFoundException, IOException
 	{
-		try {
-			NBTInputStream in = new NBTInputStream(new FileInputStream(file));
-			Map Map = new Map();
-			Map.readFromNBT((CompoundTag) in.readTag());
-			in.close();
-			return Map;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		NBTInputStream in = new NBTInputStream(new FileInputStream(file));
+		Map map = new Map();
+		map.readFromNBT((CompoundTag) in.readTag());
+		in.close();
+		map.saveFile = file;
+		return map;
 	}
 }

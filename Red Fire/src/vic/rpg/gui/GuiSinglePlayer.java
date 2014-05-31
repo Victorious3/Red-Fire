@@ -3,14 +3,9 @@ package vic.rpg.gui;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
-
-import org.jnbt.CompoundTag;
-import org.jnbt.NBTInputStream;
 
 import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
@@ -28,6 +23,7 @@ import vic.rpg.server.Server;
 import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
+import vic.rpg.world.World;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -71,14 +67,11 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		
 		for(File f : file.listFiles())
 		{
-			list.add(f);
-			try {
-				NBTInputStream in = new NBTInputStream(new FileInputStream(f));
-				CompoundTag tag = (CompoundTag)in.readTag();
-				nameList.add(tag.getString("name", "NO_NAME"));
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			String worldName = World.getWorldName(f);
+			if(worldName != null)
+			{
+				list.add(f);
+				nameList.add(worldName);
 			}
 		}
 		
@@ -112,8 +105,6 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		System.out.println("Starting Server...");
 		Server.main(new String[]{"-splayer", "-file", file.getAbsolutePath()});
 		Server.MAX_CONNECTIONS = 1;
-		Game.netHandler = new NetHandler();
-		Game.netHandler.IS_SINGLEPLAYER = true;
 		
 		System.out.println("Waiting for Server...");
 		int trys = 0;
@@ -131,6 +122,9 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 				e.printStackTrace();
 			}
 		}
+		
+		Game.netHandler = new NetHandler();
+		Game.netHandler.IS_SINGLEPLAYER = true;
 		
 		System.out.println("Connecting to Server...");
 		if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))

@@ -104,7 +104,7 @@ public abstract class EntityLiving extends Entity
 	{
 		if(Utils.getSide() == Side.SERVER)
 		{		
-			Server.server.broadcast(new Packet9EntityMoving(this));
+			Server.server.broadcastLocally(dimension, new Packet9EntityMoving(this));
 		}
 		this.isWalking = isWalking;
 	}
@@ -148,7 +148,7 @@ public abstract class EntityLiving extends Entity
 	}
 	
 	/**
-	 * Called one a new EntityLiving is created for the first time. Used to add Fields to the {@link Inventory}.
+	 * Called when a new EntityLiving is created for the first time. Used to add Fields to the {@link Inventory}.
 	 */
 	public void formatInventory()
 	{
@@ -217,7 +217,7 @@ public abstract class EntityLiving extends Entity
 				this.walkNow = false; isWalking = false;
 			}
 			
-			Server.server.broadcast(new Packet9EntityMoving(this));
+			Server.server.broadcastLocally(dimension, new Packet9EntityMoving(this));
 		}
 		
 		if(Utils.getSide() == Side.CLIENT)

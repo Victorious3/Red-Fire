@@ -65,7 +65,7 @@ public class Packet6World extends Packet
 		NBTOutputStream out;
 		try {
 			out = new NBTOutputStream(new DataOutputStream(baos));
-			out.writeTag(map.writeToNBT(null, true));		
+			out.writeTag(map.writeToNBT(null));		
 			baos.flush();
 			baos.close();
 			out.close();

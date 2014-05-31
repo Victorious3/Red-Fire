@@ -38,6 +38,7 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 {
 	@Editable public int xCoord = 0;
 	@Editable public int yCoord = 0;
+	public int dimension = 0;
 	
 	/**
 	 * The UUID is an {@link UUID} that allows for unique indexing of the Entities.
@@ -75,7 +76,7 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 			}
 			if(Utils.getSide() == Side.SERVER)
 			{
-				Server.server.broadcast(new Packet12Event(eev, this));
+				Server.server.broadcastLocally(dimension, new Packet12Event(eev, this));
 			}
 		}	
 	}

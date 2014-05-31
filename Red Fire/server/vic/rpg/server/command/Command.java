@@ -23,6 +23,7 @@ public abstract class Command
 		commands.put("kick", new CommandKick());
 		commands.put("give", new CommandGive());
 		commands.put("permission", new CommandPermission());
+		commands.put("tp", new CommandTeleport());
 	}
 	
 	public static void getHelp(CommandSender commandSender)

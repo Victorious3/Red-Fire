@@ -30,9 +30,8 @@ import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.permission.Permission;
 import vic.rpg.server.permission.PermissionHelper;
-import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
-import vic.rpg.world.Map;
+import vic.rpg.world.World;
 import vic.rpg.world.entity.living.EntityPlayer;
 
 public class Server extends Thread implements CommandSender
@@ -78,7 +77,7 @@ public class Server extends Thread implements CommandSender
 			File f = new File(file);
 			if(!f.exists())
 			{
-				System.err.println("File " + file + "doesn't exist!");
+				System.err.println("File " + file + " doesn't exist!");
 				return;
 			}
 			try
@@ -87,7 +86,7 @@ public class Server extends Thread implements CommandSender
 			}
 			catch(Exception e)
 			{
-				System.err.println("File " + file + "is not valid!");
+				System.err.println("File " + file + " is not valid!");
 				return;
 			}
 		}
@@ -147,12 +146,16 @@ public class Server extends Thread implements CommandSender
 					server.serverLoop = new ServerLoop();
 					
 					System.out.println("Loading map...");
-					if(ServerLoop.file != null) ServerLoop.map = Map.readFromFile(ServerLoop.file);
-					
-					if(ServerLoop.map == null)
+					if(ServerLoop.file != null) 
 					{
-						ServerLoop.map = new Map(100, 100, "New Map");
-						ServerLoop.map.populate();
+						ServerLoop.world = new World();
+						ServerLoop.world.readFromFile(ServerLoop.file);
+					}
+					
+					if(ServerLoop.world == null)
+					{
+						System.err.println("Server start aborted! No File selected");
+						return;
 					}
 					System.out.println("done!");
 					
@@ -175,12 +178,16 @@ public class Server extends Thread implements CommandSender
 				catch(BindException e) {
 					System.err.println("Server port is already in use! Please choose an other one.");
 				}
-				catch(IOException e) {
+				catch(Exception e) {
 					e.printStackTrace();
+					try {
+						server.serverSocket.close();
+					} catch (IOException e1) {
+					}
 				}
 			}				
 		};
-		thr.setName("Server StartThread");
+		thr.setName("Server Startup Thread");
 		thr.start();
 	}
 	
@@ -245,44 +252,34 @@ public class Server extends Thread implements CommandSender
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("HAHAHAHAHAHA"));
 			System.out.println("Disconnecting Player " + player + " Reason: Tried to be funny");
-			con = null;
 		}
 		else if(player.contains(" "))
 		{
-			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Sorry but your name is invalid. Don't take it personal."));
+			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Sorry but your name is invalid. Don't take it personally."));
 			System.out.println("Disconnecting Player " + player + " Reason: Bad bad name.");
-			con = null;
 		}
 		else if(!version.equals(GameRegistry.VERSION))
 		{
-			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Wrong Version! Your Version: " + version + "; Server Version: " + GameRegistry.VERSION));
+			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Wrong Version! Your Version: " + version + ", Server Version: " + GameRegistry.VERSION));
 			System.out.println("Disconnecting Player " + player + " Reason: Wrong Version (" + version + ")");
-			con = null;
 		}
 		else if (actConnections < MAX_CONNECTIONS) 
 	    {
 	    	if(connections.get(player) == null)
-	    	{
-				connections.put(player, con);
+	    	{    	
+	    		connections.put(player, con);
 		    	actConnections++;
+	    		
+		    	EntityPlayer playerEntity = ServerLoop.world.createPlayer(player);
 		    	
-		    	EntityPlayer playerEntity = new EntityPlayer();
-		    	
-		    	if(ServerLoop.map.offlinePlayersMap.containsKey(player))
-		    	{
-		    		playerEntity = ServerLoop.map.offlinePlayersMap.remove(player);	    		
-		    		ServerLoop.map.onlinePlayersMap.put(playerEntity.username, playerEntity.UUID);
-		    		ServerLoop.map.entityMap.put(playerEntity.UUID, playerEntity);
-		    	}	    	
-		    	else ServerLoop.map.createPlayer(playerEntity, player, ServerLoop.map.spawnX, ServerLoop.map.spawnY);
-		    		
-		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.map));
-		    	broadcast(new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));
+		    	con.packetHandler.addPacketToSendingQueue(new Packet6World(ServerLoop.world.getMap(playerEntity.dimension)));
+		    	broadcastLocally(playerEntity.dimension, new Packet7Entity(playerEntity, Packet7Entity.MODE_CREATE));  	
 		    	con.STATE = GameState.LOADING;
 		    	
 		    	if(!nogui) ServerGui.updatePlayers();
 		    	System.out.println("Player " + player + " connected to the Server.");
-		    	broadcast(new Packet20Chat("Player " + player + " connected to the Server.", "SERVER"));
+		    	broadcast(new Packet20Chat("Player " + player + " connected to the Server.", "SERVER"), player);
+		    	
 	    	}
 	    	else System.out.println("Disconnecting Player " + player + " Reason: Multiple Login");
 	    }
@@ -290,7 +287,6 @@ public class Server extends Thread implements CommandSender
 	    {      
 	    	con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Max. amount of connections is reached"));
 	    	System.out.println("Disconnecting Player " + player + " Reason: Max. amount of connections is reached (" + MAX_CONNECTIONS + ")");
-	    	con = null;
 	    }
 	}
 	
@@ -347,16 +343,13 @@ public class Server extends Thread implements CommandSender
 		System.out.println("Saving to file...");
 		serverLoop.stop();
 		
-		if(ServerLoop.file != null)
-		{
-			ServerLoop.map.writeToFile(ServerLoop.file);
+		try {
+			ServerLoop.world.writeToFile();
+			System.out.println("done!");
+		} catch (IOException e) {
+			System.out.println("Error while saving to file!");
+			e.printStackTrace();
 		}
-		else
-		{
-			ServerLoop.map.writeToFile(Utils.getOrCreateFile(Utils.getAppdata() + "/saves/" + ServerLoop.map.name + ".lvl"));
-		}
-		
-		System.out.println("done!");
 		
 		STATE = GameState.QUIT;
 		
@@ -373,29 +366,42 @@ public class Server extends Thread implements CommandSender
 	{		
 	    try {
 	    	if(!connections.containsValue(c)) return;
-	    	actConnections--;	    	
+	    	actConnections--;
 	    	c.connected = false;
 	    	if(reason.length() > 0) 
 	    	{
 	    		System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
 	    		broadcast(new Packet20Chat("Disconnecting player " + c.username + ".", "SERVER"));
 	    	}
-	    	broadcast(new Packet7Entity(ServerLoop.map.entityMap.get(ServerLoop.map.onlinePlayersMap.get(c.username)), Packet7Entity.MODE_DELETE), c.username);
+	    	broadcastLocally(ServerLoop.world.getDimension(c.username), new Packet7Entity(ServerLoop.world.removePlayer(c.username), Packet7Entity.MODE_DELETE), c.username);
 	    	connections.remove(c.username);
 	    	c.socket.close(); 
-	    	ServerLoop.map.offlinePlayersMap.put(c.username, (EntityPlayer)ServerLoop.map.entityMap.remove(ServerLoop.map.onlinePlayersMap.remove(c.username)));
 	    	if(!nogui) ServerGui.updatePlayers();
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		} catch (Exception e2){}	    
 	}
 	
+	public void broadcastLocally(int map, Packet p, String... withoutPlayer)
+	{
+		for(Connection con : connections.values()) 
+	    { 		
+			try {
+				if(!Arrays.asList(withoutPlayer).contains(con.username)) 
+				{
+					if(ServerLoop.world.getPlayer(con.username).dimension == map) con.packetHandler.addPacketToSendingQueue(p);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}  		
+	    }	
+	}
+	
 	public void broadcast(Packet p, String... withoutPlayer) 
 	{
 		for(Connection con : connections.values()) 
 	    { 		
-			try
-			{
+			try {
 				if(!Arrays.asList(withoutPlayer).contains(con.username)) con.packetHandler.addPacketToSendingQueue(p);
 			} catch (Exception e) {
 				e.printStackTrace();

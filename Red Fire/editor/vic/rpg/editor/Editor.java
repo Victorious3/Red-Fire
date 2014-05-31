@@ -912,7 +912,7 @@ public class Editor
 	public static void openMap()
 	{
 		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
-		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter("Plaintext: lvl", "lvl"); 
+		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter("Plaintext: map", "map"); 
 		chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
 		chooser.setFileFilter(plainFilter); 
 		chooser.setDialogTitle("Open...");
@@ -923,28 +923,28 @@ public class Editor
 		if(result == JFileChooser.APPROVE_OPTION) 
 		{
 			String path = chooser.getSelectedFile().toString(); 
-	        File file = new File(path); 
-	        if (plainFilter.accept(file))
-	        {
-	        	System.out.println(file + " selected for loading"); 
-	            try{
-	            	instance.labelMap.setMap(Map.readFromFile(file));       
-	            	instance.setMapName(instance.map.name);
-	            	updateLayerFrame();
-	            	JOptionPane.showMessageDialog(null, "Map \"" + instance.map.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
-	        		ButtonListener.file = file;
-	            } catch (Exception e) {
-	            	e.printStackTrace();
-	            	JOptionPane.showMessageDialog(null, "Map could'nt be loaded from " + path + "\nReason: " + e.getClass().getSimpleName() + "\nat " + e.getStackTrace()[0], "Open...", JOptionPane.ERROR_MESSAGE);	
-	            }
-	        }
-	        else
-	        {
-	        	System.out.println(path + " is not valid for loading");
-	        	JOptionPane.showMessageDialog(null, "No Map could be loaded from " + path + "\nMaybe the file is missing or currupted", "Open...", JOptionPane.ERROR_MESSAGE);
-	        }                
-	        chooser.setVisible(false);            
-	    }
+			File file = new File(path); 
+			if (plainFilter.accept(file))
+			{
+				System.out.println(file + " selected for loading"); 
+				try{
+					instance.labelMap.setMap(Map.readFromFile(file));       
+					instance.setMapName(instance.map.name);
+					updateLayerFrame();
+					JOptionPane.showMessageDialog(null, "Map \"" + instance.map.name + "\" was sucsessfully loaded from " + path, "Open...", JOptionPane.INFORMATION_MESSAGE);
+					ButtonListener.file = file;
+				} catch (Exception e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Map could'nt be loaded from " + path + "\nReason: " + e.getClass().getSimpleName() + "\nat " + e.getStackTrace()[0], "Open...", JOptionPane.ERROR_MESSAGE);	
+				}
+			}
+			else
+			{
+				System.out.println(path + " is not valid for loading");
+				JOptionPane.showMessageDialog(null, "No Map could be loaded from " + path + "\nMaybe the file is missing or currupted", "Open...", JOptionPane.ERROR_MESSAGE);
+			}                
+			chooser.setVisible(false);            
+		}
 	}
 	
 	/**
@@ -953,33 +953,33 @@ public class Editor
 	public static void saveMap()
 	{
 		JFileChooser chooser = new JFileChooser(Utils.getAppdata() + "/saves");
-		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter( 
-                "Plaintext: lvl", "lvl"); 
-        chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
-        chooser.setFileFilter(plainFilter); 
-        chooser.setDialogTitle("Save as..."); 
-        chooser.setVisible(true); 
-
-        int result = chooser.showSaveDialog(Editor.instance.frame);
-        
-        if (result == JFileChooser.APPROVE_OPTION) { 
-
-            String path = chooser.getSelectedFile().toString(); 
-            File file = new File(path); 
-            if (plainFilter.accept(file))
-            {
-                System.out.println(file + " selected for saving"); 
-            	Editor.instance.map.writeToFile(file);
-            	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
-            	ButtonListener.file = file;
-            }
-            else
-            {
-            	System.out.println(path + " is not valid for saving");
-            	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
-            }                
-            chooser.setVisible(false);            
-        } 
+		FileNameExtensionFilter plainFilter = new FileNameExtensionFilter("Plaintext: map", "map"); 
+		chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter()); 
+		chooser.setFileFilter(plainFilter); 
+		chooser.setDialogTitle("Save as..."); 
+		chooser.setVisible(true); 
+		
+		int result = chooser.showSaveDialog(Editor.instance.frame);
+		
+		if(result == JFileChooser.APPROVE_OPTION) 
+		{ 
+			String path = chooser.getSelectedFile().toString(); 
+			File file = new File(path); 
+			if(plainFilter.accept(file))
+			{
+				System.out.println(file + " selected for saving");
+				Editor.instance.map.saveFile = file;
+				Editor.instance.map.writeToFile();
+				JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
+				ButtonListener.file = file;
+			}
+			else
+			{
+				System.out.println(path + " is not valid for saving");
+				JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
+			}                
+			chooser.setVisible(false);            
+		} 
 	}
 	
 	/**

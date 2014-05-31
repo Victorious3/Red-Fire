@@ -39,7 +39,7 @@ public class ButtonListener implements ActionListener
 			}
 			else
 			{
-				Editor.instance.map.writeToFile(file);
+				Editor.instance.map.writeToFile();
             	JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved", "Save", JOptionPane.INFORMATION_MESSAGE);  	
 			}
 		}

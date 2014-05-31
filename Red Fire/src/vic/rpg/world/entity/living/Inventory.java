@@ -314,7 +314,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		{
 			Game.packetHandler.addPacketToSendingQueue(new Packet13InventoryUpdate(this));
 		}
-		else if(this.parentEntity != null) Server.server.broadcast(new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
+		else if(this.parentEntity != null) Server.server.broadcastLocally(this.parentEntity.dimension, new Packet7Entity(this.parentEntity, Packet7Entity.MODE_UPDATE));
 	}
 	
 	/**
