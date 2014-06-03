@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import vic.rpg.server.command.Command;
+import vic.rpg.server.command.CommandException;
 import vic.rpg.server.command.CommandSender;
 
 public class InputHandler extends Thread 
@@ -40,9 +41,21 @@ public class InputHandler extends Thread
 		if(c == null)
 		{
 			System.err.println("No command named \"" + command + "\"!");
-			Command.commands.get("help").cast(new ArrayList<String>(), commandSender);
+			try {
+				Command.commands.get("help").cast(new ArrayList<String>(), commandSender);
+			} catch (CommandException e) {
+				commandSender.print(e.getMessage());
+			}
 		}
-		else c.cast(args, commandSender);
+		else 
+		{
+			try {
+				c.cast(args, commandSender);			
+			} catch (CommandException e) {
+				commandSender.print(e.getMessage());
+				commandSender.print(c.getUsage());
+			}		
+		}
 	}
 		
 	@Override
