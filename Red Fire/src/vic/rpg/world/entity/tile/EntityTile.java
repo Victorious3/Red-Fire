@@ -1,4 +1,4 @@
-package vic.rpg.world.entity;
+package vic.rpg.world.entity.tile;
 
 import org.jnbt.CompoundTag;
 
@@ -6,7 +6,6 @@ import vic.rpg.world.INBTReadWrite;
 import vic.rpg.world.Map;
 import vic.rpg.world.tiles.Tile;
 
-//FIXME This has no actual purpose yet.
 public class EntityTile implements INBTReadWrite
 {
 	public int xCoord;

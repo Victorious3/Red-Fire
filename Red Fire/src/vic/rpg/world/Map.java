@@ -31,10 +31,11 @@ import vic.rpg.render.DrawUtils;
 import vic.rpg.render.Screen;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Vector3;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityTile;
 import vic.rpg.world.entity.living.EntityLiving;
 import vic.rpg.world.entity.living.EntityPlayer;
+import vic.rpg.world.entity.tile.EntityTile;
 import vic.rpg.world.path.NodeMap;
 import vic.rpg.world.tiles.Tile;
 import vic.rpg.world.tiles.TilePlaceHolder;
@@ -60,11 +61,11 @@ public class Map implements INBTReadWrite
 	public int height;
 	
 	private ArrayList<Integer[][][]> layers;
-	private ArrayList<EntityTile[][]> tileEntites;
 	public HashMap<Integer, Boolean> layerVisibility;
 	
 	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
-	
+	public HashMap<Vector3, EntityTile> tilesMap = new HashMap<Vector3, EntityTile>();
+
 	public NodeMap nodeMap = new NodeMap(this);
 	public File saveFile;
 	
@@ -89,8 +90,6 @@ public class Map implements INBTReadWrite
 		this.name = name;
 		this.layers = new ArrayList<Integer[][][]>();
 		this.layers.add(new Integer[width][height][2]);
-		this.tileEntites = new ArrayList<EntityTile[][]>();
-		this.tileEntites.add(new EntityTile[width][height]);
 		this.layerVisibility = new HashMap<Integer, Boolean>();
 		this.layerVisibility.put(0, true);
 	}
@@ -105,7 +104,6 @@ public class Map implements INBTReadWrite
 		this.name = "NO_NAME!";
 		this.layers = new ArrayList<Integer[][][]>();
 		this.layerVisibility = new HashMap<Integer, Boolean>();
-		this.tileEntites = new ArrayList<EntityTile[][]>();
 	}
 
 	/**
@@ -175,13 +173,11 @@ public class Map implements INBTReadWrite
 	 */
 	public void fill(int id, int data, int layerID)
 	{
-		Integer[][][] layer = layers.get(layerID);
-		
-		for(int i = 0; i < layer.length; i++)
+		for(int x = 0; x < width; x++)
 		{
-			for(int j = 0; j < layer[0].length; j++)
+			for(int y = 0; y < height; y++)
 			{
-				layer[i][j] = new Integer[]{id, data};
+				setTile(id, x, y, data, layerID);
 			}
 		}
 	}
@@ -204,8 +200,7 @@ public class Map implements INBTReadWrite
 	public Tile getTileAt(int x, int y)
 	{
 		Tile t = WorldRegistry.tileRegistry.get(layers.get(getLayer())[x][y][0]);
-		if(t != null) t.setMapObj(this);
-		else if(t instanceof TilePlaceHolder) return null;
+		if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
 	
@@ -230,8 +225,7 @@ public class Map implements INBTReadWrite
 	public Tile getTileAt(int x, int y, int layerID)
 	{
 		Tile t = WorldRegistry.tileRegistry.get(layers.get(layerID)[x][y][0]);
-		if(t != null) t.setMapObj(this);
-		else if(t instanceof TilePlaceHolder) return null;
+		if(t instanceof TilePlaceHolder) return null;
 		return t;
 	}
 	
@@ -298,13 +292,13 @@ public class Map implements INBTReadWrite
 					Tile tile = getTileAt(x, y, i);
 					if(tile != null)
 					{
-						int tileHeight = tile.getHeight(x, y, data);
+						int tileHeight = tile.getHeight(x, y, data, i, this);
 						Point tilePos = Utils.convCartToIso(new Point(x * CELL_SIZE / 2 - xOffset, y * CELL_SIZE / 2 - yOffset));		
 						
 						if(tilePos.x + CELL_SIZE > 0 && tilePos.y + CELL_SIZE > 0 && tilePos.x < width + CELL_SIZE && tilePos.y < height + CELL_SIZE * tileHeight)
 						{
-							Point texPos = tile.getTextureCoord(x, y, data);
-							if(isLayerVisible(i)) DrawUtils.drawTextureWithOffset(tilePos.x - Map.CELL_SIZE / 2, tilePos.y - ((Map.CELL_SIZE / 2) * (tileHeight - 1) * 2) - Map.CELL_SIZE / 2, texPos.x * Map.CELL_SIZE, (texPos.y - tileHeight + 1) * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE * tileHeight, tile.getTexture(x, y, data));			
+							Point texPos = tile.getTextureCoord(x, y, data, i, this);
+							if(isLayerVisible(i)) DrawUtils.drawTextureWithOffset(tilePos.x - Map.CELL_SIZE / 2, tilePos.y - ((Map.CELL_SIZE / 2) * (tileHeight - 1) * 2) - Map.CELL_SIZE / 2, texPos.x * Map.CELL_SIZE, (texPos.y - tileHeight + 1) * Map.CELL_SIZE, Map.CELL_SIZE, Map.CELL_SIZE * tileHeight, tile.getTexture(x, y, data, i, this));			
 							if(i == 0)
 							{
 								if(entitiesForRender.get(new Point(x, y)) != null)
@@ -349,8 +343,7 @@ public class Map implements INBTReadWrite
 					Tile t = WorldRegistry.tileRegistry.get(layer[x][y][0]);
 					if(t != null)
 					{
-						t.setMapObj(this);
-						t.tick(x, y, layer[x][y][1]);
+						t.tick(x, y, layer[x][y][1], l, this);
 					}
 				}
 			}
@@ -507,8 +500,33 @@ public class Map implements INBTReadWrite
 				}
 			}
 		}*/	
+		
 		layer[x][y][0] = id;
 		layer[x][y][1] = data;
+		
+		if(WorldRegistry.tileRegistry.get(id).hasTileEntity() && getEntityTileAt(x, y, layerID) == null)
+		{
+			try {
+				EntityTile et = WorldRegistry.tileRegistry.get(id).getTileEntity().newInstance();
+				et.mapObj = this;
+				et.layerID = layerID;
+				et.xCoord = x;
+				et.yCoord = y;
+				setEntityTileAt(et, x, y, layerID);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public EntityTile getEntityTileAt(int x, int y, int layerID)
+	{
+		return tilesMap.get(new Vector3(x, y, layerID));
+	}
+	
+	public void setEntityTileAt(EntityTile et, int x, int y, int layerID)
+	{
+		tilesMap.put(new Vector3(x, y, layerID), et);
 	}
 	
 	/**

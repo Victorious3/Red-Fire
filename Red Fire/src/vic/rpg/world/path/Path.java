@@ -156,7 +156,7 @@ public class Path
 		double f = 0;	
 		f += Math.abs(parent.x - node.x) + Math.abs(parent.y - node.y);
 		f += parent.g;
-		f += map.map.getTileAt(node.x, node.y, 0).getMovementCost();		
+		f += map.map.getTileAt(node.x, node.y, 0).getMovementCost(node.x, node.y, 0, map.map);		
 		return f;
 	}
 	
@@ -234,7 +234,7 @@ public class Path
 		for(Tile t : map.map.getTilesAt(x, y))
 		{
 			if(t == null) continue;
-			if(!t.isWalkingPermitted()) return false;
+			if(!t.isWalkingPermitted(x, y, 0, map.map)) return false;
 		}
 		return true;
 	}

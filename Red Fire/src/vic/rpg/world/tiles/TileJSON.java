@@ -11,6 +11,7 @@ import java.util.HashMap;
 import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
 import bsh.EvalError;
 import bsh.Interpreter;
 
@@ -46,48 +47,48 @@ public class TileJSON extends Tile
 	private String texturePath;
 	
 	@Override
-	public Texture getTexture(int x, int y, int data) 
+	public Texture getTexture(int x, int y, int data, int layerID, Map map) 
 	{
 		return texture;
 	}
 
 	@Override
-	public Point getTextureCoord(int x, int y, int data) 
+	public Point getTextureCoord(int x, int y, int data, int layerID, Map map) 
 	{
 		if(textureCoords.containsKey(data)) return textureCoords.get(data);
 		else return textureCoords.get(0);
 	}
 
 	@Override
-	public int getHeight(int x, int y, int data) 
+	public int getHeight(int x, int y, int data, int layerID, Map map) 
 	{
 		if(heights.containsKey(data)) return heights.get(data);
 		else return heights.get(0);
 	}
 
 	@Override
-	public boolean emitsLight(int x, int y, int data) 
+	public boolean emitsLight(int x, int y, int data, int layerID, Map map) 
 	{
 		if(emitsLight.containsKey(data)) return emitsLight.get(data);
 		else return emitsLight.get(0);
 	}
 
 	@Override
-	public LightSource getLightSource(int x, int y, int data) 
+	public LightSource getLightSource(int x, int y, int data, int layerID, Map map) 
 	{
 		if(lightSources.containsKey(data)) return lightSources.get(data);
 		else return lightSources.get(0);
 	}
 
 	@Override
-	public Point getLightPosition(int x, int y, int data) 
+	public Point getLightPosition(int x, int y, int data, int layerID, Map map) 
 	{
 		if(lightPositions.containsKey(data)) return lightPositions.get(data);
 		else return lightPositions.get(0);
 	}
 
 	@Override
-	public void tick(int x, int y, int data) 
+	public void tick(int x, int y, int data, int layerID, Map map) 
 	{
 		if(!isTicking) return;
 		try {
@@ -110,14 +111,14 @@ public class TileJSON extends Tile
 	}
 
 	@Override
-	public double getMovementCost() 
+	public double getMovementCost(int x, int y, int layerID, Map map) 
 	{
 		if(movementCosts.containsKey(data)) return movementCosts.get(data);
 		else return movementCosts.get(0);
 	}
 
 	@Override
-	public boolean isWalkingPermitted() 
+	public boolean isWalkingPermitted(int x, int y, int layerID, Map map) 
 	{
 		if(isWalkingPermitted.containsKey(data)) return isWalkingPermitted.get(data);
 		else return isWalkingPermitted.get(0);

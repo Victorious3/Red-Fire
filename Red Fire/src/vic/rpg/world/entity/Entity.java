@@ -244,11 +244,11 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 		Point p = getTiledPosition();
 		if(p.x < 0 || p.y < 0 || p.x >= map.width || p.y >= map.height) return true;
 		
-		Tile[] tiles = map.getTilesAt(p.x, p.y);		
-		for(Tile t : tiles)
+		for(int i = 0; i < map.getLayerAmount(); i++)
 		{
+			Tile t = map.getTileAt(p.x, p.y, i);
 			if(t == null) continue;
-			if(!t.isWalkingPermitted()) return true;
+			if(!t.isWalkingPermitted(p.x, p.y, i, map)) return true;
 		}
 		
 		return false;

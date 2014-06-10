@@ -6,7 +6,7 @@ import vic.rpg.render.LightSource;
 import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
-import vic.rpg.world.entity.EntityTile;
+import vic.rpg.world.entity.tile.EntityTile;
 import vic.rpg.world.path.Path;
 
 import com.jogamp.opengl.util.texture.Texture;
@@ -18,22 +18,12 @@ import com.jogamp.opengl.util.texture.Texture;
 public class Tile
 {	
 	protected static Texture terrainTex = TextureLoader.requestTexture(Utils.readImage("/vic/rpg/resources/terrain/terrain.png"));
-	protected Map mapObj;
 	public int data = 0;
 	public int id = 0;
 	
-	public Texture getTexture(int x, int y, int data)
+	public Texture getTexture(int x, int y, int data, int layerID, Map map)
 	{
 		return terrainTex;
-	}
-	
-	/**
-	 * Sets the parent {@link Map} of this Tile.
-	 * @param map
-	 */
-	public void setMapObj(Map map)
-	{
-		this.mapObj = map;
 	}
 	
 	/**
@@ -41,9 +31,10 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 * @return Point
 	 */
-	public Point getTextureCoord(int x, int y, int data)
+	public Point getTextureCoord(int x, int y, int data, int layerID, Map map)
 	{
 		return new Point(0, 0);
 	}
@@ -53,9 +44,10 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 * @return Integer
 	 */
-	public int getHeight(int x, int y, int data)
+	public int getHeight(int x, int y, int data, int layerID, Map map)
 	{
 		return 1;
 	}
@@ -84,9 +76,10 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 * @return Boolean
 	 */
-	public boolean emitsLight(int x, int y, int data)
+	public boolean emitsLight(int x, int y, int data, int layerID, Map map)
 	{
 		return false;
 	}
@@ -96,9 +89,10 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 * @return LightSource
 	 */
-	public LightSource getLightSource(int x, int y, int data)
+	public LightSource getLightSource(int x, int y, int data, int layerID, Map map)
 	{
 		return null;
 	}
@@ -108,9 +102,10 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 * @return Point
 	 */
-	public Point getLightPosition(int x, int y, int data)
+	public Point getLightPosition(int x, int y, int data, int layerID, Map map)
 	{
 		return new Point(x * Map.CELL_SIZE / 2 - Map.CELL_SIZE / 4, y * Map.CELL_SIZE / 2 - Map.CELL_SIZE / 4);
 	}
@@ -120,11 +115,15 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
+	 * @param map TODO
 	 */
-	public void tick(int x, int y, int data){};
+	public void tick(int x, int y, int data, int layerID, Map map){}
 	
 	//Editor stuff
-	public String getDescription(){return "MISSING_DESCRIPTION";}
+	public String getDescription()
+	{
+		return "MISSING_DESCRIPTION";
+	}
 	
 	public String getName()
 	{
@@ -134,14 +133,29 @@ public class Tile
 	/**
 	 * Used from the {@link Path} to check the cheapest path. E.g walking on a road takes less effort
 	 * then walking through a morass.
+	 * @param x TODO
+	 * @param y TODO
+	 * @param layerID TODO
+	 * @param map TODO
 	 * @return
 	 */
-	public double getMovementCost(){return 0;}
+	public double getMovementCost(int x, int y, int layerID, Map map)
+	{
+		return 0;
+	}
+	
 	/**
 	 * Checks weather it is allowed to walk onto this Tile.
+	 * @param x TODO
+	 * @param y TODO
+	 * @param layerID TODO
+	 * @param map TODO
 	 * @return
 	 */
-	public boolean isWalkingPermitted(){return true;}
+	public boolean isWalkingPermitted(int x, int y, int layerID, Map map)
+	{
+		return true;
+	}
 	
 	@Override
 	public Tile clone() 

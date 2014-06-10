@@ -2,6 +2,8 @@ package vic.rpg.world.tiles;
 
 import java.awt.Point;
 
+import vic.rpg.world.Map;
+
 public class TileTree extends Tile
 {
 	@Override
@@ -11,19 +13,19 @@ public class TileTree extends Tile
 	}
 
 	@Override
-	public boolean isWalkingPermitted() 
+	public boolean isWalkingPermitted(int x, int y, int layerID, Map map) 
 	{
 		return false;
 	}
 
 	@Override
-	public Point getTextureCoord(int x, int y, int data) 
+	public Point getTextureCoord(int x, int y, int data, int layerID, Map map) 
 	{
 		return new Point(0, 15);
 	}
 
 	@Override
-	public int getHeight(int x, int y, int data) 
+	public int getHeight(int x, int y, int data, int layerID, Map map) 
 	{
 		return 3;
 	}	

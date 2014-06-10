@@ -3,6 +3,7 @@ package vic.rpg.world.tiles;
 import java.awt.Point;
 
 import vic.rpg.utils.Utils;
+import vic.rpg.world.Map;
 
 import com.jogamp.opengl.util.texture.Texture;
 
@@ -15,23 +16,23 @@ import com.jogamp.opengl.util.texture.Texture;
 public class TilePlaceHolder extends Tile
 {
 	@Override
-	public Texture getTexture(int x, int y, int data) 
+	public Texture getTexture(int x, int y, int data, int layerID, Map map) 
 	{
 		return null;
 	}
 
 	@Override
-	public double getMovementCost() 
+	public double getMovementCost(int x, int y, int layerID, Map map) 
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.mapObj.width);
-		return this.mapObj.getTileAt(p.x, p.y).getMovementCost();
+		Point p = Utils.conv1Dto2DPoint(data, map.width);
+		return map.getTileAt(p.x, p.y).getMovementCost(x, y, layerID, map);
 	}
 
 	@Override
-	public boolean isWalkingPermitted() 
+	public boolean isWalkingPermitted(int x, int y, int layerID, Map map) 
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.mapObj.width);
-		return this.mapObj.getTileAt(p.x, p.y).isWalkingPermitted();	
+		Point p = Utils.conv1Dto2DPoint(data, map.width);
+		return map.getTileAt(p.x, p.y).isWalkingPermitted(x, y, layerID, map);	
 	}
 
 	@Override
@@ -47,9 +48,9 @@ public class TilePlaceHolder extends Tile
 	 * @param data
 	 * @return Tile
 	 */
-	public Tile getParent(int x, int y, int data)
+	public Tile getParent(int x, int y, int data, int layerID, Map map)
 	{
-		Point p = Utils.conv1Dto2DPoint(data, this.mapObj.width);
-		return this.mapObj.getTileAt(p.x, p.y);
+		Point p = Utils.conv1Dto2DPoint(data, map.width);
+		return map.getTileAt(p.x, p.y, layerID);
 	}
 }

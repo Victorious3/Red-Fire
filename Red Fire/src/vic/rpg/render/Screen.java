@@ -219,10 +219,10 @@ public class Screen extends Drawable
 						Tile tile = Game.map.getTileAt(x, y, i);
 						if(tile != null)
 						{
-							if(tile.emitsLight(x, y, data))
+							if(tile.emitsLight(x, y, data, i, Game.map))
 							{
-								LightSource ls = tile.getLightSource(x, y, data);
-								Point p1 = tile.getLightPosition(x, y, data);
+								LightSource ls = tile.getLightSource(x, y, data, i, Game.map);
+								Point p1 = tile.getLightPosition(x, y, data, i, Game.map);
 								Point p2 = Utils.convCartToIso(new Point(p1.x + xOffset, p1.y + yOffset));
 								ls.draw(gl2, p2.x, Game.HEIGHT - p2.y);
 							}
