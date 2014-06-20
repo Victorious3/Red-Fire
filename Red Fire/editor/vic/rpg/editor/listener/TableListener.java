@@ -15,7 +15,7 @@ import vic.rpg.editor.Editor;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Editable;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 public class TableListener implements TableModelListener
 {

@@ -15,7 +15,7 @@ import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.TableListener;
 import vic.rpg.registry.WorldRegistry;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 public class PopupMenu implements ActionListener
 {

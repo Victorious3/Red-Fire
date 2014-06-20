@@ -13,7 +13,7 @@ import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
 import vic.rpg.registry.WorldRegistry;
 import vic.rpg.utils.Utils;
-import vic.rpg.world.tiles.TileJSON;
+import vic.rpg.world.tile.TileJSON;
 
 public class ButtonListener implements ActionListener 
 {

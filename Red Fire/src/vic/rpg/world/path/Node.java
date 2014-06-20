@@ -4,7 +4,7 @@ import java.awt.Point;
 
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.living.EntityLiving;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 /**
  * A node is basically a {@link Tile} coordinate. It contains information about weather an {@link EntityLiving}

@@ -4,7 +4,7 @@ import org.jnbt.CompoundTag;
 
 import vic.rpg.world.INBTReadWrite;
 import vic.rpg.world.Map;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 public class EntityTile implements INBTReadWrite
 {

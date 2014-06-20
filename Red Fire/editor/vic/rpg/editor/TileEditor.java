@@ -21,7 +21,7 @@ import javax.swing.JTabbedPane;
 
 import vic.rpg.editor.gui.TileTextureSelector;
 import vic.rpg.utils.Utils;
-import vic.rpg.world.tiles.TileJSON;
+import vic.rpg.world.tile.TileJSON;
 
 public class TileEditor implements WindowListener
 {

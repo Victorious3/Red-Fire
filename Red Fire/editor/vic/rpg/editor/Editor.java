@@ -71,8 +71,8 @@ import vic.rpg.world.Map;
 import vic.rpg.world.TexturePath;
 import vic.rpg.world.entity.Entity;
 import vic.rpg.world.entity.EntityCustom;
-import vic.rpg.world.tiles.Tile;
-import vic.rpg.world.tiles.TileJSON;
+import vic.rpg.world.tile.Tile;
+import vic.rpg.world.tile.TileJSON;
 
 //TODO This class is ridiculously big...
 public class Editor

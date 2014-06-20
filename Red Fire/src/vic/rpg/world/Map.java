@@ -37,8 +37,8 @@ import vic.rpg.world.entity.living.EntityLiving;
 import vic.rpg.world.entity.living.EntityPlayer;
 import vic.rpg.world.entity.tile.EntityTile;
 import vic.rpg.world.path.NodeMap;
-import vic.rpg.world.tiles.Tile;
-import vic.rpg.world.tiles.TilePlaceHolder;
+import vic.rpg.world.tile.Tile;
+import vic.rpg.world.tile.TilePlaceHolder;
 
 /**
  * A map is the map all players are interacting with. It is stored twice, one is located in {@link Game#map} for rendering with the Client
@@ -701,6 +701,7 @@ public class Map implements INBTReadWrite
 		
 		List<Tag> entityList = (List<Tag>)tag.getListTag("entities").getValue();
 		List<Tag> layerList = (List<Tag>)tag.getListTag("layers").getValue();
+		List<Tag> entityTileList = (List<Tag>)tag.getListTag("entityTiles").getValue();
 
 		ArrayList<Integer[][][]> layers = new ArrayList<Integer[][][]>();
 		for(Tag layerTag : layerList)
@@ -736,8 +737,26 @@ public class Map implements INBTReadWrite
 			}
 		}
 		
+		HashMap<Vector3, EntityTile> entityTiles = new HashMap<Vector3, EntityTile>();
+		for(Tag entityTag : entityTileList)
+		{
+			CompoundTag tag2 = (CompoundTag) entityTag;
+			
+			int layerID = tag2.getInt("layerID", 0);
+			int xCoord = tag2.getInt("xCoord", 0);
+			int yCoord = tag2.getInt("yCoord", 0);
+			
+			EntityTile te = WorldRegistry.readEntityTileFromNBT(tag2, WorldRegistry.tileRegistry.get(layers.get(layerID)[xCoord][yCoord][0]).getTileEntity());
+			if(te != null)
+			{
+				te.mapObj = this;
+				entityTiles.put(new Vector3(layerID, xCoord, yCoord), te);
+			}
+		}
+		
 		this.entityMap = entities;
 		this.layers = layers;
+		this.tilesMap = entityTiles;
 		
 		for(int i = 0; i < this.layers.size(); i++)
 		{
@@ -763,6 +782,7 @@ public class Map implements INBTReadWrite
 		
 		ListTag layerListTag = new ListTag("layers", CompoundTag.class, new ArrayList<Tag>());
 		ListTag entityListTag = new ListTag("entities", CompoundTag.class, new ArrayList<Tag>());
+		ListTag entityTilesListTag = new ListTag("entityTiles", CompoundTag.class, new ArrayList<Tag>());
 		
 		for(int l = 0; l < layers.size(); l++)
 		{
@@ -789,14 +809,21 @@ public class Map implements INBTReadWrite
 			layerListTag.addTag(layerTag);
 		}
 		
-		mapTag.putTag(layerListTag);
-		mapTag.putTag(entityListTag);
-		
 		for(Entity e : entityMap.values())
 		{
 			CompoundTag enitiyTag = WorldRegistry.writeEntityToNBT(e);
 			entityListTag.addTag(enitiyTag);
 		}
+		
+		for(EntityTile te : tilesMap.values())
+		{
+			CompoundTag teTag = WorldRegistry.writeEntityTileToNBT(te);
+			entityTilesListTag.addTag(teTag);
+		}
+		
+		mapTag.putTag(layerListTag);
+		mapTag.putTag(entityListTag);
+		mapTag.putTag(entityTilesListTag);
 		
 		return mapTag;
 	}

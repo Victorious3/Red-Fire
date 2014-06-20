@@ -22,7 +22,7 @@ import vic.rpg.world.Map;
 import vic.rpg.world.entity.Entity;
 import vic.rpg.world.path.Node;
 import vic.rpg.world.path.Path;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 public class Mouse implements MouseListener, MouseMotionListener, MouseWheelListener
 {

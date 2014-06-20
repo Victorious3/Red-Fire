@@ -15,7 +15,7 @@ import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 /**
  * The {@link Drawable} Screen. It renders the {@link Gui} and

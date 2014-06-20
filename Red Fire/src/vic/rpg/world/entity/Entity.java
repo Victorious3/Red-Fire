@@ -28,7 +28,7 @@ import vic.rpg.world.INBTReadWrite;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.living.EntityLiving;
 import vic.rpg.world.entity.living.EntityPlayer;
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 /**
  * An Entity is any object in a {@link Map} that is not a {@link Tile}. Mostly used for moving objects like {@link EntityPlayer}.

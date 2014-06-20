@@ -2,7 +2,7 @@ package vic.rpg.world.path;
 
 import java.util.ArrayList;
 
-import vic.rpg.world.tiles.Tile;
+import vic.rpg.world.tile.Tile;
 
 /**
  * A Path is a set of {@link Node Nodes} representing the shortest Path from the begin {@link Node} to the end {@link Node}.

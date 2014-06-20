@@ -1,4 +1,4 @@
-package vic.rpg.world.tiles;
+package vic.rpg.world.tile;
 
 import java.awt.Color;
 import java.awt.Point;

@@ -1,4 +1,4 @@
-package vic.rpg.world.tiles;
+package vic.rpg.world.tile;
 
 import java.awt.Point;
 
@@ -66,7 +66,7 @@ public class Tile
 	 * The {@link EntityTile} that is added to the map upon tile creation.
 	 * @return
 	 */
-	public Class<EntityTile> getTileEntity()
+	public Class<? extends EntityTile> getTileEntity()
 	{
 		return null;
 	}

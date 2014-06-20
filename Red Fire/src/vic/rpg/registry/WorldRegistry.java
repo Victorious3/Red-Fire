@@ -24,12 +24,14 @@ import vic.rpg.world.entity.EntityHouse;
 import vic.rpg.world.entity.EntityTree;
 import vic.rpg.world.entity.living.EntityNPC;
 import vic.rpg.world.entity.living.EntityPlayer;
-import vic.rpg.world.tiles.Tile;
-import vic.rpg.world.tiles.TileJSON;
-import vic.rpg.world.tiles.TilePlaceHolder;
-import vic.rpg.world.tiles.TileTerrain;
-import vic.rpg.world.tiles.TileTree;
-import vic.rpg.world.tiles.TileVoid;
+import vic.rpg.world.entity.tile.EntityTile;
+import vic.rpg.world.tile.Tile;
+import vic.rpg.world.tile.TileChest;
+import vic.rpg.world.tile.TileJSON;
+import vic.rpg.world.tile.TilePlaceHolder;
+import vic.rpg.world.tile.TileTerrain;
+import vic.rpg.world.tile.TileTree;
+import vic.rpg.world.tile.TileVoid;
 import bsh.Interpreter;
 
 /**
@@ -47,6 +49,7 @@ public class WorldRegistry
 	public static final TileVoid TILE_VOID = new TileVoid();
 	public static final TileTree TILE_BOAT = new TileTree();
 	public static final TilePlaceHolder TILE_PLACEHOLDER = new TilePlaceHolder();
+	public static final TileChest TILE_CHEST = new TileChest();
 	
 	public static final EntityTree ENTITY_TREE = new EntityTree();
 	public static final EntityAppleTree ENTITY_APLTREE = new EntityAppleTree();
@@ -68,6 +71,7 @@ public class WorldRegistry
 		register(TILE_TERRAIN, 1);
 		register(TILE_VOID, 2);
 		register(TILE_BOAT, 3);
+		register(TILE_CHEST, 4);
 		
 		register(ENTITY_TREE, 1);
 		register(ENTITY_HOUSE, 2);
@@ -212,17 +216,46 @@ public class WorldRegistry
 		return ent;
 	}
 	
+	public static EntityTile readEntityTileFromNBT(CompoundTag tag, Class<? extends EntityTile> clazz)
+	{
+		try {
+			EntityTile et = clazz.newInstance();
+			et.layerID = tag.getInt("layerID", et.layerID);
+			et.xCoord = tag.getInt("xCoord", et.xCoord);
+			et.yCoord = tag.getInt("yCoord", et.yCoord);
+			
+			et.readFromNBT(tag, (Object[])null);
+			
+			return et;
+		} catch (InstantiationException | IllegalAccessException e) {
+			System.err.println("Error while loading EntityTile " + clazz.getSimpleName() + "!");
+			return null;
+		}
+	}
+	
 	public static CompoundTag writeEntityToNBT(Entity ent)
 	{
 		CompoundTag tag = new CompoundTag("entity", new HashMap<String, Tag>());
 		
 		tag.putInt("id", ent.id);
 		tag.putInt("dim", ent.dimension);
-		tag.putInt("xcoord", ent.xCoord);
-		tag.putInt("ycoord", ent.yCoord);
+		tag.putInt("xCoord", ent.xCoord);
+		tag.putInt("yCoord", ent.yCoord);
 		tag.putString("uuid", ent.UUID);
-		
+		 
 		tag = ent.writeToNBT(tag);	
 		return tag;		
+	}
+	
+	public static CompoundTag writeEntityTileToNBT(EntityTile et)
+	{
+		CompoundTag tag = new CompoundTag("entity", new HashMap<String, Tag>());
+		
+		tag.putInt("layerID", et.layerID);
+		tag.putInt("xcoord", et.xCoord);
+		tag.putInt("ycoord", et.yCoord);
+		
+		tag = et.writeToNBT(tag);	 
+		return tag;	
 	}
 }
