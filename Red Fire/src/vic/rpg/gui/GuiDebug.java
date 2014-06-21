@@ -7,8 +7,8 @@ import java.awt.Point;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.render.DrawUtils;
 import vic.rpg.utils.Utils;
 
 /**

@@ -20,12 +20,12 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.swing.table.DefaultTableModel;
 
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.editor.Editor;
 import vic.rpg.editor.listener.Key;
 import vic.rpg.editor.listener.Mouse;
 import vic.rpg.editor.listener.ZoomListener;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Editable;
 import vic.rpg.world.Map;

@@ -6,9 +6,9 @@ import java.awt.event.MouseEvent;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
-import vic.rpg.render.DrawUtils;
 import vic.rpg.world.entity.living.Inventory;
 
 /**

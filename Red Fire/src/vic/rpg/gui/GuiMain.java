@@ -6,15 +6,15 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.PostInit;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.TextureFX;
+import vic.rpg.client.render.DrawUtils.GradientAnimator;
+import vic.rpg.client.render.DrawUtils.LinearAnimator;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.LanguageRegistry;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.DrawUtils.GradientAnimator;
-import vic.rpg.render.DrawUtils.LinearAnimator;
-import vic.rpg.render.TextureFX;
 import vic.rpg.sound.SoundEngine;
 import vic.rpg.utils.Utils.Side;
 

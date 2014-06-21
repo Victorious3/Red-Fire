@@ -1,13 +1,19 @@
 package vic.rpg.world.entity.living;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Area;
 
+import javax.media.opengl.GL2;
+
 import org.jnbt.CompoundTag;
 
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.Screen;
+import vic.rpg.client.render.TextureFX;
+import vic.rpg.client.render.TextureLoader;
+import vic.rpg.event.Event;
 import vic.rpg.gui.GuiIngame;
-import vic.rpg.render.TextureFX;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Direction;
@@ -15,7 +21,6 @@ import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.Editable;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityEvent;
 import vic.rpg.world.entity.living.EntityController.HealthChangeEvent;
 import vic.rpg.world.path.Node;
 import vic.rpg.world.path.Path;
@@ -246,7 +251,7 @@ public abstract class EntityLiving extends Entity
 	}
 	
 	@Override
-	public EntityEvent onEventReceived(EntityEvent e) 
+	public Event onEventReceived(Event e) 
 	{
 		if(e instanceof HealthChangeEvent)
 		{
@@ -256,4 +261,14 @@ public abstract class EntityLiving extends Entity
 		
 		return super.onEventReceived(e);
 	}
+
+	@Override
+	public void postRender(GL2 gl2) 
+	{
+		super.postRender(gl2);
+		DrawUtils.setGL(gl2);
+		Point p = Utils.convCartToIso(new Point(xCoord + Screen.xOffset, yCoord + Screen.yOffset));
+		DrawUtils.fillRect(p.x - 40, p.y - 77, 80, 3, Color.red);
+		DrawUtils.fillRect(p.x - 40, p.y - 77, (int)(80 * ((float)lp / (float)max_lp)), 3, Color.green);
+	}		
 }

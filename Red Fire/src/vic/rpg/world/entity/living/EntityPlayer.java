@@ -9,14 +9,14 @@ import javax.media.opengl.GL2;
 
 import org.jnbt.CompoundTag;
 
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.LightSource;
+import vic.rpg.client.render.Screen;
+import vic.rpg.client.render.TextureFX;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.item.ItemStack;
-import vic.rpg.registry.WorldRegistry;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.LightSource;
-import vic.rpg.render.Screen;
-import vic.rpg.render.TextureFX;
-import vic.rpg.render.TextureLoader;
+import vic.rpg.registry.WorldRegistry;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.utils.Direction;
@@ -47,7 +47,7 @@ public class EntityPlayer extends EntityLiving
 	@Override
 	public void postRender(GL2 gl2) 
 	{
-		super.render(gl2);
+		super.postRender(gl2);
 		DrawUtils.setGL(gl2);
 		Point p = Utils.convCartToIso(new Point(xCoord + Screen.xOffset, yCoord + Screen.yOffset));
 		DrawUtils.setFont(RenderRegistry.RPGFont.deriveFont(18F));

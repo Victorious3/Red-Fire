@@ -2,7 +2,7 @@ package vic.rpg.world.tile;
 
 import java.awt.Point;
 
-import vic.rpg.render.TextureLoader;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.tile.EntityTile;
@@ -23,7 +23,7 @@ public class TileChest extends Tile
 	@Override
 	public Point getTextureCoord(int x, int y, int data, int layerID, Map map) 
 	{
-		return new Point(0, 0);
+		return data == 1 ? new Point(0, 0) : new Point(1, 0);
 	}
 
 	@Override

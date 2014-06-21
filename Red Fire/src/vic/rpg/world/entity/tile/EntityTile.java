@@ -6,20 +6,23 @@ import vic.rpg.world.INBTReadWrite;
 import vic.rpg.world.Map;
 import vic.rpg.world.tile.Tile;
 
-public class EntityTile implements INBTReadWrite
+public abstract class EntityTile implements INBTReadWrite
 {
 	public int xCoord;
 	public int yCoord;
 	public int layerID;
 	public Map mapObj;
 	
-	@Override public void readFromNBT(CompoundTag tag, Object... args){}
-
+	@Override 
+	public void readFromNBT(CompoundTag tag, Object... args){}
+	
 	@Override
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 
 	{
 		return tag;
 	}
+	
+	public void onAddedToWorld(){};
 	
 	/**
 	 * Returns the {@link Tile} associated with this EntityTile.

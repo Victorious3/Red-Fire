@@ -4,8 +4,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 

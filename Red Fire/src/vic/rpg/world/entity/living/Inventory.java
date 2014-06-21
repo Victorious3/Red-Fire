@@ -15,9 +15,11 @@ import org.jnbt.Tag;
 import vic.rpg.Game;
 import vic.rpg.Init;
 import vic.rpg.combat.Skill;
+import vic.rpg.event.Event;
+import vic.rpg.event.EventListener;
+import vic.rpg.event.Priority;
 import vic.rpg.item.Item;
 import vic.rpg.item.ItemStack;
-import vic.rpg.listener.EntityEventListener;
 import vic.rpg.registry.WorldRegistry;
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet13InventoryUpdate;
@@ -25,14 +27,13 @@ import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.INBTReadWrite;
-import vic.rpg.world.entity.EntityEvent;
 
 /**
  * The Inventory is where all {@link Item Items} are saved.
  * @author Victorious3
  *
  */
-public class Inventory implements INBTReadWrite, EntityEventListener
+public class Inventory implements INBTReadWrite, EventListener
 {
 	private HashMap<Integer, ItemStack[][]> itemGrids = new HashMap<Integer, ItemStack[][]>();
 	private HashMap<Integer, ItemStack> items = new HashMap<Integer, ItemStack>();
@@ -43,13 +44,13 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	@Init(side = Side.BOTH)
 	public static void init()
 	{
-		EntityEvent.registerEntityEvent(new InventoryEvent());
+		Event.registerEntityEvent(new InventoryEvent());
 	}
 	
 	public Inventory(EntityLiving parentEntity)
 	{
 		this.parentEntity = parentEntity;
-		if(parentEntity != null) this.parentEntity.addEventListener(this);
+//		if(parentEntity != null) this.parentEntity.getEventBus().addEventListener(this);
 	}
 	
 	/**
@@ -518,7 +519,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	/**
 	 * Inventory Event.
 	 */
-	public static class InventoryEvent extends EntityEvent
+	public static class InventoryEvent extends Event
 	{
 		public InventoryEvent(int mode, int id, int sType, int gx, int gy) 
 		{
@@ -544,7 +545,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	{
 		ItemStack stack = getItemStack(id);
 		setItemStack(id, stack.getItem().onItemUse(parentEntity, this, stack));
-		if(Utils.getSide() == Side.CLIENT) parentEntity.postEvent(new InventoryEvent(0, id, 0, 0, 0));
+		if(Utils.getSide() == Side.CLIENT) parentEntity.getEventBus().postEvent(new InventoryEvent(0, id, 0, 0, 0));
 	}
 	
 	/**
@@ -555,11 +556,11 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 	{
 		ItemStack stack = overlapsWith(getItemStackGrid(id), 1, 1, gx, gy);
 		setItemStackGrid(id, stack.getItem().onItemUse(parentEntity, this, stack), stack.xCoord, stack.yCoord);
-		if(Utils.getSide() == Side.CLIENT) parentEntity.postEvent(new InventoryEvent(0, id, 1, gx, gy));
+		if(Utils.getSide() == Side.CLIENT) parentEntity.getEventBus().postEvent(new InventoryEvent(0, id, 1, gx, gy));
 	}
 
 	@Override
-	public EntityEvent onEventReceived(EntityEvent e) 
+	public Event onEventReceived(Event e) 
 	{
 		if(e instanceof InventoryEvent)
 		{
@@ -572,7 +573,7 @@ public class Inventory implements INBTReadWrite, EntityEventListener
 		return e;
 	}
 
-	@Override public EntityEvent onEventPosted(EntityEvent e) 
+	@Override public Event onEventPosted(Event e) 
 	{
 		return e;
 	}

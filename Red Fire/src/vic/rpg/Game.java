@@ -27,15 +27,15 @@ import javax.swing.UIManager;
 
 import vic.rpg.client.net.NetHandler;
 import vic.rpg.client.net.PacketHandlerSP;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.Screen;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.config.Options;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiMain;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.Screen;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.server.Server;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;

@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.combat.Skill;
 import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemFilter;
@@ -12,7 +13,6 @@ import vic.rpg.item.ItemPeer;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
 import vic.rpg.world.entity.living.Inventory;
 
 /**

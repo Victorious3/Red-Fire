@@ -26,9 +26,9 @@ import org.jnbt.NBTOutputStream;
 import org.jnbt.Tag;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.Screen;
 import vic.rpg.registry.WorldRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.Screen;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Vector3;
@@ -693,7 +693,6 @@ public class Map implements INBTReadWrite
 		this.id = tag.getInt("id", 0);
 		this.width = tag.getInt("width", 0);
 		this.height = tag.getInt("height", 0);
-		this.time = tag.getInt("time", 0);
 		this.isAmbientLighting = tag.getBoolean("isAmbientLighting", true);
 		this.spawnX = tag.getInt("spawnX", 0);
 		this.spawnY = tag.getInt("spawnY", 0);
@@ -774,7 +773,6 @@ public class Map implements INBTReadWrite
 		mapTag.putInt("id", id);
 		mapTag.putInt("width", width);
 		mapTag.putInt("height", height);
-		mapTag.putInt("time", time);
 		mapTag.putBoolean("isAmbientLighting", isAmbientLighting);
 		mapTag.putInt("spawnX", spawnX);
 		mapTag.putInt("spawnY", spawnY);

@@ -183,8 +183,8 @@ public class WorldRegistry
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Entity readEntityFromNBT(CompoundTag tag)
 	{		
-		int xCoord = tag.getInt("xcoord", 0);
-		int yCoord = tag.getInt("ycoord", 0);
+		int xCoord = tag.getInt("xCoord", 0);
+		int yCoord = tag.getInt("yCoord", 0);
 		int dimension = tag.getInt("dim", 0);
 		int id = tag.getInt("id", 0);
 		
@@ -252,8 +252,8 @@ public class WorldRegistry
 		CompoundTag tag = new CompoundTag("entity", new HashMap<String, Tag>());
 		
 		tag.putInt("layerID", et.layerID);
-		tag.putInt("xcoord", et.xCoord);
-		tag.putInt("ycoord", et.yCoord);
+		tag.putInt("xCoord", et.xCoord);
+		tag.putInt("yCoord", et.yCoord);
 		
 		tag = et.writeToNBT(tag);	 
 		return tag;	

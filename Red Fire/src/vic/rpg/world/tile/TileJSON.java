@@ -8,8 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import vic.rpg.render.LightSource;
-import vic.rpg.render.TextureLoader;
+import vic.rpg.client.render.LightSource;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import bsh.EvalError;

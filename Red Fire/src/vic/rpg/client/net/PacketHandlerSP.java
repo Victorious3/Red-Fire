@@ -5,10 +5,11 @@ import java.io.DataInputStream;
 import java.util.ArrayList;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.Screen;
+import vic.rpg.event.EventBus;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiIngame;
 import vic.rpg.gui.GuiPlayer;
-import vic.rpg.render.Screen;
 import vic.rpg.server.GameState;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet0StateUpdate;
@@ -22,7 +23,6 @@ import vic.rpg.server.packet.Packet9EntityMoving;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityEvent;
 import vic.rpg.world.entity.living.EntityLiving;
 import vic.rpg.world.entity.living.EntityPlayer;
 
@@ -86,7 +86,7 @@ public class PacketHandlerSP extends Thread
 		{
 			Packet7Entity p7entity = (Packet7Entity) p;
 			
-			Entity[] entities = p7entity.entities;
+			Entity[] entities = p7entity.getData();
 			int mode = p7entity.mode;
 			
 			switch(mode)
@@ -140,7 +140,6 @@ public class PacketHandlerSP extends Thread
 					e.yCoord = ((Packet9EntityMoving)p).yCoord;
 					e.setRotation(((Packet9EntityMoving)p).rotation);
 					e.setWalking(((Packet9EntityMoving)p).isWalking);
-					Game.map.entityMap.put(e.UUID, e);
 				}
 			}
 		}
@@ -150,8 +149,7 @@ public class PacketHandlerSP extends Thread
 		}
 		else if(p.id == 12)
 		{
-			EntityEvent eev = ((Packet12Event)p).eev;
-			Game.map.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);		
+			EventBus.processEventPacket((Packet12Event)p);
 		}
 		else if(p.id == 20)
 		{

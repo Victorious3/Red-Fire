@@ -1,12 +1,12 @@
 package vic.rpg.world.entity.living;
 
 import vic.rpg.Init;
+import vic.rpg.event.Event;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityEvent;
 
 /**
- * The EntityController is the where all the {@link Entity} manipulations are done that use {@link EntityEvent EntityEvents}.
+ * The EntityController is the where all the {@link Entity} manipulations are done that use {@link Event EntityEvents}.
  * @author Victorious3
  */
 public class EntityController 
@@ -14,10 +14,10 @@ public class EntityController
 	@Init(side = Side.BOTH)
 	public static void init()
 	{
-		EntityEvent.registerEntityEvent(new HealthChangeEvent());
+		Event.registerEntityEvent(new HealthChangeEvent());
 	}
 	
-	public static class HealthChangeEvent extends EntityEvent
+	public static class HealthChangeEvent extends Event
 	{
 		public HealthChangeEvent()
 		{
@@ -40,7 +40,7 @@ public class EntityController
 	 */
 	public static void setHealth(EntityLiving ent, float health)
 	{
-		ent.postEvent(new HealthChangeEvent((int)(ent.max_lp * health)));
+		ent.getEventBus().postEvent(new HealthChangeEvent((int)(ent.max_lp * health)));
 	}
 	
 	/**
@@ -52,6 +52,6 @@ public class EntityController
 	 */
 	public static void changeHealth(EntityLiving ent, float health)
 	{
-		ent.postEvent(new HealthChangeEvent(ent.lp + (int)(ent.max_lp * health)));
+		ent.getEventBus().postEvent(new HealthChangeEvent(ent.lp + (int)(ent.max_lp * health)));
 	}
 }

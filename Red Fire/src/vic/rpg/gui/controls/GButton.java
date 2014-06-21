@@ -4,10 +4,10 @@ import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.DrawUtils.GradientAnimator;
 import vic.rpg.gui.Gui;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.DrawUtils.GradientAnimator;
 
 /**
  * A simple button. To use it, the parent {@link Gui} has to implement {@link IGButton} to receive the button events.

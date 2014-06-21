@@ -1,4 +1,4 @@
-package vic.rpg.render;
+package vic.rpg.client.render;
 
 import java.awt.image.BufferedImage;
 

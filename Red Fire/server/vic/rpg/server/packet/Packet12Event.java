@@ -20,12 +20,12 @@ import org.jnbt.ShortTag;
 import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
-import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityEvent;
+import vic.rpg.event.Event;
+import vic.rpg.event.IEventReceiver;
 
 public class Packet12Event extends Packet
 {
-	public EntityEvent eev;
+	public Event eev;
 	public String UUID;
 	
 	public Packet12Event()
@@ -33,11 +33,11 @@ public class Packet12Event extends Packet
 		super(12);
 	}
 	
-	public Packet12Event(EntityEvent eev, Entity entity)
+	public Packet12Event(Event eev, IEventReceiver eventReceiver)
 	{
 		super(12);
 		this.eev = eev;
-		this.UUID = entity.UUID;
+		this.UUID = eventReceiver.getDimension() + "_" + eventReceiver.getUniqueIdentifier();
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class Packet12Event extends Packet
 			UUID = stream.readUTF();
 			int objectLength = stream.readInt();
 			
-			eev = EntityEvent.getEntityEvent(eventID).clone();
+			eev = Event.getEntityEvent(eventID).clone();
 			byte[] b = new byte[stream.available()];
 			stream.readFully(b);
 			

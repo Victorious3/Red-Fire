@@ -2,8 +2,8 @@ package vic.rpg.gui.controls;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.gui.controls.GButton.IGButton;
-import vic.rpg.render.DrawUtils;
 
 import com.jogamp.opengl.util.texture.Texture;
 

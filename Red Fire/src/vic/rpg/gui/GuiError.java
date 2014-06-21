@@ -6,12 +6,12 @@ import java.awt.Font;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
 import com.jogamp.newt.event.KeyEvent;

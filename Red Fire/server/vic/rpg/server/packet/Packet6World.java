@@ -52,7 +52,7 @@ public class Packet6World extends Packet
 		try {
 			data = new byte[stream.available()];
 			stream.readFully(data);
-	
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	

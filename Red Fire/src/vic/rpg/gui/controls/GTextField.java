@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
-import vic.rpg.render.DrawUtils;
+import vic.rpg.client.render.DrawUtils;
 
 /**
  * GTextField is a one line text field. An maximal amount of writable text can be specified.

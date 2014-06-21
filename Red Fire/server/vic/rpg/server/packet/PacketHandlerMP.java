@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import vic.rpg.event.EventBus;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.server.io.Connection;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.Entity;
-import vic.rpg.world.entity.EntityEvent;
 import vic.rpg.world.entity.living.EntityPlayer;
 
 public class PacketHandlerMP extends Thread
@@ -59,7 +59,7 @@ public class PacketHandlerMP extends Thread
 			else if(p.id == 8)
 			{
 				p.id = 7;
-				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).entities[0]);
+				EntityPlayer player = (EntityPlayer)(((Packet8PlayerUpdate)p).getData()[0]);
 				ServerLoop.world.getMap(player.dimension).entityMap.put(ServerLoop.world.getUUID(con.username), player);
 				Server.server.broadcastLocally(player.dimension, p);
 			}
@@ -113,17 +113,15 @@ public class PacketHandlerMP extends Thread
 			}
 			else if(p.id == 12)
 			{
-				EntityEvent eev = ((Packet12Event)p).eev;
-				Map map = ServerLoop.world.getMap(ServerLoop.world.getDimension(con.username));
-				map.entityMap.get(((Packet12Event)p).UUID).processEvent(eev);	
+				EventBus.processEventPacket((Packet12Event)p);
 			}
 			else if(p.id == 13)
 			{
 				//TODO This allows cheaters to modify their Inventory in every way they like. They could even add more size to it... Think of some verifying algorithm.
 				Packet13InventoryUpdate packet = (Packet13InventoryUpdate) p;
 				packet.inventory.parentEntity = ServerLoop.world.getPlayer(con.username);
-				packet.inventory.parentEntity.addEventListener(packet.inventory);
-				packet.inventory.parentEntity.removeEventListener(packet.inventory.parentEntity.inventory);
+				packet.inventory.parentEntity.getEventBus().addEventListener(packet.inventory);
+				packet.inventory.parentEntity.getEventBus().removeEventListener(packet.inventory.parentEntity.inventory);
 				packet.inventory.parentEntity.inventory = packet.inventory;
 			}
 		} catch (Exception e) {

@@ -1,6 +1,6 @@
 package vic.rpg.world.entity.living;
 
-import vic.rpg.render.TextureFX;
+import vic.rpg.client.render.TextureFX;
 import vic.rpg.utils.Direction;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;

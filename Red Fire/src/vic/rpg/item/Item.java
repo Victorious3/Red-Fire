@@ -8,9 +8,9 @@ import javax.media.opengl.GL2;
 import org.jnbt.CompoundTag;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.Drawable;
 import vic.rpg.combat.SlotSkill;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.INBTReadWrite;

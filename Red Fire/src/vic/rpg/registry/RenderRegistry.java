@@ -3,7 +3,7 @@ package vic.rpg.registry;
 import java.awt.Font;
 import java.io.InputStream;
 
-import vic.rpg.render.TextureLoader;
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.utils.Utils;
 
 /**

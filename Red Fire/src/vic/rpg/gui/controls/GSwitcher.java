@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import javax.media.opengl.GL2;
 
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
 

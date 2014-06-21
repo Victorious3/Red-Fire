@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.DrawUtils;
 import vic.rpg.gui.GuiContainer;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.item.ItemFilter;
@@ -14,7 +15,6 @@ import vic.rpg.item.ItemStack;
 import vic.rpg.item.Slot;
 import vic.rpg.item.SlotGrid;
 import vic.rpg.registry.GameRegistry;
-import vic.rpg.render.DrawUtils;
 import vic.rpg.world.entity.living.Inventory;
 
 /**

@@ -50,6 +50,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import vic.rpg.Game;
+import vic.rpg.client.render.TextureFX;
 import vic.rpg.editor.gui.DockableDesktopManager;
 import vic.rpg.editor.gui.JDockableFrame;
 import vic.rpg.editor.gui.PanelMap;
@@ -65,7 +66,6 @@ import vic.rpg.editor.script.Script;
 import vic.rpg.editor.tiles.TileMaterial;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.registry.WorldRegistry;
-import vic.rpg.render.TextureFX;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import vic.rpg.world.TexturePath;

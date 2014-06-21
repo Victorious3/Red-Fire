@@ -176,6 +176,7 @@ public class World
 			name = obj.get("name").getAsString();
 			spawnMap = obj.get("spawnID").getAsInt();
 			spawnLocation = new Point(obj.get("spawnX").getAsInt(), obj.get("spawnY").getAsInt());
+			time = obj.get("time").getAsInt();
 			
 			File playerData = new File(file.getAbsoluteFile() + "/players.nbt");
 			if(!playerData.exists()) playerData.createNewFile();
@@ -217,6 +218,7 @@ public class World
 		mainObj.add("spawnID", new JsonPrimitive(spawnMap));
 		mainObj.add("spawnX", new JsonPrimitive(spawnLocation.x));
 		mainObj.add("spawnY", new JsonPrimitive(spawnLocation.y));
+		mainObj.add("time", new JsonPrimitive(time));
 		
 		FileWriter writer = new FileWriter(mapData);	
 		writer.write(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(mainObj));

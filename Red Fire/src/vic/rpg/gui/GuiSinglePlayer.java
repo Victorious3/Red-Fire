@@ -9,15 +9,15 @@ import javax.media.opengl.GL2;
 
 import vic.rpg.Game;
 import vic.rpg.client.net.NetHandler;
+import vic.rpg.client.render.DrawUtils;
+import vic.rpg.client.render.TextureLoader;
+import vic.rpg.client.render.DrawUtils.GradientAnimator;
 import vic.rpg.gui.controls.GButton;
 import vic.rpg.gui.controls.GButton.IGButton;
 import vic.rpg.gui.controls.GControl;
 import vic.rpg.gui.controls.GList;
 import vic.rpg.gui.controls.GList.IGList;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.DrawUtils;
-import vic.rpg.render.DrawUtils.GradientAnimator;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.sound.SoundEngine;

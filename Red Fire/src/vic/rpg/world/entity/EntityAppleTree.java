@@ -4,10 +4,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Area;
 
+import vic.rpg.client.render.TextureLoader;
 import vic.rpg.item.ItemStack;
 import vic.rpg.registry.WorldRegistry;
 import vic.rpg.registry.RenderRegistry;
-import vic.rpg.render.TextureLoader;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.living.EntityController;

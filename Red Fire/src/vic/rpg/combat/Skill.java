@@ -1,6 +1,6 @@
 package vic.rpg.combat;
 
-import vic.rpg.render.Drawable;
+import vic.rpg.client.render.Drawable;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.living.EntityLiving;

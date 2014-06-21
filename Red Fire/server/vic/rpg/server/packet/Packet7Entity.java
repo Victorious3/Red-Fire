@@ -24,7 +24,8 @@ public class Packet7Entity extends Packet
 	public static final int MODE_CREATE = 2;
 	
 	public int mode;
-	public Entity[] entities;
+	private Entity[] entities;
+	private byte[] data;
 	
 	protected Packet7Entity(Entity[] entities, int mode, int i)
 	{
@@ -53,23 +54,16 @@ public class Packet7Entity extends Packet
 	{
 		this(new Entity[]{entity}, mode);
 	}
-
-	@Override
-	public void readData(DataInputStream stream) 
+	
+	public Entity[] getData()
 	{
 		try {
-			mode = stream.readInt();
-			
-			byte[] b = new byte[stream.available()];
-			stream.readFully(b);
-			
-			NBTInputStream in;
-			ArrayList<Entity> list = new ArrayList<Entity>();	
-		
-			in = new NBTInputStream(new ByteArrayInputStream(b));
+			NBTInputStream in = new NBTInputStream(new DataInputStream(new ByteArrayInputStream(data)));
 			CompoundTag tag = (CompoundTag)in.readTag();
 			in.close();
+			
 			Map<String, Tag> map = tag.getValue();
+			ArrayList<Entity> list = new ArrayList<Entity>();	
 			
 			for(Tag t : map.values())
 			{
@@ -80,7 +74,21 @@ public class Packet7Entity extends Packet
 			Entity[] entities = new Entity[list.size()];
 			entities = list.toArray(entities);
 			
-			this.entities = entities;
+			return entities;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		return entities;
+	}
+
+	@Override
+	public void readData(DataInputStream stream) 
+	{
+		try {
+			mode = stream.readInt();	
+			data = new byte[stream.available()];
+			stream.readFully(data);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
