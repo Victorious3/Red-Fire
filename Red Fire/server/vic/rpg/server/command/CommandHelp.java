@@ -25,7 +25,7 @@ public class CommandHelp extends Command
 			}
 			else 
 			{
-				commandSender.print("&4No command named \"" + args.get(0) + "\"! Try /help");
+				commandSender.error("No command named \"" + args.get(0) + "\"! Try /help");
 				return;
 			}
 		}

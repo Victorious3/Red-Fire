@@ -11,6 +11,7 @@ import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.living.EntityLiving;
 
+//TODO Test if this causes memory leaks.
 public class EventBus 
 {
 	private static HashMap<String, EventBus> eventBusMapClient = new HashMap<String, EventBus>();
@@ -105,6 +106,12 @@ public class EventBus
 	{
 		if(Utils.getSide() == Side.SERVER) eventBusMapServer.get(eventPacket.UUID).processEvent(eventPacket.eev);
 		else eventBusMapClient.get(eventPacket.UUID).processEvent(eventPacket.eev);
+	}
+	
+	public static void removeEventBus(String uuid)
+	{
+		if(Utils.getSide() == Side.SERVER) eventBusMapServer.remove(uuid);
+		else eventBusMapClient.remove(uuid);
 	}
 	
 	public static void addEventBus(EventBus bus)

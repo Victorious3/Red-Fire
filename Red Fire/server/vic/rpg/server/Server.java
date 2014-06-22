@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import vic.rpg.ClassFinder;
 import vic.rpg.Init;
@@ -22,6 +23,7 @@ import vic.rpg.event.EventBus;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.gui.ServerGui;
+import vic.rpg.server.io.BotConnection;
 import vic.rpg.server.io.Connection;
 import vic.rpg.server.io.Listener;
 import vic.rpg.server.packet.Packet;
@@ -48,7 +50,7 @@ public class Server extends Thread implements CommandSender
 	
 	public static int MAX_CONNECTIONS = 10;	
 	public static int actConnections = 0;
-	public static HashMap<String, Connection> connections = new LinkedHashMap<String, Connection>();
+	public static HashMap<String, BotConnection> connections = new LinkedHashMap<String, BotConnection>();
 	public static boolean isSinglePlayer = false;
 
 	public static int STATE = GameState.LOADING;
@@ -317,7 +319,7 @@ public class Server extends Thread implements CommandSender
 			e.printStackTrace();
 		}
 		
-		for(Connection c : connections.values())
+		for(Connection c : getConnections().values())
 		{
 			c.finalize();
 		}	
@@ -327,9 +329,9 @@ public class Server extends Thread implements CommandSender
 		while(true)
 		{
 			boolean brk = true;
-			for(Connection c : connections.values())
+			for(Connection c : getConnections().values())
 			{
-				if(c.isAlive()) brk = false;
+				if(c.conThread.isAlive()) brk = false;
 			}
 			if(brk) break;
 			try {
@@ -387,7 +389,7 @@ public class Server extends Thread implements CommandSender
 	
 	public void broadcastLocally(int map, Packet p, String... withoutPlayer)
 	{
-		for(Connection con : connections.values()) 
+		for(Connection con : getConnections().values()) 
 	    { 		
 			try {
 				if(!Arrays.asList(withoutPlayer).contains(con.username)) 
@@ -402,7 +404,7 @@ public class Server extends Thread implements CommandSender
 	
 	public void broadcast(Packet p, String... withoutPlayer) 
 	{
-		for(Connection con : connections.values()) 
+		for(Connection con : getConnections().values()) 
 	    { 		
 			try {
 				if(!Arrays.asList(withoutPlayer).contains(con.username)) con.packetHandler.addPacketToSendingQueue(p);
@@ -417,10 +419,40 @@ public class Server extends Thread implements CommandSender
 	{
 		System.out.println(string);
 	}
+	
+	@Override
+	public void error(String string) 
+	{
+		System.err.println(string);
+	}
 
 	@Override
 	public Permission getPermission() 
 	{
 		return permission;
+	}
+	
+	/**
+	 * This will filter any {@link BotConnection} from the {@link #connections}.
+	 * @return
+	 */
+	public static HashMap<String, Connection> getConnections()
+	{
+		HashMap<String, Connection> temp = new HashMap<String, Connection>();
+		for(Entry<String, BotConnection> set : connections.entrySet())
+		{
+			if(set.getValue() instanceof Connection) temp.put(set.getKey(), (Connection)set.getValue());
+		}
+		return temp;
+	}
+	
+	public static boolean isBot(BotConnection bot)
+	{
+		return !(bot instanceof Connection);
+	}
+	
+	public static Connection getConnection(BotConnection con)
+	{
+		return (Connection)con;
 	}
 }

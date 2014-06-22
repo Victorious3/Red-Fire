@@ -130,7 +130,7 @@ public class EntityPlayer extends EntityLiving
 	{
 		if(Utils.getSide() == Side.SERVER)
 		{
-			Server.connections.get(this.username).packetHandler.addPacketToSendingQueue(new Packet20Chat(message, username));
+			Server.getConnections().get(this.username).packetHandler.addPacketToSendingQueue(new Packet20Chat(message, username));
 		}
 	}
 

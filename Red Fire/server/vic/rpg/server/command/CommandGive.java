@@ -34,7 +34,7 @@ public class CommandGive extends Command
 				try {
 				amount = Integer.parseInt(args.get(2));
 				} catch (NumberFormatException e) {
-					commandSender.print("&4Amount has to be an int!");
+					commandSender.error("Amount has to be an int!");
 					return;
 				}
 			}
@@ -42,7 +42,7 @@ public class CommandGive extends Command
 			try {
 				id = Integer.parseInt(args.get(1));
 			} catch (NumberFormatException e) {
-				commandSender.print("&4Id has to be an int!");
+				commandSender.error("Id has to be an int!");
 				return;
 			}
 			
@@ -58,13 +58,13 @@ public class CommandGive extends Command
 				}
 				else
 				{
-					commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+					commandSender.error("No player named \"" + args.get(0) + "\" online!");
 					return;
 				}
 			}
 			else 
 			{
-				commandSender.print("&4No item extists with the id " + id + "!");
+				commandSender.error("No item extists with the id " + id + "!");
 				return;
 			}
 		}

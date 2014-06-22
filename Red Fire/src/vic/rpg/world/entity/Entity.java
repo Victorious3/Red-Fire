@@ -60,9 +60,20 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 		super(width, height);	
 	}
 	
+	/**
+	 * Called after all variables are set as an replacement for the constructor.
+	 */
 	public void onCreation()
 	{
 		eventBus = new EventBus(this);
+	}
+	
+	/**
+	 * Called when this entity is removed from the {@link Map} to allow for some cleanup.
+	 */
+	public void onRemoval()
+	{
+		EventBus.removeEventBus(getUniqueIdentifier());
 	}
 	
 	@Override

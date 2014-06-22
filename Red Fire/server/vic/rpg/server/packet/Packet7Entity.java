@@ -88,6 +88,26 @@ public class Packet7Entity extends Packet
 		}
 	}
 	
+	public void remove(vic.rpg.world.Map map)
+	{
+		try {
+			NBTInputStream in = new NBTInputStream(new DataInputStream(new ByteArrayInputStream(data)));
+			CompoundTag tag = (CompoundTag)in.readTag();
+			in.close();
+			
+			Map<String, Tag> map2 = tag.getValue();
+
+			for(Tag t : map2.values())
+			{
+				String UUID = ((CompoundTag)t).getString("uuid", null);
+				map.removeEntity(UUID);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Entity[] create()
 	{
 		try {
@@ -131,6 +151,7 @@ public class Packet7Entity extends Packet
 	@Override
 	public void writeData(DataOutputStream stream) 
 	{
+		//TODO Don't send the entity data if it's going to be removed anyways...
 		try {
 			stream.writeInt(mode);
 

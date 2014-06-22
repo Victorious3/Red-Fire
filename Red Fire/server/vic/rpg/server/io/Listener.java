@@ -27,7 +27,7 @@ public class Listener extends Thread
 	        try {	  
 	        	socket = Server.server.serverSocket.accept();        	
 	        	
-	        	con = new Connection(socket);
+	        	con = new Connection();
 	        	
 	        	if (con.connected)
 	        	{	        			        		

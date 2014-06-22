@@ -63,13 +63,24 @@ public class Map implements INBTReadWrite
 	private ArrayList<Integer[][][]> layers;
 	public HashMap<Integer, Boolean> layerVisibility;
 	
+	/**
+	 * Don't use this unless you know exactly what you are doing!
+	 */
+	@Deprecated
 	public LinkedHashMap<String, Entity> entityMap = new LinkedHashMap<String, Entity>();
+	/**
+	 * Don't use this unless you know exactly what you are doing!
+	 */
+	@Deprecated
 	public HashMap<Vector3, EntityTile> tilesMap = new HashMap<Vector3, EntityTile>();
 
 	public NodeMap nodeMap = new NodeMap(this);
 	public File saveFile;
 	
 	//Gameplay
+	/**
+	 * Only used for the client. See {@link World#time} for the server.
+	 */
 	public int time = 5000;
 	@Editable public boolean isAmbientLighting = true;
 	@Editable public String name = "NO_NAME";
@@ -614,7 +625,9 @@ public class Map implements INBTReadWrite
 	 */
 	public Entity removeEntity(String uuid)
 	{
-		return entityMap.remove(uuid);
+		Entity et = entityMap.remove(uuid);
+		et.onRemoval();
+		return et;
 	}
 	
 	/**

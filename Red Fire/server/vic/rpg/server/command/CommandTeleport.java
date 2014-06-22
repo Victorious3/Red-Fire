@@ -24,19 +24,19 @@ public class CommandTeleport extends Command
 				
 				if(!ServerLoop.world.isPlayerOnline(playerName))
 				{
-					commandSender.print("&4No player named " + playerName + " online!");
+					commandSender.error("No player named " + playerName + " online!");
 					return;
 				}
 				if(ServerLoop.world.getMap(dimension) == null)
 				{
-					commandSender.print("&4There is no map with the id of " + dimension);
+					commandSender.error("There is no map with the id of " + dimension);
 					return;
 				}
 				
 				ServerLoop.world.changeMaps(dimension, playerName, xCoord, yCoord);
 				
 			} catch (NumberFormatException e) {
-				commandSender.print("&4<mapid>, <xCoord> and <yCoord> have to be numeric!");
+				commandSender.error("<mapid>, <xCoord> and <yCoord> have to be numeric!");
 			}
 		}
 		else help(commandSender);

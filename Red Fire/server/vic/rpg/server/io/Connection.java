@@ -16,7 +16,7 @@ import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.PacketHandlerMP;
 import vic.rpg.server.permission.Permission;
 
-public class Connection extends Thread implements CommandSender
+public class Connection extends BotConnection implements CommandSender, Runnable
 {   	
 	public Socket socket;
     public DataInputStream in;
@@ -34,10 +34,12 @@ public class Connection extends Thread implements CommandSender
 	public String prefix;
 	public String suffix;
     
-    public Connection(Socket socket) 
+	public Thread conThread;
+	
+    public Connection(Socket socket, String username) 
     {
+    	super(username);
     	this.socket = socket;
-    	this.username = "NO_PLAYER!";
     	
     	try {      
     		in = new DataInputStream(socket.getInputStream());
@@ -47,6 +49,11 @@ public class Connection extends Thread implements CommandSender
     	catch (IOException e) {
     		connected = false;
     	}
+    }
+    
+    public Connection()
+    {
+    	super("NO_USERNAME");
     }
 
 	@Override
@@ -71,14 +78,14 @@ public class Connection extends Thread implements CommandSender
 		Server.server.delConnection(this, exc);
 	}
 	
-	@Override
 	public synchronized void start() 
 	{
-		this.setName("Server Connection for player " + username);
+		conThread = new Thread(this);
+		conThread.setName("Server Connection for player " + username);
 		packetHandler = new PacketHandlerMP(this);
 		packetHandler.start();
-		this.setDaemon(true);
-		super.start();
+		conThread.setDaemon(true);
+		conThread.start();
 	}
 
 	public boolean isTimeout() 
@@ -90,7 +97,7 @@ public class Connection extends Thread implements CommandSender
 	    return false;
 	}
 
-	public boolean available()
+	private boolean available()
     {
     	try {
 			return in.available() > 0;
@@ -119,6 +126,7 @@ public class Connection extends Thread implements CommandSender
 	    }
 	}
   
+	@Override
     public void finalize() 
     {
     	try {
@@ -137,6 +145,12 @@ public class Connection extends Thread implements CommandSender
 	{
 		packetHandler.addPacketToSendingQueue(new Packet20Chat(string, "SERVER"));
 	}
+	
+	@Override
+	public void error(String string) 
+	{
+		print("&4" + string);
+	} 
 
 	@Override
 	public Permission getPermission() 

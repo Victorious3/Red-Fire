@@ -31,7 +31,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 * @return Point
 	 */
 	public Point getTextureCoord(int x, int y, int data, int layerID, Map map)
@@ -44,7 +44,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 * @return Integer
 	 */
 	public int getHeight(int x, int y, int data, int layerID, Map map)
@@ -76,7 +76,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 * @return Boolean
 	 */
 	public boolean emitsLight(int x, int y, int data, int layerID, Map map)
@@ -89,7 +89,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 * @return LightSource
 	 */
 	public LightSource getLightSource(int x, int y, int data, int layerID, Map map)
@@ -102,7 +102,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 * @return Point
 	 */
 	public Point getLightPosition(int x, int y, int data, int layerID, Map map)
@@ -115,7 +115,7 @@ public class Tile
 	 * @param x
 	 * @param y
 	 * @param data
-	 * @param map TODO
+	 * @param map
 	 */
 	public void tick(int x, int y, int data, int layerID, Map map){}
 	
@@ -133,10 +133,10 @@ public class Tile
 	/**
 	 * Used from the {@link Path} to check the cheapest path. E.g walking on a road takes less effort
 	 * then walking through a morass.
-	 * @param x TODO
-	 * @param y TODO
-	 * @param layerID TODO
-	 * @param map TODO
+	 * @param x
+	 * @param y
+	 * @param layerID
+	 * @param map
 	 * @return
 	 */
 	public double getMovementCost(int x, int y, int layerID, Map map)
@@ -146,10 +146,10 @@ public class Tile
 	
 	/**
 	 * Checks weather it is allowed to walk onto this Tile.
-	 * @param x TODO
-	 * @param y TODO
-	 * @param layerID TODO
-	 * @param map TODO
+	 * @param x
+	 * @param y
+	 * @param layerID
+	 * @param map
 	 * @return
 	 */
 	public boolean isWalkingPermitted(int x, int y, int layerID, Map map)

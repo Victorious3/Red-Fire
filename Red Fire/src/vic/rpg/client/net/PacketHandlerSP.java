@@ -98,7 +98,7 @@ public class PacketHandlerSP extends Thread
 				{
 					synchronized(Game.map.entityMap)
 					{
-						if(Game.map != null) Game.map.entityMap.put(e.UUID, e);
+						if(Game.map != null) Game.map.addEntity(e);
 						if(e instanceof EntityPlayer)
 						{
 							if(((EntityPlayer)e).username.equals(Game.USERNAME))
@@ -121,15 +121,7 @@ public class PacketHandlerSP extends Thread
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:
-				entities = p7entity.create();
-				synchronized(Game.map.entityMap)
-				{
-					for (Entity e : entities)
-					{
-						Game.map.entityMap.remove(e.UUID);
-					}
-				}
-				break;
+				p7entity.remove(Game.map);
 			}
 		}
 		else if(p.id == 9)

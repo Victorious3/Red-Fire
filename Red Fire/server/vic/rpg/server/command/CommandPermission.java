@@ -68,7 +68,7 @@ public class CommandPermission extends Command
 						flag2 = 2;
 						permission += ".group";
 						break;
-					default : commandSender.print("&4Missing argument 1: Specify type (player/group)."); return;
+					default : commandSender.error("Missing argument 1: Specify type (player/group)."); return;
 					}
 					
 					if(commandSender.getPermission().hasPermission(permission))
@@ -88,7 +88,7 @@ public class CommandPermission extends Command
 										{
 											commandSender.print("Permission " + arg3 + " was sucessfully added to player " + arg2 + ".");
 										}
-										else commandSender.print("&4There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
+										else commandSender.error("There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
 									}
 								}
 								else if(flag1 == 1 && flag2 == 2)
@@ -97,7 +97,7 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Permission " + permission + " was sucessfully added to group " + arg2 + ".");
 									}
-									else commandSender.print("&4There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
+									else commandSender.error("There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
 								}
 								else if(flag1 == 2 && flag2 == 1)
 								{
@@ -109,7 +109,7 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Got " + PermissionHelper.getPermissionForGroup(arg2).hasPermission(arg3) + " for group " + arg2 + " and permission " + permission + ".");
 									}
-									else commandSender.print("&4There is no group named " + arg2 + "!");
+									else commandSender.error("There is no group named " + arg2 + "!");
 								}
 								else if(flag1 == 3 && flag2 == 1)
 								{
@@ -117,7 +117,7 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Prefix " + arg3 + " was sucsessfully added to player " + arg2);
 									}		
-									else commandSender.print("&4There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
+									else commandSender.error("There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
 								}
 								else if(flag1 == 3 && flag2 == 2)
 								{
@@ -125,7 +125,7 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Prefix " + arg3 + " was sucsessfully added to group " + arg2);
 									}		
-									else commandSender.print("&4There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
+									else commandSender.error("There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
 								}
 								else if(flag1 == 4 && flag2 == 1)
 								{
@@ -133,7 +133,7 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Suffix " + arg3 + " was sucsessfully added to player " + arg2);
 									}		
-									else commandSender.print("&4There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
+									else commandSender.error("There is no player named " + arg2 + ". Please create it first via '/permission player create <player>'");
 								}
 								else if(flag1 == 4 && flag2 == 2)
 								{
@@ -141,26 +141,26 @@ public class CommandPermission extends Command
 									{
 										commandSender.print("Suffix " + arg3 + " was sucsessfully added to group " + arg2);
 									}		
-									else commandSender.print("&4There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
+									else commandSender.error("There is no group named " + arg2 + ". Please create it first via '/permission group create <group>'");
 								}
 							}
 							else 
 							{
-								if(flag1 == 1) commandSender.print("&4Missing argument 3: Specify the permission to set."); 
-								else if(flag1 == 2) commandSender.print("&4Missing argument 3: Specify the permission to check.");
-								else if(flag1 == 3) commandSender.print("&4Missing argument 3: Specify the prefix to set.");
-								else if(flag1 == 4) commandSender.print("&4Missing argument 3: Specify the suffix to set.");
+								if(flag1 == 1) commandSender.error("Missing argument 3: Specify the permission to set."); 
+								else if(flag1 == 2) commandSender.error("Missing argument 3: Specify the permission to check.");
+								else if(flag1 == 3) commandSender.error("Missing argument 3: Specify the prefix to set.");
+								else if(flag1 == 4) commandSender.error("Missing argument 3: Specify the suffix to set.");
 							}
 						}
 						else 
 						{
-							if(flag2 == 1) commandSender.print("&4Missing argument 2: Specify name of the player.");
-							else commandSender.print("&4Missing argument 2: Specify name of the group.");
+							if(flag2 == 1) commandSender.error("Missing argument 2: Specify name of the player.");
+							else commandSender.error("Missing argument 2: Specify name of the group.");
 						}
 					}
 					else noPermission(commandSender);
 				}
-				else commandSender.print("&4Missing argument 1: Specify type (player/group).");
+				else commandSender.error("Missing argument 1: Specify type (player/group).");
 			}
 			else if(args.get(0).equals("group"))
 			{
@@ -178,9 +178,9 @@ public class CommandPermission extends Command
 							{
 								commandSender.print("Group " + args.get(2) + " was sucsessfully created.");
 							}
-							else commandSender.print("&4There is already a group named " + args.get(2) + "!");
+							else commandSender.error("There is already a group named " + args.get(2) + "!");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the group.");
+						else commandSender.error("Missing argument 2: Specify name of the group.");
 					}
 					else if(args.get(1).equals("delete"))
 					{
@@ -190,13 +190,13 @@ public class CommandPermission extends Command
 							{
 								commandSender.print("Group " + args.get(2) + " was sucsessfully deleted.");
 							}
-							else commandSender.print("&4There is no group named " + args.get(2) + "!");
+							else commandSender.error("There is no group named " + args.get(2) + "!");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the group.");
+						else commandSender.error("Missing argument 2: Specify name of the group.");
 					}
-					else commandSender.print("&4Missing argument 1: list/create/delete");
+					else commandSender.error("Missing argument 1: list/create/delete");
 				}
-				else commandSender.print("&4Missing argument 1: list/create/delete");
+				else commandSender.error("Missing argument 1: list/create/delete");
 			}
 			else if(args.get(0).equals("player"))
 			{
@@ -210,9 +210,9 @@ public class CommandPermission extends Command
 							{
 								commandSender.print("Player " + args.get(2) + " was sucsessfully created.");
 							}
-							else commandSender.print("&4There is already a player named " + args.get(2) + "!");
+							else commandSender.error("There is already a player named " + args.get(2) + "!");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the player.");
+						else commandSender.error("Missing argument 2: Specify name of the player.");
 					}
 					else if(args.get(1).equals("delete"))
 					{
@@ -222,9 +222,9 @@ public class CommandPermission extends Command
 							{
 								commandSender.print("Player " + args.get(2) + " was sucsessfully deleted.");
 							}
-							else commandSender.print("&4There is no player named " + args.get(2) + "!");
+							else commandSender.error("There is no player named " + args.get(2) + "!");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the player.");
+						else commandSender.error("Missing argument 2: Specify name of the player.");
 					}
 					else if(args.get(1).equals("add_group"))
 					{
@@ -239,13 +239,13 @@ public class CommandPermission extends Command
 										PermissionHelper.addGroupToPlayer(args.get(2), args.get(3));
 										commandSender.print("Group " + args.get(3) + " was sucsessfully added to player " + args.get(2) + ".");
 									}
-									else commandSender.print("&4There is no group named " + args.get(3) + "!");
+									else commandSender.error("There is no group named " + args.get(3) + "!");
 								}
-								else commandSender.print("&4There is no player named " + args.get(2) + "!");
+								else commandSender.error("There is no player named " + args.get(2) + "!");
 							}
-							else commandSender.print("&4Missing argument 3: Specify name of the group to add.");
+							else commandSender.error("Missing argument 3: Specify name of the group to add.");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the player.");
+						else commandSender.error("Missing argument 2: Specify name of the player.");
 					}
 					else if(args.get(1).equals("remove_group"))
 					{
@@ -258,11 +258,11 @@ public class CommandPermission extends Command
 									PermissionHelper.removeGroupFromPlayer(args.get(2), args.get(3));
 									commandSender.print("Group " + args.get(3) + " was sucsessfully removed from player " + args.get(2) + " if it existed before.");
 								}
-								else commandSender.print("&4There is no player named " + args.get(2) + "!");
+								else commandSender.error("There is no player named " + args.get(2) + "!");
 							}
-							else commandSender.print("&4Missing argument 3: Specify name of the group to remove.");
+							else commandSender.error("Missing argument 3: Specify name of the group to remove.");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the player.");
+						else commandSender.error("Missing argument 2: Specify name of the player.");
 					}
 					else if(args.get(1).equals("list_groups"))
 					{
@@ -272,13 +272,13 @@ public class CommandPermission extends Command
 							{
 								commandSender.print("Player " + args.get(2) + " has the following groups: " + PermissionHelper.getGroupsForPlayer(args.get(2)));
 							}
-							else commandSender.print("&4There is no player named " + args.get(2) + "!");
+							else commandSender.error("There is no player named " + args.get(2) + "!");
 						}
-						else commandSender.print("&4Missing argument 2: Specify name of the player.");
+						else commandSender.error("Missing argument 2: Specify name of the player.");
 					}
-					else commandSender.print("&4Missing argument 1: create/delete/add_group/remove_group/list_groups");
+					else commandSender.error("Missing argument 1: create/delete/add_group/remove_group/list_groups");
 				}
-				else commandSender.print("&4Missing argument 1: create/delete/add_group/remove_group/list_groups");
+				else commandSender.error("Missing argument 1: create/delete/add_group/remove_group/list_groups");
 			}
 			else permissionHelp(commandSender);
 		}

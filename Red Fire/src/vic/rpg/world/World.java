@@ -102,7 +102,7 @@ public class World
 		player.yCoord = yCoord;
 		getMap(dimension).addEntity(player);
 		onlinePlayersMap.put(username, new Object[]{player.UUID, player.dimension});
-		Connection con = Server.connections.get(username);
+		Connection con = Server.getConnections().get(username);
 		con.packetHandler.addPacketToSendingQueue(new Packet6World(getMap(dimension)));
 		Server.server.broadcastLocally(dimension, new Packet7Entity(player, Packet7Entity.MODE_CREATE));
 		con.STATE = GameState.LOADING;

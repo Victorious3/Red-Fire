@@ -364,7 +364,7 @@ public class PermissionHelper
 		System.out.println("Reloading permissions...");
 		synchronized(Server.connections) 
 		{
-			for(Connection con : Server.connections.values())
+			for(Connection con : Server.getConnections().values())
 			{
 				con.permission = getPermissionForPlayer(con.username);
 				con.prefix = getPrefix(con.username);

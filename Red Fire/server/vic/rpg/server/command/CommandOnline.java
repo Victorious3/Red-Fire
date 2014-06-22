@@ -25,7 +25,7 @@ public class CommandOnline extends Command
 		String out = "";
 		out += "Online Players: " + Server.actConnections + " (";
 		
-		Iterator<Connection> iter = Server.connections.values().iterator();
+		Iterator<Connection> iter = Server.getConnections().values().iterator();
 		while(iter.hasNext())
 		{
 			out += iter.next().username + (iter.hasNext() ? ", " : "");

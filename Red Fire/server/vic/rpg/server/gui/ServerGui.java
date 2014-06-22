@@ -460,7 +460,7 @@ public class ServerGui
 		{
 			DefaultTableModel model = (DefaultTableModel) tablePlayers.getModel();
 		    model.setRowCount(0);
-		    for(Connection con : Server.connections.values())
+		    for(Connection con : Server.getConnections().values())
 		    {
 		    	String username = con.username;
 		    	String ip = con.ip.toString();
@@ -482,9 +482,9 @@ public class ServerGui
 				DefaultTableModel model = (DefaultTableModel) tablePlayers.getModel();
 				
 				int i = 0;
-				for(Connection con : Server.connections.values())
+				for(Connection con : Server.getConnections().values())
 			    {
-			    	model.setValueAt(con.packetHandler.getQueueLenght(), i, 2);
+					model.setValueAt(con.packetHandler.getQueueLenght(), i, 2);
 			    	model.setValueAt(con.packetHandler.getSendingQueueLenght(), i, 3);
 					i++;
 			    }		

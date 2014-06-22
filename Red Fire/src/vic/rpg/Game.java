@@ -240,7 +240,7 @@ public class Game extends GLCanvas implements Runnable
 	{
 		isUpdating = true;
 		screen.tick();
-		
+
 		if(Gui.currentGui != null)
         {
 			Gui.currentGui.updateGui();

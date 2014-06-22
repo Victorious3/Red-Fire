@@ -39,10 +39,10 @@ public class CommandHeal extends Command
 					}
 					else
 					{
-						commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+						commandSender.error("No player named \"" + args.get(0) + "\" online!");
 					}
 				} catch (Exception e) {
-					commandSender.print("&4Health has to be a float from 0.0 to 1.0!");
+					commandSender.error("Health has to be a float from 0.0 to 1.0!");
 				}
 			}
 			else 
@@ -53,7 +53,7 @@ public class CommandHeal extends Command
 				}
 				else
 				{
-					commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+					commandSender.error("No player named \"" + args.get(0) + "\" online!");
 				}
 			}
 		}

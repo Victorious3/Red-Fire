@@ -24,11 +24,11 @@ public class CommandKick extends Command
 		{
 			if(ServerLoop.world.isPlayerOnline(args.get(0)))
 			{
-				Server.server.delConnection(Server.connections.get(args.get(0)), "kick");
+				Server.server.delConnection(Server.getConnections().get(args.get(0)), "kick");
 			}
 			else
 			{
-				commandSender.print("&4No player named \"" + args.get(0) + "\" online!");
+				commandSender.error("No player named \"" + args.get(0) + "\" online!");
 			}
 		}
 		else commandSender.print(getUsage()); 

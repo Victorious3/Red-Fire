@@ -81,13 +81,13 @@ public abstract class Command
 	
 	public void help(CommandSender commandSender)
 	{
-		commandSender.print("&4/" + name + ":");
-		commandSender.print("&4Usage: " + getUsage());
+		commandSender.error("/" + name + ":");
+		commandSender.error("Usage: " + getUsage());
 	}
 	
 	public void noPermission(CommandSender commandSender)
 	{
-		commandSender.print("&4You have no permission!");
+		commandSender.error("You have no permission!");
 	}
 	
 	public abstract void cast(List<String> args, CommandSender commandSender) throws CommandException;
