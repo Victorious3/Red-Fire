@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.net.Socket;
 
 import vic.rpg.Game;
+import vic.rpg.event.EventBus;
 import vic.rpg.gui.Gui;
 import vic.rpg.gui.GuiError;
 import vic.rpg.gui.GuiMain;
@@ -57,6 +58,7 @@ public class NetHandler extends Thread
 		Game.USERNAME = username;
 		
 		try {								
+			EventBus.clearClient();
 			connected = true;
 			socket = new Socket(adress, port);
 			in = new DataInputStream(socket.getInputStream());

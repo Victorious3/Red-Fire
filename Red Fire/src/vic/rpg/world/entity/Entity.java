@@ -57,7 +57,12 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 
 	protected Entity(int width, int height) 
 	{
-		super(width, height);
+		super(width, height);	
+	}
+	
+	public void onCreation()
+	{
+		eventBus = new EventBus(this);
 	}
 	
 	@Override
@@ -94,10 +99,7 @@ public abstract class Entity extends Drawable implements Cloneable, INBTReadWrit
 	public void tick() {}
 	
 	@Override
-	public void readFromNBT(CompoundTag tag, Object... args) 
-	{
-		eventBus = new EventBus(this);
-	}
+	public void readFromNBT(CompoundTag tag, Object... args){}
 	
 	@Override
 	public CompoundTag writeToNBT(CompoundTag tag, Object... args) 

@@ -16,7 +16,8 @@ import vic.rpg.world.entity.living.Inventory;
 
 public class Packet13InventoryUpdate extends Packet 
 {
-	public Inventory inventory;
+	private Inventory inventory;
+	private CompoundTag tag;
 	
 	public Packet13InventoryUpdate() 
 	{
@@ -28,6 +29,11 @@ public class Packet13InventoryUpdate extends Packet
 		super(13);
 		this.inventory = inventory;
 	}
+	
+	public void update(Inventory inv)
+	{
+		inv.readFromNBT(tag, (Object[])null);
+	}
 
 	@Override
 	public void readData(DataInputStream stream) 
@@ -37,10 +43,7 @@ public class Packet13InventoryUpdate extends Packet
 			stream.readFully(b);
 			
 			NBTInputStream nbtStream = new NBTInputStream(new ByteArrayInputStream(b));
-			CompoundTag tag = (CompoundTag)nbtStream.readTag();
-			Inventory inventory = new Inventory(null);
-			inventory.readFromNBT(tag);
-			this.inventory = inventory;
+			tag = (CompoundTag)nbtStream.readTag();
 			
 			nbtStream.close();
 		} catch (IOException e) {

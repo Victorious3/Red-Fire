@@ -13,7 +13,8 @@ import vic.rpg.world.entity.living.EntityLiving;
 
 public class EventBus 
 {
-	private static HashMap<String, EventBus> eventBusMap = new HashMap<String, EventBus>();
+	private static HashMap<String, EventBus> eventBusMapClient = new HashMap<String, EventBus>();
+	private static HashMap<String, EventBus> eventBusMapServer = new HashMap<String, EventBus>();
 	
 	private ArrayList<EventListener> entityListeners = new ArrayList<EventListener>();
 	private final IEventReceiver eventReceiver;
@@ -90,13 +91,25 @@ public class EventBus
 		Collections.sort(entityListeners, Priority.entityEventListenerComperator);
 	}
 	
+	public static void clearServer()
+	{
+		eventBusMapServer.clear();
+	}
+	
+	public static void clearClient()
+	{
+		eventBusMapClient.clear();
+	}
+	
 	public static void processEventPacket(Packet12Event eventPacket)
 	{
-		eventBusMap.get(eventPacket.UUID).processEvent(eventPacket.eev);
+		if(Utils.getSide() == Side.SERVER) eventBusMapServer.get(eventPacket.UUID).processEvent(eventPacket.eev);
+		else eventBusMapClient.get(eventPacket.UUID).processEvent(eventPacket.eev);
 	}
 	
 	public static void addEventBus(EventBus bus)
 	{
-		eventBusMap.put(bus.eventReceiver.getDimension() + "_" + bus.eventReceiver.getUniqueIdentifier(), bus);
+		if(Utils.getSide() == Side.SERVER) eventBusMapServer.put(bus.eventReceiver.getDimension() + "_" + bus.eventReceiver.getUniqueIdentifier(), bus);
+		else eventBusMapClient.put(bus.eventReceiver.getDimension() + "_" + bus.eventReceiver.getUniqueIdentifier(), bus);
 	}
 }

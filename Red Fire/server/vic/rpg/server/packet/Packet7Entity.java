@@ -19,8 +19,17 @@ import vic.rpg.world.entity.Entity;
 
 public class Packet7Entity extends Packet 
 {
+	/**
+	 * Updates the entities by calling {@link Entity#readFromNBT(CompoundTag, Object...)}.
+	 */
 	public static final int MODE_UPDATE = 0;
+	/**
+	 * Deletes the entities.
+	 */
 	public static final int MODE_DELETE = 1;
+	/**
+	 * Creates completely new entities.
+	 */
 	public static final int MODE_CREATE = 2;
 	
 	public int mode;
@@ -35,6 +44,10 @@ public class Packet7Entity extends Packet
 		this.mode = mode;
 	}
 	
+	/**
+	 * @param entities
+	 * @param mode: {@link #MODE_CREATE}, {@link #MODE_UPDATE}, {@link #MODE_DELETE}
+	 */
 	public Packet7Entity(Entity[] entities, int mode) 
 	{		
 		this(entities, mode, 7);
@@ -55,7 +68,27 @@ public class Packet7Entity extends Packet
 		this(new Entity[]{entity}, mode);
 	}
 	
-	public Entity[] getData()
+	public void update(vic.rpg.world.Map map)
+	{
+		try {
+			NBTInputStream in = new NBTInputStream(new DataInputStream(new ByteArrayInputStream(data)));
+			CompoundTag tag = (CompoundTag)in.readTag();
+			in.close();
+			
+			Map<String, Tag> map2 = tag.getValue();
+
+			for(Tag t : map2.values())
+			{
+				String UUID = ((CompoundTag)t).getString("uuid", null);
+				map.getEntity(UUID).readFromNBT(tag, (Object[])null);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Entity[] create()
 	{
 		try {
 			NBTInputStream in = new NBTInputStream(new DataInputStream(new ByteArrayInputStream(data)));

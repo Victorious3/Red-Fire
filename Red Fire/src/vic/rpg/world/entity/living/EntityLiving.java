@@ -61,6 +61,12 @@ public abstract class EntityLiving extends Entity
 	protected EntityLiving(int width, int height) 
 	{
 		super(width, height);
+	}
+
+	@Override
+	public void onCreation() 
+	{
+		super.onCreation();
 		inventory = new Inventory(this);
 	}
 

@@ -50,7 +50,7 @@ public class Inventory implements INBTReadWrite, EventListener
 	public Inventory(EntityLiving parentEntity)
 	{
 		this.parentEntity = parentEntity;
-//		if(parentEntity != null) this.parentEntity.getEventBus().addEventListener(this);
+		if(parentEntity != null) this.parentEntity.getEventBus().addEventListener(this);
 	}
 	
 	/**

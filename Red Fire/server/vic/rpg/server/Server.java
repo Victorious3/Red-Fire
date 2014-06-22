@@ -18,6 +18,7 @@ import java.util.List;
 import vic.rpg.ClassFinder;
 import vic.rpg.Init;
 import vic.rpg.PostInit;
+import vic.rpg.event.EventBus;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.gui.ServerGui;
@@ -144,6 +145,8 @@ public class Server extends Thread implements CommandSender
 					server.listener = new Listener(new Server());
 					server.inputHandler = new InputHandler();
 					server.serverLoop = new ServerLoop();
+					
+					EventBus.clearServer();
 					
 					System.out.println("Loading map...");
 					if(ServerLoop.file != null) 

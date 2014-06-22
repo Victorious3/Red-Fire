@@ -86,9 +86,8 @@ public class World
 			return player;
 		}
 		else
-		{
-			EntityPlayer player = new EntityPlayer();
-			maps.get(spawnMap).createPlayer(player, username, spawnLocation.x, spawnLocation.y);
+		{			
+			EntityPlayer player = maps.get(spawnMap).createPlayer(username, spawnLocation.x, spawnLocation.y);
 			onlinePlayersMap.put(username, new Object[]{player.UUID, player.dimension});
 			return player;
 		}

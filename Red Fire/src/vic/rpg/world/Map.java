@@ -535,6 +535,7 @@ public class Map implements INBTReadWrite
 	 * @param x
 	 * @param y
 	 */
+	@Deprecated
 	public void addEntity(int id, int x, int y)
 	{
 		Entity e = WorldRegistry.entityRegistry.get(id).clone();
@@ -580,6 +581,7 @@ public class Map implements INBTReadWrite
 		ent.UUID = uuid.toString();
 		ent.dimension = id;
 		ent.mapObj = this;
+		ent.onCreation();
 		entityMap.put(uuid.toString(), ent);
 	}
 
@@ -590,17 +592,19 @@ public class Map implements INBTReadWrite
 	 * @param x
 	 * @param y
 	 */
-	public void createPlayer(EntityPlayer player, String username, int x, int y)
+	public EntityPlayer createPlayer(String username, int x, int y)
     {
-        UUID uuid = UUID.randomUUID();
+        EntityPlayer player = new EntityPlayer();
+        player.UUID = UUID.randomUUID().toString();
         player.xCoord = x;
         player.yCoord = y;
         player.username = username;
-        player.UUID = uuid.toString();
         player.dimension = id;
         player.mapObj = this;
         player.formatInventory();
+        player.onCreation();
         entityMap.put(player.UUID, player);
+        return player;
     }
 	
 	/**

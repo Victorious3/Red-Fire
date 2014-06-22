@@ -85,14 +85,15 @@ public class PacketHandlerSP extends Thread
 		else if(p.id == 7)
 		{
 			Packet7Entity p7entity = (Packet7Entity) p;
-			
-			Entity[] entities = p7entity.getData();
 			int mode = p7entity.mode;
 			
 			switch(mode)
 			{
-			case Packet7Entity.MODE_CREATE:
 			case Packet7Entity.MODE_UPDATE:
+				p7entity.update(Game.map);
+				break;
+			case Packet7Entity.MODE_CREATE:	
+				Entity[] entities = p7entity.create();
 				for (Entity e : entities)
 				{
 					synchronized(Game.map.entityMap)
@@ -120,13 +121,15 @@ public class PacketHandlerSP extends Thread
 				}
 				break;
 			case Packet7Entity.MODE_DELETE:
+				entities = p7entity.create();
 				synchronized(Game.map.entityMap)
 				{
 					for (Entity e : entities)
 					{
 						Game.map.entityMap.remove(e.UUID);
 					}
-				}			
+				}
+				break;
 			}
 		}
 		else if(p.id == 9)

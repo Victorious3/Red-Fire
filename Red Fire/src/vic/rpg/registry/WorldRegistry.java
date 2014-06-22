@@ -198,11 +198,12 @@ public class WorldRegistry
 			Class entClass = entLoad.getClass();
 			try {		
 				ent = (Entity) entClass.getConstructor(new Class[]{}).newInstance(new Object[]{});
+				ent.UUID = uuid;
 				ent.dimension = dimension;
 				ent.xCoord = xCoord;
 				ent.yCoord = yCoord;
-				ent.UUID = uuid;
 				ent.id = id;
+				ent.onCreation();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
