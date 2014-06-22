@@ -50,11 +50,6 @@ public class Connection extends BotConnection implements CommandSender, Runnable
     		connected = false;
     	}
     }
-    
-    public Connection()
-    {
-    	super("NO_USERNAME");
-    }
 
 	@Override
 	public void run() 
