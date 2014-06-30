@@ -20,13 +20,6 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sourceforge.metrics.nature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>appdata</name>
-			<type>2</type>
-			<locationURI>REDFIRE_APPDATA</locationURI>
-		</link>
-	</linkedResources>
 	<variableList>
 		<variable>
 			<name>REDFIRE_APPDATA</name>

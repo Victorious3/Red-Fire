@@ -22,6 +22,7 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Red%20Fire/jars/gson-2.2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jogamp"/>
+	<classpathentry kind="lib" path="jars/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="jars/jogl-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

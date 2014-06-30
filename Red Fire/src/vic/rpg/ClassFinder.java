@@ -90,7 +90,7 @@ public class ClassFinder
 	  	return Collections.unmodifiableList(classes);
    	}
 	
-	public static List<Class<?>> getClassesFromDir( File dir, String packageName, Class<?> classSearched )
+	public static List<Class<?>> getClassesFromDir(File dir, String packageName, Class<?> classSearched )
 	{
 		if(packageName == null) packageName = "";
 		List<Class<?>> classes = new ArrayList<Class<?>>();

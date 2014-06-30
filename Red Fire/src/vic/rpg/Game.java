@@ -1,5 +1,6 @@
 package vic.rpg;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -390,33 +391,14 @@ public class Game extends GLCanvas implements Runnable
 		frame.setTitle("Red Fire Alpha " + GameRegistry.VERSION);
 		frame.setIconImage(Utils.readImage("/vic/rpg/resources/rf_icon.png"));
 		
-		frame.addWindowListener(new WindowListener() 
+		frame.addWindowListener(new WindowAdapter() 
 		{
-			@Override
-			public void windowActivated(WindowEvent e) {}
-
-			@Override
-			public void windowClosed(WindowEvent e) {}
-
 			@Override
 			public void windowClosing(WindowEvent e) 
 			{
 				if(netHandler.IS_SINGLEPLAYER) Server.server.inputHandler.handleCommand("stop", null, Server.server);				
 				Game.game.stopGame();
-			}
-
-			@Override
-			public void windowDeactivated(WindowEvent e) {}
-
-			@Override
-			public void windowDeiconified(WindowEvent e) {}
-
-			@Override
-			public void windowIconified(WindowEvent e) {}
-
-			@Override
-			public void windowOpened(WindowEvent e) {}	      
-			
+			}		
 		});
 		
 		frame.pack();

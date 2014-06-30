@@ -37,7 +37,19 @@ public class Utils
 	
 	public static enum Side
 	{
-		CLIENT, SERVER, BOTH, OTHER_SIDE
+		CLIENT("CLIENT"), SERVER("SERVER"), BOTH("CLIENT/SERVER"), OTHER_SIDE("NONE");
+
+		@Override
+		public String toString() 
+		{
+			return super.toString();
+		}
+		
+		private final String name;
+		private Side(String name)
+		{
+			this.name = name;
+		}
 	}
 	
 	/**
