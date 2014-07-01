@@ -4,6 +4,7 @@ import java.util.List;
 
 import vic.rpg.server.Server;
 import vic.rpg.server.packet.Packet20Chat;
+import vic.rpg.utils.Logger;
 
 public class CommandSay extends Command
 {
@@ -29,7 +30,7 @@ public class CommandSay extends Command
 			{
 				s += " " + s2;
 			}
-			System.out.println("{SERVER}: " + s);
+			Logger.log("{SERVER}: " + s);
 			Server.server.broadcast(new Packet20Chat(s, "SERVER"));
 		}
 		else help(null);

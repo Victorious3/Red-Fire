@@ -2,12 +2,14 @@ package vic.rpg.world.entity.tile;
 
 import org.jnbt.CompoundTag;
 
+import vic.rpg.utils.Logger;
+
 public class EntityTileChest extends EntityTile
 {
 	@Override
 	public void readFromNBT(CompoundTag tag, Object... args) 
 	{
-		System.out.println(tag.getString("Test", "Test failed D:"));
+		Logger.log(tag.getString("Test", "Test failed D:"));
 		super.readFromNBT(tag, args);
 	}
 

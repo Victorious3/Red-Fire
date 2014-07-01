@@ -66,6 +66,8 @@ import vic.rpg.editor.script.Script;
 import vic.rpg.editor.tiles.TileMaterial;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.registry.WorldRegistry;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import vic.rpg.world.TexturePath;
@@ -190,11 +192,11 @@ public class Editor
 		try {
 			Game.GL_PROFILE = GLProfile.get(GLProfile.GL2);
 		} catch (GLException e) {
-			System.err.println("Woops, looks like your device doesn't support GL2. Let me try something different...");
+			Logger.log(LogLevel.WARNING, "Woops, looks like your device doesn't support GL2. Let me try something different...");
 			try {
 				Game.GL_PROFILE = GLProfile.get(GLProfile.GL2GL3);
 			} catch (GLException e2) {
-				System.err.println("Ehm GL2GL3 is also not supported. That's a really annoying. Sorry but I can't help you.");
+				Logger.log(LogLevel.SEVERE, "Ehm GL2GL3 is also not supported. That's a really annoying. Sorry but I can't help you.");
 				System.exit(-1);
 			}
 		}
@@ -926,7 +928,7 @@ public class Editor
 			File file = new File(path); 
 			if (plainFilter.accept(file))
 			{
-				System.out.println(file + " selected for loading"); 
+				Logger.log(file + " selected for loading"); 
 				try{
 					instance.labelMap.setMap(Map.readFromFile(file));       
 					instance.setMapName(instance.map.name);
@@ -940,7 +942,7 @@ public class Editor
 			}
 			else
 			{
-				System.out.println(path + " is not valid for loading");
+				Logger.log(LogLevel.WARNING, path + " is not valid for loading");
 				JOptionPane.showMessageDialog(null, "No Map could be loaded from " + path + "\nMaybe the file is missing or currupted", "Open...", JOptionPane.ERROR_MESSAGE);
 			}                
 			chooser.setVisible(false);            
@@ -967,7 +969,7 @@ public class Editor
 			File file = new File(path); 
 			if(plainFilter.accept(file))
 			{
-				System.out.println(file + " selected for saving");
+				Logger.log(file + " selected for saving");
 				Editor.instance.map.saveFile = file;
 				Editor.instance.map.writeToFile();
 				JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" was saved to " + path, "Save as...", JOptionPane.INFORMATION_MESSAGE);
@@ -975,7 +977,7 @@ public class Editor
 			}
 			else
 			{
-				System.out.println(path + " is not valid for saving");
+				Logger.log(LogLevel.WARNING, path + " is not valid for saving");
 				JOptionPane.showMessageDialog(null, "Map \"" + Editor.instance.map.name + "\" couldn't be saved to " + path + "\nMaybe the file is missing or currupted", "Save as...", JOptionPane.ERROR_MESSAGE);
 			}                
 			chooser.setVisible(false);            

@@ -159,14 +159,6 @@ public abstract class EntityLiving extends Entity
 	}
 	
 	/**
-	 * Called when a new EntityLiving is created for the first time. Used to add Fields to the {@link Inventory}.
-	 */
-	public void formatInventory()
-	{
-
-	}
-	
-	/**
 	 * Sets the currently rendered to new {@link TextureFX}.
 	 * @param fx
 	 */

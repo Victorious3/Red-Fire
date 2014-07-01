@@ -11,6 +11,7 @@ import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.server.ServerLoop;
 import vic.rpg.server.io.Connection;
+import vic.rpg.utils.Logger;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.Entity;
 import vic.rpg.world.entity.living.EntityPlayer;
@@ -96,7 +97,7 @@ public class PacketHandlerMP extends Thread
 				{
 					((Packet20Chat)p).prefix = con.prefix;
 					((Packet20Chat)p).suffix = con.suffix;
-					System.out.println("[" + con.username + "]: " + message);
+					Logger.log("[" + con.username + "]: " + message);
 					Server.server.broadcast(p);
 				}
 			}

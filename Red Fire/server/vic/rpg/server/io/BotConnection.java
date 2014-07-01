@@ -2,6 +2,8 @@ package vic.rpg.server.io;
 
 import vic.rpg.server.command.CommandSender;
 import vic.rpg.server.permission.Permission;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 
 //TODO This should become a Bot someday.
 public class BotConnection implements CommandSender
@@ -20,13 +22,13 @@ public class BotConnection implements CommandSender
 	@Override
 	public void print(String string) 
 	{
-		System.out.println(username + "");
+		Logger.log(username + "");
 	}
 	
 	@Override
 	public void error(String string) 
 	{
-		System.err.println(username + "");
+		Logger.log(LogLevel.SEVERE, username + "");
 	} 
 
 	@Override

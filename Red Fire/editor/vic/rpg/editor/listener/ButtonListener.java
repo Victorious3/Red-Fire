@@ -12,6 +12,7 @@ import javax.swing.JPopupMenu;
 import vic.rpg.editor.Clipboard;
 import vic.rpg.editor.Editor;
 import vic.rpg.registry.WorldRegistry;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.tile.TileJSON;
 
@@ -180,7 +181,7 @@ public class ButtonListener implements ActionListener
 				WorldRegistry.entityRegistry.remove(id);
 				Editor.instance.updateTilesAndEntites();
 				File f = new File(Utils.getAppdata() + "/resources/entities/" + name.substring(1) + ".bsh");
-				System.out.println("Deleted File " + f.getAbsolutePath());
+				Logger.log("Deleted File " + f.getAbsolutePath());
 				f.delete();
 			}
 		}
@@ -204,7 +205,7 @@ public class ButtonListener implements ActionListener
 				WorldRegistry.tileRegistry.remove(id);
 				Editor.instance.updateTilesAndEntites();
 				File f = new File(tile.getFilePath());
-				System.out.println("Deleted File " + f.getAbsolutePath());
+				Logger.log("Deleted File " + f.getAbsolutePath());
 				f.delete();
 			}
 		}

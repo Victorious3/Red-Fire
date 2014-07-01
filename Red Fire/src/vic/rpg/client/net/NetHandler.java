@@ -18,6 +18,8 @@ import vic.rpg.server.Server;
 import vic.rpg.server.command.CommandStop;
 import vic.rpg.server.packet.Packet;
 import vic.rpg.server.packet.Packet0StateUpdate;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 
 /**
  * NetHandler does handle all Client <-> Server communication for the Client.
@@ -68,7 +70,7 @@ public class NetHandler extends Thread
 			out.flush();
 			this.start();
 			Game.packetHandler = new PacketHandlerSP();
-			System.out.println("Succsessfully connected to: " + adress + ":" + port + " as player " + username);
+			Logger.log("Succsessfully connected to: " + adress + ":" + port + " as player " + username);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,7 +135,7 @@ public class NetHandler extends Thread
 	public void close()
 	{
 		try {
-			System.out.println("Destroying Network Thread...");
+			Logger.log(LogLevel.WARNING, "Destroying Network Thread...");
 			this.connected = false;
 			
 			while(this.isAlive())
@@ -151,7 +153,7 @@ public class NetHandler extends Thread
 				this.socket.close();
 			}
 			
-			System.out.println("done!");
+			Logger.log("done!");
 			
 			if(IS_SINGLEPLAYER)
 			{

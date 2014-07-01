@@ -33,6 +33,8 @@ import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.permission.Permission;
 import vic.rpg.server.permission.PermissionHelper;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.World;
 import vic.rpg.world.entity.living.EntityPlayer;
@@ -74,13 +76,13 @@ public class Server extends Thread implements CommandSender
 			String file = argList.get(argList.indexOf("-file") + 1);			
 			if(file == null)
 			{
-				System.err.println("Parameter -file <Path> not given!");
+				Logger.log(LogLevel.SEVERE, "Parameter -file <Path> not given!");
 				return;
 			}
 			File f = new File(file);
 			if(!f.exists())
 			{
-				System.err.println("File " + file + " doesn't exist!");
+				Logger.log(LogLevel.SEVERE, "File " + file + " doesn't exist!");
 				return;
 			}
 			try
@@ -89,7 +91,7 @@ public class Server extends Thread implements CommandSender
 			}
 			catch(Exception e)
 			{
-				System.err.println("File " + file + " is not valid!");
+				Logger.log(LogLevel.SEVERE, "File " + file + " is not valid!");
 				return;
 			}
 		}
@@ -135,12 +137,12 @@ public class Server extends Thread implements CommandSender
 					server = new Server();			
 					if(!nogui) ServerGui.setup();
 					
-					System.out.println("Starting -~/RedFire\\~- Server on Port " + port);
-					System.out.println("Performing init operations...");
+					Logger.log("Starting -~/RedFire\\~- Server on Port " + port);
+					Logger.log("Performing init operations...");
 					server.init();
-					System.out.println("done!");
+					Logger.log("done!");
 					
-					System.out.println("Loading Permissions...");
+					Logger.log("Loading Permissions...");
 					PermissionHelper.loadPermissions();
 					
 					server.serverSocket = new ServerSocket(port);
@@ -150,7 +152,7 @@ public class Server extends Thread implements CommandSender
 					
 					EventBus.clearServer();
 					
-					System.out.println("Loading map...");
+					Logger.log("Loading map...");
 					if(ServerLoop.file != null) 
 					{
 						ServerLoop.world = new World();
@@ -159,29 +161,29 @@ public class Server extends Thread implements CommandSender
 					
 					if(ServerLoop.world == null)
 					{
-						System.err.println("Server start aborted! No File selected");
-						return;
+						Logger.log(LogLevel.SEVERE, "Server start aborted! No File selected");
+						System.exit(-1);
 					}
-					System.out.println("done!");
+					Logger.log("done!");
 					
-					System.out.println("Starting Thread: Server");
+					Logger.log("Starting Thread: Server");
 					server.listener.start();
-					System.out.println("Starting Thread: Listener");
+					Logger.log("Starting Thread: Listener");
 					server.start();
 					
 					if(!isSinglePlayer)
 					{
-						System.out.println("Starting Thread: InputHandler");
+						Logger.log("Starting Thread: InputHandler");
 						server.inputHandler.start();
 					}
 					
-					System.out.println("Starting Thread: GameLoop");
+					Logger.log("Starting Thread: GameLoop");
 					server.serverLoop.start();
 					STATE = GameState.RUNNING;
-					System.out.println("done!");
+					Logger.log("done!");
 				}
 				catch(BindException e) {
-					System.err.println("Server port is already in use! Please choose an other one.");
+					Logger.log(LogLevel.SEVERE, "Server port is already in use! Please choose an other one.");
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -212,7 +214,7 @@ public class Server extends Thread implements CommandSender
 						{
 							m.setAccessible(true);
 							try {
-								System.out.println("init: " + c.getName() + "." + m.getName() + "()");
+								Logger.log("init: " + c.getName() + "." + m.getName() + "()");
 								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
@@ -232,7 +234,7 @@ public class Server extends Thread implements CommandSender
 						{
 							m.setAccessible(true);
 							try {
-								System.out.println("postinit: " + c.getName() + "." + m.getName() + "()");
+								Logger.log("postinit: " + c.getName() + "." + m.getName() + "()");
 								m.invoke(null, (Object[])null);
 							} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 								e.printStackTrace();
@@ -256,17 +258,17 @@ public class Server extends Thread implements CommandSender
 		if(player.equalsIgnoreCase("server"))
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("HAHAHAHAHAHA"));
-			System.out.println("Disconnecting Player " + player + " Reason: Tried to be funny");
+			Logger.log(LogLevel.WARNING, "Disconnecting Player " + player + " Reason: Tried to be funny");
 		}
 		else if(player.contains(" "))
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Sorry but your name is invalid. Don't take it personally."));
-			System.out.println("Disconnecting Player " + player + " Reason: Bad bad name.");
+			Logger.log(LogLevel.WARNING, "Disconnecting Player " + player + " Reason: Bad bad name.");
 		}
 		else if(!version.equals(GameRegistry.VERSION))
 		{
 			con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Wrong Version! Your Version: " + version + ", Server Version: " + GameRegistry.VERSION));
-			System.out.println("Disconnecting Player " + player + " Reason: Wrong Version (" + version + ")");
+			Logger.log(LogLevel.WARNING, "Disconnecting Player " + player + " Reason: Wrong Version (" + version + ")");
 		}
 		else if (actConnections < MAX_CONNECTIONS) 
 	    {
@@ -282,16 +284,16 @@ public class Server extends Thread implements CommandSender
 		    	con.STATE = GameState.LOADING;
 		    	
 		    	if(!nogui) ServerGui.updatePlayers();
-		    	System.out.println("Player " + player + " connected to the Server.");
+		    	Logger.log("Player " + player + " connected to the Server.");
 		    	broadcast(new Packet20Chat("Player " + player + " connected to the Server.", "SERVER"), player);
 		    	
 	    	}
-	    	else System.out.println("Disconnecting Player " + player + " Reason: Multiple Login");
+	    	else Logger.log(LogLevel.WARNING, "Disconnecting Player " + player + " Reason: Multiple Login");
 	    }
 	    else 
 	    {      
 	    	con.packetHandler.addPacketToSendingQueue(new Packet1ConnectionRefused("Max. amount of connections is reached"));
-	    	System.out.println("Disconnecting Player " + player + " Reason: Max. amount of connections is reached (" + MAX_CONNECTIONS + ")");
+	    	Logger.log(LogLevel.WARNING, "Disconnecting Player " + player + " Reason: Max. amount of connections is reached (" + MAX_CONNECTIONS + ")");
 	    }
 	}
 	
@@ -324,7 +326,7 @@ public class Server extends Thread implements CommandSender
 			c.finalize();
 		}	
 		
-		System.out.println("Waiting on active connections...");
+		Logger.log("Waiting on active connections...");
 		
 		while(true)
 		{
@@ -340,19 +342,19 @@ public class Server extends Thread implements CommandSender
 				e.printStackTrace();
 			}
 		}	
-		System.out.println("done!");
+		Logger.log("done!");
 		
-		System.out.println("Saving permissions...");
+		Logger.log("Saving permissions...");
 		PermissionHelper.savePermissions();
 		
-		System.out.println("Saving to file...");
+		Logger.log("Saving to file...");
 		serverLoop.stop();
 		
 		try {
 			ServerLoop.world.writeToFile();
-			System.out.println("done!");
+			Logger.log("done!");
 		} catch (IOException e) {
-			System.out.println("Error while saving to file!");
+			Logger.log(LogLevel.SEVERE, "Error while saving to file!");
 			e.printStackTrace();
 		}
 		
@@ -375,7 +377,7 @@ public class Server extends Thread implements CommandSender
 	    	c.connected = false;
 	    	if(reason.length() > 0) 
 	    	{
-	    		System.out.println("Disconnecting player " + c.username + " Reason: " + reason);
+	    		Logger.log(LogLevel.WARNING, "Disconnecting player " + c.username + " Reason: " + reason);
 	    		broadcast(new Packet20Chat("Disconnecting player " + c.username + ".", "SERVER"));
 	    	}
 	    	broadcastLocally(ServerLoop.world.getDimension(c.username), new Packet7Entity(ServerLoop.world.removePlayer(c.username), Packet7Entity.MODE_DELETE), c.username);
@@ -417,13 +419,13 @@ public class Server extends Thread implements CommandSender
 	@Override
 	public void print(String string) 
 	{
-		System.out.println(string);
+		Logger.log(string);
 	}
 	
 	@Override
 	public void error(String string) 
 	{
-		System.err.println(string);
+		Logger.log(LogLevel.SEVERE, string);
 	}
 
 	@Override

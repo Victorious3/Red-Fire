@@ -55,9 +55,9 @@ public class EntityPlayer extends EntityLiving
 	}
 
 	@Override
-	public void formatInventory() 
+	public void onCreation() 
 	{		
-		super.formatInventory();
+		super.onCreation();
 		
 		inventory.addItemStackGrid(0, 12, 8);
 		inventory.addItemStack(1);

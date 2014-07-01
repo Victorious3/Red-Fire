@@ -38,6 +38,7 @@ import vic.rpg.gui.GuiMain;
 import vic.rpg.registry.GameRegistry;
 import vic.rpg.registry.RenderRegistry;
 import vic.rpg.server.Server;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.Map;
@@ -110,7 +111,7 @@ public class Game extends GLCanvas implements Runnable
      */
     public synchronized void stopGame()
     {
-    	System.out.println("Stopping client...");
+    	Logger.log("Stopping client...");
     	Options.safe();
     	
     	if(Utils.getSide() == Side.CLIENT)
@@ -118,7 +119,7 @@ public class Game extends GLCanvas implements Runnable
 			RenderRegistry.stop();
 		}
     	
-    	System.out.println("Client Stopped! Thanks for using our software! (V3.inc)");
+    	Logger.log("Client Stopped! Thanks for using our software! (V3.inc)");
     	System.exit(0);
     }
     
@@ -292,38 +293,9 @@ public class Game extends GLCanvas implements Runnable
 			e.printStackTrace();
 		}
 		
-		System.setOut(new PrintStream(System.out)
-		{
-			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:"); super.flush();}
-			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString()); super.flush();}
-			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}
-			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x); super.flush();}	
-		});
-		
-		//TODO destroys error messages :3
-		/*System.setErr(new PrintStream(System.err)
-		{
-			@Override public void println(){ super.println(Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:");}
-			@Override public void println(boolean x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(char x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(char[] x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x.toString());}
-			@Override public void println(double x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(float x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(int x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(long x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(Object x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}
-			@Override public void println(String x){ super.println((Utils.getSide() == Side.CLIENT ? "[CLIENT]:" : "[SERVER]:") + x);}	
-		});*/
-		
 		System.out.println("Welcome to the RedFire alpha! Feel free to redistribute this software in binary form.");
 		System.out.println("Please report bugs to our gitHub page at https://github.com/Victorious3/Red-Fire/");
-		System.out.println("WARNING: Threre is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
+		System.out.println("WARNING: There is no guaranty that this software will run as intended on your PC. Use it on your own risk!");
 		System.out.println(GLProfile.glAvailabilityToString());
 		
 		try {

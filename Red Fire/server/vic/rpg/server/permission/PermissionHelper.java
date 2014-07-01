@@ -11,7 +11,9 @@ import java.util.Iterator;
 
 import vic.rpg.server.Server;
 import vic.rpg.server.io.Connection;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Logger.LogLevel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,7 +37,7 @@ public class PermissionHelper
 			try {
 				Files.copy(Utils.getFileFromJar("/vic/rpg/resources/permissions.json").toPath(), file.toPath());
 			} catch (IOException e) {
-				System.out.println("[PermissionHelper]: Permission file could not be loaded! Aborting...");
+				Logger.log(LogLevel.SEVERE, "[PermissionHelper]: Permission file could not be loaded! Aborting...");
 				e.printStackTrace();
 				System.exit(-1);
 			}
@@ -71,11 +73,11 @@ public class PermissionHelper
 			}
 			
 		} catch (Exception e) {
-			System.out.println("[PermissionHelper]: Permission file is invalid! Aborting...");
+			Logger.log(LogLevel.SEVERE, "[PermissionHelper]: Permission file is invalid! Aborting...");
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		System.out.println("[PermissionHelper]: Sucessfully loaded a total of " + groups.size() + " Groups and " + players.size() + " Players!");
+		Logger.log(LogLevel.FINEST, "[PermissionHelper]: Sucessfully loaded a total of " + groups.size() + " Groups and " + players.size() + " Players!");
 	}
 	
 	public static void savePermissions()
@@ -169,7 +171,7 @@ public class PermissionHelper
 				}
 				else
 				{
-					System.out.println("[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
+					Logger.log(LogLevel.WARNING, "[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
 				}
 			}
 			if(player.permission != null)
@@ -311,7 +313,7 @@ public class PermissionHelper
 				}
 				else
 				{
-					System.out.println("[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
+					Logger.log(LogLevel.WARNING, "[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
 				}
 			}
 		}
@@ -361,7 +363,7 @@ public class PermissionHelper
 	
 	public static void reload()
 	{
-		System.out.println("Reloading permissions...");
+		Logger.log("Reloading permissions...");
 		synchronized(Server.connections) 
 		{
 			for(Connection con : Server.getConnections().values())
@@ -371,7 +373,7 @@ public class PermissionHelper
 				con.suffix = getSuffix(con.username);
 			}
 		}
-		System.out.println("done!");
+		Logger.log("done!");
 	}
 	
 	public static String getPrefix(String playerName)
@@ -390,7 +392,7 @@ public class PermissionHelper
 				}
 				else
 				{
-					System.out.println("[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
+					Logger.log(LogLevel.WARNING, "[PermissionHelper]: Player " + playerName + " has a specified group that does not exist: " + s + "!");
 				}
 			}
 		}

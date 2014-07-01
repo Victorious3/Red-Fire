@@ -4,6 +4,8 @@ import java.util.List;
 
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 
 public class CommandStop extends Command 
 {
@@ -21,7 +23,7 @@ public class CommandStop extends Command
 			return;
 		}
 		
-		System.out.println("Stopping Server...");
+		Logger.log(LogLevel.SEVERE, "Stopping Server...");
 		Server.server.stopServer();
 		while(Server.STATE != GameState.QUIT)
 		{
@@ -31,7 +33,7 @@ public class CommandStop extends Command
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Server stopped!");
+		Logger.log("Server stopped!");
 	}
 
 	@Override

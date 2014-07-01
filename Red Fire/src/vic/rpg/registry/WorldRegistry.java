@@ -15,7 +15,9 @@ import vic.rpg.item.ItemApple;
 import vic.rpg.item.ItemPeer;
 import vic.rpg.item.ItemShield;
 import vic.rpg.item.ItemSword;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Logger.LogLevel;
 import vic.rpg.utils.Utils.Side;
 import vic.rpg.world.entity.Entity;
 import vic.rpg.world.entity.EntityAppleTree;
@@ -123,14 +125,14 @@ public class WorldRegistry
 			int id = e.getSuggestedID();
 			if(entityRegistry.containsKey(id) && !entityRegistry.get(id).getClass().equals(e.getClass()))
 			{
-				System.err.println("[WorldRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
+				Logger.log(LogLevel.WARNING, "[WorldRegistry]: Entity " + e + " couldn't be registered! Id " + id + " is already occupied by " + entityRegistry.get(id));
 				return null;
 			}			
 			register(e, id);
-			System.out.println("[WorldRegistry]: Registered Entity " + e.getClass().getSimpleName() + " with ID:" + id);
+			Logger.log("[WorldRegistry]: Registered Entity " + e.getClass().getSimpleName() + " with ID:" + id);
 			return e;
 		} catch (Exception e) {
-			System.err.println("[WorldRegistry]: Caught error in file " + f + ". Entity could't be loaded!");
+			Logger.log(LogLevel.WARNING, "[WorldRegistry]: Caught error in file " + f + ". Entity could't be loaded!");
 			e.printStackTrace();
 		}
 		return null;
@@ -142,14 +144,14 @@ public class WorldRegistry
 			TileJSON tile = TileJSON.parse(f);
 			if(tileRegistry.containsKey(tile.getSuggestedID()))
 			{
-				System.err.println("[WorldRegistry]: Tile " + tile.getName() + " couldn't be registered! Id " + tile.getSuggestedID() + " is already occupied by " + tileRegistry.get(tile.getSuggestedID()).getName());
+				Logger.log(LogLevel.WARNING, "[WorldRegistry]: Tile " + tile.getName() + " couldn't be registered! Id " + tile.getSuggestedID() + " is already occupied by " + tileRegistry.get(tile.getSuggestedID()).getName());
 				return null;
 			}
 			register(tile, tile.getSuggestedID());
-			System.out.println("[WorldRegistry]: Registered Tile " + tile.getName() + " with ID:" + tile.getSuggestedID());
+			Logger.log("[WorldRegistry]: Registered Tile " + tile.getName() + " with ID:" + tile.getSuggestedID());
 			return tile;
 		} catch (Exception e) {
-			System.err.println("[WorldRegistry]: Caught error in file " + f + ". Tile could't be loaded!");
+			Logger.log(LogLevel.WARNING, "[WorldRegistry]: Caught error in file " + f + ". Tile could't be loaded!");
 			e.printStackTrace();
 		}
 		return null;
@@ -212,7 +214,7 @@ public class WorldRegistry
 		}
 		else
 		{
-			System.err.println("Entity with ID " + id + " at " + xCoord + ", " + yCoord + " is missing! Skipping...");
+			Logger.log(LogLevel.WARNING, "Entity with ID " + id + " at " + xCoord + ", " + yCoord + " is missing! Skipping...");
 		}
 		return ent;
 	}
@@ -229,7 +231,7 @@ public class WorldRegistry
 			
 			return et;
 		} catch (InstantiationException | IllegalAccessException e) {
-			System.err.println("Error while loading EntityTile " + clazz.getSimpleName() + "!");
+			Logger.log(LogLevel.WARNING, "Error caught while loading EntityTile " + clazz.getSimpleName() + "!");
 			return null;
 		}
 	}

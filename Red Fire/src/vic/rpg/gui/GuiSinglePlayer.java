@@ -21,7 +21,9 @@ import vic.rpg.registry.RenderRegistry;
 import vic.rpg.server.GameState;
 import vic.rpg.server.Server;
 import vic.rpg.sound.SoundEngine;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Logger.LogLevel;
 import vic.rpg.world.Map;
 import vic.rpg.world.World;
 
@@ -102,18 +104,18 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 	 */
 	private void loadGame(File file)
 	{
-		System.out.println("Starting Server...");
+		Logger.log("Starting Server...");
 		Server.main(new String[]{"-splayer", "-file", file.getAbsolutePath()});
 		Server.MAX_CONNECTIONS = 1;
 		
-		System.out.println("Waiting for Server...");
+		Logger.log("Waiting for Server...");
 		int trys = 0;
 		while(Server.STATE != GameState.RUNNING)
 		{
 			trys++;
 			if(trys == 20)
 			{
-				System.out.println("Server timed out! Aborting!");
+				Logger.log(LogLevel.SEVERE, "Server timed out! Aborting!");
 				return;
 			}
 			try {
@@ -126,7 +128,7 @@ public class GuiSinglePlayer extends Gui implements IGList, IGButton
 		Game.netHandler = new NetHandler();
 		Game.netHandler.IS_SINGLEPLAYER = true;
 		
-		System.out.println("Connecting to Server...");
+		Logger.log("Connecting to Server...");
 		if(Game.netHandler.connect("localhost", 29598, Game.USERNAME))
 		{
 			Gui.setGui(null);

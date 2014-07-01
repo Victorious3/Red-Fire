@@ -66,11 +66,6 @@ public class GuiIngameMenu extends Gui implements GButton.IGButton {
 		super.initGui();
 	}
 	
-	public void button()
-	{
-		System.out.println("Button pressed!");
-	}
-
 	@Override
 	public void onButtonPressed(GControl button) 
 	{

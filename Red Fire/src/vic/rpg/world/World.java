@@ -25,6 +25,8 @@ import vic.rpg.server.io.Connection;
 import vic.rpg.server.packet.Packet10TimePacket;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.entity.living.EntityPlayer;
 
@@ -196,7 +198,7 @@ public class World
 					Map map = Map.readFromFile(mapFile);
 					maps.put(map.id, map);
 				} catch (Exception e) {
-					System.out.println("Skipping damaged map " + mapFile.getAbsolutePath());
+					Logger.log(LogLevel.WARNING, "Skipping damaged map " + mapFile.getAbsolutePath());
 				}
 			}
 			saveFile = file;

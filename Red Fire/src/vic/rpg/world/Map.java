@@ -555,10 +555,6 @@ public class Map implements INBTReadWrite
 		e.yCoord = y;
 		e.UUID = uuid.toString();
 		e.mapObj = this;
-		if(e instanceof EntityLiving)
-		{
-			((EntityLiving)e).formatInventory();
-		}
 		entityMap.put(uuid.toString(), e);
 	}
 	
@@ -582,10 +578,6 @@ public class Map implements INBTReadWrite
 	public void addEntity(Entity ent, int x, int y)
 	{	
 		if(x > getWidth() || x < 0 || y > getHeight() || y < 0) return;
-		if(ent instanceof EntityLiving)
-		{
-			((EntityLiving)ent).formatInventory();
-		}
 		UUID uuid = UUID.randomUUID();
 		ent.xCoord = x;
 		ent.yCoord = y;
@@ -612,7 +604,6 @@ public class Map implements INBTReadWrite
         player.username = username;
         player.dimension = id;
         player.mapObj = this;
-        player.formatInventory();
         player.onCreation();
         entityMap.put(player.UUID, player);
         return player;

@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import vic.rpg.server.command.Command;
 import vic.rpg.server.command.CommandException;
 import vic.rpg.server.command.CommandSender;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 
 public class InputHandler extends Thread 
 {
@@ -40,7 +42,7 @@ public class InputHandler extends Thread
 		Command c = Command.commands.get(command);
 		if(c == null)
 		{
-			System.err.println("No command named \"" + command + "\"!");
+			Logger.log(LogLevel.WARNING, "No command named \"" + command + "\"!");
 			try {
 				Command.commands.get("help").cast(new ArrayList<String>(), commandSender);
 			} catch (CommandException e) {

@@ -19,7 +19,9 @@ import org.jnbt.StringTag;
 import org.jnbt.Tag;
 
 import vic.rpg.utils.Direction;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
+import vic.rpg.utils.Logger.LogLevel;
 
 public class TileMaterial 
 {
@@ -130,7 +132,7 @@ public class TileMaterial
 				nbtOut.writeTag(new CompoundTag("material", materialTag));
 				nbtOut.close();
 			} catch (Exception e) {
-				System.err.println("Failed to save material \"" + tm.name + "\"!");
+				Logger.log(LogLevel.WARNING, "Failed to save material \"" + tm.name + "\"!");
 				continue;
 			}
 		}
@@ -176,17 +178,17 @@ public class TileMaterial
 					}
 					
 					nbtIN.close();
-					System.out.println("Loaded material \"" + name  + "\"");
+					Logger.log("Loaded material \"" + name  + "\"");
 					materials.put(name, new TileMaterial(mats, name));
 				} catch (Exception e) {
-					System.err.println("Failed loading material \"" + f.getName() + "\"!");
+					Logger.log(LogLevel.WARNING, "Failed loading material \"" + f.getName() + "\"!");
 					e.printStackTrace();
 					continue;
 				}
 			}
 				
 		} catch (Exception e) {
-			System.err.println("Failed loading materials. Aborting...");
+			Logger.log(LogLevel.SEVERE, "Failed loading materials. Aborting...");
 		}
 	}
 }

@@ -20,6 +20,7 @@ import vic.rpg.server.packet.Packet20Chat;
 import vic.rpg.server.packet.Packet6World;
 import vic.rpg.server.packet.Packet7Entity;
 import vic.rpg.server.packet.Packet9EntityMoving;
+import vic.rpg.utils.Logger;
 import vic.rpg.utils.Utils;
 import vic.rpg.world.Map;
 import vic.rpg.world.entity.Entity;
@@ -71,7 +72,7 @@ public class PacketHandlerSP extends Thread
 		if(p == null) return;
 		if(p.id == 1)
 		{
-			System.out.println(((Packet1ConnectionRefused)p).message);
+			Logger.log(((Packet1ConnectionRefused)p).message);
 			Game.netHandler.lastError = ((Packet1ConnectionRefused)p).message;
 			Game.netHandler.close();
 		}

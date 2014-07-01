@@ -5,6 +5,8 @@ import java.net.SocketException;
 
 import vic.rpg.server.Server;
 import vic.rpg.server.permission.PermissionHelper;
+import vic.rpg.utils.Logger;
+import vic.rpg.utils.Logger.LogLevel;
 
 public class Listener extends Thread 
 {
@@ -39,7 +41,7 @@ public class Listener extends Thread
 		        		trys++;
 		        		if(trys == 10)
 			        	{
-			        		System.out.println(socket.getInetAddress() + " lost connection.");
+			        		Logger.log(LogLevel.WARNING, socket.getInetAddress() + " lost connection.");
 			        		break;
 			        	}
 		        		Listener.sleep(10);
