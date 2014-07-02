@@ -7,6 +7,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -400,5 +401,20 @@ public class Utils
 	public static Point convCartToIso(Point p)
 	{
 		return new Point(p.x - p.y, (p.x + p.y) / 2);
+	}
+
+	public static void copyFileFromJar(String from, String to) throws IOException
+	{
+		InputStream stream = getStreamFromJar(from);
+		FileOutputStream fos = new FileOutputStream(new File(to));
+		byte[] buf = new byte[2048];
+		int r = stream.read(buf);
+		while(r != -1)
+		{
+			fos.write(buf, 0, r);
+			r = stream.read(buf);
+		}
+		stream.close();
+		fos.close();
 	}
 }

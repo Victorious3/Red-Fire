@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +35,9 @@ public class PermissionHelper
 		File file = new File(Utils.getAppdata() + "/permissions.json");
 		if(!file.exists())
 		{
+			Logger.log(LogLevel.WARNING, "[PermissionHelper]: Created permission file " + file + " with standard permission set.");
 			try {
-				Files.copy(Utils.getFileFromJar("/vic/rpg/resources/permissions.json").toPath(), file.toPath());
+				Utils.copyFileFromJar("/vic/rpg/resources/permissions.json", file.getAbsolutePath());
 			} catch (IOException e) {
 				Logger.log(LogLevel.SEVERE, "[PermissionHelper]: Permission file could not be loaded! Aborting...");
 				e.printStackTrace();

@@ -59,7 +59,7 @@ public class Logger
 	
 	public static void log(LogLevel level, String log)
 	{
-		log = "[" + Utils.getSide() + "][" + level + "]:" + log;
+		log = "[" + Utils.getSide() + "][" + level + "]: " + log;
 		if(level == LogLevel.SEVERE) System.err.println(log);
 		else System.out.println(log);
 		if(level != LogLevel.DEBUG && writer != null)
